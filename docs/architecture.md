@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Architecture
-nav_order: 4
+nav_order: 5
 ---
 
 # Architecture
@@ -32,7 +32,7 @@ and context. They decide which skills to invoke based on user requests.
 
 | Agent | Role | Status |
 |-------|------|--------|
-| 🐙 Octo | Primary personal assistant — full access to all skills and tools | ✅ Active |
+| 🐙 main | Primary personal assistant — full access to all skills and tools | ✅ Active |
 | 🤖 group-agent | Generic group chat agent — responds only when mentioned | 💤 Inactive |
 | 🏠 family-agent | Family group chat agent with limited permissions | ✅ Active |
 | 📬 mail-agent | Email processing agent with read-only access | 💤 Inactive |

@@ -161,6 +161,56 @@ def load_config(config_dir: Path) -> dict:
     return {}
 
 
+def load_jobs(config_dir: Path) -> list[dict]:
+    """Load scheduled jobs from cron/jobs.json (sanitized)."""
+    # Check both the runtime dir and the config repo (via workspace symlink)
+    candidates = [config_dir / "cron" / "jobs.json"]
+    ws = config_dir / "agents" / "main" / "workspace"
+    if ws.is_symlink() or ws.is_dir():
+        repo_root = ws.resolve().parent.parent
+        candidates.append(repo_root / "config" / "jobs.json")
+
+    data = {}
+    for jobs_path in candidates:
+        if jobs_path.exists():
+            with open(jobs_path, encoding="utf-8") as f:
+                data = json.load(f)
+            break
+    if not data:
+        return []
+
+    jobs = []
+    for job in data.get("jobs", []):
+        schedule_info = job.get("schedule", {})
+        every_ms = schedule_info.get("everyMs", 0)
+        if every_ms >= 86400000:
+            interval = f"Every {every_ms // 86400000}d"
+        elif every_ms >= 3600000:
+            interval = f"Every {every_ms // 3600000}h"
+        elif every_ms >= 60000:
+            interval = f"Every {every_ms // 60000}m"
+        else:
+            interval = schedule_info.get("kind", "unknown")
+        jobs.append({
+            "name": job.get("name", job.get("id", "unknown")),
+            "description": job.get("description", ""),
+            "enabled": job.get("enabled", True),
+            "interval": interval,
+        })
+    return jobs
+
+
+def load_repo_readme(config_dir: Path) -> str:
+    """Load README.md from the openclaw config repo (via workspace symlink)."""
+    ws = config_dir / "agents" / "main" / "workspace"
+    if ws.is_symlink() or ws.is_dir():
+        repo_root = ws.resolve().parent.parent
+        readme = repo_root / "README.md"
+        if readme.exists():
+            return readme.read_text(encoding="utf-8", errors="ignore")
+    return ""
+
+
 def extract_agents(config: dict, config_dir: Path) -> list[dict]:
     """Extract agent names, roles, and active status (sanitized)."""
     agents = []
@@ -197,9 +247,12 @@ def extract_agents(config: dict, config_dir: Path) -> list[dict]:
             if "_(pick something you like)_" in text:
                 active = False
 
+        # Use the agent ID as the display name (e.g. "main", "family-agent")
+        display_name = agent_id
+
         agents.append({
             "id": agent_id,
-            "name": identity.get("name", agent.get("name", agent_id)),
+            "name": display_name,
             "description": agent.get("description", ""),
             "emoji": identity.get("emoji", "🤖"),
             "active": active,
@@ -298,7 +351,9 @@ def discover_services(config_dir: Path) -> list[dict]:
 # Markdown generators
 # ---------------------------------------------------------------------------
 
-def generate_index(skills: list, services: list, agents: list, channels: list) -> str:
+def generate_index(skills: list, services: list, agents: list, channels: list,
+                   jobs: list | None = None) -> str:
+    jobs = jobs or []
     channel_list = ", ".join(
         ch["type"].title() for ch in channels if ch.get("enabled", True)
     ) or "None configured"
@@ -322,6 +377,7 @@ def generate_index(skills: list, services: list, agents: list, channels: list) -
         f"| 🔧 Skills | {len(skills)} |",
         f"| ⚙️ Services | {len(services)} |",
         f"| 🤖 Agents | {len(agents)} |",
+        f"| ⏰ Scheduled Jobs | {len(jobs)} |",
         f"| 📡 Channels | {channel_list} |",
         "",
         "## 🧠 How It Works",
@@ -337,10 +393,14 @@ def generate_index(skills: list, services: list, agents: list, channels: list) -
         "⚙️ **Services** are long-running background daemons that watch for events (like",
         "incoming email) and route notifications through the system.",
         "",
+        "⏰ **Scheduled Jobs** run automatically on a timer — fetching calendars,",
+        "backing up config, and other recurring tasks without user intervention.",
+        "",
         "## 📚 Learn More",
         "",
         "- [🔧 Skills](skills.html) — what the system can do",
         "- [⚙️ Services](services.html) — background event processing",
+        "- [⏰ Scheduled Jobs](jobs.html) — automated recurring tasks",
         "- [🏗️ Architecture](architecture.html) — how the pieces fit together",
     ]
 
@@ -560,7 +620,7 @@ def generate_architecture_page(
         "---",
         "layout: default",
         "title: Architecture",
-        "nav_order: 4",
+        "nav_order: 5",
         "---",
         "",
         "# Architecture",
@@ -622,9 +682,54 @@ def generate_architecture_page(
     return "\n".join(lines)
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
+def generate_jobs_page(jobs: list) -> str:
+    lines = [
+        "---",
+        "layout: default",
+        "title: Scheduled Jobs",
+        "nav_order: 4",
+        "---",
+        "",
+        "# Scheduled Jobs",
+        "",
+        "Cron-style jobs that run automatically on a schedule. Each job spawns an",
+        "isolated agent session, executes its task, and exits — no user interaction",
+        "required.",
+        "",
+    ]
+
+    if not jobs:
+        lines.append("_No scheduled jobs configured._")
+        lines.append("")
+        return "\n".join(lines)
+
+    lines.extend([
+        "| Job | Description | Schedule | Status |",
+        "|-----|-------------|----------|--------|",
+    ])
+
+    for job in jobs:
+        status = "✅ Enabled" if job.get("enabled") else "❌ Disabled"
+        lines.append(
+            f"| **{job['name']}** | {job['description']} "
+            f"| {job['interval']} | {status} |"
+        )
+
+    lines.append("")
+    lines.extend([
+        "## How It Works",
+        "",
+        "Jobs are defined in `cron/jobs.json` inside the `.openclaw` directory.",
+        "The OpenClaw gateway reads this file and fires each job on its configured",
+        "schedule. Jobs run in isolated sessions so they don't pollute the main",
+        "conversation history.",
+        "",
+        "Agents can create, edit, and delete jobs at runtime — for example,",
+        '`"remind me in 20 minutes"` creates a one-shot cron job that delivers',
+        "a message back through the active channel.",
+    ])
+
+    return "\n".join(lines)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -660,17 +765,19 @@ def main():
     config = load_config(config_dir)
     agents = extract_agents(config, config_dir)
     channels = extract_channels(config)
+    jobs = load_jobs(config_dir)
 
     print(f"Found {len(skills)} skills, {len(services)} services, "
-          f"{len(agents)} agents, {len(channels)} channels")
+          f"{len(agents)} agents, {len(channels)} channels, {len(jobs)} jobs")
 
     # Generate pages
     output_dir.mkdir(parents=True, exist_ok=True)
 
     pages = {
-        "index.md": generate_index(skills, services, agents, channels),
+        "index.md": generate_index(skills, services, agents, channels, jobs),
         "skills.md": generate_skills_page(skills),
         "services.md": generate_services_page(services),
+        "jobs.md": generate_jobs_page(jobs),
         "architecture.md": generate_architecture_page(
             skills, services, agents, channels
         ),

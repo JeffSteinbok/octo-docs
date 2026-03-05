@@ -16,6 +16,7 @@ real-world services through **skills**, **agents**, and **channels**.
 | 🔧 Skills | 7 |
 | ⚙️ Services | 1 |
 | 🤖 Agents | 4 |
+| ⏰ Scheduled Jobs | 2 |
 | 📡 Channels | Telegram, Discord |
 
 ## 🧠 How It Works
@@ -31,8 +32,12 @@ Each skill declares its own dependencies and is independently versioned.
 ⚙️ **Services** are long-running background daemons that watch for events (like
 incoming email) and route notifications through the system.
 
+⏰ **Scheduled Jobs** run automatically on a timer — fetching calendars,
+backing up config, and other recurring tasks without user intervention.
+
 ## 📚 Learn More
 
 - [🔧 Skills](skills.html) — what the system can do
 - [⚙️ Services](services.html) — background event processing
+- [⏰ Scheduled Jobs](jobs.html) — automated recurring tasks
 - [🏗️ Architecture](architecture.html) — how the pieces fit together

@@ -1,10 +1,48 @@
-// Octo Docs – orange-accented color scheme for just-the-docs
+// Octo Docs – clean sidebar with subtle orange accents for just-the-docs
 
-$link-color: #d45b07;
-$sidebar-color: #fff8f2;
-$nav-child-link-color: #b34a00;
-$search-result-highlight-color: #fddcbf;
-$btn-primary-color: #e06310;
-$body-heading-color: #c24e05;
-$base-button-color: #f5e1cf;
-$feedback-color: darken($link-color, 5%);
+// Orange accent for links and interactive elements
+$link-color: #c85000;
+
+// Sidebar: clean white with a barely-warm tint, dark readable text
+$sidebar-color: #fafaf8;
+$nav-child-link-color: #444;
+
+// Active nav item gets a visible orange left-border via custom CSS below
+$search-result-highlight-color: #fde8d0;
+$btn-primary-color: #d45b07;
+$body-heading-color: #333;
+$base-button-color: #f0e6da;
+$feedback-color: #b34a00;
+
+// Custom overrides for sidebar polish
+.side-bar {
+  border-right: 1px solid #e8e0d8;
+
+  .site-title {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .nav-list-item {
+    font-size: 0.9rem;
+
+    > .nav-list-link {
+      color: #444;
+      padding: 0.4rem 1rem;
+      border-left: 3px solid transparent;
+
+      &:hover {
+        color: $link-color;
+        background-color: #fdf5ee;
+        border-left-color: #e8cdb5;
+      }
+
+      &.active {
+        color: $link-color;
+        font-weight: 600;
+        background-color: #fdf0e4;
+        border-left-color: $link-color;
+      }
+    }
+  }
+}
