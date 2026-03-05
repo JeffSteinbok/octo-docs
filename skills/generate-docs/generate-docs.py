@@ -207,6 +207,44 @@ def load_jobs(config_dir: Path) -> list[dict]:
     return jobs
 
 
+def humanize_cron(expr: str) -> str:
+    """Convert a cron expression like '0 8 * * *' to human-readable text."""
+    parts = expr.split()
+    if len(parts) != 5:
+        return expr
+    minute, hour, dom, month, dow = parts
+
+    day_names = {"0": "Sun", "1": "Mon", "2": "Tue", "3": "Wed",
+                 "4": "Thu", "5": "Fri", "6": "Sat", "7": "Sun"}
+
+    # Every minute
+    if all(p == "*" for p in parts):
+        return "Every minute"
+
+    # Simple interval patterns: */N
+    if minute.startswith("*/") and hour == "*" and dom == "*" and month == "*" and dow == "*":
+        return f"Every {minute[2:]}m"
+    if minute == "0" and hour.startswith("*/") and dom == "*" and month == "*" and dow == "*":
+        return f"Every {hour[2:]}h"
+
+    # Daily at HH:MM
+    if dom == "*" and month == "*" and dow == "*" and not hour.startswith("*/"):
+        time_str = f"{int(hour)}:{minute.zfill(2)} AM" if int(hour) < 12 else (
+            f"{int(hour) - 12 if int(hour) > 12 else 12}:{minute.zfill(2)} PM"
+        )
+        return f"Daily at {time_str}"
+
+    # Specific days of week
+    if dom == "*" and month == "*" and dow != "*":
+        days = [day_names.get(d, d) for d in dow.split(",")]
+        time_str = f"{int(hour)}:{minute.zfill(2)} AM" if int(hour) < 12 else (
+            f"{int(hour) - 12 if int(hour) > 12 else 12}:{minute.zfill(2)} PM"
+        )
+        return f"{','.join(days)} at {time_str}"
+
+    return expr
+
+
 def load_crontab_jobs() -> list[dict]:
     """Load jobs from the system crontab (sanitized)."""
     import subprocess
@@ -229,14 +267,13 @@ def load_crontab_jobs() -> list[dict]:
             continue
         cron_expr = " ".join(parts[:5])
         command = parts[5]
-        # Extract a readable name from the command path
         cmd_path = Path(command.split()[0])
         name = cmd_path.stem
         jobs.append({
             "name": name,
-            "description": f"`{cron_expr}`",
+            "description": humanize_cron(cron_expr),
             "enabled": True,
-            "interval": cron_expr,
+            "interval": humanize_cron(cron_expr),
             "source": "crontab",
         })
     return jobs

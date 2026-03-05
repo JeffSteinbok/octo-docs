@@ -23,7 +23,7 @@ required.
 
 | Job | Schedule |
 |-----|----------|
-| **opentable-heartbeat** | `0 8 * * *` |
+| **opentable-heartbeat** | `Daily at 8:00 AM` |
 
 
 ## How It Works
