@@ -6,7 +6,7 @@ nav_order: 1
 
 <img src="{{ site.baseurl }}/assets/images/Octo_small.png" alt="Octo" width="180" style="float: right; margin: 0 0 1em 1.5em;" />
 
-# 🐙 Octo Docs
+# All About Octo...
 
 This is the documentation for **Octo** 🐙 — Jeff Steinbok's personal instance of
 [OpenClaw](https://openclaw.ai), a modular AI assistant framework that connects
