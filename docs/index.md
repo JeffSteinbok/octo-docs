@@ -34,7 +34,7 @@ Security is the most important aspect of this experiment — even above just hav
 - **Self-hosted** — Runs on an old Lenovo X1 Yoga Gen 3 with 16 GB of RAM running Ubuntu Desktop.
 - **Token-conscious** — As much work as possible is pushed to Python skills to reduce token usage.
 
-## 🦞 How OpenClaw Works — Super High Level ✈️
+## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
 
 🤖 **Agents** are personas powered by language models. Each agent has its own
 identity, personality, and set of permitted tools. Agents communicate with
