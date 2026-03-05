@@ -4,9 +4,7 @@ title: Home
 nav_order: 1
 ---
 
-<p align="center">
-  <img src="{{ site.baseurl }}/assets/images/Octo_small.png" alt="Octo" width="200" />
-</p>
+<img src="{{ site.baseurl }}/assets/images/Octo_small.png" alt="Octo" width="180" style="float: right; margin: 0 0 1em 1.5em;" />
 
 # 🐙 Octo Docs
 
