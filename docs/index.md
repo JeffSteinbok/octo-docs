@@ -8,7 +8,7 @@ nav_order: 1
 
 # All About Octo...
 
-This is the documentation for **Octo** 🐙 — Jeff Steinbok's personal instance of
+This is the documentation for **Octo** 🐙 — [Jeff Steinbok](https://github.com/JeffSteinbok)'s personal instance of
 [OpenClaw](https://openclaw.ai), a modular AI assistant framework that connects
 language models to real-world services through **skills**, **agents**, and **channels**.
 

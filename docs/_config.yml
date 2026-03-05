@@ -8,5 +8,8 @@ color_scheme: octo
 plugins:
   - jekyll-remote-theme
 
+# Footer content
+footer_content: "🐙 Octo Docs"
+
 # Favicon
 favicon_ico: /assets/images/favicon.ico
