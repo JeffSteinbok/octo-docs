@@ -8,10 +8,5 @@ color_scheme: octo
 plugins:
   - jekyll-remote-theme
 
-# Sidebar navigation order is controlled by nav_order in each page's frontmatter
-
-# Footer content
-footer_content: "🐙 Octo Docs &mdash; powered by OpenClaw"
-
 # Favicon
 favicon_ico: /assets/images/favicon.ico
