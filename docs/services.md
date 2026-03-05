@@ -13,6 +13,4 @@ and route notifications through the OpenClaw system.
 
 Monitors an email inbox in real time using Server-Sent Events (SSE). When new mail arrives, it formats a notification and delivers it to the configured messaging channel. Automated and marketing emails are filtered out. Calendar RSVP responses are detected and displayed with appropriate status indicators.
 
-**Deployment:** systemd user service (auto-restart on failure)
-
 ---

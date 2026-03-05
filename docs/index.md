@@ -13,7 +13,7 @@ real-world services through **skills**, **agents**, and **channels**.
 
 | | Count |
 |---|---|
-| 🔧 Skills | 3 |
+| 🔧 Skills | 7 |
 | ⚙️ Services | 1 |
 | 🤖 Agents | 4 |
 | 📡 Channels | Telegram, Discord |

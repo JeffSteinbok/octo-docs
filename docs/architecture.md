@@ -30,12 +30,12 @@ channels, and services each play a distinct role.
 Agents are LLM-powered personas, each with their own identity, permissions,
 and context. They decide which skills to invoke based on user requests.
 
-| Agent | Role |
-|-------|------|
-| 🦞 Octo | Primary personal assistant — full access to all skills and tools |
-| 🤖 group-agent | Generic group chat agent — responds only when mentioned |
-| 🏠 family-agent | Family group chat agent with limited permissions |
-| 📬 mail-agent | Email processing agent with read-only access |
+| Agent | Role | Status |
+|-------|------|--------|
+| 🐙 Octo | Primary personal assistant — full access to all skills and tools | ✅ Active |
+| 🤖 group-agent | Generic group chat agent — responds only when mentioned | 💤 Inactive |
+| 🏠 family-agent | Family group chat agent with limited permissions | ✅ Active |
+| 📬 mail-agent | Email processing agent with read-only access | 💤 Inactive |
 
 ## Channels
 
@@ -48,7 +48,7 @@ Channels are the messaging platforms through which users interact with agents.
 
 ## Skills
 
-Skills are the system's capabilities: **fastmail-send, hass-camera-snapshot, opentable**.
+Skills are the system's capabilities: **config-backup, fastmail-send, hass-camera-snapshot, homeassistant-cli, opentable, outlook-work-calendar, personal-calendars**.
 Each is a self-contained module with declared dependencies, invoked by agents
 as needed. See the [Skills](skills.html) page for details.
 

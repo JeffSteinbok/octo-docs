@@ -58,17 +58,26 @@ def resolve_hub_source(skill_dir: Path) -> str | None:
 
 
 def discover_skills(config_dir: Path) -> list[dict]:
-    """Find all skills in the .openclaw config directory and this repo."""
+    """Find all skills across agent workspaces in the .openclaw directory."""
     skills = []
     seen = set()
 
-    # Skills inside ~/.openclaw (may include symlinks to openclaw-hub)
-    config_skills = config_dir / "skills" if (config_dir / "skills").is_dir() else None
+    # Primary skill source: main agent workspace skills
+    agents_dir = config_dir / "agents"
+    skill_search_dirs: list[Path] = []
+
+    if agents_dir.is_dir():
+        for agent_dir in sorted(agents_dir.iterdir()):
+            ws = agent_dir / "workspace" / "skills"
+            if ws.is_dir():
+                skill_search_dirs.append(ws)
+
     # Also check octo-docs/skills (this repo)
     local_skills = Path(__file__).resolve().parent.parent
+    skill_search_dirs.append(local_skills)
 
-    for skills_dir in [config_skills, local_skills]:
-        if skills_dir is None or not skills_dir.exists():
+    for skills_dir in skill_search_dirs:
+        if not skills_dir.exists():
             continue
         for skill_dir in sorted(skills_dir.iterdir()):
             if not skill_dir.is_dir() or skill_dir.name.startswith("."):
@@ -152,8 +161,8 @@ def load_config(config_dir: Path) -> dict:
     return {}
 
 
-def extract_agents(config: dict) -> list[dict]:
-    """Extract agent names and roles (sanitized)."""
+def extract_agents(config: dict, config_dir: Path) -> list[dict]:
+    """Extract agent names, roles, and active status (sanitized)."""
     agents = []
     agents_section = config.get("agents", {})
 
@@ -165,14 +174,35 @@ def extract_agents(config: dict) -> list[dict]:
     else:
         agent_list = []
 
+    # Check bindings to determine which agents are actually routed to
+    bound_agents = set()
+    for binding in config.get("bindings", []):
+        if isinstance(binding, dict) and binding.get("agentId"):
+            bound_agents.add(binding["agentId"])
+
     for agent in agent_list:
         if not isinstance(agent, dict):
             continue
         identity = agent.get("identity", {})
+        agent_id = agent.get("id", "unknown")
+
+        # Check if agent workspace has a completed IDENTITY.md (not template)
+        active = agent_id in bound_agents
+        ws = config_dir / "agents" / agent_id / "workspace"
+        if not ws.exists():
+            ws = Path(agent.get("workspace", ""))
+        id_file = ws / "IDENTITY.md" if ws.exists() else None
+        if id_file and id_file.exists():
+            text = id_file.read_text(encoding="utf-8", errors="ignore")
+            if "_(pick something you like)_" in text:
+                active = False
+
         agents.append({
-            "name": identity.get("name", agent.get("name", agent.get("id", "unknown"))),
+            "id": agent_id,
+            "name": identity.get("name", agent.get("name", agent_id)),
             "description": agent.get("description", ""),
             "emoji": identity.get("emoji", "🤖"),
+            "active": active,
         })
     return agents
 
@@ -203,48 +233,64 @@ def extract_channels(config: dict) -> list[dict]:
 
 
 def discover_services(config_dir: Path) -> list[dict]:
-    """Find services in the .openclaw directory."""
+    """Find services in the .openclaw directory and linked repos."""
     services = []
     seen = set()
 
-    services_dir = config_dir / "services"
-    if not services_dir.exists():
-        return services
+    search_dirs: list[Path] = []
 
-    for svc_dir in sorted(services_dir.iterdir()):
-        if not svc_dir.is_dir() or svc_dir.name.startswith("."):
+    # Direct services dir in .openclaw
+    if (config_dir / "services").is_dir():
+        search_dirs.append(config_dir / "services")
+
+    # Follow the main agent workspace symlink to find the config repo's services
+    ws = config_dir / "agents" / "main" / "workspace"
+    if ws.is_symlink() or ws.is_dir():
+        repo_root = ws.resolve().parent.parent  # e.g. ~/git/openclaw
+        if (repo_root / "services").is_dir():
+            search_dirs.append(repo_root / "services")
+        # Also check sibling openclaw-hub repo
+        hub_services = repo_root.parent / "openclaw-hub" / "services"
+        if hub_services.is_dir():
+            search_dirs.append(hub_services)
+
+    for services_dir in search_dirs:
+        if not services_dir.exists():
             continue
-        if svc_dir.name in seen:
-            continue
-        seen.add(svc_dir.name)
+        for svc_dir in sorted(services_dir.iterdir()):
+            if not svc_dir.is_dir() or svc_dir.name.startswith("."):
+                continue
+            if svc_dir.name in seen:
+                continue
+            seen.add(svc_dir.name)
 
-        svc = {"name": svc_dir.name, "description": "", "type": "daemon"}
+            svc = {"name": svc_dir.name, "description": "", "type": "daemon"}
 
-        service_files = list(svc_dir.glob("*.service"))
-        if service_files:
-            svc["type"] = "systemd"
+            service_files = list(svc_dir.glob("*.service"))
+            if service_files:
+                svc["type"] = "systemd"
 
-        for doc_name in ["SKILL.md", "README.md"]:
-            doc_path = svc_dir / doc_name
-            if doc_path.exists():
-                parsed = parse_skill_md(doc_path)
-                svc["description"] = parsed["meta"].get("description", "")
-                if not svc["description"]:
-                    for line in parsed["body"].split("\n"):
-                        if line.strip() and not line.startswith("#"):
-                            svc["description"] = line.strip()
-                            break
-                break
-
-        if not svc["description"]:
-            for py_file in svc_dir.glob("*.py"):
-                text = py_file.read_text(encoding="utf-8", errors="ignore")
-                doc_match = re.search(r'"""(.*?)"""', text, re.DOTALL)
-                if doc_match:
-                    svc["description"] = doc_match.group(1).strip().split("\n")[0]
+            for doc_name in ["SKILL.md", "README.md"]:
+                doc_path = svc_dir / doc_name
+                if doc_path.exists():
+                    parsed = parse_skill_md(doc_path)
+                    svc["description"] = parsed["meta"].get("description", "")
+                    if not svc["description"]:
+                        for line in parsed["body"].split("\n"):
+                            if line.strip() and not line.startswith("#"):
+                                svc["description"] = line.strip()
+                                break
                     break
 
-        services.append(svc)
+            if not svc["description"]:
+                for py_file in svc_dir.glob("*.py"):
+                    text = py_file.read_text(encoding="utf-8", errors="ignore")
+                    doc_match = re.search(r'"""(.*?)"""', text, re.DOTALL)
+                    if doc_match:
+                        svc["description"] = doc_match.group(1).strip().split("\n")[0]
+                        break
+
+            services.append(svc)
     return services
 
 
@@ -364,6 +410,38 @@ def generate_skills_page(skills: list) -> str:
                 "Returns direct booking links for available times",
             ],
         },
+        "homeassistant-cli": {
+            "what": "Advanced Home Assistant control using the official hass-cli tool.",
+            "capabilities": [
+                "Control lights, switches, climate, locks, and alarm systems",
+                "Query entity states, history, and event logs",
+                "Auto-completion and rich output formatting",
+            ],
+        },
+        "config-backup": {
+            "what": "Backup OpenClaw config to Git with automatic change detection.",
+            "capabilities": [
+                "Detects changes to openclaw.json and commits only when needed",
+                "Designed for cron — runs silently unless something goes wrong",
+                "Supports forced commits for manual snapshots",
+            ],
+        },
+        "outlook-work-calendar": {
+            "what": "Fetch work calendar events from a published Outlook endpoint.",
+            "capabilities": [
+                "Query events by date range with subject, time, and location",
+                "Shows busy status and sensitivity level for scheduling",
+                "No authentication required — uses published calendar feed",
+            ],
+        },
+        "personal-calendars": {
+            "what": "Fetch personal and family calendars from Outlook Live ICS feeds.",
+            "capabilities": [
+                "Query personal, family, or all calendars by date range",
+                "Returns events with subject, time, and location",
+                "Supports multiple calendar sources in a single query",
+            ],
+        },
     }
 
     for skill in skills:
@@ -456,7 +534,7 @@ def generate_architecture_page(
 ) -> str:
     # Agent descriptions by known IDs
     agent_descriptions = {
-        "Octo": "Primary personal assistant — full access to all skills and tools",
+        "main": "Primary personal assistant — full access to all skills and tools",
         "family-agent": "Family group chat agent with limited permissions",
         "group-agent": "Generic group chat agent — responds only when mentioned",
         "mail-agent": "Email processing agent with read-only access",
@@ -465,9 +543,11 @@ def generate_architecture_page(
     agent_rows = ""
     for a in agents:
         emoji = a.get("emoji", "🤖")
+        agent_id = a.get("id", a["name"])
         name = a["name"]
-        desc = a.get("description") or agent_descriptions.get(name, "")
-        agent_rows += f"| {emoji} {name} | {desc} |\n"
+        desc = a.get("description") or agent_descriptions.get(agent_id, "")
+        status = "✅ Active" if a.get("active") else "💤 Inactive"
+        agent_rows += f"| {emoji} {name} | {desc} | {status} |\n"
 
     channel_rows = ""
     for ch in channels:
@@ -509,8 +589,8 @@ def generate_architecture_page(
         "Agents are LLM-powered personas, each with their own identity, permissions,",
         "and context. They decide which skills to invoke based on user requests.",
         "",
-        "| Agent | Role |",
-        "|-------|------|",
+        "| Agent | Role | Status |",
+        "|-------|------|--------|",
         agent_rows,
         "## Channels",
         "",
@@ -578,7 +658,7 @@ def main():
     skills = discover_skills(config_dir)
     services = discover_services(config_dir)
     config = load_config(config_dir)
-    agents = extract_agents(config)
+    agents = extract_agents(config, config_dir)
     channels = extract_channels(config)
 
     print(f"Found {len(skills)} skills, {len(services)} services, "
