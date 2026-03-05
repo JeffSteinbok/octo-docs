@@ -351,61 +351,6 @@ def discover_services(config_dir: Path) -> list[dict]:
 # Markdown generators
 # ---------------------------------------------------------------------------
 
-def generate_index(skills: list, services: list, agents: list, channels: list,
-                   jobs: list | None = None) -> str:
-    jobs = jobs or []
-    channel_list = ", ".join(
-        ch["type"].title() for ch in channels if ch.get("enabled", True)
-    ) or "None configured"
-
-    lines = [
-        "---",
-        "layout: default",
-        "title: Home",
-        "nav_order: 1",
-        "---",
-        "",
-        "# 🐙 Octo Docs",
-        "",
-        "OpenClaw is a modular AI assistant framework that connects language models to",
-        "real-world services through **skills**, **agents**, and **channels**.",
-        "",
-        "## 📊 At a Glance",
-        "",
-        "| | Count |",
-        "|---|---|",
-        f"| 🔧 Skills | {len(skills)} |",
-        f"| ⚙️ Services | {len(services)} |",
-        f"| 🤖 Agents | {len(agents)} |",
-        f"| ⏰ Scheduled Jobs | {len(jobs)} |",
-        f"| 📡 Channels | {channel_list} |",
-        "",
-        "## 🧠 How It Works",
-        "",
-        "🤖 **Agents** are personas powered by language models. Each agent has its own",
-        "identity, personality, and set of permitted tools. Agents communicate with",
-        "users through **channels** — messaging platforms like Telegram or Discord.",
-        "",
-        "🔧 **Skills** are self-contained capabilities that agents can invoke: sending",
-        "email, checking restaurant availability, snapping a security camera, and more.",
-        "Each skill declares its own dependencies and is independently versioned.",
-        "",
-        "⚙️ **Services** are long-running background daemons that watch for events (like",
-        "incoming email) and route notifications through the system.",
-        "",
-        "⏰ **Scheduled Jobs** run automatically on a timer — fetching calendars,",
-        "backing up config, and other recurring tasks without user intervention.",
-        "",
-        "## 📚 Learn More",
-        "",
-        "- [🔧 Skills](skills.html) — what the system can do",
-        "- [⚙️ Services](services.html) — background event processing",
-        "- [⏰ Scheduled Jobs](jobs.html) — automated recurring tasks",
-        "- [🏗️ Architecture](architecture.html) — how the pieces fit together",
-    ]
-
-    return "\n".join(lines)
-
 
 def extract_capability_summary(body: str) -> str:
     """Extract a brief capability summary from the skill body, sanitized."""
@@ -549,7 +494,7 @@ def generate_services_page(services: list) -> str:
         "---",
         "layout: default",
         "title: Services",
-        "nav_order: 3",
+        "nav_order: 4",
         "---",
         "",
         "# Services",
@@ -620,7 +565,7 @@ def generate_architecture_page(
         "---",
         "layout: default",
         "title: Architecture",
-        "nav_order: 5",
+        "nav_order: 3",
         "---",
         "",
         "# Architecture",
@@ -687,7 +632,7 @@ def generate_jobs_page(jobs: list) -> str:
         "---",
         "layout: default",
         "title: Scheduled Jobs",
-        "nav_order: 4",
+        "nav_order: 5",
         "---",
         "",
         "# Scheduled Jobs",
@@ -774,7 +719,6 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     pages = {
-        "index.md": generate_index(skills, services, agents, channels, jobs),
         "skills.md": generate_skills_page(skills),
         "services.md": generate_services_page(services),
         "jobs.md": generate_jobs_page(jobs),

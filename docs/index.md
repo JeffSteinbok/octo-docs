@@ -9,16 +9,6 @@ nav_order: 1
 OpenClaw is a modular AI assistant framework that connects language models to
 real-world services through **skills**, **agents**, and **channels**.
 
-## 📊 At a Glance
-
-| | Count |
-|---|---|
-| 🔧 Skills | 7 |
-| ⚙️ Services | 1 |
-| 🤖 Agents | 4 |
-| ⏰ Scheduled Jobs | 2 |
-| 📡 Channels | Telegram, Discord |
-
 ## 🧠 How It Works
 
 🤖 **Agents** are personas powered by language models. Each agent has its own
@@ -38,6 +28,6 @@ backing up config, and other recurring tasks without user intervention.
 ## 📚 Learn More
 
 - [🔧 Skills](skills.html) — what the system can do
+- [🏗️ Architecture](architecture.html) — how the pieces fit together
 - [⚙️ Services](services.html) — background event processing
 - [⏰ Scheduled Jobs](jobs.html) — automated recurring tasks
-- [🏗️ Architecture](architecture.html) — how the pieces fit together
