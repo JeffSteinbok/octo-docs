@@ -263,7 +263,7 @@ def generate_index(skills: list, services: list, agents: list, channels: list) -
         "title: Home",
         "---",
         "",
-        "# 🐙 OpenClaw Hub",
+        "# 🐙 Octo Docs",
         "",
         "OpenClaw is a modular AI assistant framework that connects language models to",
         "real-world services through **skills**, **agents**, and **channels**.",
