@@ -1,9 +1,17 @@
 title: 🐙 Octo Docs
 description: Documentation for the OpenClaw system
-theme: minima
+remote_theme: just-the-docs/just-the-docs
 baseurl: /octo-docs
 
-header_pages:
-  - skills.md
-  - services.md
-  - architecture.md
+color_scheme: octo
+
+plugins:
+  - jekyll-remote-theme
+
+# Sidebar navigation order is controlled by nav_order in each page's frontmatter
+
+# Footer content
+footer_content: "🐙 Octo Docs &mdash; powered by OpenClaw"
+
+# Favicon
+favicon_ico: /assets/images/favicon.ico
