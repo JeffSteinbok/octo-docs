@@ -4,6 +4,10 @@ title: Home
 nav_order: 1
 ---
 
+<p align="center">
+  <img src="{{ site.baseurl }}/assets/images/Octo_small.png" alt="Octo" width="200" />
+</p>
+
 # 🐙 Octo Docs
 
 OpenClaw is a modular AI assistant framework that connects language models to
