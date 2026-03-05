@@ -202,6 +202,42 @@ def load_jobs(config_dir: Path) -> list[dict]:
             "description": job.get("description", ""),
             "enabled": job.get("enabled", True),
             "interval": interval,
+            "source": "openclaw",
+        })
+    return jobs
+
+
+def load_crontab_jobs() -> list[dict]:
+    """Load jobs from the system crontab (sanitized)."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["crontab", "-l"], capture_output=True, text=True, timeout=5
+        )
+        if result.returncode != 0:
+            return []
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return []
+
+    jobs = []
+    for line in result.stdout.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 5)
+        if len(parts) < 6:
+            continue
+        cron_expr = " ".join(parts[:5])
+        command = parts[5]
+        # Extract a readable name from the command path
+        cmd_path = Path(command.split()[0])
+        name = cmd_path.stem
+        jobs.append({
+            "name": name,
+            "description": f"`{cron_expr}`",
+            "enabled": True,
+            "interval": cron_expr,
+            "source": "crontab",
         })
     return jobs
 
@@ -456,22 +492,41 @@ def render_agents_channels(data: dict, overrides: dict, _meta: dict) -> dict:
 
 
 def render_jobs(data: dict, _overrides: dict, meta: dict) -> dict:
-    """Render jobs table. Returns {"items": "..."}."""
-    jobs = data["jobs"]
-    if not jobs:
+    """Render jobs tables. Returns {"items": "..."}."""
+    openclaw_jobs = [j for j in data["jobs"] if j.get("source") == "openclaw"]
+    crontab_jobs = [j for j in data["jobs"] if j.get("source") == "crontab"]
+
+    if not openclaw_jobs and not crontab_jobs:
         return {"items": meta.get("empty_message",
                                   "_No scheduled jobs configured._")}
 
-    lines = [
-        "| Job | Description | Schedule | Status |",
-        "|-----|-------------|----------|--------|",
-    ]
-    for job in jobs:
-        status = "✅ Enabled" if job.get("enabled") else "❌ Disabled"
-        lines.append(
-            f"| **{job['name']}** | {job['description']} "
-            f"| {job['interval']} | {status} |"
-        )
+    lines = []
+
+    if openclaw_jobs:
+        lines.append("### OpenClaw Jobs (`cron/jobs.json`)")
+        lines.append("")
+        lines.extend([
+            "| Job | Description | Schedule | Status |",
+            "|-----|-------------|----------|--------|",
+        ])
+        for job in openclaw_jobs:
+            status = "✅ Enabled" if job.get("enabled") else "❌ Disabled"
+            lines.append(
+                f"| **{job['name']}** | {job['description']} "
+                f"| {job['interval']} | {status} |"
+            )
+        lines.append("")
+
+    if crontab_jobs:
+        lines.append("### System Crontab (`crontab -e`)")
+        lines.append("")
+        lines.extend([
+            "| Job | Schedule |",
+            "|-----|----------|",
+        ])
+        for job in crontab_jobs:
+            lines.append(f"| **{job['name']}** | `{job['interval']}` |")
+        lines.append("")
 
     return {"items": "\n".join(lines)}
 
@@ -554,7 +609,7 @@ def main():
     config = load_config(config_dir)
     agents = extract_agents(config, config_dir)
     channels = extract_channels(config)
-    jobs = load_jobs(config_dir)
+    jobs = load_jobs(config_dir) + load_crontab_jobs()
 
     print(f"Found {len(skills)} skills, {len(services)} services, "
           f"{len(agents)} agents, {len(channels)} channels, {len(jobs)} jobs")

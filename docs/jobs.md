@@ -12,10 +12,19 @@ Cron-style jobs that run automatically on a schedule. Each job spawns an
 isolated agent session, executes its task, and exits — no user interaction
 required.
 
+### OpenClaw Jobs (`cron/jobs.json`)
+
 | Job | Description | Schedule | Status |
 |-----|-------------|----------|--------|
 | **calendar-fetch** | Fetch next 7 days from work, personal, Nicole, and family calendars every 12h | Every 12h | ✅ Enabled |
 | **config-backup** | Backup openclaw.json to Git daily (only commits if changed) | Every 1d | ✅ Enabled |
+
+### System Crontab (`crontab -e`)
+
+| Job | Schedule |
+|-----|----------|
+| **opentable-heartbeat** | `0 8 * * *` |
+
 
 ## How It Works
 
