@@ -24,6 +24,11 @@ Security is the most important aspect of this experiment — even above just hav
 - **Owner-only access** — Octo only responds to me. Not even family members have access.
 - **No secrets in Git** — All tokens and credentials are kept in hidden files that are never synced to version control.
 
+### Mail & Calendar
+
+- **Read-only calendar access** — Octo gets calendars via WebCal feeds. Since it can't write to our calendars directly, it sends meeting requests via email that we can accept or decline.
+- **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) where it can send and receive. When receiving mail, the AI never parses the incoming message — a [Python script](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse) extracts and sanitizes the subject line before delivering it to OpenClaw. Letting the AI parse raw email content could open the door to prompt-injection attacks.
+
 ## 🧠 How It Works
 
 🤖 **Agents** are personas powered by language models. Each agent has its own
