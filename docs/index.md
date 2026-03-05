@@ -27,7 +27,7 @@ Security is the most important aspect of this experiment — even above just hav
 ### Mail & Calendar
 
 - **Read-only calendar access** — Octo gets calendars via WebCal feeds. Since it can't write to our calendars directly, it sends meeting requests via email that we can accept or decline.
-- **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) where it can send and receive. When receiving mail, the AI never parses the incoming message — a [Python script](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse) extracts and sanitizes the subject line before delivering it to OpenClaw. Letting the AI parse raw email content could open the door to prompt-injection attacks.
+- **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) where it can send and receive. When receiving mail, the AI never parses the incoming message — a [Python script](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse) extracts and sanitizes the subject line before delivering it to OpenClaw. Letting the AI parse raw email content could open the door to prompt-injection attacks. In the future, read-only access to email will be granted via Fastmail folder sharing so Octo can search mail safely.
 
 ## 🧠 How It Works
 
