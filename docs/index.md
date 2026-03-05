@@ -16,6 +16,14 @@ Much of this setup is inspired by [Omar Shahine](https://github.com/omarshahine)
 work on 🦞 [Lobster](https://lobster.shahine.com) — his docs inspired me to publish
 my own.
 
+## 🔒 Security
+
+Security is the most important aspect of this experiment — even above just having fun.
+
+- **Unprivileged account** — OpenClaw runs under its own dedicated user on Ubuntu with no `sudo` permissions. It can configure itself new skills, but it cannot install anything on its own.
+- **Owner-only access** — Octo only responds to me. Not even family members have access.
+- **No secrets in Git** — All tokens and credentials are kept in hidden files that are never synced to version control.
+
 ## 🧠 How It Works
 
 🤖 **Agents** are personas powered by language models. Each agent has its own
@@ -31,10 +39,3 @@ incoming email) and route notifications through the system.
 
 ⏰ **Scheduled Jobs** run automatically on a timer — fetching calendars,
 backing up config, and other recurring tasks without user intervention.
-
-## 📚 Learn More
-
-- [🔧 Skills](skills.html) — what the system can do
-- [🏗️ Architecture](architecture.html) — how the pieces fit together
-- [⚙️ Services](services.html) — background event processing
-- [⏰ Scheduled Jobs](jobs.html) — automated recurring tasks
