@@ -34,6 +34,15 @@ Security is the most important aspect of this experiment — even above just hav
 - **Self-hosted** — Runs on an old Lenovo X1 Yoga Gen 3 with 16 GB of RAM running Ubuntu Desktop.
 - **Token-conscious** — As much work as possible is pushed to Python skills to reduce token usage.
 
+  | Role | Model | Notes |
+  |------|-------|-------|
+  | Primary | `claude-haiku-4-5` | Default for all agents |
+  | Fallbacks | `claude-sonnet-4-6` → `gemini-2.5-flash` → `gemini-3-pro-preview` | In priority order |
+  | Image | `gemini-2.5-flash-preview` | |
+  | Web search | `gemini-2.5-flash-lite` | |
+
+  Haiku handles the bulk of everyday work, with heavier models available as fallbacks.
+
 ## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
 
 🤖 **Agents** are personas powered by language models. Each agent has its own
