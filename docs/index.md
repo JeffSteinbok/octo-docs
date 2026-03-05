@@ -43,6 +43,8 @@ Security is the most important aspect of this experiment — even above just hav
 
   Haiku handles the bulk of everyday work, with heavier models available as fallbacks.
 
+- **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)** — All skill and config development is done through Copilot CLI to avoid exhausting Anthropic tokens. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
+
 ## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
 
 🤖 **Agents** are personas powered by language models. Each agent has its own
