@@ -534,17 +534,7 @@ def generate_services_page(services: list) -> str:
     return "\n".join(lines)
 
 
-def generate_architecture_page(
-    skills: list, services: list, agents: list, channels: list
-) -> str:
-    # Agent descriptions by known IDs
-    agent_descriptions = {
-        "main": "Primary personal assistant — full access to all skills and tools",
-        "family-agent": "Family group chat agent with limited permissions",
-        "group-agent": "Generic group chat agent — responds only when mentioned",
-        "mail-agent": "Email processing agent with read-only access",
-    }
-
+def generate_agents_channels_page(agents: list, channels: list) -> str:
     agent_rows = ""
     for a in agents:
         emoji = a.get("emoji", "🤖")
@@ -559,35 +549,14 @@ def generate_architecture_page(
         status = "✅ Enabled" if ch.get("enabled", True) else "❌ Disabled"
         channel_rows += f"| {ch['type'].title()} | {status} |\n"
 
-    skill_names = ", ".join(s["name"] for s in skills)
-
     lines = [
         "---",
         "layout: default",
-        "title: Architecture",
+        "title: Agents & Channels",
         "nav_order: 2",
         "---",
         "",
-        "# Architecture",
-        "",
-        "OpenClaw follows a modular, event-driven architecture where agents, skills,",
-        "channels, and services each play a distinct role.",
-        "",
-        "## Components",
-        "",
-        "```",
-        "┌─────────────┐     ┌──────────────┐     ┌────────────┐",
-        "│   Channels   │◄───►│    Agents     │◄───►│   Skills   │",
-        "│  (Telegram,  │     │  (LLM-backed  │     │ (email,    │",
-        "│   Discord)   │     │   personas)   │     │  cameras,  │",
-        "└─────────────┘     └──────┬───────┘     │  dining)   │",
-        "                           │              └────────────┘",
-        "                    ┌──────▼───────┐",
-        "                    │   Services    │",
-        "                    │  (event       │",
-        "                    │   watchers)   │",
-        "                    └──────────────┘",
-        "```",
+        "# Agents & Channels",
         "",
         "## Agents",
         "",
@@ -604,27 +573,18 @@ def generate_architecture_page(
         "| Platform | Status |",
         "|----------|--------|",
         channel_rows,
-        "## Skills",
-        "",
-        f"Skills are the system's capabilities: **{skill_names}**.",
-        "Each is a self-contained module with declared dependencies, invoked by agents",
-        "as needed. See the [Skills](skills.html) page for details.",
-        "",
-        "## Services",
-        "",
-        "Services run continuously in the background, watching for events (new email,",
-        "calendar updates) and routing them as notifications through the messaging",
-        "channels. See the [Services](services.html) page for details.",
-        "",
-        "## Design Principles",
-        "",
-        "- **Modular:** Each skill and service is independently versioned and deployed",
-        "- **Secure:** Secrets stay in environment variables; public docs are auto-sanitized",
-        "- **Observable:** Services log to journald; agents maintain conversation history",
-        "- **Extensible:** New skills are added by dropping a folder with a `SKILL.md`",
     ]
 
     return "\n".join(lines)
+
+
+# Agent descriptions by known IDs (used by generate_agents_channels_page)
+agent_descriptions = {
+    "main": "Primary personal assistant — full access to all skills and tools",
+    "family-agent": "Family group chat agent with limited permissions",
+    "group-agent": "Generic group chat agent — responds only when mentioned",
+    "mail-agent": "Email processing agent with read-only access",
+}
 
 
 def generate_jobs_page(jobs: list) -> str:
@@ -720,11 +680,9 @@ def main():
 
     pages = {
         "skills.md": generate_skills_page(skills),
+        "agents-channels.md": generate_agents_channels_page(agents, channels),
         "services.md": generate_services_page(services),
         "jobs.md": generate_jobs_page(jobs),
-        "architecture.md": generate_architecture_page(
-            skills, services, agents, channels
-        ),
     }
 
     for filename, content in pages.items():
