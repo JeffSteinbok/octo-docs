@@ -10,8 +10,13 @@ nav_order: 1
 
 # 🐙 Octo Docs
 
-OpenClaw is a modular AI assistant framework that connects language models to
-real-world services through **skills**, **agents**, and **channels**.
+This is the documentation for **Octo** 🐙 — Jeff Steinbok's personal instance of
+[OpenClaw](https://openclaw.ai), a modular AI assistant framework that connects
+language models to real-world services through **skills**, **agents**, and **channels**.
+
+Much of this setup is inspired by [Omar Shahine](https://github.com/omarshahine)'s
+work on 🦞 [Lobster](https://lobster.shahine.com) — his docs inspired me to publish
+my own.
 
 ## 🧠 How It Works
 
