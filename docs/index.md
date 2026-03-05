@@ -48,6 +48,7 @@ Security is the most important aspect of this experiment — even above just hav
   Haiku handles the bulk of everyday work, with heavier models available as fallbacks.
 
 - **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)** — All skill and config development is done through Copilot CLI to avoid exhausting Anthropic tokens. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
+- **Crontab over agent jobs** — Recurring tasks are pushed to crontab whenever possible to avoid spinning up agent sessions. If something fails, the script can send a message to OpenClaw to inform of the error.
 
 ## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
 
