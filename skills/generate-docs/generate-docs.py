@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-generate-docs: Reads the private openclaw config repo and produces sanitized
-high-level documentation for the public GitHub Pages site.
+generate-docs: Reads the ~/.openclaw runtime config directory and produces
+sanitized high-level documentation for the public GitHub Pages site.
+Skills symlinked from openclaw-hub get source links in the generated docs.
 """
 
 import argparse
@@ -27,19 +28,46 @@ def parse_skill_md(path: Path) -> dict:
     return {"meta": front, "body": body}
 
 
-def discover_skills(config_repo: Path) -> list[dict]:
-    """Find all skills across both the config repo and the hub skills dir."""
+def resolve_hub_source(skill_dir: Path) -> str | None:
+    """If skill_dir is a symlink whose target lives inside openclaw-hub, return
+    a GitHub URL to the source directory.  Otherwise return None."""
+    if not skill_dir.is_symlink():
+        return None
+    target = skill_dir.resolve()
+    # Walk up the resolved path looking for an openclaw-hub git repo
+    for parent in [target, *target.parents]:
+        if (parent / ".git").exists():
+            try:
+                remote_url = (
+                    (parent / ".git" / "config").read_text(encoding="utf-8")
+                )
+                if "openclaw-hub" not in remote_url:
+                    break
+                # Extract owner/repo from the remote URL
+                match = re.search(
+                    r"github\.com[:/](.+?/openclaw-hub?)(?:\.git)?", remote_url
+                )
+                if match:
+                    repo_slug = match.group(1)
+                    rel = target.relative_to(parent)
+                    return f"https://github.com/{repo_slug}/tree/main/{rel}"
+            except (OSError, ValueError):
+                pass
+            break
+    return None
+
+
+def discover_skills(config_dir: Path) -> list[dict]:
+    """Find all skills in the .openclaw config directory and this repo."""
     skills = []
     seen = set()
 
-    # Hub skills (openclaw-hub/skills/*)
-    hub_skills = config_repo.parent / "openclaw-hub" / "skills"
+    # Skills inside ~/.openclaw (may include symlinks to openclaw-hub)
+    config_skills = config_dir / "skills" if (config_dir / "skills").is_dir() else None
     # Also check octo-docs/skills (this repo)
     local_skills = Path(__file__).resolve().parent.parent
-    # Config repo may also reference skills
-    config_skills = config_repo / "skills" if (config_repo / "skills").is_dir() else None
 
-    for skills_dir in [hub_skills, local_skills, config_skills]:
+    for skills_dir in [config_skills, local_skills]:
         if skills_dir is None or not skills_dir.exists():
             continue
         for skill_dir in sorted(skills_dir.iterdir()):
@@ -62,6 +90,7 @@ def discover_skills(config_repo: Path) -> list[dict]:
                     "bins": parsed["meta"].get("requires", {}).get("bins", []),
                     "packages": parsed["meta"].get("requires", {}).get("packages", []),
                     "body": parsed["body"],
+                    "source_url": resolve_hub_source(skill_dir),
                 })
     return skills
 
@@ -114,13 +143,13 @@ def extract_commands_from_body(body: str) -> list[dict]:
     return commands
 
 
-def load_config(config_repo: Path) -> dict:
-    """Load openclaw.json and extract high-level structure."""
-    config_path = config_repo / "config" / "openclaw.json"
-    if not config_path.exists():
-        return {}
-    with open(config_path, encoding="utf-8") as f:
-        return json.load(f)
+def load_config(config_dir: Path) -> dict:
+    """Load openclaw.json from the .openclaw directory."""
+    for candidate in [config_dir / "openclaw.json", config_dir / "config" / "openclaw.json"]:
+        if candidate.exists():
+            with open(candidate, encoding="utf-8") as f:
+                return json.load(f)
+    return {}
 
 
 def extract_agents(config: dict) -> list[dict]:
@@ -173,53 +202,49 @@ def extract_channels(config: dict) -> list[dict]:
     return channels
 
 
-def discover_services(config_repo: Path) -> list[dict]:
-    """Find services in the config repo and sibling repos."""
+def discover_services(config_dir: Path) -> list[dict]:
+    """Find services in the .openclaw directory."""
     services = []
     seen = set()
 
-    search_dirs = [
-        config_repo / "services",
-        config_repo.parent / "openclaw-hub" / "services",
-    ]
+    services_dir = config_dir / "services"
+    if not services_dir.exists():
+        return services
 
-    for services_dir in search_dirs:
-        if not services_dir.exists():
+    for svc_dir in sorted(services_dir.iterdir()):
+        if not svc_dir.is_dir() or svc_dir.name.startswith("."):
             continue
-        for svc_dir in sorted(services_dir.iterdir()):
-            if not svc_dir.is_dir() or svc_dir.name.startswith("."):
-                continue
-            if svc_dir.name in seen:
-                continue
-            seen.add(svc_dir.name)
+        if svc_dir.name in seen:
+            continue
+        seen.add(svc_dir.name)
 
-            svc = {"name": svc_dir.name, "description": "", "type": "daemon"}
+        svc = {"name": svc_dir.name, "description": "", "type": "daemon"}
 
-            service_files = list(svc_dir.glob("*.service"))
-            if service_files:
-                svc["type"] = "systemd"
+        service_files = list(svc_dir.glob("*.service"))
+        if service_files:
+            svc["type"] = "systemd"
 
-            for doc_name in ["SKILL.md", "README.md"]:
-                doc_path = svc_dir / doc_name
-                if doc_path.exists():
-                    parsed = parse_skill_md(doc_path)
-                    svc["description"] = parsed["meta"].get("description", "")
-                    if not svc["description"]:
-                        for line in parsed["body"].split("\n"):
-                            if line.strip() and not line.startswith("#"):
-                                svc["description"] = line.strip()
-                                break
+        for doc_name in ["SKILL.md", "README.md"]:
+            doc_path = svc_dir / doc_name
+            if doc_path.exists():
+                parsed = parse_skill_md(doc_path)
+                svc["description"] = parsed["meta"].get("description", "")
+                if not svc["description"]:
+                    for line in parsed["body"].split("\n"):
+                        if line.strip() and not line.startswith("#"):
+                            svc["description"] = line.strip()
+                            break
+                break
+
+        if not svc["description"]:
+            for py_file in svc_dir.glob("*.py"):
+                text = py_file.read_text(encoding="utf-8", errors="ignore")
+                doc_match = re.search(r'"""(.*?)"""', text, re.DOTALL)
+                if doc_match:
+                    svc["description"] = doc_match.group(1).strip().split("\n")[0]
                     break
 
-            if not svc["description"]:
-                for py_file in svc_dir.glob("*.py"):
-                    text = py_file.read_text(encoding="utf-8", errors="ignore")
-                    doc_match = re.search(r'"""(.*?)"""', text, re.DOTALL)
-                    if doc_match:
-                        svc["description"] = doc_match.group(1).strip().split("\n")[0]
-                        break
-
-            services.append(svc)
+        services.append(svc)
     return services
 
 
@@ -343,6 +368,11 @@ def generate_skills_page(skills: list) -> str:
         emoji = skill.get("emoji", "🔧")
         lines.append(f"## {emoji} {skill['name']}")
         lines.append("")
+
+        source_url = skill.get("source_url")
+        if source_url:
+            lines.append(f"📦 [Source on GitHub]({source_url})")
+            lines.append("")
 
         overview = skill_overviews.get(skill["name"])
         if overview:
@@ -514,13 +544,13 @@ def generate_architecture_page(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate sanitized docs from private openclaw config"
+        description="Generate sanitized docs from the .openclaw config directory"
     )
     parser.add_argument(
-        "--config-repo",
+        "--config-dir",
         type=Path,
-        default=Path(__file__).resolve().parent.parent.parent.parent / "openclaw",
-        help="Path to the private openclaw config repo",
+        default=Path.home() / ".openclaw",
+        help="Path to the .openclaw runtime config directory",
     )
     parser.add_argument(
         "--output-dir",
@@ -530,20 +560,20 @@ def main():
     )
     args = parser.parse_args()
 
-    config_repo = args.config_repo.resolve()
+    config_dir = args.config_dir.resolve()
     output_dir = args.output_dir.resolve()
 
-    if not config_repo.exists():
-        print(f"Error: Config repo not found at {config_repo}")
+    if not config_dir.exists():
+        print(f"Error: Config directory not found at {config_dir}")
         raise SystemExit(1)
 
-    print(f"Reading config from: {config_repo}")
+    print(f"Reading config from: {config_dir}")
     print(f"Writing docs to:     {output_dir}")
 
     # Gather data
-    skills = discover_skills(config_repo)
-    services = discover_services(config_repo)
-    config = load_config(config_repo)
+    skills = discover_skills(config_dir)
+    services = discover_services(config_dir)
+    config = load_config(config_dir)
     agents = extract_agents(config)
     channels = extract_channels(config)
 
