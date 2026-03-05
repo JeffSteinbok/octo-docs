@@ -16,8 +16,6 @@ and context. They decide which skills to invoke based on user requests.
 | Agent | Role | Status |
 |-------|------|--------|
 | 🐙 main | Primary personal assistant — full access to all skills and tools | ✅ Active |
-| 🤖 group-agent | Generic group chat agent — responds only when mentioned | 💤 Inactive |
-| 🏠 family-agent | Family group chat agent with limited permissions | ✅ Active |
 | 📬 mail-agent | Email processing agent with read-only access | 💤 Inactive |
 
 ## Channels
