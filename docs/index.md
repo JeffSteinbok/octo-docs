@@ -16,6 +16,10 @@ Much of this setup is inspired by [Omar Shahine](https://github.com/omarshahine)
 work on 🦞 [Lobster](https://lobster.shahine.com) — his docs inspired me to publish
 my own.
 
+## 💬 Channels
+
+I talk to Octo via [Telegram](https://telegram.org) and [Discord](https://discord.com). I'd prefer to use iMessage or WhatsApp, but until I've decided for sure that this is useful, I'm not going out and buying a Mac Mini or getting a new phone number.
+
 ## 🔒 Security
 
 Security is the most important aspect of this experiment — even above just having fun.
