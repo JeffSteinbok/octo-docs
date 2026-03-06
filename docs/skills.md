@@ -23,17 +23,11 @@ Backup OpenClaw config to Git with automatic change detection.
 
 ---
 
-## 📧 fastmail-send
+## 📧 fastmail
 
-📦 [Source on GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/fastmail-send)
+📦 [Source on GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/fastmail)
 
-Send emails and calendar meeting invitations via Fastmail JMAP.
-
-**Capabilities:**
-
-- Compose and send plain-text emails with optional CC and attachments
-- Create meeting requests with accept/decline buttons (iCalendar)
-- Configurable signature and sender identity
+Send email, search/read inbox, and manage meeting requests via Fastmail JMAP and CalDAV. Use when asked to send an email, compose a message, search the inbox, read emails, or create a meeting/calendar invite. Supports plain email, meeting requests with accept/decline buttons, updating existing calendar events, querying events with RSVP status, and searching/reading a shared inbox.
 
 ---
 
