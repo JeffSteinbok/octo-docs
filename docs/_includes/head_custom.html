@@ -115,8 +115,7 @@
 
 <script>
   (function init() {
-    if (typeof jtd === "undefined") {
-      // Theme JS not loaded yet — retry shortly
+    if (typeof jtd === "undefined" || !document.body) {
       return setTimeout(init, 50);
     }
 
