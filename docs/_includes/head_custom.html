@@ -118,14 +118,17 @@
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Determine initial theme
+  (function init() {
+    if (typeof jtd === "undefined") {
+      // Theme JS not loaded yet — retry shortly
+      return setTimeout(init, 50);
+    }
+
     var saved = localStorage.getItem("octo-theme");
     var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     var theme = saved || (prefersDark ? "octo-dark" : "octo");
     jtd.setTheme(theme);
 
-    // Create toggle button
     var btn = document.createElement("button");
     btn.className = "theme-toggle";
     btn.setAttribute("aria-label", "Toggle dark mode");
@@ -139,5 +142,5 @@
       localStorage.setItem("octo-theme", next);
       btn.textContent = next === "octo-dark" ? "☀️" : "🌙";
     });
-  });
+  })();
 </script>
