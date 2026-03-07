@@ -121,8 +121,12 @@
 
     var saved = localStorage.getItem("octo-theme");
     var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var theme = saved || (prefersDark ? "octo-dark" : "octo");
-    jtd.setTheme(theme);
+    var theme = saved || (prefersDark ? "octo-dark" : "default");
+
+    if (theme === "octo-dark") {
+      jtd.setTheme("octo-dark");
+      document.documentElement.setAttribute("data-theme", "octo-dark");
+    }
 
     var btn = document.createElement("button");
     btn.className = "theme-toggle";
@@ -131,11 +135,12 @@
     document.body.appendChild(btn);
 
     btn.addEventListener("click", function () {
-      var current = jtd.getTheme();
-      var next = current === "octo-dark" ? "octo" : "octo-dark";
+      var isDark = jtd.getTheme() === "octo-dark";
+      var next = isDark ? "default" : "octo-dark";
       jtd.setTheme(next);
+      document.documentElement.setAttribute("data-theme", next);
       localStorage.setItem("octo-theme", next);
-      btn.textContent = next === "octo-dark" ? "☀️" : "🌙";
+      btn.textContent = isDark ? "🌙" : "☀️";
     });
   })();
 </script>
