@@ -32,8 +32,9 @@ Security is the most important aspect of this experiment — even above just hav
 
 ### 📬 Mail & Calendar
 
-- **Read-only calendar access** — Octo gets calendars via WebCal feeds. Since it can't write to our calendars directly, it sends meeting requests via email that we can accept or decline.
-- **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) where it can send and receive. When receiving mail, the AI never parses the incoming message — a [Python script](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse) extracts and sanitizes the subject line before delivering it to OpenClaw. Letting the AI parse raw email content could open the door to prompt-injection attacks. In the future, read-only access to email will be granted via Fastmail folder sharing so Octo can search mail safely.
+- **Full mail read access** — Octo reads Jeff's personal Outlook inbox directly via the Microsoft Graph API (OAuth2). Mail is never injected into the AI as raw content — Octo queries it on demand using structured API calls.
+- **Calendar access** — Octo fetches Jeff's personal and family calendars via Graph API, Nicole's calendar via ICS feed, and the work calendar via Exchange/Graph API. Calendars are synced to markdown files in memory every hour (7 AM–5 PM) and at midnight.
+- **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) (`octo@steinbok.net`) where it sends mail on Jeff's behalf. Incoming mail to that address is monitored via a [Python SSE script](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse).
 
 ## 💰 Cost
 
@@ -42,12 +43,12 @@ Security is the most important aspect of this experiment — even above just hav
 
   | Role | Model | Notes |
   |------|-------|-------|
-  | Primary | `claude-haiku-4-5` | Default for all agents |
-  | Fallbacks | `claude-sonnet-4-6` → `gemini-2.5-flash` → `gemini-3-pro-preview` | In priority order |
-  | Image | `gemini-2.5-flash-preview` | |
+  | Primary | `github-copilot/claude-sonnet-4.6` | Default for all agents (alias: `copilot-sonnet`) |
+  | Fallbacks | `claude-haiku-4-5` → `claude-sonnet-4-6` → `gemini-2.5-flash` → `gemini-3-pro-preview` | In priority order |
+  | Image | `github-copilot/claude-sonnet-4.6` → `claude-sonnet-4-6` → `gemini-2.5-flash-preview` | |
   | Web search | `gemini-2.5-flash-lite` | |
 
-  Haiku handles the bulk of everyday work, with heavier models available as fallbacks.
+  GitHub Copilot Sonnet handles the bulk of everyday work; Haiku and other models are available as fallbacks.
 
 - **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)** — All skill and config development is done through Copilot CLI. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
 - **Crontab over agent jobs** — Recurring tasks are pushed to crontab whenever possible to avoid spinning up agent sessions. If something fails, the script can send a message to OpenClaw to inform of the error.
