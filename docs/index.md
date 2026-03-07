@@ -5,7 +5,7 @@ nav_order: 1
 ---
 
 <div class="hero" markdown="0">
-  <img src="{{ site.baseurl }}/assets/images/Octo_small.png" alt="Octo" />
+  <img src="{{ site.baseurl }}/assets/images/Octo_small_trimmed.png" alt="Octo" />
   <h1>All About Octo&hellip;</h1>
   <p class="tagline">
     A personal AI assistant built on
