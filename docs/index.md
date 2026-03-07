@@ -69,7 +69,7 @@ Security is the most important aspect of this experiment — even above just hav
 ## 💰 Cost
 
 - **Self-hosted** — Runs on an old Lenovo X1 Yoga Gen 3 with 16 GB of RAM running Ubuntu Desktop.
-- **Token-conscious** — As much work as possible is pushed to Python skills to reduce token usage. 
+- **Token-conscious** — As much work as possible is pushed to Python skills to reduce token usage. Primary model is GitHub Copilot Sonnet (covered by the Copilot subscription), with Anthropic and Gemini as fallbacks.
 
   | Role | Model | Notes |
   |------|-------|-------|
@@ -78,7 +78,7 @@ Security is the most important aspect of this experiment — even above just hav
   | Image | `github-copilot/claude-sonnet-4.6` → `claude-sonnet-4-6` → `gemini-2.5-flash-preview` | |
   | Web search | `gemini-2.5-flash-lite` | |
 
-  GitHub Copilot Sonnet handles the bulk of everyday work; Haiku and other models are available as fallbacks.
+  GitHub Copilot Sonnet handles the bulk of everyday work at no extra token cost (covered by the Copilot subscription). Anthropic and Gemini are available as fallbacks.
 
 - **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)** — All skill and config development is done through Copilot CLI. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
 - **Crontab over agent jobs** — Recurring tasks are pushed to crontab whenever possible to avoid spinning up agent sessions. If something fails, the script can send a message to OpenClaw to inform of the error.
