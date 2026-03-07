@@ -1,8 +1,8 @@
 ---
 output: skills.md
-title: Skills
+title: Plugins
 nav_order: 3
-data_source: skills
+data_source: plugins
 overrides:
   config-backup:
     what: "Backup OpenClaw config to Git with automatic change detection."
@@ -48,7 +48,7 @@ overrides:
       - "Supports multiple calendar sources in a single query"
 ---
 
-Skills are modular capabilities that agents can use. Each skill is a
+Plugins are modular capabilities that agents can use. Each plugin is a
 self-contained package with its own metadata, dependencies, and commands.
 
 {{ items }}
