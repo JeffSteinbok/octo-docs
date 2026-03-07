@@ -10,6 +10,7 @@ data_source, and per-item overrides) plus a markdown body template with
 """
 
 import argparse
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -21,6 +22,53 @@ except ImportError:
     raise SystemExit(1)
 
 SECTIONS_DIR = Path(__file__).resolve().parent / "sections"
+
+
+# ---------------------------------------------------------------------------
+# Content hashing — skip regenerating sections whose sources are unchanged
+# ---------------------------------------------------------------------------
+
+
+def hash_file(path: Path) -> str:
+    """Return the SHA-256 hex digest of a file's contents."""
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def load_hash_manifest(manifest_path: Path) -> dict:
+    """Load previously recorded source-file hashes."""
+    if manifest_path.exists():
+        with open(manifest_path, encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def save_hash_manifest(manifest_path: Path, manifest: dict) -> None:
+    """Persist the current source-file hashes."""
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+
+def collect_source_hashes(paths: list[Path]) -> dict[str, str]:
+    """Compute hashes for a list of source files, keyed by path string."""
+    hashes: dict[str, str] = {}
+    for p in paths:
+        if p.exists():
+            hashes[str(p)] = hash_file(p)
+    return hashes
+
+
+def sources_changed(section_key: str, current: dict[str, str],
+                    previous: dict) -> bool:
+    """Return True if any source file for *section_key* has changed."""
+    prev_section = previous.get(section_key, {})
+    if not prev_section:
+        return True
+    return current != prev_section
 
 
 def parse_frontmatter_md(path: Path) -> dict:
@@ -597,6 +645,158 @@ def render_models(models: dict) -> str:
     return "\n".join(lines)
 
 
+# ---------------------------------------------------------------------------
+# --source mode: read directly from an openclaw repo checkout
+# ---------------------------------------------------------------------------
+
+
+def discover_plugins_from_source(source: Path) -> list[dict]:
+    """Discover plugins from a local openclaw repo checkout."""
+    plugins = []
+    plugins_dir = source / "plugins"
+    if not plugins_dir.is_dir():
+        return plugins
+    for plugin_dir in sorted(plugins_dir.iterdir()):
+        if not plugin_dir.is_dir() or plugin_dir.name.startswith("."):
+            continue
+        manifest = plugin_dir / "openclaw.plugin.json"
+        if not manifest.exists():
+            continue
+        with open(manifest, encoding="utf-8") as f:
+            info = json.load(f)
+        readme = plugin_dir / "README.md"
+        body = ""
+        if readme.exists():
+            parsed = parse_frontmatter_md(readme)
+            body = parsed["body"]
+        plugins.append({
+            "name": info.get("name", plugin_dir.name),
+            "description": info.get("description", ""),
+            "version": info.get("version", ""),
+            "emoji": info.get("emoji", "🔧"),
+            "bins": [],
+            "packages": [],
+            "body": body,
+            "source_url": None,
+        })
+    return plugins
+
+
+def load_config_from_source(source: Path) -> dict:
+    """Load openclaw.json from the repo's config directory."""
+    cfg_path = source / "config" / "openclaw.json"
+    if cfg_path.exists():
+        with open(cfg_path, encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def load_jobs_from_source(source: Path) -> list[dict]:
+    """Load jobs.json from the repo's config directory."""
+    jobs_path = source / "config" / "jobs.json"
+    if not jobs_path.exists():
+        return []
+    with open(jobs_path, encoding="utf-8") as f:
+        data = json.load(f)
+    jobs = []
+    for job in data.get("jobs", []):
+        schedule_info = job.get("schedule", {})
+        every_ms = schedule_info.get("everyMs", 0)
+        if every_ms >= 86400000:
+            interval = f"Every {every_ms // 86400000}d"
+        elif every_ms >= 3600000:
+            interval = f"Every {every_ms // 3600000}h"
+        elif every_ms >= 60000:
+            interval = f"Every {every_ms // 60000}m"
+        else:
+            interval = schedule_info.get("kind", "unknown")
+        jobs.append({
+            "name": job.get("name", job.get("id", "unknown")),
+            "description": job.get("description", ""),
+            "enabled": job.get("enabled", True),
+            "interval": interval,
+            "source": "openclaw",
+        })
+    return jobs
+
+
+def discover_services_from_source(source: Path) -> list[dict]:
+    """Discover services from a local openclaw repo checkout."""
+    services = []
+    services_dir = source / "services"
+    if not services_dir.is_dir():
+        return services
+    for svc_dir in sorted(services_dir.iterdir()):
+        if not svc_dir.is_dir() or svc_dir.name.startswith("."):
+            continue
+        svc = {"name": svc_dir.name, "description": "", "type": "daemon"}
+        service_files = list(svc_dir.glob("*.service"))
+        if service_files:
+            svc["type"] = "systemd"
+        for doc_name in ["SKILL.md", "README.md"]:
+            doc_path = svc_dir / doc_name
+            if doc_path.exists():
+                parsed = parse_frontmatter_md(doc_path)
+                svc["description"] = parsed["meta"].get("description", "")
+                if not svc["description"]:
+                    for line in parsed["body"].split("\n"):
+                        if line.strip() and not line.startswith("#"):
+                            svc["description"] = line.strip()
+                            break
+                break
+        services.append(svc)
+    return services
+
+
+def load_readme_from_source(source: Path) -> str:
+    """Load README.md from the openclaw repo checkout."""
+    readme = source / "README.md"
+    if readme.exists():
+        return readme.read_text(encoding="utf-8", errors="ignore")
+    return ""
+
+
+def gather_source_files(source: Path) -> dict[str, list[Path]]:
+    """Return source files grouped by documentation section for hashing."""
+    groups: dict[str, list[Path]] = {
+        "skills": [],
+        "services": [],
+        "agents_channels": [],
+        "jobs": [],
+    }
+    plugins_dir = source / "plugins"
+    if plugins_dir.is_dir():
+        for plugin_dir in sorted(plugins_dir.iterdir()):
+            if not plugin_dir.is_dir() or plugin_dir.name.startswith("."):
+                continue
+            manifest = plugin_dir / "openclaw.plugin.json"
+            if manifest.exists():
+                groups["skills"].append(manifest)
+            readme = plugin_dir / "README.md"
+            if readme.exists():
+                groups["skills"].append(readme)
+
+    services_dir = source / "services"
+    if services_dir.is_dir():
+        for svc_dir in sorted(services_dir.iterdir()):
+            if not svc_dir.is_dir() or svc_dir.name.startswith("."):
+                continue
+            for doc_name in ["SKILL.md", "README.md"]:
+                doc_path = svc_dir / doc_name
+                if doc_path.exists():
+                    groups["services"].append(doc_path)
+
+    cfg = source / "config" / "openclaw.json"
+    if cfg.exists():
+        groups["agents_channels"].append(cfg)
+
+    jobs_cfg = source / "config" / "jobs.json"
+    if jobs_cfg.exists():
+        groups["jobs"].append(jobs_cfg)
+
+    return groups
+
+
 RENDERERS = {
     "skills": render_skills,
     "services": render_services,
@@ -660,10 +860,85 @@ def main():
         default=Path(__file__).resolve().parent.parent.parent / "docs",
         help="Path to the Jekyll site root (repo root)",
     )
+    parser.add_argument(
+        "--source",
+        type=Path,
+        default=None,
+        help="Path to a local openclaw repo checkout (CI mode)",
+    )
     args = parser.parse_args()
 
-    config_dir = args.config_dir.resolve()
     output_dir = args.output_dir.resolve()
+
+    # --source mode: read directly from a repo checkout (for CI)
+    if args.source is not None:
+        source = args.source.resolve()
+        if not source.exists():
+            print(f"Error: Source directory not found at {source}")
+            raise SystemExit(1)
+
+        print(f"Reading source from: {source}")
+        print(f"Writing docs to:     {output_dir}")
+
+        # Content hashing — only regenerate sections whose inputs changed
+        manifest_path = output_dir.parent / ".doc-hashes.json"
+        previous_manifest = load_hash_manifest(manifest_path)
+        file_groups = gather_source_files(source)
+        new_manifest: dict = {}
+
+        skills = discover_plugins_from_source(source)
+        services = discover_services_from_source(source)
+        config = load_config_from_source(source)
+        agents = extract_agents(config, source)
+        channels = extract_channels(config)
+        jobs = load_jobs_from_source(source)
+        models = extract_models(config)
+
+        print(f"Found {len(skills)} plugins, {len(services)} services, "
+              f"{len(agents)} agents, {len(channels)} channels, {len(jobs)} jobs")
+
+        data = {
+            "skills": skills,
+            "services": services,
+            "agents": agents,
+            "channels": channels,
+            "jobs": jobs,
+            "models": models,
+        }
+
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        if not SECTIONS_DIR.is_dir():
+            print(f"Error: Sections directory not found at {SECTIONS_DIR}")
+            raise SystemExit(1)
+
+        for section_path in sorted(SECTIONS_DIR.glob("*.md")):
+            section = parse_frontmatter_md(section_path)
+            meta = section["meta"]
+            if "output" not in meta or "data_source" not in meta:
+                print(f"  Skipping {section_path.name} (missing output or data_source)")
+                continue
+
+            ds = meta["data_source"]
+            source_files = file_groups.get(ds, [])
+            current_hashes = collect_source_hashes(source_files)
+            new_manifest[ds] = current_hashes
+
+            if not sources_changed(ds, current_hashes, previous_manifest):
+                print(f"  Skipping {meta['output']} (sources unchanged)")
+                continue
+
+            content = generate_page(section, data)
+            out_path = output_dir / meta["output"]
+            out_path.write_text(content, encoding="utf-8")
+            print(f"  Wrote {out_path}")
+
+        save_hash_manifest(manifest_path, new_manifest)
+        print("\nDone!")
+        return
+
+    # Legacy mode: read from ~/.openclaw runtime directory
+    config_dir = args.config_dir.resolve()
 
     if not config_dir.exists():
         print(f"Error: Config directory not found at {config_dir}")
