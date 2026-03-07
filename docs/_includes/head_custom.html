@@ -11,28 +11,6 @@
     background-color: transparent !important;
   }
 
-  /* ── Dark-mode toggle ─────────────────────────────── */
-  .theme-toggle {
-    position: fixed;
-    bottom: 1.25rem;
-    right: 1.25rem;
-    z-index: 100;
-    background: #0e7490;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 2.75rem;
-    height: 2.75rem;
-    font-size: 1.25rem;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,.2);
-    transition: background .2s, transform .2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .theme-toggle:hover { transform: scale(1.1); }
-
   /* ── Hero section ─────────────────────────────────── */
   .hero {
     text-align: center;
@@ -83,22 +61,6 @@
     opacity: .7;
   }
 
-  /* ── Dark-mode card overrides ─────────────────────── */
-  [data-theme="octo-dark"] .card {
-    border-color: #334155;
-    background: #1e293b;
-  }
-  [data-theme="octo-dark"] .card:hover {
-    box-shadow: 0 4px 16px rgba(6,182,212,.15);
-  }
-  [data-theme="octo-dark"] .hero img {
-    filter: drop-shadow(0 4px 12px rgba(6,182,212,.3));
-  }
-  [data-theme="octo-dark"] .theme-toggle {
-    background: #22d3ee;
-    color: #0f172a;
-  }
-
   /* ── Info boxes ───────────────────────────────────── */
   .info-box {
     border-radius: .5rem;
@@ -107,40 +69,4 @@
     border-left: 4px solid #0891b2;
     background: #f0f9ff;
   }
-  [data-theme="octo-dark"] .info-box {
-    background: #164e63;
-    border-left-color: #22d3ee;
-  }
 </style>
-
-<script>
-  (function init() {
-    if (typeof jtd === "undefined" || !document.body) {
-      return setTimeout(init, 50);
-    }
-
-    var saved = localStorage.getItem("octo-theme");
-    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var theme = saved || (prefersDark ? "octo-dark" : "default");
-
-    if (theme === "octo-dark") {
-      jtd.setTheme("octo-dark");
-      document.documentElement.setAttribute("data-theme", "octo-dark");
-    }
-
-    var btn = document.createElement("button");
-    btn.className = "theme-toggle";
-    btn.setAttribute("aria-label", "Toggle dark mode");
-    btn.textContent = theme === "octo-dark" ? "☀️" : "🌙";
-    document.body.appendChild(btn);
-
-    btn.addEventListener("click", function () {
-      var isDark = jtd.getTheme() === "octo-dark";
-      var next = isDark ? "default" : "octo-dark";
-      jtd.setTheme(next);
-      document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("octo-theme", next);
-      btn.textContent = isDark ? "🌙" : "☀️";
-    });
-  })();
-</script>
