@@ -1,37 +1,33 @@
-// Octo Docs – clean sidebar with subtle orange accents for just-the-docs
+// Octo Docs – modern ocean teal palette for just-the-docs
 
-// Orange accent for links and interactive elements
-$link-color: #c85000;
+$link-color: #0e7490;
+$sidebar-color: #f8fafb;
+$nav-child-link-color: #475569;
 
-// Sidebar: clean white, dark readable text
-$sidebar-color: #fafaf8;
-$nav-child-link-color: #444;
+$search-result-highlight-color: #cffafe;
+$btn-primary-color: #0891b2;
+$body-heading-color: #0f172a;
+$base-button-color: #e0f2fe;
+$feedback-color: #0e7490;
 
-$search-result-highlight-color: #fde8d0;
-$btn-primary-color: #d45b07;
-$body-heading-color: #333;
-$base-button-color: #f0e6da;
-$feedback-color: #b34a00;
-
-// Override the default navigation highlight to be flat and subtle
 .side-bar {
-  border-right: 1px solid #e8e0d8;
+  border-right: 1px solid #e2e8f0;
 
   .site-title {
-    font-weight: 600;
-    color: #333;
+    font-weight: 700;
+    color: #0f172a;
   }
 }
 
-// Remove gradient and use a flat, light highlight
 .nav-list-link.active {
   background-image: none !important;
-  background-color: #f5ebe0 !important;
-  color: #9a4200 !important;
+  background-color: #ecfeff !important;
+  color: #0e7490 !important;
   font-weight: 600;
+  border-left: 3px solid #0891b2;
 }
 
 .nav-list-link:hover {
   background-image: none !important;
-  background-color: #faf3ec !important;
+  background-color: #f0f9ff !important;
 }

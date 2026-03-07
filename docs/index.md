@@ -4,19 +4,47 @@ title: Home
 nav_order: 1
 ---
 
-<img src="{{ site.baseurl }}/assets/images/Octo_small.png" alt="Octo" width="180" style="float: right; margin: 0 0 1em 1.5em;" />
+<div class="hero" markdown="0">
+  <img src="{{ site.baseurl }}/assets/images/Octo_small.png" alt="Octo" />
+  <h1>All About Octo&hellip;</h1>
+  <p class="tagline">
+    A personal AI assistant built on
+    <a href="https://openclaw.ai">OpenClaw</a> — connecting language models
+    to real-world services through skills, agents, and channels.
+  </p>
+</div>
 
-# All About Octo...
+<div class="card-grid" markdown="0">
+  <a class="card" href="{{ site.baseurl }}/agents-channels">
+    <div class="card-icon">🤖</div>
+    <div class="card-title">Agents &amp; Channels</div>
+    <div class="card-desc">Personas and the platforms they talk through</div>
+  </a>
+  <a class="card" href="{{ site.baseurl }}/skills">
+    <div class="card-icon">🔧</div>
+    <div class="card-title">Skills</div>
+    <div class="card-desc">Modular capabilities — email, cameras, restaurants&hellip;</div>
+  </a>
+  <a class="card" href="{{ site.baseurl }}/services">
+    <div class="card-icon">⚙️</div>
+    <div class="card-title">Services</div>
+    <div class="card-desc">Background daemons that watch for events</div>
+  </a>
+  <a class="card" href="{{ site.baseurl }}/jobs">
+    <div class="card-icon">⏰</div>
+    <div class="card-title">Scheduled Jobs</div>
+    <div class="card-desc">Automated tasks on a timer</div>
+  </a>
+</div>
+
+---
 
 This is the documentation for **Octo** 🐙 — [Jeff Steinbok](https://github.com/JeffSteinbok)'s personal instance of
-[OpenClaw](https://openclaw.ai), a modular AI assistant framework that connects
-language models to real-world services through **skills**, **agents**, and **channels**.
+[OpenClaw](https://openclaw.ai), a modular AI assistant framework.
 
 Much of this setup is inspired by [Omar Shahine](https://github.com/omarshahine)'s
 work on 🦞 [Lobster](https://lobster.shahine.com) — his docs inspired me to publish
-my own.
-
-I've written some custom skills for Octo and shared them at [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub).
+my own. I've written some custom skills for Octo and shared them at [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub).
 
 ## 💬 Channels
 
@@ -24,7 +52,9 @@ I talk to Octo via [Telegram](https://telegram.org) and [Discord](https://discor
 
 ## 🔒 Security
 
+<div class="info-box" markdown="0">
 Security is the most important aspect of this experiment — even above just having fun.
+</div>
 
 - **Unprivileged account** — OpenClaw runs under its own dedicated user on Ubuntu with no `sudo` permissions. It can configure itself new skills, but it cannot install anything on its own.
 - **Owner-only access** — Octo only responds to me. Not even family members have access.

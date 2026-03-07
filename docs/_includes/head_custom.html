@@ -1,1 +1,129 @@
 <link rel="icon" href="{{ '/assets/images/favicon.svg' | relative_url }}" type="image/svg+xml">
+
+<style>
+  /* ── Dark-mode toggle ─────────────────────────────── */
+  .theme-toggle {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 100;
+    background: #0e7490;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    transition: background .2s, transform .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .theme-toggle:hover { transform: scale(1.1); }
+
+  /* ── Hero section ─────────────────────────────────── */
+  .hero {
+    text-align: center;
+    padding: 2rem 1rem 1.5rem;
+  }
+  .hero img {
+    width: 140px;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 12px rgba(14,116,144,.25));
+  }
+  .hero h1 {
+    font-size: 2.25rem;
+    margin: 0 0 .5rem;
+  }
+  .hero .tagline {
+    font-size: 1.1rem;
+    opacity: .75;
+    margin-bottom: 2rem;
+  }
+
+  /* ── Section cards ────────────────────────────────── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .card {
+    border: 1px solid #e2e8f0;
+    border-radius: .75rem;
+    padding: 1.25rem;
+    text-decoration: none !important;
+    transition: transform .15s, box-shadow .15s;
+    display: block;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(14,116,144,.12);
+  }
+  .card .card-icon { font-size: 1.75rem; margin-bottom: .5rem; }
+  .card .card-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: .25rem;
+  }
+  .card .card-desc {
+    font-size: .85rem;
+    opacity: .7;
+  }
+
+  /* ── Dark-mode card overrides ─────────────────────── */
+  [data-theme="octo-dark"] .card {
+    border-color: #334155;
+    background: #1e293b;
+  }
+  [data-theme="octo-dark"] .card:hover {
+    box-shadow: 0 4px 16px rgba(6,182,212,.15);
+  }
+  [data-theme="octo-dark"] .hero img {
+    filter: drop-shadow(0 4px 12px rgba(6,182,212,.3));
+  }
+  [data-theme="octo-dark"] .theme-toggle {
+    background: #22d3ee;
+    color: #0f172a;
+  }
+
+  /* ── Info boxes ───────────────────────────────────── */
+  .info-box {
+    border-radius: .5rem;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid #0891b2;
+    background: #f0f9ff;
+  }
+  [data-theme="octo-dark"] .info-box {
+    background: #164e63;
+    border-left-color: #22d3ee;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Determine initial theme
+    var saved = localStorage.getItem("octo-theme");
+    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var theme = saved || (prefersDark ? "octo-dark" : "octo");
+    jtd.setTheme(theme);
+
+    // Create toggle button
+    var btn = document.createElement("button");
+    btn.className = "theme-toggle";
+    btn.setAttribute("aria-label", "Toggle dark mode");
+    btn.textContent = theme === "octo-dark" ? "☀️" : "🌙";
+    document.body.appendChild(btn);
+
+    btn.addEventListener("click", function () {
+      var current = jtd.getTheme();
+      var next = current === "octo-dark" ? "octo" : "octo-dark";
+      jtd.setTheme(next);
+      localStorage.setItem("octo-theme", next);
+      btn.textContent = next === "octo-dark" ? "☀️" : "🌙";
+    });
+  });
+</script>

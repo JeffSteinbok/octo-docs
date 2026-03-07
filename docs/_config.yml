@@ -9,7 +9,7 @@ plugins:
   - jekyll-remote-theme
 
 # Footer content
-footer_content: "🐙 Octo Docs &mdash; &copy; <a href=\"https://github.com/JeffSteinbok\">Jeff Steinbok</a>"
+footer_content: "🐙 Octo Docs &mdash; Built on <a href=\"https://openclaw.ai\">OpenClaw</a> &mdash; &copy; <a href=\"https://github.com/JeffSteinbok\">Jeff Steinbok</a>"
 
 # Favicon
 favicon_ico: /assets/images/favicon.ico
