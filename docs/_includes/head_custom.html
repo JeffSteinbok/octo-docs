@@ -2,7 +2,19 @@
 
 <style>
   /* ── Always show scrollbar to prevent layout shift ── */
-  html { overflow-y: scroll; }
+  html,
+  body,
+  .main-content-wrap { overflow-y: scroll !important; }
+
+  /* ── Fix sidebar header alignment ─────────────────── */
+  .side-bar .site-header,
+  .side-bar .site-title,
+  .site-title.lh-tight {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
 
   /* ── Dark-mode toggle ─────────────────────────────── */
   .theme-toggle {
