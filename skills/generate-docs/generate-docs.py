@@ -568,6 +568,35 @@ def render_jobs(data: dict, _overrides: dict, meta: dict) -> dict:
     return {"items": "\n".join(lines)}
 
 
+def extract_models(config: dict) -> dict:
+    """Extract model config from agents.defaults."""
+    defaults = config.get("agents", {}).get("defaults", {})
+    model = defaults.get("model", {})
+    image_model = defaults.get("imageModel", {})
+    web_search = config.get("tools", {}).get("web", {}).get("search", {}).get("gemini", {}).get("model", "")
+    return {
+        "primary": model.get("primary", ""),
+        "fallbacks": model.get("fallbacks", []),
+        "image_primary": image_model.get("primary", ""),
+        "image_fallbacks": image_model.get("fallbacks", []),
+        "web_search": web_search,
+    }
+
+
+def render_models(models: dict) -> str:
+    fallbacks = " → ".join(f"`{m}`" for m in models["fallbacks"])
+    img_chain = " → ".join(f"`{m}`" for m in [models["image_primary"]] + models["image_fallbacks"])
+    lines = [
+        "| Role | Model | Notes |",
+        "|------|-------|-------|",
+        f"| Primary | `{models['primary']}` | Default for all agents |",
+        f"| Fallbacks | {fallbacks} | In priority order |",
+        f"| Image | {img_chain} | |",
+        f"| Web search | `{models['web_search']}` | |",
+    ]
+    return "\n".join(lines)
+
+
 RENDERERS = {
     "skills": render_skills,
     "services": render_services,
@@ -590,6 +619,9 @@ def generate_page(section: dict, data: dict) -> str:
 
     renderer = RENDERERS.get(data_source)
     placeholders = renderer(data, overrides, meta) if renderer else {}
+
+    # Always inject models table as a available placeholder
+    placeholders["models"] = render_models(data["models"])
 
     # Replace {{ placeholders }} in template
     content = template
@@ -647,6 +679,7 @@ def main():
     agents = extract_agents(config, config_dir)
     channels = extract_channels(config)
     jobs = load_jobs(config_dir) + load_crontab_jobs()
+    models = extract_models(config)
 
     print(f"Found {len(skills)} skills, {len(services)} services, "
           f"{len(agents)} agents, {len(channels)} channels, {len(jobs)} jobs")
@@ -657,6 +690,7 @@ def main():
         "agents": agents,
         "channels": channels,
         "jobs": jobs,
+        "models": models,
     }
 
     # Generate pages from section definitions
