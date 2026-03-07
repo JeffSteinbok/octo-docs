@@ -11,7 +11,7 @@ nav_order: 3
 Skills are modular capabilities that agents can use. Each skill is a
 self-contained package with its own metadata, dependencies, and commands.
 
-## 🔧 config-backup
+## 💾 config-backup
 
 Backup OpenClaw config to Git with automatic change detection.
 
@@ -31,7 +31,7 @@ Send email, search/read inbox, and manage meeting requests via Fastmail JMAP and
 
 ---
 
-## 🔧 hass-camera-snapshot
+## 📷 hass-camera-snapshot
 
 📦 [Source on GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/hass-camera-snapshot)
 
@@ -57,11 +57,19 @@ Advanced Home Assistant control using the official hass-cli tool.
 
 ---
 
-## 🔧 ics-calendar
+## 📅 ics-calendar
+
+Fetch Nicole's personal calendar from an Outlook Live ICS feed.
+
+**Capabilities:**
+
+- Parse ICS (iCalendar) feeds and extract upcoming events
+- Filter events by date range
+- Output markdown summaries for agent memory
 
 ---
 
-## 🔧 opentable
+## 🍽️ opentable
 
 📦 [Source on GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/opentable)
 
@@ -77,15 +85,31 @@ Check real-time restaurant availability on OpenTable.
 
 ---
 
-## 🔧 outlook-calendar
+## 📅 outlook-calendar
+
+Fetch personal and family calendar events from Microsoft Outlook via the Graph API.
+
+**Capabilities:**
+
+- Query personal and family calendars by date range
+- Returns events with subject, time, location, and busy status
+- Outputs markdown files for agent memory
 
 ---
 
-## 🔧 outlook-mail
+## 📬 outlook-mail
+
+Search and read Jeff's personal Outlook inbox via the Microsoft Graph API.
+
+**Capabilities:**
+
+- List recent inbox messages (all or unread only)
+- Search by keyword, sender, subject, or date range
+- Read specific messages by ID
 
 ---
 
-## 🔧 outlook-work-calendar
+## 💼 outlook-work-calendar
 
 Fetch work calendar events from a published Outlook endpoint.
 
@@ -97,8 +121,14 @@ Fetch work calendar events from a published Outlook endpoint.
 
 ---
 
-## 🔧 weightwatchers
+## ⚖️ weightwatchers
 
-Track Weight Watchers (WW) points, search foods, log meals, and retrieve daily food diaries. Supports SmartPoints calculation from nutrition data and photo-based food logging via the unofficial WW API.
+Track Weight Watchers (WW) points, search foods, log meals, and retrieve daily food diaries.
 
----
+**Capabilities:**
+
+- View daily food diary with points breakdown
+- Search the WW food database by keyword
+- Calculate SmartPoints from nutrition label data
+- Log food entries to specific meals
+- Check daily points budget and remaining balance

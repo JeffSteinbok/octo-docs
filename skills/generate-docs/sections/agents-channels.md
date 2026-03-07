@@ -8,6 +8,17 @@ overrides:
   family-agent: "Family group chat agent with limited permissions"
   group-agent: "Generic group chat agent — responds only when mentioned"
   mail-agent: "Email processing agent with read-only access"
+emoji_overrides:
+  config-backup: "💾"
+  fastmail: "📧"
+  hass-camera-snapshot: "📷"
+  homeassistant-cli: "🏡"
+  ics-calendar: "📅"
+  opentable: "🍽️"
+  outlook-calendar: "📅"
+  outlook-mail: "📬"
+  outlook-work-calendar: "💼"
+  weightwatchers: "⚖️"
 ---
 
 ## Agents
