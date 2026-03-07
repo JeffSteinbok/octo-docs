@@ -16,9 +16,9 @@ required.
 
 | Job | Description | Schedule | Status |
 |-----|-------------|----------|--------|
-| **calendar-fetch** | Fetch next 7 days from work, personal, Nicole, and family calendars every 12h | Every 12h | ✅ Enabled |
+| **calendar-fetch-hourly** | Fetch calendars hourly 7am-5pm PST | cron | ✅ Enabled |
 | **config-backup** | Backup openclaw.json to Git daily (only commits if changed) | Every 1d | ✅ Enabled |
-| **Test event for Jeff - 9 PM** |  | at | ✅ Enabled |
+| **calendar-fetch-midnight** | Fetch calendars at midnight PST | cron | ✅ Enabled |
 
 ### System Crontab (`crontab -e`)
 

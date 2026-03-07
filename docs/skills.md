@@ -57,6 +57,10 @@ Advanced Home Assistant control using the official hass-cli tool.
 
 ---
 
+## 🔧 ics-calendar
+
+---
+
 ## 🔧 opentable
 
 📦 [Source on GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/opentable)
@@ -73,6 +77,14 @@ Check real-time restaurant availability on OpenTable.
 
 ---
 
+## 🔧 outlook-calendar
+
+---
+
+## 🔧 outlook-mail
+
+---
+
 ## 🔧 outlook-work-calendar
 
 Fetch work calendar events from a published Outlook endpoint.
@@ -85,14 +97,8 @@ Fetch work calendar events from a published Outlook endpoint.
 
 ---
 
-## 🔧 personal-calendars
+## 🔧 weightwatchers
 
-Fetch personal and family calendars from Outlook Live ICS feeds.
-
-**Capabilities:**
-
-- Query personal, family, or all calendars by date range
-- Returns events with subject, time, and location
-- Supports multiple calendar sources in a single query
+Track Weight Watchers (WW) points, search foods, log meals, and retrieve daily food diaries. Supports SmartPoints calculation from nutrition data and photo-based food logging via the unofficial WW API.
 
 ---
