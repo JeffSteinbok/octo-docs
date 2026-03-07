@@ -20,15 +20,15 @@ $border-color: #334155;
 .side-bar {
   border-right: 1px solid #334155;
 
+  .site-header {
+    background-image: none;
+    background-color: transparent;
+  }
+
   .site-title {
     font-weight: 700;
     font-size: 1.1rem !important;
     color: #e2e8f0;
-    padding: 0.75rem 1rem;
-    display: flex !important;
-    align-items: center;
-    justify-content: flex-start !important;
-    text-align: left !important;
   }
 }
 

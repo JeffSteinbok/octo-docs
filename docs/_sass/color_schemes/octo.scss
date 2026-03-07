@@ -14,15 +14,15 @@ $feedback-color: #0e7490;
   border-right: 1px solid #e2e8f0;
   background: $sidebar-color;
 
+  .site-header {
+    background-image: none;
+    background-color: transparent;
+  }
+
   .site-title {
     font-weight: 700;
     font-size: 1.1rem !important;
     color: #0f172a;
-    padding: 0.75rem 1rem;
-    display: flex !important;
-    align-items: center;
-    justify-content: flex-start !important;
-    text-align: left !important;
   }
 }
 
