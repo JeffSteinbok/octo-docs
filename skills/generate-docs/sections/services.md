@@ -12,6 +12,15 @@ overrides:
     appropriate status indicators.
 ---
 
+<!-- instructions:
+  Lists long-running background services that watch for external events
+  and route notifications through the OpenClaw system.
+
+  For each service, show: name, description (from overrides or config),
+  and running/stopped status. The "overrides" map provides richer
+  descriptions keyed by service name.
+-->
+
 Services are long-running background processes that watch for events
 and route notifications through the OpenClaw system.
 

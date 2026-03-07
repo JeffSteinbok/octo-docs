@@ -7,6 +7,9 @@ Each documentation page is driven by a section definition in sections/*.md.
 Section files contain YAML frontmatter (output filename, title, nav_order,
 data_source, and per-item overrides) plus a markdown body template with
 {{ placeholder }} markers for generated content.
+
+Instruction blocks wrapped in <!-- instructions: ... --> HTML comments are
+guidance for the generator and are stripped from the final output.
 """
 
 import argparse
@@ -74,9 +77,14 @@ def discover_skills(config_dir: Path) -> list[dict]:
 
     if agents_dir.is_dir():
         for agent_dir in sorted(agents_dir.iterdir()):
+            # Runtime layout: agents/<id>/workspace/skills
             ws = agent_dir / "workspace" / "skills"
             if ws.is_dir():
                 skill_search_dirs.append(ws)
+            # Repo layout: agents/<id>/skills (no workspace indirection)
+            direct = agent_dir / "skills"
+            if direct.is_dir() and direct != ws:
+                skill_search_dirs.append(direct)
 
     # Also check octo-docs/skills (this repo)
     local_skills = Path(__file__).resolve().parent.parent
@@ -175,6 +183,8 @@ def load_jobs(config_dir: Path) -> list[dict]:
     if ws.is_symlink() or ws.is_dir():
         repo_root = ws.resolve().parent.parent
         candidates.append(repo_root / "config" / "jobs.json")
+    # Repo layout: config_dir IS the repo root
+    candidates.append(config_dir / "config" / "jobs.json")
 
     data = {}
     for jobs_path in candidates:
@@ -280,13 +290,18 @@ def load_crontab_jobs() -> list[dict]:
 
 
 def load_repo_readme(config_dir: Path) -> str:
-    """Load README.md from the openclaw config repo (via workspace symlink)."""
+    """Load README.md from the openclaw config repo (via workspace symlink or direct)."""
+    # Runtime: agents/main/workspace -> repo/agents/main
     ws = config_dir / "agents" / "main" / "workspace"
     if ws.is_symlink() or ws.is_dir():
         repo_root = ws.resolve().parent.parent
         readme = repo_root / "README.md"
         if readme.exists():
             return readme.read_text(encoding="utf-8", errors="ignore")
+    # Repo layout: config_dir IS the repo root
+    readme = config_dir / "README.md"
+    if readme.exists():
+        return readme.read_text(encoding="utf-8", errors="ignore")
     return ""
 
 
@@ -319,7 +334,12 @@ def extract_agents(config: dict, config_dir: Path) -> list[dict]:
         active = agent_id in bound_agents
         ws = config_dir / "agents" / agent_id / "workspace"
         if not ws.exists():
-            ws = Path(agent.get("workspace", ""))
+            # Repo layout: agents/<id> is the workspace itself
+            candidate = config_dir / "agents" / agent_id
+            if candidate.is_dir():
+                ws = candidate
+            else:
+                ws = Path(agent.get("workspace", ""))
         id_file = ws / "IDENTITY.md" if ws.exists() else None
         if id_file and id_file.exists():
             text = id_file.read_text(encoding="utf-8", errors="ignore")
@@ -383,6 +403,13 @@ def discover_services(config_dir: Path) -> list[dict]:
             search_dirs.append(repo_root / "services")
         # Also check sibling openclaw-hub repo
         hub_services = repo_root.parent / "openclaw-hub" / "services"
+        if hub_services.is_dir():
+            search_dirs.append(hub_services)
+    else:
+        # Repo layout: config_dir IS the repo root
+        if (config_dir / "services").is_dir():
+            search_dirs.append(config_dir / "services")
+        hub_services = config_dir.parent / "openclaw-hub" / "services"
         if hub_services.is_dir():
             search_dirs.append(hub_services)
 
@@ -614,6 +641,15 @@ def generate_page(section: dict, data: dict) -> str:
     """Generate a complete Jekyll page from a section definition and data."""
     meta = section["meta"]
     template = section["body"]
+
+    # Strip <!-- instructions: ... --> blocks (guidance for the generator)
+    template = re.sub(
+        r"<!--\s*instructions:.*?-->\s*",
+        "",
+        template,
+        flags=re.DOTALL,
+    )
+
     overrides = meta.get("overrides", {})
     data_source = meta["data_source"]
 

@@ -6,9 +6,14 @@ data_source: jobs
 empty_message: "_No scheduled jobs configured._"
 ---
 
-Cron-style jobs that run automatically on a schedule. Each job spawns an
-isolated agent session, executes its task, and exits — no user interaction
-required.
+<!-- instructions:
+  Shows all scheduled/cron jobs from two sources:
+  1. OpenClaw jobs in ~/.openclaw/cron/jobs.json — table with name,
+     description, cron schedule, and enabled/disabled status.
+  2. System crontab entries — table with schedule, command, and description.
+
+  If no jobs exist in either source, show the empty_message from frontmatter.
+-->
 
 {{ items }}
 

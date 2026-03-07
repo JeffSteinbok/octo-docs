@@ -3,12 +3,19 @@ output: agents-channels.md
 title: Agents & Channels
 nav_order: 2
 data_source: agents_channels
-
-List out all the agents in use and channels.  Be descriptive about their configuration but redact any
-personal information or identifiers like URIs, IDs, Accounts, etc...
 ---
 
+<!-- instructions:
+  List out all the agents in use and channels. Be descriptive about their
+  configuration but redact any personal information or identifiers like
+  URIs, IDs, Accounts, etc.
 
+  Agents table: show emoji (from identity config), agent name, role
+  description, and active/inactive status. An agent is "active" if it
+  has at least one binding in the config.
+
+  Channels table: show platform name and enabled/disabled status.
+-->
 
 ## Agents
 
