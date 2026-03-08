@@ -471,6 +471,9 @@ def extract_models(config: dict) -> dict:
 
 def render_with_copilot(prompt: str, timeout: int = 120) -> str:
     """Call the GitHub Copilot CLI with a prompt and return the response text."""
+    prompt_len = len(prompt)
+    print(f"    Prompt size: {prompt_len:,} chars")
+    sys.stdout.flush()
     try:
         result = subprocess.run(
             ["gh", "copilot", "-p", prompt],
@@ -483,11 +486,11 @@ def render_with_copilot(prompt: str, timeout: int = 120) -> str:
               file=sys.stderr)
         raise SystemExit(1)
     except subprocess.TimeoutExpired:
-        print(f"Error: Copilot CLI timed out after {timeout}s", file=sys.stderr)
+        print(f"    ✗ Copilot CLI timed out after {timeout}s", file=sys.stderr)
         return ""
 
     if result.returncode != 0:
-        print(f"  Copilot CLI error (exit {result.returncode}): "
+        print(f"    ✗ Copilot CLI error (exit {result.returncode}): "
               f"{result.stderr.strip()}", file=sys.stderr)
         return ""
 
@@ -497,6 +500,8 @@ def render_with_copilot(prompt: str, timeout: int = 120) -> str:
         lines = output.split("\n")
         if lines[-1].strip() == "```":
             output = "\n".join(lines[1:-1])
+    print(f"    ✓ Got {len(output):,} chars back")
+    sys.stdout.flush()
     return output
 
 
@@ -634,7 +639,7 @@ def load_readme_from_source(source: Path) -> str:
 # ---------------------------------------------------------------------------
 
 
-def generate_page(section: dict, data: dict) -> str:
+def generate_page(section: dict, data: dict, i: int = 0, total: int = 0) -> str:
     """Generate a complete Jekyll page by calling the Copilot CLI."""
     meta = section["meta"]
     body = section["body"]
@@ -651,11 +656,15 @@ def generate_page(section: dict, data: dict) -> str:
 
     prompt = build_prompt(body, relevant)
 
-    print(f"  Rendering {meta['output']} via Copilot CLI ...")
+    print(f"  [{i}/{total}] Rendering {meta['output']} via Copilot CLI ...")
+    sys.stdout.flush()
     rendered = render_with_copilot(prompt)
 
     if not rendered:
+        print(f"  [{i}/{total}] ✗ Empty response for {meta['output']}")
         rendered = "_Documentation generation pending — re-run the workflow to generate._"
+    else:
+        print(f"  [{i}/{total}] ✓ {meta['output']} complete")
 
     header = "\n".join([
         "---",
@@ -738,14 +747,19 @@ def main():
             print(f"Error: Sections directory not found at {SECTIONS_DIR}")
             raise SystemExit(1)
 
-        for section_path in sorted(SECTIONS_DIR.glob("*.md")):
+        sections = sorted(SECTIONS_DIR.glob("*.md"))
+        total = len(sections)
+        print(f"\nRendering {total} sections ...\n")
+        sys.stdout.flush()
+
+        for i, section_path in enumerate(sections, 1):
             section = parse_frontmatter_md(section_path)
             meta = section["meta"]
             if "output" not in meta:
-                print(f"  Skipping {section_path.name} (no output defined)")
+                print(f"  [{i}/{total}] Skipping {section_path.name} (no output defined)")
                 continue
 
-            content = generate_page(section, data)
+            content = generate_page(section, data, i, total)
             out_path = output_dir / meta["output"]
             out_path.write_text(content, encoding="utf-8")
             print(f"  Wrote {out_path}")
@@ -792,13 +806,18 @@ def main():
         print(f"Error: Sections directory not found at {SECTIONS_DIR}")
         raise SystemExit(1)
 
-    for section_path in sorted(SECTIONS_DIR.glob("*.md")):
+    sections = sorted(SECTIONS_DIR.glob("*.md"))
+    total = len(sections)
+    print(f"\nRendering {total} sections ...\n")
+    sys.stdout.flush()
+
+    for i, section_path in enumerate(sections, 1):
         section = parse_frontmatter_md(section_path)
         meta = section["meta"]
         if "output" not in meta:
-            print(f"  Skipping {section_path.name} (no output defined)")
+            print(f"  [{i}/{total}] Skipping {section_path.name} (no output defined)")
             continue
-        content = generate_page(section, data)
+        content = generate_page(section, data, i, total)
         out_path = output_dir / meta["output"]
         out_path.write_text(content, encoding="utf-8")
         print(f"  Wrote {out_path}")
