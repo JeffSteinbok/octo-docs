@@ -36,15 +36,8 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml
 
-      - name: Install Copilot CLI
-        run: curl -fsSL https://gh.io/copilot-install | bash
-        env:
-          GH_TOKEN: ${{ secrets.COPILOT_TOKEN }}
-
       - name: Generate docs
         run: python skills/generate-docs/generate-docs.py --source ./openclaw --output-dir ./docs
-        env:
-          GH_TOKEN: ${{ secrets.COPILOT_TOKEN }}
 
       - name: Check for changes
         id: changes
@@ -57,7 +50,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/
-          git commit -m "docs: auto-regenerate from openclaw@${GITHUB_EVENT_CLIENT_PAYLOAD_REF:0:7}
-
-          Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+          git commit -m "docs: auto-regenerate from openclaw@${GITHUB_EVENT_CLIENT_PAYLOAD_REF:0:7}"
           git push

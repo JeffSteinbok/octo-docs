@@ -2,29 +2,10 @@
 output: jobs.md
 title: Scheduled Jobs
 nav_order: 6
-data_keys:
-  - jobs
+data_source: jobs
 ---
 
-Generate a documentation section for OpenClaw **scheduled jobs**.
-
-Use the `jobs` array from the provided data. If the array is empty,
-output only: "_No scheduled jobs configured._"
-
-Group jobs by their `source` field and render each group:
-
-### OpenClaw Jobs (`cron/jobs.json`) — where source is `"openclaw"`
-
-Render a markdown table: **Job**, **Description**, **Schedule**, **Status**
-
-- **Schedule**: use the `interval` field
-- **Status**: `✅ Enabled` if `enabled` is true, otherwise `❌ Disabled`
-
-### System Crontab (`crontab -e`) — where source is `"crontab"`
-
-Render a markdown table: **Job**, **Schedule**
-
-After the job tables, include this explanatory content verbatim:
+{{ jobs }}
 
 ## How It Works
 

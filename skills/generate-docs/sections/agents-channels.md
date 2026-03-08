@@ -11,18 +11,6 @@ overrides:
   root: "Privileged agent with exec/process access — invoked explicitly by main"
 ---
 
-<!-- instructions:
-  List out all the agents in use and channels. Be descriptive about their
-  configuration but redact any personal information or identifiers like
-  URIs, IDs, Accounts, etc.
-
-  Agents table: show emoji (from identity config), agent name, role
-  description, and active/inactive status. An agent is "active" if it
-  has at least one binding in the config.
-
-  Channels table: show platform name and enabled/disabled status.
--->
-
 ## Agents
 
 Agents are LLM-powered personas, each with their own identity, permissions,

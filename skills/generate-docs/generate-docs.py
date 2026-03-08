@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-generate-docs: Reads the openclaw config and uses the GitHub Copilot CLI
-to render documentation pages. Section files in sections/*.md contain
-LLM prompts that instruct the Copilot CLI how to format the gathered data
-into Jekyll markdown pages.
+generate-docs: Reads the openclaw config and generates documentation pages by
+filling {{ placeholder }} markers in section template files with formatted data.
+No external AI tools are required.
 """
 
 import argparse
@@ -39,7 +38,6 @@ def resolve_hub_source(skill_dir: Path) -> str | None:
     if not skill_dir.is_symlink():
         return None
     target = skill_dir.resolve()
-    # Walk up the resolved path looking for an openclaw-hub git repo
     for parent in [target, *target.parents]:
         if (parent / ".git").exists():
             try:
@@ -48,7 +46,6 @@ def resolve_hub_source(skill_dir: Path) -> str | None:
                 )
                 if "openclaw-hub" not in remote_url:
                     break
-                # Extract owner/repo from the remote URL
                 match = re.search(
                     r"github\.com[:/](.+?/openclaw-hub?)(?:\.git)?", remote_url
                 )
@@ -67,22 +64,18 @@ def discover_skills(config_dir: Path) -> list[dict]:
     skills = []
     seen = set()
 
-    # Primary skill source: main agent workspace skills
     agents_dir = config_dir / "agents"
     skill_search_dirs: list[Path] = []
 
     if agents_dir.is_dir():
         for agent_dir in sorted(agents_dir.iterdir()):
-            # Runtime layout: agents/<id>/workspace/skills
             ws = agent_dir / "workspace" / "skills"
             if ws.is_dir():
                 skill_search_dirs.append(ws)
-            # Repo layout: agents/<id>/skills (no workspace indirection)
             direct = agent_dir / "skills"
             if direct.is_dir() and direct != ws:
                 skill_search_dirs.append(direct)
 
-    # Also check octo-docs/skills (this repo)
     local_skills = Path(__file__).resolve().parent.parent
     skill_search_dirs.append(local_skills)
 
@@ -118,48 +111,19 @@ def sanitize_body(body: str) -> str:
     """Strip sensitive details from skill documentation body."""
     sanitized = body
 
-    # Remove lines that look like they contain secrets/IDs
     patterns_to_redact = [
         r"(?i)(account[_ ]?id|identity[_ ]?id|mailbox[_ ]?id)\s*[:=]\s*`?[\w-]+`?",
         r"(?i)(token|secret|password|key)\s*[:=]\s*.*",
-        r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?\b",  # IP addresses
-        r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b",  # Emails
-        r"\b\d{8,}\b",  # Long numeric IDs (Telegram, Discord)
-        r"camera\.\w+",  # HA entity IDs
+        r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?\b",
+        r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b",
+        r"\b\d{8,}\b",
+        r"camera\.\w+",
     ]
 
     for pattern in patterns_to_redact:
         sanitized = re.sub(pattern, "[redacted]", sanitized)
 
     return sanitized
-
-
-def extract_commands_from_body(body: str) -> list[dict]:
-    """Extract command documentation from a skill body."""
-    commands = []
-    current_cmd = None
-
-    for line in body.split("\n"):
-        # Match markdown headers that look like command names
-        cmd_match = re.match(r"^#{1,4}\s+`?(\w+)`?\s*(?:[:—-]\s*(.*))?", line)
-        if cmd_match and cmd_match.group(1).lower() not in (
-            "usage", "options", "example", "examples", "notes",
-            "limitations", "dependencies", "requirements", "workflow",
-        ):
-            if current_cmd:
-                commands.append(current_cmd)
-            current_cmd = {
-                "name": cmd_match.group(1),
-                "description": cmd_match.group(2) or "",
-            }
-        elif current_cmd and line.strip() and not line.startswith("#"):
-            if not current_cmd["description"]:
-                current_cmd["description"] = line.strip()
-
-    if current_cmd:
-        commands.append(current_cmd)
-
-    return commands
 
 
 def load_config(config_dir: Path) -> dict:
@@ -173,13 +137,11 @@ def load_config(config_dir: Path) -> dict:
 
 def load_jobs(config_dir: Path) -> list[dict]:
     """Load scheduled jobs from cron/jobs.json (sanitized)."""
-    # Check both the runtime dir and the config repo (via workspace symlink)
     candidates = [config_dir / "cron" / "jobs.json"]
     ws = config_dir / "agents" / "main" / "workspace"
     if ws.is_symlink() or ws.is_dir():
         repo_root = ws.resolve().parent.parent
         candidates.append(repo_root / "config" / "jobs.json")
-    # Repo layout: config_dir IS the repo root
     candidates.append(config_dir / "config" / "jobs.json")
 
     data = {}
@@ -223,24 +185,20 @@ def humanize_cron(expr: str) -> str:
     day_names = {"0": "Sun", "1": "Mon", "2": "Tue", "3": "Wed",
                  "4": "Thu", "5": "Fri", "6": "Sat", "7": "Sun"}
 
-    # Every minute
     if all(p == "*" for p in parts):
         return "Every minute"
 
-    # Simple interval patterns: */N
     if minute.startswith("*/") and hour == "*" and dom == "*" and month == "*" and dow == "*":
         return f"Every {minute[2:]}m"
     if minute == "0" and hour.startswith("*/") and dom == "*" and month == "*" and dow == "*":
         return f"Every {hour[2:]}h"
 
-    # Daily at HH:MM
     if dom == "*" and month == "*" and dow == "*" and not hour.startswith("*/"):
         time_str = f"{int(hour)}:{minute.zfill(2)} AM" if int(hour) < 12 else (
             f"{int(hour) - 12 if int(hour) > 12 else 12}:{minute.zfill(2)} PM"
         )
         return f"Daily at {time_str}"
 
-    # Specific days of week
     if dom == "*" and month == "*" and dow != "*":
         days = [day_names.get(d, d) for d in dow.split(",")]
         time_str = f"{int(hour)}:{minute.zfill(2)} AM" if int(hour) < 12 else (
@@ -253,7 +211,6 @@ def humanize_cron(expr: str) -> str:
 
 def load_crontab_jobs() -> list[dict]:
     """Load jobs from the system crontab (sanitized)."""
-    import subprocess
     try:
         result = subprocess.run(
             ["crontab", "-l"], capture_output=True, text=True, timeout=5
@@ -285,28 +242,11 @@ def load_crontab_jobs() -> list[dict]:
     return jobs
 
 
-def load_repo_readme(config_dir: Path) -> str:
-    """Load README.md from the openclaw config repo (via workspace symlink or direct)."""
-    # Runtime: agents/main/workspace -> repo/agents/main
-    ws = config_dir / "agents" / "main" / "workspace"
-    if ws.is_symlink() or ws.is_dir():
-        repo_root = ws.resolve().parent.parent
-        readme = repo_root / "README.md"
-        if readme.exists():
-            return readme.read_text(encoding="utf-8", errors="ignore")
-    # Repo layout: config_dir IS the repo root
-    readme = config_dir / "README.md"
-    if readme.exists():
-        return readme.read_text(encoding="utf-8", errors="ignore")
-    return ""
-
-
 def extract_agents(config: dict, config_dir: Path) -> list[dict]:
     """Extract agent names, roles, and active status (sanitized)."""
     agents = []
     agents_section = config.get("agents", {})
 
-    # agents may be {"defaults": {...}, "list": [...]} or a plain list
     if isinstance(agents_section, dict):
         agent_list = agents_section.get("list", [])
     elif isinstance(agents_section, list):
@@ -314,13 +254,11 @@ def extract_agents(config: dict, config_dir: Path) -> list[dict]:
     else:
         agent_list = []
 
-    # Check bindings to determine which agents are actually routed to
     bound_agents = set()
     for binding in config.get("bindings", []):
         if isinstance(binding, dict) and binding.get("agentId"):
             bound_agents.add(binding["agentId"])
 
-    # Sub-agents referenced by other agents are also active
     sub_agents = set()
     for agent in agent_list:
         if isinstance(agent, dict):
@@ -336,11 +274,9 @@ def extract_agents(config: dict, config_dir: Path) -> list[dict]:
         identity = agent.get("identity", {})
         agent_id = agent.get("id", "unknown")
 
-        # Check if agent workspace has a completed IDENTITY.md (not template)
         active = agent_id in bound_agents or agent_id in sub_agents
         ws = config_dir / "agents" / agent_id / "workspace"
         if not ws.exists():
-            # Repo layout: agents/<id> is the workspace itself
             candidate = config_dir / "agents" / agent_id
             if candidate.is_dir():
                 ws = candidate
@@ -352,12 +288,9 @@ def extract_agents(config: dict, config_dir: Path) -> list[dict]:
             if "_(pick something you like)_" in text:
                 active = False
 
-        # Use the agent ID as the display name (e.g. "main", "family-agent")
-        display_name = agent_id
-
         agents.append({
             "id": agent_id,
-            "name": display_name,
+            "name": agent_id,
             "description": agent.get("description", ""),
             "emoji": identity.get("emoji", "🤖"),
             "active": active,
@@ -397,22 +330,18 @@ def discover_services(config_dir: Path) -> list[dict]:
 
     search_dirs: list[Path] = []
 
-    # Direct services dir in .openclaw
     if (config_dir / "services").is_dir():
         search_dirs.append(config_dir / "services")
 
-    # Follow the main agent workspace symlink to find the config repo's services
     ws = config_dir / "agents" / "main" / "workspace"
     if ws.is_symlink() or ws.is_dir():
-        repo_root = ws.resolve().parent.parent  # e.g. ~/git/openclaw
+        repo_root = ws.resolve().parent.parent
         if (repo_root / "services").is_dir():
             search_dirs.append(repo_root / "services")
-        # Also check sibling openclaw-hub repo
         hub_services = repo_root.parent / "openclaw-hub" / "services"
         if hub_services.is_dir():
             search_dirs.append(hub_services)
     else:
-        # Repo layout: config_dir IS the repo root
         if (config_dir / "services").is_dir():
             search_dirs.append(config_dir / "services")
         hub_services = config_dir.parent / "openclaw-hub" / "services"
@@ -475,70 +404,181 @@ def extract_models(config: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Copilot CLI rendering
+# Direct markdown rendering (no external AI tools)
 # ---------------------------------------------------------------------------
 
 
-def render_with_copilot(prompt: str, timeout: int = 120) -> str:
-    """Call the GitHub Copilot CLI with a prompt and return the response text."""
-    prompt_len = len(prompt)
-    print(f"    Prompt size: {prompt_len:,} chars")
-    sys.stdout.flush()
-    try:
-        result = subprocess.run(
-            ["gh", "copilot", "-p", prompt],
-            capture_output=True,
-            text=True,
-            timeout=timeout,
+def render_agents(agents: list[dict], overrides: dict | None = None) -> str:
+    """Render agents as a markdown table followed by per-agent descriptions."""
+    if not agents:
+        return "_No agents configured._"
+
+    overrides = overrides or {}
+
+    lines = ["| Agent | Status |", "|-------|--------|"]
+    for a in agents:
+        status = "✅ Active" if a.get("active") else "💤 Inactive"
+        emoji = a.get("emoji", "🤖")
+        name = a.get("name", "unknown")
+        lines.append(f"| {emoji} **{name}** | {status} |")
+
+    parts = ["\n".join(lines)]
+
+    descriptions = []
+    for a in agents:
+        name = a.get("name", "unknown")
+        emoji = a.get("emoji", "🤖")
+        desc = overrides.get(name) or a.get("description", "")
+        if desc:
+            descriptions.append(f"### {emoji} {name}\n\n{desc}")
+
+    if descriptions:
+        parts.append("\n\n".join(descriptions))
+
+    return "\n\n".join(parts)
+
+
+def render_channels(channels: list[dict]) -> str:
+    """Render channels as a markdown table."""
+    if not channels:
+        return "_No channels configured._"
+
+    platform_emojis = {
+        "telegram": "💬",
+        "discord": "🎮",
+        "slack": "💼",
+        "whatsapp": "📱",
+    }
+
+    lines = ["| Platform | Status |", "|----------|--------|"]
+    for ch in channels:
+        ch_type = ch.get("type", "unknown")
+        emoji = platform_emojis.get(ch_type.lower(), "📡")
+        status = "✅ Enabled" if ch.get("enabled", True) else "❌ Disabled"
+        lines.append(f"| {emoji} {ch_type.capitalize()} | {status} |")
+
+    return "\n".join(lines)
+
+
+def render_plugins(plugins: list[dict], overrides: dict | None = None,
+                   empty_message: str = "_No plugins configured._") -> str:
+    """Render plugins as markdown sections."""
+    if not plugins:
+        return empty_message
+
+    overrides = overrides or {}
+    parts = []
+
+    for p in plugins:
+        name = p.get("name", "unknown")
+        emoji = p.get("emoji", "🔧")
+
+        override = overrides.get(name, {})
+        if isinstance(override, str):
+            description = override
+            capabilities: list[str] = []
+        else:
+            description = override.get("what") or p.get("description", "")
+            capabilities = override.get("capabilities", [])
+
+        section = f"### {emoji} {name}\n\n{description}"
+        if capabilities:
+            cap_lines = "\n".join(f"- {c}" for c in capabilities)
+            section += f"\n\n**Capabilities:**\n\n{cap_lines}"
+
+        parts.append(section)
+
+    return "\n\n---\n\n".join(parts)
+
+
+def render_services(services: list[dict], overrides: dict | None = None) -> str:
+    """Render services as markdown sections."""
+    if not services:
+        return "_No services configured._"
+
+    overrides = overrides or {}
+    parts = []
+
+    for svc in services:
+        name = svc.get("name", "unknown")
+        desc = overrides.get(name) or svc.get("description", "")
+        section = f"## ⚙️ {name}\n\n{desc}"
+        if svc.get("type") == "systemd":
+            section += "\n\n**Deployment:** systemd user service (auto-restart on failure)"
+        parts.append(section)
+
+    return "\n\n---\n\n".join(parts)
+
+
+def render_jobs(jobs: list[dict]) -> str:
+    """Render scheduled jobs grouped by source as markdown tables."""
+    openclaw_jobs = [j for j in jobs if j.get("source") == "openclaw"]
+    crontab_jobs = [j for j in jobs if j.get("source") == "crontab"]
+
+    sections = []
+
+    # OpenClaw jobs
+    oc_header = "### OpenClaw Jobs (`cron/jobs.json`)"
+    if openclaw_jobs:
+        lines = [
+            oc_header, "",
+            "| Job | Description | Schedule | Status |",
+            "|-----|-------------|----------|--------|",
+        ]
+        for j in openclaw_jobs:
+            status = "✅ Enabled" if j.get("enabled", True) else "❌ Disabled"
+            lines.append(
+                f"| **{j['name']}** | {j.get('description', '')} "
+                f"| {j.get('interval', '')} | {status} |"
+            )
+        sections.append("\n".join(lines))
+    else:
+        sections.append(f"{oc_header}\n\n_No scheduled jobs configured._")
+
+    # Crontab jobs
+    ct_header = "### System Crontab (`crontab -e`)"
+    if crontab_jobs:
+        lines = [
+            ct_header, "",
+            "| Job | Schedule |",
+            "|-----|----------|",
+        ]
+        for j in crontab_jobs:
+            lines.append(f"| **{j['name']}** | {j.get('interval', '')} |")
+        sections.append("\n".join(lines))
+    else:
+        sections.append(f"{ct_header}\n\n_No scheduled jobs configured._")
+
+    return "\n\n".join(sections)
+
+
+def fill_placeholders(body: str, meta: dict, data: dict) -> str:
+    """Replace {{ placeholder }} markers in body with rendered markdown."""
+    data_source = meta.get("data_source", "")
+    overrides = meta.get("overrides", {})
+
+    replacements = {
+        "{{ agents }}": lambda: render_agents(data.get("agents", []), overrides),
+        "{{ channels }}": lambda: render_channels(data.get("channels", [])),
+        "{{ jobs }}": lambda: render_jobs(data.get("jobs", [])),
+    }
+
+    # {{ items }} depends on the data_source
+    if data_source == "plugins":
+        replacements["{{ items }}"] = lambda: render_plugins(data.get("plugins", []), overrides)
+    elif data_source == "services":
+        replacements["{{ items }}"] = lambda: render_services(data.get("services", []), overrides)
+    elif data_source == "skills":
+        replacements["{{ items }}"] = lambda: render_plugins(
+            data.get("skills", []), overrides,
+            empty_message="_No skills configured._"
         )
-    except FileNotFoundError:
-        print("Error: 'gh' CLI not found. Install from https://cli.github.com",
-              file=sys.stderr)
-        raise SystemExit(1)
-    except subprocess.TimeoutExpired:
-        print(f"    ✗ Copilot CLI timed out after {timeout}s", file=sys.stderr)
-        return ""
 
-    if result.returncode != 0:
-        print(f"    ✗ Copilot CLI error (exit {result.returncode}): "
-              f"{result.stderr.strip()}", file=sys.stderr)
-        return ""
+    for placeholder, renderer in replacements.items():
+        if placeholder in body:
+            body = body.replace(placeholder, renderer())
 
-    output = result.stdout.strip()
-    # Strip Copilot CLI tool-use activity lines (● action / └ result)
-    cleaned_lines = []
-    for line in output.split("\n"):
-        stripped = line.strip()
-        if stripped.startswith("●") or stripped.startswith("└"):
-            continue
-        cleaned_lines.append(line)
-    output = "\n".join(cleaned_lines).strip()
-    # Strip wrapping code fences the LLM sometimes adds
-    if output.startswith("```"):
-        lines = output.split("\n")
-        if lines[-1].strip() == "```":
-            output = "\n".join(lines[1:-1])
-    print(f"    ✓ Got {len(output):,} chars back")
-    sys.stdout.flush()
-    return output
-
-
-def build_prompt(section_body: str, data: dict) -> str:
-    """Construct a rendering prompt from section instructions and gathered data."""
-    data_json = json.dumps(data, indent=2, default=str)
-    return (
-        "You are generating a page for a Jekyll documentation site about OpenClaw, "
-        "a modular AI assistant framework.\n\n"
-        f"{section_body}\n\n"
-        "## Data\n\n"
-        f"```json\n{data_json}\n```\n\n"
-        "IMPORTANT RULES:\n"
-        "- Output ONLY the markdown body content.\n"
-        "- Do NOT include Jekyll frontmatter (--- blocks).\n"
-        "- Do NOT wrap your response in code fences.\n"
-        "- Never include secrets, IP addresses, emails, account IDs, or personal identifiers.\n"
-        "- Be concise and well-structured."
-    )
+    return body
 
 
 # ---------------------------------------------------------------------------
@@ -565,7 +605,6 @@ def discover_plugins_from_source(source: Path) -> list[dict]:
         if readme.exists():
             parsed = parse_frontmatter_md(readme)
             body = parsed["body"]
-        # Extract API/command info from the manifest
         commands = info.get("commands", info.get("tools", info.get("functions", [])))
         plugins.append({
             "name": info.get("name", plugin_dir.name),
@@ -647,45 +686,21 @@ def discover_services_from_source(source: Path) -> list[dict]:
     return services
 
 
-def load_readme_from_source(source: Path) -> str:
-    """Load README.md from the openclaw repo checkout."""
-    readme = source / "README.md"
-    if readme.exists():
-        return readme.read_text(encoding="utf-8", errors="ignore")
-    return ""
-
-
 # ---------------------------------------------------------------------------
 # Page generation
 # ---------------------------------------------------------------------------
 
 
-def generate_page(section: dict, data: dict, i: int = 0, total: int = 0) -> str:
-    """Generate a complete Jekyll page by calling the Copilot CLI."""
+def generate_page(section: dict, data: dict) -> str:
+    """Generate a complete Jekyll page by substituting {{ placeholder }} markers."""
     meta = section["meta"]
     body = section["body"]
 
-    # Strip legacy <!-- instructions: ... --> HTML comments
-    body = re.sub(r"<!--\s*instructions:.*?-->\s*", "", body, flags=re.DOTALL)
+    # Strip any legacy HTML comments
+    body = re.sub(r"<!--.*?-->\s*", "", body, flags=re.DOTALL).strip()
 
-    # Select relevant data slices
-    data_keys = meta.get("data_keys", [])
-    if data_keys:
-        relevant = {k: data.get(k, []) for k in data_keys}
-    else:
-        relevant = data
-
-    prompt = build_prompt(body, relevant)
-
-    print(f"  [{i}/{total}] Rendering {meta['output']} via Copilot CLI ...")
-    sys.stdout.flush()
-    rendered = render_with_copilot(prompt)
-
-    if not rendered:
-        print(f"  [{i}/{total}] ✗ Empty response for {meta['output']}")
-        rendered = "_Documentation generation pending — re-run the workflow to generate._"
-    else:
-        print(f"  [{i}/{total}] ✓ {meta['output']} complete")
+    # Fill placeholders with rendered data
+    body = fill_placeholders(body, meta, data)
 
     header = "\n".join([
         "---",
@@ -696,11 +711,9 @@ def generate_page(section: dict, data: dict, i: int = 0, total: int = 0) -> str:
         "",
         f"# {meta['title']}",
         "",
-        "*Generated by an AI skill reading the live OpenClaw configs from Octo.* 🐙",
-        "",
     ])
 
-    return header + "\n" + rendered.rstrip("\n") + "\n"
+    return header + "\n" + body.rstrip("\n") + "\n"
 
 
 def main():
@@ -740,7 +753,7 @@ def main():
         print(f"Writing docs to:     {output_dir}")
 
         plugins = discover_plugins_from_source(source)
-        skills = []  # Skills are discovered at runtime; plugins come from source
+        skills = []
         services = discover_services_from_source(source)
         config = load_config_from_source(source)
         agents = extract_agents(config, source)
@@ -752,64 +765,29 @@ def main():
               f"{len(services)} services, {len(agents)} agents, "
               f"{len(channels)} channels, {len(jobs)} jobs")
 
-        data = {
-            "plugins": plugins,
-            "skills": skills,
-            "services": services,
-            "agents": agents,
-            "channels": channels,
-            "jobs": jobs,
-            "models": models,
-        }
+    else:
+        # Runtime mode: read from ~/.openclaw directory
+        config_dir = args.config_dir.resolve()
 
-        output_dir.mkdir(parents=True, exist_ok=True)
-
-        if not SECTIONS_DIR.is_dir():
-            print(f"Error: Sections directory not found at {SECTIONS_DIR}")
+        if not config_dir.exists():
+            print(f"Error: Config directory not found at {config_dir}")
             raise SystemExit(1)
 
-        sections = sorted(SECTIONS_DIR.glob("*.md"))
-        total = len(sections)
-        print(f"\nRendering {total} sections ...\n")
-        sys.stdout.flush()
+        print(f"Reading config from: {config_dir}")
+        print(f"Writing docs to:     {output_dir}")
 
-        for i, section_path in enumerate(sections, 1):
-            section = parse_frontmatter_md(section_path)
-            meta = section["meta"]
-            if "output" not in meta:
-                print(f"  [{i}/{total}] Skipping {section_path.name} (no output defined)")
-                continue
+        plugins = []
+        skills = discover_skills(config_dir)
+        services = discover_services(config_dir)
+        config = load_config(config_dir)
+        agents = extract_agents(config, config_dir)
+        channels = extract_channels(config)
+        jobs = load_jobs(config_dir) + load_crontab_jobs()
+        models = extract_models(config)
 
-            content = generate_page(section, data, i, total)
-            out_path = output_dir / meta["output"]
-            out_path.write_text(content, encoding="utf-8")
-            print(f"  Wrote {out_path}")
-
-        print("\nDone!")
-        return
-
-    # Legacy mode: read from ~/.openclaw runtime directory
-    config_dir = args.config_dir.resolve()
-
-    if not config_dir.exists():
-        print(f"Error: Config directory not found at {config_dir}")
-        raise SystemExit(1)
-
-    print(f"Reading config from: {config_dir}")
-    print(f"Writing docs to:     {output_dir}")
-
-    plugins = []  # Plugins come from source repo only
-    skills = discover_skills(config_dir)
-    services = discover_services(config_dir)
-    config = load_config(config_dir)
-    agents = extract_agents(config, config_dir)
-    channels = extract_channels(config)
-    jobs = load_jobs(config_dir) + load_crontab_jobs()
-    models = extract_models(config)
-
-    print(f"Found {len(plugins)} plugins, {len(skills)} skills, "
-          f"{len(services)} services, {len(agents)} agents, "
-          f"{len(channels)} channels, {len(jobs)} jobs")
+        print(f"Found {len(plugins)} plugins, {len(skills)} skills, "
+              f"{len(services)} services, {len(agents)} agents, "
+              f"{len(channels)} channels, {len(jobs)} jobs")
 
     data = {
         "plugins": plugins,
@@ -830,7 +808,6 @@ def main():
     sections = sorted(SECTIONS_DIR.glob("*.md"))
     total = len(sections)
     print(f"\nRendering {total} sections ...\n")
-    sys.stdout.flush()
 
     for i, section_path in enumerate(sections, 1):
         section = parse_frontmatter_md(section_path)
@@ -838,10 +815,11 @@ def main():
         if "output" not in meta:
             print(f"  [{i}/{total}] Skipping {section_path.name} (no output defined)")
             continue
-        content = generate_page(section, data, i, total)
+
+        content = generate_page(section, data)
         out_path = output_dir / meta["output"]
         out_path.write_text(content, encoding="utf-8")
-        print(f"  Wrote {out_path}")
+        print(f"  [{i}/{total}] ✓ Wrote {out_path.name}")
 
     print("\nDone!")
 
