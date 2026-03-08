@@ -8,20 +8,20 @@ nav_order: 4
 
 ## Overview
 
-Skills are modular components that enable agents to perform specific tasks or functions. They are designed to provide flexibility and extensibility, allowing developers to customize and enhance agent capabilities based on their specific needs.
+Skills are modular capabilities that can be used by agents to perform specific tasks. Each skill is designed to address a particular functionality, enabling agents to execute actions or provide responses tailored to specific needs. Skills provide a flexible and extensible way to enhance agent behavior.
 
 ## Key Concepts
 
-- **Skills**: Self-contained modules that define specific functionalities for agents.
-- **Agents**: Entities that utilize skills to perform tasks or respond to user inputs.
-- **Extensibility**: Skills can be added or removed to tailor an agent's capabilities.
+- **Skills**: Modular units of functionality that agents can use to perform tasks.
+- **Agents**: Entities that utilize skills to execute actions or provide responses.
+- **Extensibility**: Skills can be added or updated to expand the capabilities of agents.
 
 ## How It Works
 
-1. **Skill Definition**: Each skill is defined as a modular component with a specific purpose.
-2. **Skill Assignment**: Skills are assigned to agents to enable them to perform the associated tasks.
-3. **Task Execution**: When an agent encounters a scenario requiring a specific skill, it utilizes the assigned skill to execute the task.
+1. **Skill Definition**: Each skill is defined as a discrete unit of functionality.
+2. **Agent Integration**: Agents are configured to use specific skills based on their intended purpose.
+3. **Skill Execution**: When an agent encounters a scenario requiring a skill, it invokes the appropriate skill to perform the task or generate a response.
 
 ## Example Usage
 
-No examples are available in the source material.
+No example usage is available.
