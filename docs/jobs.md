@@ -8,43 +8,27 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of the scheduled jobs available in the system. These jobs perform automated tasks such as fetching calendar data and backing up configuration files. Each job is configured with a specific schedule and purpose to ensure timely and efficient execution.
+This document provides an overview of the scheduled jobs available in the system. Scheduled jobs are automated tasks that run at predefined intervals to perform specific actions, such as fetching data or creating backups. These jobs ensure that critical operations are performed consistently and on time.
 
 ## Key Concepts
 
-- **Scheduled Jobs**: Automated tasks that run at predefined intervals or times.
-- **Job Schedule**: Defines when and how often a job runs, using either cron expressions or interval-based timing.
-- **Job Purpose**: Each job has a specific function, such as data fetching or file backup.
+- **Scheduled Jobs**: Automated tasks that run on a predefined schedule.
+- **Job Schedule**: Specifies when and how often a job runs, using either cron expressions or time intervals.
+- **Job Purpose**: Each job has a specific purpose, such as data fetching or backup.
 
 ## How It Works
 
-Scheduled jobs are configured to run automatically based on their defined schedules. The system supports two types of scheduling:
-- **Cron-based scheduling**: Jobs run at specific times based on a cron expression.
-- **Interval-based scheduling**: Jobs run at regular intervals defined in milliseconds.
-
-Each job is enabled by default and performs its designated task according to its schedule.
+1. Each job is configured with a name, description, and schedule.
+2. Jobs are enabled or disabled based on their configuration.
+3. The schedule determines when the job runs, using either:
+   - **Cron Expressions**: Define specific times and days for execution.
+   - **Fixed Intervals**: Specify a recurring time interval in milliseconds.
+4. Enabled jobs execute automatically according to their schedule.
 
 ## List of Scheduled Jobs
 
-### `calendar-fetch-hourly`
-
-- **Description**: Fetches calendar data hourly between 7:00 AM and 5:00 PM PST.
-- **Schedule**: 
-  - **Type**: Cron
-  - **Expression**: `0 7-17 * * *`
-  - **Time Zone**: America/Los_Angeles
-
-### `config-backup`
-
-- **Description**: Backs up the `openclaw.json` configuration file to Git daily. The job commits changes only if the file has been modified.
-- **Schedule**: 
-  - **Type**: Interval
-  - **Interval**: Every 24 hours (86,400,000 milliseconds)
-
-### `calendar-fetch-midnight`
-
-- **Description**: Fetches calendar data at midnight PST.
-- **Schedule**: 
-  - **Type**: Cron
-  - **Expression**: `0 0 * * *`
-  - **Time Zone**: America/Los_Angeles`
+| Job Name                  | Description                                      | Schedule Type | Schedule Details                     | Enabled |
+|---------------------------|--------------------------------------------------|---------------|--------------------------------------|---------|
+| `calendar-fetch-hourly`   | Fetch calendars hourly 7am-5pm PST               | Cron          | `0 7-17 * * *` (PST)                | Yes     |
+| `config-backup`           | Backup `openclaw.json` to Git daily (only commits if changed) | Fixed Interval | Every 86,400,000 ms (24 hours)       | Yes     |
+| `calendar-fetch-midnight` | Fetch calendars at midnight PST                  | Cron          | `0 0 * * *` (PST)                   | Yes     |
