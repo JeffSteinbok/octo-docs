@@ -6,6 +6,4 @@ nav_order: 7
 
 # Release Notes
 
-## Summary
-
-No changes are included in this release.
+No changes are available for this release.
