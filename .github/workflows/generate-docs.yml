@@ -76,8 +76,11 @@ jobs:
               echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             else
-              echo "use_artifact=false"                                 >> "$GITHUB_OUTPUT"
-              echo "bundle_path=${{ inputs.bundle_path || './bundle' }}" >> "$GITHUB_OUTPUT"
+              # No artifact specified — download the latest docs-bundle from openclaw
+              echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
+              echo "artifact_name=docs-bundle"                          >> "$GITHUB_OUTPUT"
+              echo "run_id="                                            >> "$GITHUB_OUTPUT"
+              echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             fi
             echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
           fi
