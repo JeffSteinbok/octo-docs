@@ -8,7 +8,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_MODEL = "claude-sonnet-4-6"
+_DEFAULT_MODEL = "anthropic/claude-sonnet-4-6"
 _DEFAULT_MAX_RETRIES = 3
 _DEFAULT_RETRY_DELAY = 2.0
 
