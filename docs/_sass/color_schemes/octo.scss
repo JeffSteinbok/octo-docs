@@ -27,6 +27,13 @@ $feedback-color: #0e7490;
   }
 }
 
+// H4 — bigger and normal-case (just-the-docs defaults to small + uppercase)
+h4 {
+  font-size: 1.05rem !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
 // Clean nav links — no background noise, just subtle left-border on active
 .nav-list-link {
   color: #334155 !important;
