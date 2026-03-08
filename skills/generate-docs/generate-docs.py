@@ -11,6 +11,7 @@ import json
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 try:
@@ -479,48 +480,77 @@ def extract_models(config: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 
-def render_with_copilot(prompt: str, timeout: int = 120) -> str:
-    """Call the GitHub Copilot CLI with a prompt and return the response text."""
+def render_with_copilot(prompt: str, timeout: int = 120, max_retries: int = 3) -> str:
+    """Call the GitHub Copilot CLI with a prompt and return the response text.
+
+    Retries up to *max_retries* times on timeout or rate-limit errors, using
+    exponential back-off (30s, 60s, 120s) so that transient Copilot API
+    throttling does not cause permanent failures.
+    """
+    base_retry_delay = 30  # seconds; multiplied by attempt number for back-off
     prompt_len = len(prompt)
     print(f"    Prompt size: {prompt_len:,} chars")
     sys.stdout.flush()
-    try:
-        result = subprocess.run(
-            ["gh", "copilot", "-p", prompt],
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-        )
-    except FileNotFoundError:
-        print("Error: 'gh' CLI not found. Install from https://cli.github.com",
-              file=sys.stderr)
-        raise SystemExit(1)
-    except subprocess.TimeoutExpired:
-        print(f"    ✗ Copilot CLI timed out after {timeout}s", file=sys.stderr)
-        return ""
 
-    if result.returncode != 0:
-        print(f"    ✗ Copilot CLI error (exit {result.returncode}): "
-              f"{result.stderr.strip()}", file=sys.stderr)
-        return ""
+    for attempt in range(1, max_retries + 1):
+        try:
+            result = subprocess.run(
+                ["gh", "copilot", "-p", prompt],
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+            )
+        except FileNotFoundError:
+            print("Error: 'gh' CLI not found. Install from https://cli.github.com",
+                  file=sys.stderr)
+            raise SystemExit(1)
+        except subprocess.TimeoutExpired:
+            if attempt < max_retries:
+                wait = base_retry_delay * attempt
+                print(f"    ✗ Copilot CLI timed out after {timeout}s "
+                      f"(attempt {attempt}/{max_retries}), retrying in {wait}s …",
+                      file=sys.stderr)
+                sys.stderr.flush()
+                time.sleep(wait)
+                continue
+            print(f"    ✗ Copilot CLI timed out after {timeout}s "
+                  f"(all {max_retries} attempts exhausted)", file=sys.stderr)
+            return ""
 
-    output = result.stdout.strip()
-    # Strip Copilot CLI tool-use activity lines (● action / └ result)
-    cleaned_lines = []
-    for line in output.split("\n"):
-        stripped = line.strip()
-        if stripped.startswith("●") or stripped.startswith("└"):
-            continue
-        cleaned_lines.append(line)
-    output = "\n".join(cleaned_lines).strip()
-    # Strip wrapping code fences the LLM sometimes adds
-    if output.startswith("```"):
-        lines = output.split("\n")
-        if lines[-1].strip() == "```":
-            output = "\n".join(lines[1:-1])
-    print(f"    ✓ Got {len(output):,} chars back")
-    sys.stdout.flush()
-    return output
+        if result.returncode != 0:
+            stderr_text = result.stderr.strip()
+            # Treat rate-limit responses as retryable
+            if attempt < max_retries and any(
+                kw in stderr_text.lower()
+                for kw in ("rate limit", "too many requests", "429", "quota")
+            ):
+                wait = base_retry_delay * attempt
+                print(f"    ✗ Copilot CLI rate-limited (attempt {attempt}/{max_retries}), "
+                      f"retrying in {wait}s …", file=sys.stderr)
+                sys.stderr.flush()
+                time.sleep(wait)
+                continue
+            print(f"    ✗ Copilot CLI error (exit {result.returncode}): "
+                  f"{stderr_text}", file=sys.stderr)
+            return ""
+
+        output = result.stdout.strip()
+        # Strip Copilot CLI tool-use activity lines (● action / └ result)
+        cleaned_lines = []
+        for line in output.split("\n"):
+            stripped = line.strip()
+            if stripped.startswith("●") or stripped.startswith("└"):
+                continue
+            cleaned_lines.append(line)
+        output = "\n".join(cleaned_lines).strip()
+        # Strip wrapping code fences the LLM sometimes adds
+        if output.startswith("```"):
+            lines = output.split("\n")
+            if lines[-1].strip() == "```":
+                output = "\n".join(lines[1:-1])
+        print(f"    ✓ Got {len(output):,} chars back")
+        sys.stdout.flush()
+        return output
 
 
 def build_prompt(section_body: str, data: dict) -> str:
@@ -785,6 +815,10 @@ def main():
             out_path.write_text(content, encoding="utf-8")
             print(f"  Wrote {out_path}")
 
+            # Pause between API calls to avoid hitting Copilot rate limits
+            if i < total:
+                time.sleep(10)
+
         print("\nDone!")
         return
 
@@ -842,6 +876,10 @@ def main():
         out_path = output_dir / meta["output"]
         out_path.write_text(content, encoding="utf-8")
         print(f"  Wrote {out_path}")
+
+        # Pause between API calls to avoid hitting Copilot rate limits
+        if i < total:
+            time.sleep(10)
 
     print("\nDone!")
 
