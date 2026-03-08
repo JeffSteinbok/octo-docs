@@ -115,8 +115,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           python tools/docs/gitops/create_branch.py --bundle-root "${{ steps.inputs.outputs.bundle_path }}"
           python tools/docs/gitops/commit_changes.py
-          # Check if a commit was actually made
-          if git diff --quiet HEAD~1 HEAD 2>/dev/null; then
+          # Check if the branch has diverged from main
+          if git diff --quiet origin/main HEAD -- docs/; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
