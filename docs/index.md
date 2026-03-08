@@ -64,6 +64,7 @@ Security is the most important aspect of this experiment — even above just hav
 - **Unprivileged account** — OpenClaw runs under its own dedicated user on Ubuntu with no `sudo` permissions. It can configure itself new plugins, but it cannot install anything on its own.
 - **Owner-only access** — Octo only responds to me. Not even family members have access.
 - **No secrets in Git** — All tokens and credentials are kept in hidden files that are never synced to version control.
+- **No exec on the main agent** — Octo's primary agent does not have `exec` permissions, meaning it cannot run arbitrary shell commands. If something truly dangerous needs to happen, I have to explicitly ask the **root** agent, which is the only one with elevated privileges. This also means we rely more heavily on purpose-built plugins rather than skills — since skills can't execute code without `exec`, every real-world interaction needs a proper plugin behind it.
 
 ### 📬 Mail & Calendar
 
