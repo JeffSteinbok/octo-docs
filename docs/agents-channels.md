@@ -11,12 +11,13 @@ nav_order: 2
 ## Agents
 
 Agents are LLM-powered personas, each with their own identity, permissions,
-and context. They decide which skills to invoke based on user requests.
+and context. They decide which plugins to invoke based on user requests.
 
 | Agent | Role | Status |
 |-------|------|--------|
-| 🐙 main | Primary personal assistant — full access to all skills and tools | ✅ Active |
-| 📬 mail-agent | Email processing agent with read-only access | 💤 Inactive |
+| 🐙 main | Primary personal assistant — full access to all plugins and tools | ✅ Active |
+| 📬 mail | Email processing agent with read-only access | 💤 Inactive |
+| 🔑 root | Privileged agent with exec/process access — invoked explicitly by main | 💤 Inactive |
 
 ## Channels
 
