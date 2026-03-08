@@ -21,11 +21,14 @@ template: overview
 instructions:
   audience: external developers
   include:
-    - plugin list with descriptions
-    - tool counts per plugin
-    - brief summary of each plugin's purpose
-    - example use cases
+    - "Start with a summary table of all plugins: columns for emoji, plugin name (linked to its section anchor), short description, and tool count"
+    - "After the table, create an H2 section for each plugin with a fitting emoji in the heading (e.g. 📧 FastMail, 🏠 Home Assistant, 📅 Outlook Calendar, etc.)"
+    - "In each plugin section, list every tool the plugin provides with its name and description"
   exclude:
+    - How It Works section
+    - Example Usage section
+    - Common Pitfalls section
+    - Key Concepts section
     - internal service names
     - authentication credentials or token values
     - private hostnames or IP addresses
