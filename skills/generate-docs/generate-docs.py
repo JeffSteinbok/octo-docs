@@ -495,6 +495,14 @@ def render_with_copilot(prompt: str, timeout: int = 120) -> str:
         return ""
 
     output = result.stdout.strip()
+    # Strip Copilot CLI tool-use activity lines (● action / └ result)
+    cleaned_lines = []
+    for line in output.split("\n"):
+        stripped = line.strip()
+        if stripped.startswith("●") or stripped.startswith("└"):
+            continue
+        cleaned_lines.append(line)
+    output = "\n".join(cleaned_lines).strip()
     # Strip wrapping code fences the LLM sometimes adds
     if output.startswith("```"):
         lines = output.split("\n")
