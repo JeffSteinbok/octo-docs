@@ -39,24 +39,20 @@ def test_format_markdown_normalizes_line_endings():
     assert "\r" not in result
 
 
-def test_generate_page_missing_api_key():
-    """generate_page raises EnvironmentError when both API key and GITHUB_TOKEN are missing."""
+def test_generate_page_missing_token():
+    """generate_page raises EnvironmentError when GITHUB_TOKEN is missing."""
     import os
-    env_backup_api = os.environ.pop("DOCS_LLM_API_KEY", None)
-    env_backup_gh = os.environ.pop("GITHUB_TOKEN", None)
+    env_backup = os.environ.pop("GITHUB_TOKEN", None)
     try:
         from docs.generation.generate_page import generate_page
         try:
             generate_page("test prompt")
             assert False, "Should have raised EnvironmentError"
         except EnvironmentError as e:
-            assert "DOCS_LLM_API_KEY" in str(e)
             assert "GITHUB_TOKEN" in str(e)
     finally:
-        if env_backup_api is not None:
-            os.environ["DOCS_LLM_API_KEY"] = env_backup_api
-        if env_backup_gh is not None:
-            os.environ["GITHUB_TOKEN"] = env_backup_gh
+        if env_backup is not None:
+            os.environ["GITHUB_TOKEN"] = env_backup
 
 
 def test_generate_page_calls_openai():
@@ -76,7 +72,7 @@ def test_generate_page_calls_openai():
     mock_openai_module = MagicMock()
     mock_openai_module.OpenAI = mock_openai_class
 
-    with patch.dict(os.environ, {"DOCS_LLM_API_KEY": "test-key", "DOCS_LLM_MODEL": "gpt-4o"}):
+    with patch.dict(os.environ, {"GITHUB_TOKEN": "test-gh-token", "DOCS_LLM_MODEL": "gpt-4o"}):
         with patch.dict(sys.modules, {"openai": mock_openai_module}):
             from importlib import reload
             import docs.generation.generate_page as gp

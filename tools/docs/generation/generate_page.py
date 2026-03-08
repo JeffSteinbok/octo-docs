@@ -19,13 +19,16 @@ def generate_page(
     retry_delay: float = _DEFAULT_RETRY_DELAY,
 ) -> str:
     """
-    Send a prompt to the configured LLM API and return the generated markdown.
+    Send a prompt to the GitHub Models LLM API and return the generated markdown.
+
+    Authentication uses the GitHub token (GITHUB_TOKEN environment variable),
+    which is automatically available in GitHub Actions with no additional secrets
+    configuration. For local use, export a GitHub personal access token.
 
     Environment variables:
-        DOCS_LLM_PROVIDER   - Provider name: 'openai' (default) or 'openai-compatible'
-        DOCS_LLM_MODEL      - Model name (e.g. 'gpt-4o', 'gpt-4-turbo')
-        DOCS_LLM_API_KEY    - API key
-        DOCS_LLM_BASE_URL   - Optional base URL for compatible endpoints
+        GITHUB_TOKEN        - GitHub token (required); used with the GitHub Models endpoint
+        DOCS_LLM_MODEL      - Model name (default: 'gpt-4o')
+        DOCS_LLM_BASE_URL   - Optional override for the GitHub Models base URL
 
     Args:
         prompt: The assembled prompt string
@@ -36,28 +39,17 @@ def generate_page(
     Returns:
         Generated markdown content as a string
     """
-    # DOCS_LLM_PROVIDER is reserved for future provider switching (e.g. Anthropic, Azure)
-    _provider = os.environ.get("DOCS_LLM_PROVIDER", "openai").lower()  # noqa: F841
     model = model or os.environ.get("DOCS_LLM_MODEL", "gpt-4o")
-    api_key = os.environ.get("DOCS_LLM_API_KEY")
-    base_url = os.environ.get("DOCS_LLM_BASE_URL")
+    api_key = os.environ.get("GITHUB_TOKEN")
+    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.inference.ai.azure.com")
 
     if not api_key:
-        # Fall back to the GitHub token, which is accepted by the GitHub Models
-        # OpenAI-compatible endpoint (https://models.inference.ai.azure.com).
-        # In GitHub Actions, GITHUB_TOKEN is always available without any
-        # additional secrets configuration.
-        github_token = os.environ.get("GITHUB_TOKEN")
-        if github_token:
-            api_key = github_token
-            if not base_url:
-                base_url = "https://models.inference.ai.azure.com"
-            logger.info("DOCS_LLM_API_KEY not set; using GITHUB_TOKEN with GitHub Models endpoint")
-        else:
-            raise EnvironmentError(
-                "No LLM credentials found. Set DOCS_LLM_API_KEY, or set GITHUB_TOKEN "
-                "to use the GitHub Models endpoint (https://models.inference.ai.azure.com)."
-            )
+        raise EnvironmentError(
+            "GITHUB_TOKEN environment variable is required. "
+            "In GitHub Actions it is set automatically. "
+            "For local use, export a GitHub personal access token: "
+            "export GITHUB_TOKEN=ghp_your-token"
+        )
 
     last_error = None
     for attempt in range(1, max_retries + 1):
