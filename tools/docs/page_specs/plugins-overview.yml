@@ -28,7 +28,8 @@ instructions:
   include:
     - "Start with a summary table of all plugins: columns for emoji, plugin name (linked to its section anchor), short description, and tool count"
     - "After the table, create an H2 section for each plugin with a fitting emoji in the heading (e.g. 📧 FastMail, 🏠 Home Assistant, 📅 Outlook Calendar, etc.)"
-    - "In each plugin section, list every tool the plugin provides with its name and description"
+    - "In each plugin section, list every tool as an H4 heading with the tool name"
+    - "Under each tool H4, include the tool's description and a table of its parameters (name, type, description) if parameter info is available in the source data; otherwise just show the description"
   exclude:
     - How It Works section
     - Example Usage section
