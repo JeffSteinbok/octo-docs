@@ -449,6 +449,21 @@ def discover_services(config_dir: Path) -> list[dict]:
     return services
 
 
+def extract_models(config: dict) -> dict:
+    """Extract model config from agents.defaults."""
+    defaults = config.get("agents", {}).get("defaults", {})
+    model = defaults.get("model", {})
+    image_model = defaults.get("imageModel", {})
+    web_search = config.get("tools", {}).get("web", {}).get("search", {}).get("gemini", {}).get("model", "")
+    return {
+        "primary": model.get("primary", ""),
+        "fallbacks": model.get("fallbacks", []),
+        "image_primary": image_model.get("primary", ""),
+        "image_fallbacks": image_model.get("fallbacks", []),
+        "web_search": web_search,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Copilot CLI rendering
 # ---------------------------------------------------------------------------
