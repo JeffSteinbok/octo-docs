@@ -1,4 +1,4 @@
-name: Regenerate documentation (bundle-based)
+name: Generate Public Docs
 
 on:
   workflow_dispatch:
@@ -7,20 +7,32 @@ on:
         description: "Path to the sanitized docs bundle"
         required: true
         default: "./bundle"
+      regenerate_all:
+        description: "Regenerate all pages (ignore changed_pages.json)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  regenerate:
+  generate-docs:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout octo-docs
-        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+    env:
+      DOCS_LLM_PROVIDER: ${{ vars.DOCS_LLM_PROVIDER }}
+      DOCS_LLM_MODEL: ${{ vars.DOCS_LLM_MODEL }}
+      DOCS_LLM_API_KEY: ${{ secrets.DOCS_LLM_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -29,13 +41,15 @@ jobs:
 
       - name: Generate docs
         run: |
-          python tools/docs/generation/generate_all.py --bundle "${{ inputs.bundle_path }}"
-        env:
-          DOCS_LLM_PROVIDER: ${{ vars.DOCS_LLM_PROVIDER }}
-          DOCS_LLM_MODEL: ${{ vars.DOCS_LLM_MODEL }}
-          DOCS_LLM_API_KEY: ${{ secrets.DOCS_LLM_API_KEY }}
+          EXTRA_FLAGS=""
+          if [ "${{ inputs.regenerate_all }}" = "true" ]; then
+            EXTRA_FLAGS="--all"
+          fi
+          python tools/docs/generation/generate_all.py \
+            --bundle "${{ inputs.bundle_path }}" \
+            $EXTRA_FLAGS
 
-      - name: Create branch and open PR
+      - name: Create branch, commit, and open PR
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

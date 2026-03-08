@@ -1,0 +1,14 @@
+id: release-latest
+output_path: docs/releases/latest.md
+
+sources:
+  - path: release/changes.json
+
+template: release_notes
+
+instructions:
+  audience: existing users
+  include:
+    - summary of changes
+    - breaking changes
+    - migration notes
