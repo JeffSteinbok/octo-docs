@@ -72,7 +72,7 @@ def test_generate_page_calls_openai():
     mock_openai_module = MagicMock()
     mock_openai_module.OpenAI = mock_openai_class
 
-    with patch.dict(os.environ, {"GITHUB_TOKEN": "test-gh-token", "DOCS_LLM_MODEL": "gpt-4o"}):
+    with patch.dict(os.environ, {"GITHUB_TOKEN": "test-gh-token"}):
         with patch.dict(sys.modules, {"openai": mock_openai_module}):
             from importlib import reload
             import docs.generation.generate_page as gp

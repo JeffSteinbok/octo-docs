@@ -119,12 +119,11 @@ Set LLM credentials:
 
 In GitHub Actions the built-in `GITHUB_TOKEN` is automatically used with the
 [GitHub Models](https://github.com/marketplace/models) OpenAI-compatible endpoint
-(`https://models.inference.ai.azure.com`). No additional secrets configuration is
+(`https://models.github.ai/inference`). No additional secrets configuration is
 required. For local use, create a GitHub personal access token and export it:
 
 ```bash
 export GITHUB_TOKEN=ghp_your-token
-export DOCS_LLM_MODEL=gpt-4o            # optional, default: gpt-4o
 ```
 
 ### Generate changed pages only
@@ -205,7 +204,6 @@ Leave `artifact_name` blank and set `bundle_path` to a bundle already on disk in
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `GITHUB_TOKEN` | Yes | GitHub token — used for LLM calls (GitHub Models) and PR creation |
-| `DOCS_LLM_MODEL` | No | Model name (default: `gpt-4o`) |
 | `DOCS_LLM_BASE_URL` | No | Optional override for the GitHub Models base URL |
 | `GITHUB_REPOSITORY` | Yes (for PRs) | `owner/repo` of this repository |
 

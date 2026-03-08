@@ -8,6 +8,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+_DEFAULT_MODEL = "claude-sonnet-4-6"
 _DEFAULT_MAX_RETRIES = 3
 _DEFAULT_RETRY_DELAY = 2.0
 
@@ -27,21 +28,20 @@ def generate_page(
 
     Environment variables:
         GITHUB_TOKEN        - GitHub token (required); used with the GitHub Models endpoint
-        DOCS_LLM_MODEL      - Model name (default: 'gpt-4o')
         DOCS_LLM_BASE_URL   - Optional override for the GitHub Models base URL
 
     Args:
         prompt: The assembled prompt string
-        model: Model override; falls back to DOCS_LLM_MODEL env var
+        model: Model override (default: claude-sonnet-4-6)
         max_retries: Number of retry attempts on transient failures
         retry_delay: Seconds to wait between retries
 
     Returns:
         Generated markdown content as a string
     """
-    model = model or os.environ.get("DOCS_LLM_MODEL", "gpt-4o")
+    model = model or _DEFAULT_MODEL
     api_key = os.environ.get("GITHUB_TOKEN")
-    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.inference.ai.azure.com")
+    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.github.ai/inference")
 
     if not api_key:
         raise EnvironmentError(

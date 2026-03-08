@@ -4,16 +4,13 @@ Public documentation site for the [OpenClaw](https://github.com/JeffSteinbok/ope
 
 ## What's Here
 
-- **Jekyll site** — Markdown pages published via GitHub Pages
-- **`skills/generate-docs/`** — A Python skill that reads the private OpenClaw config repo and generates sanitized, high-level documentation (no secrets, no IDs, no personal details)
+- **Jekyll site** — Markdown pages published via GitHub Pages (`docs/`)
+- **Doc generation pipeline** — LLM-powered page generator (`tools/docs/`) triggered automatically when the private OpenClaw repo is updated
 
-## Generating Docs
+## How It Works
 
-```bash
-python skills/generate-docs/generate-docs.py --config-repo ../openclaw
-```
-
-This reads skills, services, agents, and channels from the private config and writes the Jekyll pages to the repo root.
+1. A push to [openclaw](https://github.com/JeffSteinbok/openclaw) builds a docs bundle and dispatches a `bundle-ready` event
+2. The `generate-docs.yml` workflow downloads the bundle, generates pages via GitHub Models (gpt-4o), and opens a PR
 
 ## Live Site
 

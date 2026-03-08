@@ -44,7 +44,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCS_LLM_MODEL: ${{ vars.DOCS_LLM_MODEL }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
