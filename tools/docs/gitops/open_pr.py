@@ -98,7 +98,63 @@ def _try_add_label(token: str, owner: str, repo_name: str, pr_number: int, label
         print(f"Note: could not add label '{label}' (HTTP {exc.code}) — continuing without it.")
 
 
-def open_pr(bundle_root: str = "./bundle") -> None:
+def _try_enable_auto_merge(token: str, owner: str, repo_name: str, pr_number: int) -> None:
+    """Enable auto-merge (squash) on a PR via the GraphQL API."""
+    import urllib.request
+    import urllib.error
+
+    # First, get the PR node ID via REST
+    pr_url = f"https://api.github.com/repos/{owner}/{repo_name}/pulls/{pr_number}"
+    req = urllib.request.Request(
+        pr_url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req) as resp:
+            pr_data = json.loads(resp.read().decode("utf-8"))
+            node_id = pr_data.get("node_id")
+    except Exception as exc:
+        print(f"Note: could not fetch PR node ID for auto-merge (HTTP {exc}) — continuing without it.")
+        return
+
+    if not node_id:
+        return
+
+    # Enable auto-merge via GraphQL
+    graphql_url = "https://api.github.com/graphql"
+    query = """
+    mutation EnableAutoMerge($prId: ID!) {
+      enablePullRequestAutoMerge(input: {pullRequestId: $prId, mergeMethod: SQUASH}) {
+        pullRequest { autoMergeRequest { enabledAt } }
+      }
+    }
+    """
+    payload = json.dumps({"query": query, "variables": {"prId": node_id}}).encode("utf-8")
+    req = urllib.request.Request(
+        graphql_url,
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+            if "errors" in result:
+                print(f"Note: could not enable auto-merge: {result['errors'][0].get('message', '')} — continuing without it.")
+            else:
+                print("Auto-merge (squash) enabled on PR.")
+    except urllib.error.HTTPError as exc:
+        print(f"Note: could not enable auto-merge (HTTP {exc.code}) — continuing without it.")
+
+
+
     token = os.environ.get("GITHUB_TOKEN")
     repo = os.environ.get("GITHUB_REPOSITORY")
 
@@ -179,6 +235,7 @@ def open_pr(bundle_root: str = "./bundle") -> None:
         # Attempt to add the label separately; skip if it doesn't exist
         if pr_number:
             _try_add_label(token, owner, repo_name, pr_number, "generated-docs")
+            _try_enable_auto_merge(token, owner, repo_name, pr_number)
     except Exception as exc:
         print(f"Error opening PR: {exc}", file=sys.stderr)
         sys.exit(1)
