@@ -1,3 +1,5 @@
 # Release Notes
 
-No changes are available for this release.
+## Summary
+
+No changes are included in this release.
