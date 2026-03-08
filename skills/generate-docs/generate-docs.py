@@ -320,6 +320,16 @@ def extract_agents(config: dict, config_dir: Path) -> list[dict]:
         if isinstance(binding, dict) and binding.get("agentId"):
             bound_agents.add(binding["agentId"])
 
+    # Sub-agents referenced by other agents are also active
+    sub_agents = set()
+    for agent in agent_list:
+        if isinstance(agent, dict):
+            for sa in agent.get("subAgents", []):
+                if isinstance(sa, str):
+                    sub_agents.add(sa)
+                elif isinstance(sa, dict) and sa.get("id"):
+                    sub_agents.add(sa["id"])
+
     for agent in agent_list:
         if not isinstance(agent, dict):
             continue
@@ -327,7 +337,7 @@ def extract_agents(config: dict, config_dir: Path) -> list[dict]:
         agent_id = agent.get("id", "unknown")
 
         # Check if agent workspace has a completed IDENTITY.md (not template)
-        active = agent_id in bound_agents
+        active = agent_id in bound_agents or agent_id in sub_agents
         ws = config_dir / "agents" / agent_id / "workspace"
         if not ws.exists():
             # Repo layout: agents/<id> is the workspace itself
@@ -555,6 +565,8 @@ def discover_plugins_from_source(source: Path) -> list[dict]:
         if readme.exists():
             parsed = parse_frontmatter_md(readme)
             body = parsed["body"]
+        # Extract API/command info from the manifest
+        commands = info.get("commands", info.get("tools", info.get("functions", [])))
         plugins.append({
             "name": info.get("name", plugin_dir.name),
             "description": info.get("description", ""),
@@ -563,6 +575,7 @@ def discover_plugins_from_source(source: Path) -> list[dict]:
             "bins": [],
             "packages": [],
             "body": body,
+            "commands": commands,
             "source_url": None,
         })
     return plugins

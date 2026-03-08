@@ -14,11 +14,14 @@ self-contained package with its own metadata, dependencies, and commands.
 Use the `plugins` array from the provided data.
 
 For each plugin, generate:
-1. An H2 heading with the plugin's emoji and name (e.g., `## 🔧 plugin-name`)
+1. An H2 heading with a fun, relevant emoji you pick for the plugin and its name (e.g., `## 📧 fastmail-send`)
 2. A description paragraph
-3. Capabilities listed under a **Capabilities:** subheading as bullet points
-4. Dependencies if any, under a **Dependencies:** line
-5. A horizontal rule (`---`) divider
+3. If the plugin has `commands` (or `tools` or `functions`) in its data, list them
+   under a **Commands:** subheading — show each command name in a code span and
+   a brief one-line description of what it does
+4. Capabilities listed under a **Capabilities:** subheading as bullet points
+5. Dependencies if any, under a **Dependencies:** line
+6. A horizontal rule (`---`) divider
 
 ### Manual Overrides
 
