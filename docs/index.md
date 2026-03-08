@@ -1,7 +1,9 @@
 # Skills
 
-- Directs to `/skills`
+- Skill 1
+- Skill 2
 
 # Plugins
 
-- Directs to `/plugins`
+- Plugin 1
+- Plugin 2
