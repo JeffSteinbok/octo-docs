@@ -83,9 +83,7 @@ Security is the most important aspect of this experiment — even above just hav
   | Image | `github-copilot/claude-sonnet-4.6` → `claude-sonnet-4-6` → `gemini-2.5-flash-preview` | |
   | Web search | `gemini-2.5-flash-lite` | |
 
-  GitHub Copilot Sonnet handles the bulk of everyday work at no extra token cost (covered by the Copilot subscription). Anthropic and Gemini are available as fallbacks.
-
-- **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)** — All plugin and config development is done through Copilot CLI. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
+- **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)**— All plugin and config development is done through Copilot CLI. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
 - **Crontab over agent jobs** — Recurring tasks are pushed to crontab whenever possible to avoid spinning up agent sessions. If something fails, the script can send a message to OpenClaw to inform of the error.
 
 ## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
@@ -94,9 +92,17 @@ Security is the most important aspect of this experiment — even above just hav
 identity, personality, and set of permitted tools. Agents communicate with
 users through **channels** — messaging platforms like Telegram or Discord.
 
-🔧 **Plugins** are self-contained capabilities that agents can invoke: sending
+💬 **Channels** are the messaging platforms that connect agents to users.
+Each channel is bound to a specific agent and handles message routing
+between the platform (e.g. Telegram, Discord) and the agent's conversation loop.
+
+🧩 **Plugins** are self-contained capabilities that agents can invoke: sending
 email, checking restaurant availability, snapping a security camera, and more.
 Each plugin declares its own dependencies and is independently versioned.
+
+🎯 **Skills** are lightweight, markdown-defined capabilities. Unlike plugins,
+skills don't run code — they provide structured prompts and instructions that
+guide an agent's behavior. Think of plugins as _tools_ and skills as _knowledge_.
 
 ⚙️ **Services** are long-running background daemons that watch for events (like
 incoming email) and route notifications through the system.
