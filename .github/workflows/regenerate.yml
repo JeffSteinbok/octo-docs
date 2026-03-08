@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: JeffSteinbok/openclaw
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.OPENCLAW_TOKEN }}
           path: openclaw
           ref: ${{ github.event.client_payload.ref || 'main' }}
 
@@ -31,7 +31,7 @@ jobs:
         run: pip install pyyaml
 
       - name: Generate docs
-        run: python skills/generate-docs/generate-docs.py --source ./openclaw --output-dir ./docs
+        run: python skills/generate-docs/generate-docs.py --config-dir ./openclaw --output-dir ./docs
 
       - name: Check for changes
         id: changes
