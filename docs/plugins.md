@@ -1,51 +1,143 @@
-# Plugins Overview
+# Plugin Overview
 
-## Overview
+This document provides an overview of the available plugins, their functionalities, and the tools they provide.
 
-Plugins extend the functionality of the system by providing specialized tools for various tasks, such as managing emails, calendars, home automation, and more. Each plugin is designed to solve a specific problem, offering a set of tools that interact with external services or perform specific actions. This document provides an overview of the available plugins, their purposes, and example use cases.
+| Emoji | Plugin Name                                                                 | Description                                                                                     | Tool Count |
+|-------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|------------|
+| 🛠️    | [Config Backup](#-config-backup)                                           | Backs up OpenClaw config to Git with SHA-256 change detection                                   | 1          |
+| 📧    | [FastMail](#-fastmail)                                                     | Send email, search/read inbox, manage calendar events via JMAP and CalDAV                      | 7          |
+| 📸    | [Home Assistant Camera Snapshot](#-home-assistant-camera-snapshot)         | Take snapshots from Home Assistant cameras via hass-cli and save locally                       | 2          |
+| 🏠    | [Home Assistant CLI](#-home-assistant-cli)                                 | Control Home Assistant via hass-cli: get/list entity states, call services, and list events    | 4          |
+| 📅    | [ICS Calendar](#-ics-calendar)                                             | Fetches Nicole's calendar from an ICS feed                                                     | 1          |
+| 🍽️   | [OpenTable](#-opentable)                                                   | Check restaurant availability on OpenTable                                                     | 0          |
+| ❤️    | [OpenTable Heartbeat](#-opentable-heartbeat)                               | Health-check for the OpenTable skill. Alerts on failure via configured notification channel     | 1          |
+| 📅    | [Outlook Calendar](#-outlook-calendar)                                     | Fetch personal and family calendars via Microsoft Graph API                                    | 1          |
+| 📧    | [Outlook Mail](#-outlook-mail)                                             | Search and read Outlook inbox via Microsoft Graph API                                          | 3          |
+| 🗓️    | [Outlook Work Calendar](#-outlook-work-calendar)                           | Fetches published Outlook work calendar via EWS JSON API (no auth required)                    | 1          |
+| 🍎    | [WeightWatchers](#-weightwatchers)                                         | Search foods, log meals, view diary and points budget via the unofficial WW API                | 5          |
 
-## Key Concepts
+---
 
-- **Plugins**: Modular components that add specific functionalities to the system.
-- **Tools**: Individual actions or endpoints provided by each plugin.
-- **Use Cases**: Practical scenarios where plugins can be applied to solve real-world problems.
+## 🛠️ Config Backup
 
-## Plugin List
+**Description:** Backs up OpenClaw config to Git with SHA-256 change detection.
 
-| Plugin Name               | Description                                                                                     | Number of Tools |
-|---------------------------|-------------------------------------------------------------------------------------------------|-----------------|
-| `config-backup`           | Backs up OpenClaw config to Git with SHA-256 change detection.                                  | 1               |
-| `fastmail`                | Send email, search/read inbox, manage calendar events via JMAP and CalDAV.                     | 7               |
-| `hass-camera-snapshot`    | Take snapshots from Home Assistant cameras via hass-cli and save locally.                      | 2               |
-| `homeassistant-cli`       | Control Home Assistant via hass-cli: get/list entity states, call services, and list events.    | 4               |
-| `ics-calendar`            | Fetches Nicole's calendar from an ICS feed.                                                    | 1               |
-| `opentable`               | Check restaurant availability on OpenTable.                                                    | 0               |
-| `opentable-heartbeat`     | Health-check for the OpenTable skill. Alerts on failure via configured notification channel.    | 1               |
-| `outlook-calendar`        | Fetch personal and family calendars via Microsoft Graph API.                                   | 1               |
-| `outlook-mail`            | Search and read Outlook inbox via Microsoft Graph API.                                         | 3               |
-| `outlook-work-calendar`   | Fetches published Outlook work calendar via EWS JSON API (no auth required).                   | 1               |
-| `weightwatchers`          | Search foods, log meals, view diary and points budget via the unofficial WW API.               | 5               |
+### Tools
 
-## How It Works
+- **config_backup_run**: Back up OpenClaw config and agent workspace to Git. Copies `~/.openclaw` config files into the Git repo, commits, and pushes only when content has changed (SHA-256 detection).
 
-1. **Plugin Selection**: Choose the plugin that matches your use case (e.g., email management, calendar synchronization, home automation).
-2. **Tool Execution**: Each plugin provides specific tools (endpoints) that can be executed to perform tasks. For example:
-   - Use `fastmail_send` to send an email.
-   - Use `ha_service_call` to control a Home Assistant device.
-   - Use `ww_search` to find food items in the WeightWatchers database.
-3. **Input Parameters**: Provide the required parameters for the selected tool. Each tool has specific input requirements, such as email addresses, dates, or entity IDs.
-4. **Output**: The tool returns the requested data or performs the specified action.
+---
 
-## Example Use Cases
+## 📧 FastMail
 
-- **Email Management**: Use the `fastmail` plugin to send emails, search your inbox, or manage calendar events.
-- **Home Automation**: Use the `homeassistant-cli` plugin to control smart home devices, such as turning on lights or checking sensor states.
-- **Calendar Integration**: Fetch events from personal, family, or work calendars using the `outlook-calendar`, `ics-calendar`, or `outlook-work-calendar` plugins.
-- **Health Monitoring**: Use the `opentable-heartbeat` plugin to ensure the availability of the OpenTable service.
-- **Diet Tracking**: Log meals, calculate points, and manage your food diary with the `weightwatchers` plugin.
+**Description:** Send email, search/read inbox, manage calendar events via JMAP and CalDAV.
 
-## Common Pitfalls
+### Tools
 
-- **Missing Parameters**: Ensure all required parameters are provided when using a tool. Refer to the specific tool's documentation for details.
-- **Environment Variables**: Some plugins, such as `ics-calendar` and `outlook-work-calendar`, require environment variables to function correctly. Ensure these are configured before using the tools.
-- **Tool Availability**: Not all plugins provide tools. For example, the `opentable` plugin does not currently include any tools.
+- **fastmail_send**: Send a plain-text email via Fastmail JMAP, with optional file attachments.
+- **fastmail_search**: Search emails in Fastmail inbox by keyword, sender, subject, or date range via JMAP.
+- **fastmail_read**: Read a specific email by its JMAP email ID, returning full headers and body text.
+- **fastmail_inbox**: Show recent emails from the Fastmail inbox, optionally filtered to unread only.
+- **fastmail_meeting**: Create a calendar meeting invite via CalDAV and send iMIP invitations to attendees.
+- **fastmail_update_event**: Find a calendar event by UID or text search and update its title, time, location, attendees, or status.
+- **fastmail_query_events**: Query calendar events by date range, text, attendee email, or UID. Shows attendee RSVP status.
+
+---
+
+## 📸 Home Assistant Camera Snapshot
+
+**Description:** Take snapshots from Home Assistant cameras via hass-cli and save locally.
+
+### Tools
+
+- **hass_camera_snapshot**: Take a snapshot from a Home Assistant camera. Saves the image locally and returns the file path. Use `camera_name` "all" to capture every camera.
+- **hass_camera_list**: List all available Home Assistant cameras and their entity IDs.
+
+---
+
+## 🏠 Home Assistant CLI
+
+**Description:** Control Home Assistant via hass-cli: get/list entity states, call services, and list events.
+
+### Tools
+
+- **ha_state_get**: Get the current state of a Home Assistant entity. Returns attributes, state value, and last-changed timestamp.
+- **ha_state_list**: List all Home Assistant entities, or filter by domain (e.g. light, switch, sensor, camera, person).
+- **ha_service_call**: Call a Home Assistant service (e.g. turn on a light, activate a scene). Specify domain, service, and optionally an entity_id and extra data.
+- **ha_event_list**: List recent Home Assistant events, optionally filtered by entity_id.
+
+---
+
+## 📅 ICS Calendar
+
+**Description:** Fetches Nicole's calendar from an ICS feed.
+
+### Tools
+
+- **ics_calendar_fetch**: Fetch upcoming events from Nicole's ICS calendar feed. Requires the `CALENDAR_NICOLE_ICS_URL` environment variable.
+
+---
+
+## 🍽️ OpenTable
+
+**Description:** Check restaurant availability on OpenTable.
+
+### Tools
+
+_None available._
+
+---
+
+## ❤️ OpenTable Heartbeat
+
+**Description:** Health-check for the OpenTable skill. Alerts on failure via configured notification channel.
+
+### Tools
+
+- **opentable_heartbeat_check**: Run OpenTable health check. Returns status (`ok` or `error`) and a message.
+
+---
+
+## 📅 Outlook Calendar
+
+**Description:** Fetch personal and family calendars via Microsoft Graph API.
+
+### Tools
+
+- **outlook_calendar_fetch**: Fetch upcoming events from personal and/or family Outlook calendars via Microsoft Graph API.
+
+---
+
+## 📧 Outlook Mail
+
+**Description:** Search and read Outlook inbox via Microsoft Graph API.
+
+### Tools
+
+- **outlook_inbox**: List recent messages from the Outlook inbox.
+- **outlook_search**: Search Outlook messages by query text, sender, subject, or date range.
+- **outlook_read**: Read a specific Outlook message by its ID, including full body content.
+
+---
+
+## 🗓️ Outlook Work Calendar
+
+**Description:** Fetches published Outlook work calendar via EWS JSON API (no auth required).
+
+### Tools
+
+- **outlook_work_calendar_fetch**: Fetch upcoming events from the published Outlook work calendar. Uses the EWS JSON API — no authentication required.
+
+---
+
+## 🍎 WeightWatchers
+
+**Description:** Search foods, log meals, view diary and points budget via the unofficial WW API.
+
+### Tools
+
+- **ww_daily**: Get daily WW food diary. Returns tracked meals and points summary.
+- **ww_search**: Search the WW food database. Returns food IDs, points, and portion options needed for logging.
+- **ww_log**: Log a food item to the WW diary. Requires `food_id`, `version_id`, and `portion_id` from `ww_search` results.
+- **ww_points**: Calculate WW SmartPoints offline from nutrition data. No authentication required.
+- **ww_budget**: Get remaining WW points budget for a date. Shows daily and weekly allowances.

@@ -2,21 +2,25 @@
 
 ## Overview
 
-Skills are modular capabilities that agents can use to perform specific tasks. They enable agents to interact with external systems, process data, and execute predefined actions. By leveraging skills, developers can extend the functionality of agents to meet various use cases.
+Skills are modular components that enable agents to perform specific tasks or access particular functionalities. They are designed to provide flexibility and extensibility, allowing developers to tailor agent behavior to meet specific requirements. By leveraging skills, agents can interact with external systems, process data, or execute domain-specific operations.
 
 ## Key Concepts
 
 - **Skills**: Modular units of functionality that agents can use to perform tasks.
-- **Agents**: Entities that utilize skills to interact with systems or execute actions.
-- **Extensibility**: Skills allow developers to customize and expand agent capabilities.
+- **Agents**: Entities that utilize skills to execute specific operations or workflows.
+- **Extensibility**: Skills can be added or removed to customize agent behavior.
 
 ## How It Works
 
-1. **Skill Definition**: Each skill is defined with a specific purpose and functionality.
-2. **Agent Integration**: Agents are configured to use one or more skills based on their requirements.
-3. **Execution**: When an agent encounters a task that matches a skill's purpose, it invokes the skill to perform the task.
+1. **Skill Definition**: Each skill encapsulates a specific functionality or task.
+2. **Agent Integration**: Agents are configured to use one or more skills based on their intended purpose.
+3. **Skill Invocation**: When an agent requires a specific functionality, it invokes the corresponding skill.
+4. **Task Execution**: The skill performs the task and returns the result to the agent.
+
+## Example Usage
+
+No examples are available in the source material.
 
 ## Common Pitfalls
 
-- Ensure that agents are configured with the correct skills for their intended tasks.
-- Verify that skills are properly defined and accessible to the agents that require them.
+No common pitfalls are provided in the source material.

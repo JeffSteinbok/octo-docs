@@ -2,43 +2,37 @@
 
 ## Overview
 
-Agents and channels are core components that enable communication and interaction within the system. Agents represent distinct entities with specific roles, while channels define the communication platforms through which agents interact with users. This structure allows for flexible and scalable communication across multiple platforms.
+Agents and channels are core components that facilitate communication and interaction within the system. Agents represent distinct entities with specific roles, while channels define the mediums through which these agents communicate. This structure enables flexible and efficient communication across various platforms.
 
 ## Key Concepts
 
-- **Agents**: Represent distinct entities with unique roles and identifiers.
-- **Channels**: Define the communication platforms (e.g., Discord, Telegram) through which agents interact with users.
-- **Agent-Channel Interaction**: Agents are connected to channels to facilitate communication, with configurable policies for direct messages and group interactions.
+- **Agents**: Entities with defined roles that interact with users or other systems.
+- **Channels**: Communication mediums that connect agents to users or groups.
+- **Agent-Channel Interaction**: Agents operate within channels based on predefined policies and configurations.
 
 ## How It Works
 
 1. **Agents**:  
-   Agents are predefined entities, each with a unique identifier, name, and emoji representation. They serve as the primary actors in the system.  
-   - Example agents:
-     - **Octo** (`id: main`, emoji: 🐙)
-     - **mail-agent** (`id: mail`, emoji: 📬)
-     - **Root** (`id: root`, emoji: 🔑)
+   - Each agent is a distinct entity with a unique identifier, name, and emoji representation.
+   - Agents are designed to perform specific roles or tasks.
 
 2. **Channels**:  
-   Channels represent communication platforms where agents interact with users. Each channel has specific configurations for direct messages, group interactions, and streaming capabilities.  
-   - Example channels:
-     - **Discord**:
-       - Direct message policy: Pairing
-       - Group policy: Allowlist
-       - Streaming: Off
-     - **Telegram**:
-       - Direct message policy: Pairing
-       - Group policy: Open
-       - Streaming: Off
+   - Channels are communication mediums, such as Discord or Telegram, where agents interact with users.
+   - Each channel has specific policies governing direct messages (DMs) and group interactions:
+     - **DM Policy**: Defines how agents handle direct messages. For example, "pairing" indicates that DMs are allowed based on specific pairing rules.
+     - **Group Policy**: Defines how agents interact in group settings. Policies include "allowlist" (restricted access) or "open" (unrestricted access).
+   - Channels can have additional settings, such as streaming capabilities.
 
-3. **Interaction**:  
-   Agents are connected to channels to enable communication. The interaction behavior is governed by the channel's policies:
-   - **Direct Message Policy**: Determines how agents handle one-on-one communication.
-   - **Group Policy**: Defines the rules for agent participation in group conversations.
-   - **Streaming**: Indicates whether real-time streaming is enabled for the channel.
+3. **Agent-Channel Interaction**:  
+   - Agents are connected to channels based on the channel's configuration.
+   - Enabled channels allow agents to communicate with users or groups according to the channel's policies.
+
+## Example Usage
+
+This section is omitted as no example usage is provided in the source material.
 
 ## Common Pitfalls
 
-- Ensure that channels are properly enabled; disabled channels will not facilitate communication.
-- Verify that the direct message and group policies align with the intended use case to avoid unexpected behavior.
-- Streaming is disabled by default for all channels; ensure this setting is configured if real-time streaming is required.
+- Ensure that channels are **enabled** for agents to function within them.
+- Misconfigured DM or group policies may restrict agent interactions in unintended ways.
+- Streaming settings, if applicable, should align with the desired communication flow.
