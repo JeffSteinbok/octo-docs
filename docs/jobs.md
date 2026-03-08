@@ -4,38 +4,46 @@ title: Scheduled Jobs
 nav_order: 6
 ---
 
-# Scheduled Jobs Overview
+# Jobs Overview
 
 ## Overview
 
-This document provides an overview of the scheduled jobs available in the system. Scheduled jobs are automated tasks that run at predefined intervals to perform specific operations, such as data synchronization or backups. These jobs help ensure that critical processes are executed reliably and on time.
+This document provides an overview of scheduled jobs available in the system. Scheduled jobs are automated tasks that run at predefined intervals to perform essential operations such as data fetching and backups. These jobs help ensure the system remains up-to-date and reliable without requiring manual intervention.
 
 ## Key Concepts
 
-- **Job Name**: A unique identifier for each scheduled job.
-- **Description**: A brief explanation of the job's purpose.
-- **Schedule**: The timing and frequency at which the job runs.
-  - **Cron Schedule**: Specifies the exact times a job runs using a cron expression.
-  - **Interval Schedule**: Specifies the time interval between job executions.
-- **Time Zone**: The time zone in which the schedule is defined.
+- **Scheduled Jobs**: Automated tasks that execute at specific times or intervals.
+- **Job Schedules**: Define when and how often a job runs, using either cron expressions or time intervals.
+- **Job Descriptions**: Each job has a specific purpose, such as fetching data or creating backups.
 
 ## How It Works
 
-1. Each job is configured with a name, description, and schedule.
-2. Jobs with a cron schedule run at specific times based on the cron expression and time zone.
-3. Jobs with an interval schedule run at regular intervals, defined in milliseconds.
-4. Enabled jobs are executed automatically according to their schedule.
+Scheduled jobs are configured with specific schedules and run automatically based on their defined timing. Jobs use either cron expressions or fixed time intervals to determine their execution schedule. Each job is enabled by default and performs a specific function critical to the system's operation.
 
 ## List of Scheduled Jobs
 
-| Job Name                  | Description                                    | Schedule Type | Schedule Details                     | Time Zone          |
-|---------------------------|------------------------------------------------|---------------|--------------------------------------|--------------------|
-| `calendar-fetch-hourly`   | Fetch calendars hourly 7am-5pm PST             | Cron          | `0 7-17 * * *`                       | America/Los_Angeles |
-| `config-backup`           | Backup `openclaw.json` to Git daily            | Interval      | Every 86400000ms (24 hours)          | N/A                |
-| `calendar-fetch-midnight` | Fetch calendars at midnight PST                | Cron          | `0 0 * * *`                          | America/Los_Angeles |
+### Calendar Fetch (Hourly)
 
-## Common Pitfalls
+- **Name**: `calendar-fetch-hourly`
+- **Description**: Fetches calendar data hourly between 7:00 AM and 5:00 PM PST.
+- **Schedule**: 
+  - **Type**: Cron
+  - **Expression**: `0 7-17 * * *`
+  - **Time Zone**: America/Los_Angeles
 
-- **Time Zone Awareness**: Ensure that the time zone for cron-based jobs is correctly understood and aligned with the desired execution times.
-- **Disabled Jobs**: Verify that jobs are enabled if they are expected to run. Disabled jobs will not execute.
-- **Cron Expression Syntax**: Ensure that cron expressions are correctly formatted to avoid unintended schedules.
+### Calendar Fetch (Midnight)
+
+- **Name**: `calendar-fetch-midnight`
+- **Description**: Fetches calendar data at midnight PST.
+- **Schedule**: 
+  - **Type**: Cron
+  - **Expression**: `0 0 * * *`
+  - **Time Zone**: America/Los_Angeles
+
+### Configuration Backup
+
+- **Name**: `config-backup`
+- **Description**: Backs up the `openclaw.json` configuration file to Git daily. Only commits changes if the file has been modified.
+- **Schedule**: 
+  - **Type**: Fixed Interval
+  - **Interval**: Every 24 hours (86,400,000 milliseconds)
