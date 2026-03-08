@@ -2,6 +2,11 @@ id: plugins-overview
 
 output_path: docs/plugins.md
 
+front_matter:
+  layout: default
+  title: Plugins
+  nav_order: 3
+
 sources:
   - path: api-index.json
   - path: plugins/fastmail.json

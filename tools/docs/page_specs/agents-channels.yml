@@ -2,6 +2,11 @@ id: agents-channels
 
 output_path: docs/agents-channels.md
 
+front_matter:
+  layout: default
+  title: Agents & Channels
+  nav_order: 2
+
 sources:
   - path: config.json
     select:

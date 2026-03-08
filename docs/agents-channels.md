@@ -1,3 +1,9 @@
+---
+layout: default
+title: Agents & Channels
+nav_order: 2
+---
+
 # Agents and Channels
 
 ## Overview

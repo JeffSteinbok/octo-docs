@@ -75,7 +75,8 @@ def process_page(
 
     raw_content = generate_page(prompt)
     formatted = format_markdown(raw_content)
-    write_page(output_path, formatted)
+    front_matter = page_spec.get("front_matter")
+    write_page(output_path, formatted, front_matter=front_matter)
 
     logger.info("Written: %s", output_path)
     return page_spec["output_path"]

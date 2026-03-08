@@ -2,6 +2,11 @@ id: skills-overview
 
 output_path: docs/skills.md
 
+front_matter:
+  layout: default
+  title: Skills
+  nav_order: 4
+
 sources:
   - path: skills.json
 

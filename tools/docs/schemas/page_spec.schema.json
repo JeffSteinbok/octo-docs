@@ -41,6 +41,26 @@
       "description": "Name of the prompt template to use",
       "enum": ["overview", "api_reference", "release_notes"]
     },
+    "front_matter": {
+      "type": "object",
+      "description": "Jekyll front matter to prepend to the generated page",
+      "properties": {
+        "layout": {
+          "type": "string",
+          "description": "Jekyll layout to use",
+          "default": "default"
+        },
+        "title": {
+          "type": "string",
+          "description": "Page title for navigation"
+        },
+        "nav_order": {
+          "type": "integer",
+          "description": "Navigation order (lower numbers appear first)"
+        }
+      },
+      "additionalProperties": true
+    },
     "instructions": {
       "type": "object",
       "description": "Page-level generation instructions",

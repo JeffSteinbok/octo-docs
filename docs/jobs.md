@@ -1,3 +1,9 @@
+---
+layout: default
+title: Scheduled Jobs
+nav_order: 6
+---
+
 # Scheduled Jobs Overview
 
 ## Overview

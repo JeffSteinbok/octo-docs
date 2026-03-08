@@ -1,5 +1,11 @@
 id: release-latest
+
 output_path: docs/releases/latest.md
+
+front_matter:
+  layout: default
+  title: Release Notes
+  nav_order: 7
 
 sources:
   - path: release/changes.json

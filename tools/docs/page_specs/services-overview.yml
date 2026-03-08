@@ -2,6 +2,11 @@ id: services-overview
 
 output_path: docs/services.md
 
+front_matter:
+  layout: default
+  title: Services
+  nav_order: 5
+
 sources:
   - path: services.json
 

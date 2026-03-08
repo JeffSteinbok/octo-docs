@@ -2,6 +2,11 @@ id: jobs-overview
 
 output_path: docs/jobs.md
 
+front_matter:
+  layout: default
+  title: Scheduled Jobs
+  nav_order: 6
+
 sources:
   - path: jobs.json
 
