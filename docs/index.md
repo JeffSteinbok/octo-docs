@@ -20,10 +20,15 @@ nav_order: 1
     <div class="card-title">Agents &amp; Channels</div>
     <div class="card-desc">Personas and the platforms they talk through</div>
   </a>
-  <a class="card" href="{{ site.baseurl }}/skills">
+  <a class="card" href="{{ site.baseurl }}/plugins">
     <div class="card-icon">🔧</div>
     <div class="card-title">Plugins</div>
     <div class="card-desc">Modular capabilities — email, cameras, restaurants&hellip;</div>
+  </a>
+  <a class="card" href="{{ site.baseurl }}/skills">
+    <div class="card-icon">🔧</div>
+    <div class="card-title">Skills</div>
+    <div class="card-desc">Capabilities defined by MD content. Since we disable exec is off these need to not run scripts. </div>
   </a>
   <a class="card" href="{{ site.baseurl }}/services">
     <div class="card-icon">⚙️</div>
