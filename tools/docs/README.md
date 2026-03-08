@@ -13,14 +13,15 @@ This system does **not** access the private source repository directly.
 ```
 Private Repo
    │
-   │  emits sanitized bundle + changed_pages.json
+   │  1. uploads sanitized bundle as artifact
+   │  2. sends repository_dispatch event (bundle-ready)
    ▼
 octo-docs (this repo)
    │
-   ├─ loads bundle
+   ├─ downloads bundle artifact
    ├─ loads page specs
    ├─ builds page prompts
-   ├─ calls LLM API
+   ├─ calls LLM API (GitHub Models via GITHUB_TOKEN)
    ├─ writes docs files
    └─ opens PR
    ▼
@@ -170,10 +171,32 @@ Requires:
 
 ## Full Rebuild via Workflow
 
-The workflow at `.github/workflows/generate-docs.yml` supports:
+The workflow at `.github/workflows/generate-docs.yml` can be triggered in three ways:
 
-- Manual trigger via GitHub Actions UI
-- Optional `--all` flag to regenerate every page
+### Automatic — repository_dispatch from the private repo
+
+The private repo uploads the bundle as an artifact, then sends a `bundle-ready` dispatch event:
+
+```bash
+gh api repos/JeffSteinbok/octo-docs/dispatches \
+  --method POST \
+  -f event_type=bundle-ready \
+  -F client_payload[artifact_name]=docs-bundle \
+  -F client_payload[run_id]=$GITHUB_RUN_ID \
+  -F client_payload[regenerate_all]=false
+```
+
+The workflow will download the artifact automatically and open a PR with the updated docs.
+
+### Manual — download an artifact from a previous run
+
+Trigger the workflow from the Actions tab and fill in:
+- **Artifact name** — name of the artifact containing the bundle
+- **Run ID** — the run that uploaded that artifact
+
+### Manual — provide a bundle path directly
+
+Leave `artifact_name` blank and set `bundle_path` to a bundle already on disk in the workspace.
 
 ---
 
@@ -181,11 +204,9 @@ The workflow at `.github/workflows/generate-docs.yml` supports:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `DOCS_LLM_API_KEY` | Yes | API key for the LLM provider |
+| `GITHUB_TOKEN` | Yes | GitHub token — used for LLM calls (GitHub Models) and PR creation |
 | `DOCS_LLM_MODEL` | No | Model name (default: `gpt-4o`) |
-| `DOCS_LLM_PROVIDER` | No | Provider name (default: `openai`) |
-| `DOCS_LLM_BASE_URL` | No | Base URL for compatible endpoints |
-| `GITHUB_TOKEN` | Yes (for PRs) | GitHub token for PR creation |
+| `DOCS_LLM_BASE_URL` | No | Optional override for the GitHub Models base URL |
 | `GITHUB_REPOSITORY` | Yes (for PRs) | `owner/repo` of this repository |
 
 ---
