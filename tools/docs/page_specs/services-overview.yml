@@ -1,0 +1,17 @@
+id: services-overview
+
+output_path: docs/services.md
+
+sources:
+  - path: services.json
+
+template: overview
+
+instructions:
+  audience: external developers
+  include:
+    - list of background services
+    - description and purpose of each service
+  exclude:
+    - internal implementation details
+    - private hostnames or IP addresses

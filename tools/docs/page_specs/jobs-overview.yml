@@ -1,0 +1,18 @@
+id: jobs-overview
+
+output_path: docs/jobs.md
+
+sources:
+  - path: jobs.json
+
+template: overview
+
+instructions:
+  audience: external developers
+  include:
+    - list of scheduled jobs
+    - description and purpose of each job
+    - schedule information
+  exclude:
+    - internal service names
+    - private hostnames or IP addresses

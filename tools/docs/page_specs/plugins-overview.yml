@@ -1,0 +1,31 @@
+id: plugins-overview
+
+output_path: docs/plugins.md
+
+sources:
+  - path: api-index.json
+  - path: plugins/fastmail.json
+  - path: plugins/homeassistant-cli.json
+  - path: plugins/hass-camera-snapshot.json
+  - path: plugins/ics-calendar.json
+  - path: plugins/opentable.json
+  - path: plugins/opentable-heartbeat.json
+  - path: plugins/outlook-calendar.json
+  - path: plugins/outlook-mail.json
+  - path: plugins/outlook-work-calendar.json
+  - path: plugins/weightwatchers.json
+  - path: plugins/config-backup.json
+
+template: overview
+
+instructions:
+  audience: external developers
+  include:
+    - plugin list with descriptions
+    - tool counts per plugin
+    - brief summary of each plugin's purpose
+    - example use cases
+  exclude:
+    - internal service names
+    - authentication credentials or token values
+    - private hostnames or IP addresses
