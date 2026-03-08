@@ -8,22 +8,20 @@ nav_order: 4
 
 ## Overview
 
-Skills are markdown-defined knowledge components that provide agents with specific information or capabilities. They are designed to help agents perform tasks or answer questions by leveraging structured, pre-defined content. Unlike plugins, which are executable code, skills are static knowledge resources.
+Skills are markdown-defined knowledge resources that provide agents with structured information to assist in their tasks. Unlike plugins, which are executable code, skills are static and serve as a reference for agents to retrieve relevant information during their operations. This approach ensures that agents can access reliable and consistent data without requiring external execution.
 
 ## Key Concepts
 
-- **Skills**: Markdown-defined knowledge components used by agents.
-- **Agents**: Entities that utilize skills to perform tasks or provide information.
-- **Static Knowledge**: Skills are not executable code but structured, pre-defined content.
-- **Difference from Plugins**: Skills differ from plugins as they focus on providing knowledge rather than executing code.
+- **Skills**: Markdown-defined knowledge resources that provide structured, static information.
+- **Agents**: Entities that utilize skills to retrieve relevant information for their tasks.
+- **Difference from Plugins**: Skills are static knowledge resources, whereas plugins are executable code.
 
 ## How It Works
 
-1. Skills are defined in markdown format, containing structured knowledge.
-2. Agents access these skills to retrieve relevant information or guidance.
-3. Skills are used to enhance the agent's ability to respond to queries or perform specific tasks.
-4. Unlike plugins, skills do not execute code but serve as a static knowledge base.
+1. **Definition**: Skills are defined in markdown format, containing structured knowledge that agents can reference.
+2. **Usage by Agents**: Agents access skills to retrieve relevant information during their operations. This allows them to perform tasks more effectively by leveraging predefined knowledge.
+3. **Static Nature**: Skills are not executable code, ensuring they serve as a reliable and consistent source of information.
 
 ## Example Usage
 
-No examples are available in the provided source material.
+No example usage is available in the provided source material.
