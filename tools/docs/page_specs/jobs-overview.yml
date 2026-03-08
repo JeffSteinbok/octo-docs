@@ -15,7 +15,7 @@ template: overview
 instructions:
   audience: external developers
   include:
-    - list of scheduled jobs
+    - list of scheduled jobs as H2 headings with a fitting emoji
     - description and purpose of each job
     - schedule information
   exclude:

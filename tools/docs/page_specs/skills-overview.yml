@@ -15,9 +15,10 @@ template: overview
 instructions:
   audience: external developers
   include:
-    - list of available skills
+    - list of available skills as H2 headings with a fitting emoji
     - description of each skill's purpose
     - how skills are used by agents
+    - how skills differ from plugins (skills are markdown-defined knowledge, not executable code)
   exclude:
     - internal implementation details
     - private hostnames or IP addresses
