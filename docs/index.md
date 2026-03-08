@@ -28,7 +28,7 @@ nav_order: 1
   <a class="card" href="{{ site.baseurl }}/skills">
     <div class="card-icon">🎯</div>
     <div class="card-title">Skills</div>
-    <div class="card-desc">Capabilities defined by MD content. Since we disable exec is off these need to not run scripts. </div>
+    <div class="card-desc">Markdown-defined knowledge — no exec, no scripts</div>
   </a>
   <a class="card" href="{{ site.baseurl }}/services">
     <div class="card-icon">⚙️</div>

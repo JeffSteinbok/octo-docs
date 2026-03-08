@@ -19,7 +19,9 @@ instructions:
   audience: external developers
   include:
     - "These are the actual agents and channels configured in this system — do not refer to them as examples"
-    - list of agents with their roles and descriptions
+    - "For each agent, create an H2 section with a fitting emoji"
+    - "For each agent, describe its security model: whether exec is enabled, what permissions it has, and what tools/plugins it can access"
+    - "Note that the mail agent is currently unused"
     - how agents are configured including permissions, exec settings, and bindings
     - list of channels with their type and which agents they are bound to
     - how channels connect users to agents
