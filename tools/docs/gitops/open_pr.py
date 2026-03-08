@@ -154,7 +154,61 @@ def _try_enable_auto_merge(token: str, owner: str, repo_name: str, pr_number: in
         print(f"Note: could not enable auto-merge (HTTP {exc.code}) — continuing without it.")
 
 
+def _cleanup_stale_branches(token: str, owner: str, repo_name: str, current_branch: str) -> None:
+    """Delete remote docs/* branches whose PRs are merged or closed."""
+    import urllib.request
+    import urllib.error
 
+    # List remote docs/* branches
+    result = subprocess.run(
+        ["git", "ls-remote", "--heads", "origin", "refs/heads/docs/*"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return
+
+    for line in result.stdout.strip().splitlines():
+        if not line:
+            continue
+        ref = line.split("\t")[-1].replace("refs/heads/", "")
+        if ref == current_branch:
+            continue
+
+        # Check if there's a closed/merged PR for this branch
+        search_url = (
+            f"https://api.github.com/repos/{owner}/{repo_name}/pulls"
+            f"?head={owner}:{ref}&state=all&per_page=1"
+        )
+        req = urllib.request.Request(
+            search_url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req) as resp:
+                prs = json.loads(resp.read().decode("utf-8"))
+        except Exception:
+            continue
+
+        # Delete if PR is merged/closed, or if there's no PR at all (orphaned branch)
+        should_delete = not prs or prs[0].get("state") == "closed"
+        if should_delete:
+            del_result = subprocess.run(
+                ["git", "push", "origin", "--delete", ref],
+                capture_output=True,
+                text=True,
+            )
+            if del_result.returncode == 0:
+                print(f"Deleted stale branch: {ref}")
+            else:
+                print(f"Note: could not delete branch {ref}: {del_result.stderr.strip()}")
+
+
+def open_pr(bundle_root: str = "./bundle") -> None:
     token = os.environ.get("GITHUB_TOKEN")
     repo = os.environ.get("GITHUB_REPOSITORY")
 
@@ -232,10 +286,12 @@ def _try_enable_auto_merge(token: str, owner: str, repo_name: str, pr_number: in
             pr_number = pr_data.get("number")
             print(f"Pull request opened: {pr_url}")
 
-        # Attempt to add the label separately; skip if it doesn't exist
         if pr_number:
             _try_add_label(token, owner, repo_name, pr_number, "generated-docs")
             _try_enable_auto_merge(token, owner, repo_name, pr_number)
+
+        # Clean up stale docs/* branches from previous runs
+        _cleanup_stale_branches(token, owner, repo_name, branch)
     except Exception as exc:
         print(f"Error opening PR: {exc}", file=sys.stderr)
         sys.exit(1)

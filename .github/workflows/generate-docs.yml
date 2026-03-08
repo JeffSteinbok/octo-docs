@@ -132,3 +132,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Clean up stale branches
+        if: steps.commit.outputs.has_changes == 'false'
+        run: |
+          # Delete remote docs/* branches whose PRs are already merged or closed
+          for branch in $(git ls-remote --heads origin 'refs/heads/docs/*' | awk '{print $2}' | sed 's|refs/heads/||'); do
+            # Check if there's an open PR for this branch
+            STATE=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$branch" --state open --json number --jq 'length')
+            if [ "$STATE" = "0" ]; then
+              echo "Deleting stale branch: $branch"
+              git push origin --delete "$branch" 2>/dev/null || true
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
