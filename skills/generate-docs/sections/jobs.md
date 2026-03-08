@@ -1,21 +1,30 @@
 ---
 output: jobs.md
 title: Scheduled Jobs
-nav_order: 5
-data_source: jobs
-empty_message: "_No scheduled jobs configured._"
+nav_order: 6
+data_keys:
+  - jobs
 ---
 
-<!-- instructions:
-  Shows all scheduled/cron jobs from two sources:
-  1. OpenClaw jobs in ~/.openclaw/cron/jobs.json — table with name,
-     description, cron schedule, and enabled/disabled status.
-  2. System crontab entries — table with schedule, command, and description.
+Generate a documentation section for OpenClaw **scheduled jobs**.
 
-  If no jobs exist in either source, show the empty_message from frontmatter.
--->
+Use the `jobs` array from the provided data. If the array is empty,
+output only: "_No scheduled jobs configured._"
 
-{{ items }}
+Group jobs by their `source` field and render each group:
+
+### OpenClaw Jobs (`cron/jobs.json`) — where source is `"openclaw"`
+
+Render a markdown table: **Job**, **Description**, **Schedule**, **Status**
+
+- **Schedule**: use the `interval` field
+- **Status**: `✅ Enabled` if `enabled` is true, otherwise `❌ Disabled`
+
+### System Crontab (`crontab -e`) — where source is `"crontab"`
+
+Render a markdown table: **Job**, **Schedule**
+
+After the job tables, include this explanatory content verbatim:
 
 ## How It Works
 

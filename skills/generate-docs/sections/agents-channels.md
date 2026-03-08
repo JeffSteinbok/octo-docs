@@ -2,36 +2,43 @@
 output: agents-channels.md
 title: Agents & Channels
 nav_order: 2
-data_source: agents_channels
-overrides:
-  main: "Primary personal assistant — full access to all plugins and tools"
-  family-agent: "Family group chat agent with limited permissions"
-  group-agent: "Generic group chat agent — responds only when mentioned"
-  mail: "Email processing agent with read-only access"
-  root: "Privileged agent with exec/process access — invoked explicitly by main"
+data_keys:
+  - agents
+  - channels
 ---
 
-<!-- instructions:
-  List out all the agents in use and channels. Be descriptive about their
-  configuration but redact any personal information or identifiers like
-  URIs, IDs, Accounts, etc.
+Generate a documentation page covering OpenClaw **agents** and **channels**.
 
-  Agents table: show emoji (from identity config), agent name, role
-  description, and active/inactive status. An agent is "active" if it
-  has at least one binding in the config.
+### Agents
 
-  Channels table: show platform name and enabled/disabled status.
--->
+Start with an H2 heading `## Agents` and this intro paragraph:
 
-## Agents
+> Agents are LLM-powered personas, each with their own identity, permissions,
+> and context. They decide which plugins to invoke based on user requests.
 
-Agents are LLM-powered personas, each with their own identity, permissions,
-and context. They decide which plugins to invoke based on user requests.
+Then render a markdown table with these columns: **Agent**, **Role**, **Status**.
 
-{{ agents }}
+- **Agent**: the agent's emoji followed by its name
+- **Role**: the agent's description (use the override below if one exists for that agent id)
+- **Status**: `✅ Active` if `active` is true, otherwise `💤 Inactive`
 
-## Channels
+#### Agent Role Overrides
 
-Channels are the messaging platforms through which users interact with agents.
+Use these role descriptions instead of the raw data:
 
-{{ channels }}
+- **main**: Primary personal assistant — full access to all plugins and tools
+- **family-agent**: Family group chat agent with limited permissions
+- **group-agent**: Generic group chat agent — responds only when mentioned
+- **mail**: Email processing agent with read-only access
+- **root**: Privileged agent with exec/process access — invoked explicitly by main
+
+### Channels
+
+Then add an H2 heading `## Channels` and this intro paragraph:
+
+> Channels are the messaging platforms through which users interact with agents.
+
+Render a markdown table with columns: **Platform**, **Status**.
+
+- **Platform**: the channel type, title-cased
+- **Status**: `✅ Enabled` if enabled, otherwise `❌ Disabled`

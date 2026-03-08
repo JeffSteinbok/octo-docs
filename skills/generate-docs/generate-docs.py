@@ -1,21 +1,16 @@
 #!/usr/bin/env python3
 """
-generate-docs: Reads the ~/.openclaw runtime config directory and produces
-sanitized high-level documentation for the public GitHub Pages site.
-
-Each documentation page is driven by a section definition in sections/*.md.
-Section files contain YAML frontmatter (output filename, title, nav_order,
-data_source, and per-item overrides) plus a markdown body template with
-{{ placeholder }} markers for generated content.
-
-Instruction blocks wrapped in <!-- instructions: ... --> HTML comments are
-guidance for the generator and are stripped from the final output.
+generate-docs: Reads the openclaw config and uses the GitHub Copilot CLI
+to render documentation pages. Section files in sections/*.md contain
+LLM prompts that instruct the Copilot CLI how to format the gathered data
+into Jekyll markdown pages.
 """
 
 import argparse
-import hashlib
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 try:
@@ -25,53 +20,6 @@ except ImportError:
     raise SystemExit(1)
 
 SECTIONS_DIR = Path(__file__).resolve().parent / "sections"
-
-
-# ---------------------------------------------------------------------------
-# Content hashing — skip regenerating sections whose sources are unchanged
-# ---------------------------------------------------------------------------
-
-
-def hash_file(path: Path) -> str:
-    """Return the SHA-256 hex digest of a file's contents."""
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(8192), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-def load_hash_manifest(manifest_path: Path) -> dict:
-    """Load previously recorded source-file hashes."""
-    if manifest_path.exists():
-        with open(manifest_path, encoding="utf-8") as f:
-            return json.load(f)
-    return {}
-
-
-def save_hash_manifest(manifest_path: Path, manifest: dict) -> None:
-    """Persist the current source-file hashes."""
-    with open(manifest_path, "w", encoding="utf-8") as f:
-        json.dump(manifest, f, indent=2, sort_keys=True)
-        f.write("\n")
-
-
-def collect_source_hashes(paths: list[Path]) -> dict[str, str]:
-    """Compute hashes for a list of source files, keyed by path string."""
-    hashes: dict[str, str] = {}
-    for p in paths:
-        if p.exists():
-            hashes[str(p)] = hash_file(p)
-    return hashes
-
-
-def sources_changed(section_key: str, current: dict[str, str],
-                    previous: dict) -> bool:
-    """Return True if any source file for *section_key* has changed."""
-    prev_section = previous.get(section_key, {})
-    if not prev_section:
-        return True
-    return current != prev_section
 
 
 def parse_frontmatter_md(path: Path) -> dict:
@@ -502,174 +450,57 @@ def discover_services(config_dir: Path) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Item renderers — one per data_source type
+# Copilot CLI rendering
 # ---------------------------------------------------------------------------
 
 
-def render_skills(data: dict, overrides: dict, _meta: dict) -> dict:
-    """Render skill items. Returns {"items": "..."}."""
-    skills = data["skills"]
-    lines = []
-    for skill in skills:
-        emoji = skill.get("emoji", "🔧")
-        lines.append(f"## {emoji} {skill['name']}")
-        lines.append("")
+def render_with_copilot(prompt: str, timeout: int = 120) -> str:
+    """Call the GitHub Copilot CLI with a prompt and return the response text."""
+    try:
+        result = subprocess.run(
+            ["gh", "copilot", "-p", prompt],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except FileNotFoundError:
+        print("Error: 'gh' CLI not found. Install from https://cli.github.com",
+              file=sys.stderr)
+        raise SystemExit(1)
+    except subprocess.TimeoutExpired:
+        print(f"Error: Copilot CLI timed out after {timeout}s", file=sys.stderr)
+        return ""
 
-        source_url = skill.get("source_url")
-        if source_url:
-            lines.append(f"📦 [Source on GitHub]({source_url})")
-            lines.append("")
+    if result.returncode != 0:
+        print(f"  Copilot CLI error (exit {result.returncode}): "
+              f"{result.stderr.strip()}", file=sys.stderr)
+        return ""
 
-        overview = overrides.get(skill["name"])
-        if overview and isinstance(overview, dict):
-            lines.append(overview.get("what", ""))
-            lines.append("")
-            caps = overview.get("capabilities", [])
-            if caps:
-                lines.append("**Capabilities:**")
-                lines.append("")
-                for cap in caps:
-                    lines.append(f"- {cap}")
-                lines.append("")
-        elif skill["description"]:
-            desc = sanitize_body(skill["description"].strip())
-            lines.append(desc)
-            lines.append("")
-
-        deps = []
-        if skill.get("bins"):
-            deps.extend(skill["bins"])
-        if skill.get("packages"):
-            deps.extend(skill["packages"])
-        if deps:
-            lines.append(f"**Dependencies:** {', '.join(deps)}")
-            lines.append("")
-
-        lines.append("---")
-        lines.append("")
-
-    return {"items": "\n".join(lines)}
+    output = result.stdout.strip()
+    # Strip wrapping code fences the LLM sometimes adds
+    if output.startswith("```"):
+        lines = output.split("\n")
+        if lines[-1].strip() == "```":
+            output = "\n".join(lines[1:-1])
+    return output
 
 
-def render_services(data: dict, overrides: dict, _meta: dict) -> dict:
-    """Render service items. Returns {"items": "..."}."""
-    lines = []
-    for svc in data["services"]:
-        lines.append(f"## ⚙️ {svc['name']}")
-        lines.append("")
-
-        desc = overrides.get(svc["name"], svc.get("description", ""))
-        if desc:
-            lines.append(sanitize_body(desc))
-            lines.append("")
-
-        if svc.get("type") == "systemd":
-            lines.append(
-                "**Deployment:** systemd user service (auto-restart on failure)"
-            )
-            lines.append("")
-
-        lines.append("---")
-        lines.append("")
-
-    return {"items": "\n".join(lines)}
-
-
-def render_agents_channels(data: dict, overrides: dict, _meta: dict) -> dict:
-    """Render agent and channel tables. Returns {"agents": ..., "channels": ...}."""
-    agent_lines = [
-        "| Agent | Role | Status |",
-        "|-------|------|--------|",
-    ]
-    for a in data["agents"]:
-        emoji = a.get("emoji", "🤖")
-        agent_id = a.get("id", a["name"])
-        name = a["name"]
-        desc = a.get("description") or overrides.get(agent_id, "")
-        status = "✅ Active" if a.get("active") else "💤 Inactive"
-        agent_lines.append(f"| {emoji} {name} | {desc} | {status} |")
-
-    channel_lines = [
-        "| Platform | Status |",
-        "|----------|--------|",
-    ]
-    for ch in data["channels"]:
-        status = "✅ Enabled" if ch.get("enabled", True) else "❌ Disabled"
-        channel_lines.append(f"| {ch['type'].title()} | {status} |")
-
-    return {
-        "agents": "\n".join(agent_lines),
-        "channels": "\n".join(channel_lines),
-    }
-
-
-def render_jobs(data: dict, _overrides: dict, meta: dict) -> dict:
-    """Render jobs tables. Returns {"items": "..."}."""
-    openclaw_jobs = [j for j in data["jobs"] if j.get("source") == "openclaw"]
-    crontab_jobs = [j for j in data["jobs"] if j.get("source") == "crontab"]
-
-    if not openclaw_jobs and not crontab_jobs:
-        return {"items": meta.get("empty_message",
-                                  "_No scheduled jobs configured._")}
-
-    lines = []
-
-    if openclaw_jobs:
-        lines.append("### OpenClaw Jobs (`cron/jobs.json`)")
-        lines.append("")
-        lines.extend([
-            "| Job | Description | Schedule | Status |",
-            "|-----|-------------|----------|--------|",
-        ])
-        for job in openclaw_jobs:
-            status = "✅ Enabled" if job.get("enabled") else "❌ Disabled"
-            lines.append(
-                f"| **{job['name']}** | {job['description']} "
-                f"| {job['interval']} | {status} |"
-            )
-        lines.append("")
-
-    if crontab_jobs:
-        lines.append("### System Crontab (`crontab -e`)")
-        lines.append("")
-        lines.extend([
-            "| Job | Schedule |",
-            "|-----|----------|",
-        ])
-        for job in crontab_jobs:
-            lines.append(f"| **{job['name']}** | `{job['interval']}` |")
-        lines.append("")
-
-    return {"items": "\n".join(lines)}
-
-
-def extract_models(config: dict) -> dict:
-    """Extract model config from agents.defaults."""
-    defaults = config.get("agents", {}).get("defaults", {})
-    model = defaults.get("model", {})
-    image_model = defaults.get("imageModel", {})
-    web_search = config.get("tools", {}).get("web", {}).get("search", {}).get("gemini", {}).get("model", "")
-    return {
-        "primary": model.get("primary", ""),
-        "fallbacks": model.get("fallbacks", []),
-        "image_primary": image_model.get("primary", ""),
-        "image_fallbacks": image_model.get("fallbacks", []),
-        "web_search": web_search,
-    }
-
-
-def render_models(models: dict) -> str:
-    fallbacks = " → ".join(f"`{m}`" for m in models["fallbacks"])
-    img_chain = " → ".join(f"`{m}`" for m in [models["image_primary"]] + models["image_fallbacks"])
-    lines = [
-        "| Role | Model | Notes |",
-        "|------|-------|-------|",
-        f"| Primary | `{models['primary']}` | Default for all agents |",
-        f"| Fallbacks | {fallbacks} | In priority order |",
-        f"| Image | {img_chain} | |",
-        f"| Web search | `{models['web_search']}` | |",
-    ]
-    return "\n".join(lines)
+def build_prompt(section_body: str, data: dict) -> str:
+    """Construct a rendering prompt from section instructions and gathered data."""
+    data_json = json.dumps(data, indent=2, default=str)
+    return (
+        "You are generating a page for a Jekyll documentation site about OpenClaw, "
+        "a modular AI assistant framework.\n\n"
+        f"{section_body}\n\n"
+        "## Data\n\n"
+        f"```json\n{data_json}\n```\n\n"
+        "IMPORTANT RULES:\n"
+        "- Output ONLY the markdown body content.\n"
+        "- Do NOT include Jekyll frontmatter (--- blocks).\n"
+        "- Do NOT wrap your response in code fences.\n"
+        "- Never include secrets, IP addresses, emails, account IDs, or personal identifiers.\n"
+        "- Be concise and well-structured."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -783,86 +614,33 @@ def load_readme_from_source(source: Path) -> str:
     return ""
 
 
-def gather_source_files(source: Path) -> dict[str, list[Path]]:
-    """Return source files grouped by documentation section for hashing."""
-    groups: dict[str, list[Path]] = {
-        "skills": [],
-        "services": [],
-        "agents_channels": [],
-        "jobs": [],
-    }
-    plugins_dir = source / "plugins"
-    if plugins_dir.is_dir():
-        for plugin_dir in sorted(plugins_dir.iterdir()):
-            if not plugin_dir.is_dir() or plugin_dir.name.startswith("."):
-                continue
-            manifest = plugin_dir / "openclaw.plugin.json"
-            if manifest.exists():
-                groups["skills"].append(manifest)
-            readme = plugin_dir / "README.md"
-            if readme.exists():
-                groups["skills"].append(readme)
-
-    services_dir = source / "services"
-    if services_dir.is_dir():
-        for svc_dir in sorted(services_dir.iterdir()):
-            if not svc_dir.is_dir() or svc_dir.name.startswith("."):
-                continue
-            for doc_name in ["SKILL.md", "README.md"]:
-                doc_path = svc_dir / doc_name
-                if doc_path.exists():
-                    groups["services"].append(doc_path)
-
-    cfg = source / "config" / "openclaw.json"
-    if cfg.exists():
-        groups["agents_channels"].append(cfg)
-
-    jobs_cfg = source / "config" / "jobs.json"
-    if jobs_cfg.exists():
-        groups["jobs"].append(jobs_cfg)
-
-    return groups
-
-
-RENDERERS = {
-    "skills": render_skills,
-    "services": render_services,
-    "agents_channels": render_agents_channels,
-    "jobs": render_jobs,
-}
-
-
 # ---------------------------------------------------------------------------
 # Page generation
 # ---------------------------------------------------------------------------
 
 
 def generate_page(section: dict, data: dict) -> str:
-    """Generate a complete Jekyll page from a section definition and data."""
+    """Generate a complete Jekyll page by calling the Copilot CLI."""
     meta = section["meta"]
-    template = section["body"]
+    body = section["body"]
 
-    # Strip <!-- instructions: ... --> blocks (guidance for the generator)
-    template = re.sub(
-        r"<!--\s*instructions:.*?-->\s*",
-        "",
-        template,
-        flags=re.DOTALL,
-    )
+    # Strip legacy <!-- instructions: ... --> HTML comments
+    body = re.sub(r"<!--\s*instructions:.*?-->\s*", "", body, flags=re.DOTALL)
 
-    overrides = meta.get("overrides", {})
-    data_source = meta["data_source"]
+    # Select relevant data slices
+    data_keys = meta.get("data_keys", [])
+    if data_keys:
+        relevant = {k: data.get(k, []) for k in data_keys}
+    else:
+        relevant = data
 
-    renderer = RENDERERS.get(data_source)
-    placeholders = renderer(data, overrides, meta) if renderer else {}
+    prompt = build_prompt(body, relevant)
 
-    # Always inject models table as a available placeholder
-    placeholders["models"] = render_models(data["models"])
+    print(f"  Rendering {meta['output']} via Copilot CLI ...")
+    rendered = render_with_copilot(prompt)
 
-    # Replace {{ placeholders }} in template
-    content = template
-    for key, value in placeholders.items():
-        content = content.replace(f"{{{{ {key} }}}}", value)
+    if not rendered:
+        rendered = "_Documentation generation pending — re-run the workflow to generate._"
 
     header = "\n".join([
         "---",
@@ -877,7 +655,7 @@ def generate_page(section: dict, data: dict) -> str:
         "",
     ])
 
-    return header + "\n" + content.rstrip("\n") + "\n"
+    return header + "\n" + rendered.rstrip("\n") + "\n"
 
 
 def main():
@@ -916,13 +694,8 @@ def main():
         print(f"Reading source from: {source}")
         print(f"Writing docs to:     {output_dir}")
 
-        # Content hashing — only regenerate sections whose inputs changed
-        manifest_path = output_dir.parent / ".doc-hashes.json"
-        previous_manifest = load_hash_manifest(manifest_path)
-        file_groups = gather_source_files(source)
-        new_manifest: dict = {}
-
-        skills = discover_plugins_from_source(source)
+        plugins = discover_plugins_from_source(source)
+        skills = []  # Skills are discovered at runtime; plugins come from source
         services = discover_services_from_source(source)
         config = load_config_from_source(source)
         agents = extract_agents(config, source)
@@ -930,10 +703,12 @@ def main():
         jobs = load_jobs_from_source(source)
         models = extract_models(config)
 
-        print(f"Found {len(skills)} plugins, {len(services)} services, "
-              f"{len(agents)} agents, {len(channels)} channels, {len(jobs)} jobs")
+        print(f"Found {len(plugins)} plugins, {len(skills)} skills, "
+              f"{len(services)} services, {len(agents)} agents, "
+              f"{len(channels)} channels, {len(jobs)} jobs")
 
         data = {
+            "plugins": plugins,
             "skills": skills,
             "services": services,
             "agents": agents,
@@ -951,17 +726,8 @@ def main():
         for section_path in sorted(SECTIONS_DIR.glob("*.md")):
             section = parse_frontmatter_md(section_path)
             meta = section["meta"]
-            if "output" not in meta or "data_source" not in meta:
-                print(f"  Skipping {section_path.name} (missing output or data_source)")
-                continue
-
-            ds = meta["data_source"]
-            source_files = file_groups.get(ds, [])
-            current_hashes = collect_source_hashes(source_files)
-            new_manifest[ds] = current_hashes
-
-            if not sources_changed(ds, current_hashes, previous_manifest):
-                print(f"  Skipping {meta['output']} (sources unchanged)")
+            if "output" not in meta:
+                print(f"  Skipping {section_path.name} (no output defined)")
                 continue
 
             content = generate_page(section, data)
@@ -969,7 +735,6 @@ def main():
             out_path.write_text(content, encoding="utf-8")
             print(f"  Wrote {out_path}")
 
-        save_hash_manifest(manifest_path, new_manifest)
         print("\nDone!")
         return
 
@@ -983,7 +748,7 @@ def main():
     print(f"Reading config from: {config_dir}")
     print(f"Writing docs to:     {output_dir}")
 
-    # Gather data
+    plugins = []  # Plugins come from source repo only
     skills = discover_skills(config_dir)
     services = discover_services(config_dir)
     config = load_config(config_dir)
@@ -992,10 +757,12 @@ def main():
     jobs = load_jobs(config_dir) + load_crontab_jobs()
     models = extract_models(config)
 
-    print(f"Found {len(skills)} skills, {len(services)} services, "
-          f"{len(agents)} agents, {len(channels)} channels, {len(jobs)} jobs")
+    print(f"Found {len(plugins)} plugins, {len(skills)} skills, "
+          f"{len(services)} services, {len(agents)} agents, "
+          f"{len(channels)} channels, {len(jobs)} jobs")
 
     data = {
+        "plugins": plugins,
         "skills": skills,
         "services": services,
         "agents": agents,
@@ -1004,7 +771,6 @@ def main():
         "models": models,
     }
 
-    # Generate pages from section definitions
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not SECTIONS_DIR.is_dir():
@@ -1014,15 +780,15 @@ def main():
     for section_path in sorted(SECTIONS_DIR.glob("*.md")):
         section = parse_frontmatter_md(section_path)
         meta = section["meta"]
-        if "output" not in meta or "data_source" not in meta:
-            print(f"  Skipping {section_path.name} (missing output or data_source)")
+        if "output" not in meta:
+            print(f"  Skipping {section_path.name} (no output defined)")
             continue
         content = generate_page(section, data)
         out_path = output_dir / meta["output"]
         out_path.write_text(content, encoding="utf-8")
         print(f"  Wrote {out_path}")
 
-    print("\nDone! Preview locally with: cd docs && bundle exec jekyll serve")
+    print("\nDone!")
 
 
 if __name__ == "__main__":
