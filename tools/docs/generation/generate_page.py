@@ -8,7 +8,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_MODEL = "anthropic/claude-sonnet-4-6"
+_DEFAULT_MODEL = "gpt-4o"
 _DEFAULT_MAX_RETRIES = 3
 _DEFAULT_RETRY_DELAY = 2.0
 
@@ -41,7 +41,7 @@ def generate_page(
     """
     model = model or _DEFAULT_MODEL
     api_key = os.environ.get("GITHUB_TOKEN")
-    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.github.ai/inference")
+    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.inference.ai.azure.com")
 
     if not api_key:
         raise EnvironmentError(
