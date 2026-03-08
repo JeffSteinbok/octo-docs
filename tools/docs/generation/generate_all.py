@@ -34,8 +34,9 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-PAGE_SPECS_DIR = Path(__file__).resolve().parent.parent / "page_specs"
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+_DOCS_ROOT = _TOOLS_ROOT / "docs"
+PAGE_SPECS_DIR = _DOCS_ROOT / "page_specs"
+REPO_ROOT = _TOOLS_ROOT.parent
 
 
 def load_page_spec(spec_path: Path) -> dict:

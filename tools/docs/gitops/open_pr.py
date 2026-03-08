@@ -40,6 +40,16 @@ def _push_branch(branch: str) -> None:
 
 
 def _build_pr_body(manifest: dict, changed_pages: list) -> str:
+    """
+    Build the pull request body from bundle metadata.
+
+    Args:
+        manifest: Parsed manifest.json dict with keys 'commit', 'bundle_version', 'generated_at'
+        changed_pages: List of page IDs that were regenerated
+
+    Returns:
+        Formatted markdown string for the PR body
+    """
     commit = manifest.get("commit", "unknown")
     version = manifest.get("bundle_version", "unknown")
     generated_at = manifest.get("generated_at", "unknown")

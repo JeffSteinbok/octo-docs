@@ -21,7 +21,8 @@ def test_format_markdown_strips_wrapping_fence():
 def test_format_markdown_enforces_single_h1():
     content = "# Title One\n\n# Title Two\n\nSome text."
     result = format_markdown(content)
-    h1_count = sum(1 for line in result.split("\n") if line.startswith("# ") and not line.startswith("## "))
+    import re
+    h1_count = sum(1 for line in result.split("\n") if re.match(r"^# [^#]", line))
     assert h1_count == 1
 
 

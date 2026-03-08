@@ -36,7 +36,8 @@ def generate_page(
     Returns:
         Generated markdown content as a string
     """
-    provider = os.environ.get("DOCS_LLM_PROVIDER", "openai").lower()
+    # DOCS_LLM_PROVIDER is reserved for future provider switching (e.g. Anthropic, Azure)
+    _provider = os.environ.get("DOCS_LLM_PROVIDER", "openai").lower()  # noqa: F841
     model = model or os.environ.get("DOCS_LLM_MODEL", "gpt-4o")
     api_key = os.environ.get("DOCS_LLM_API_KEY")
     base_url = os.environ.get("DOCS_LLM_BASE_URL")
