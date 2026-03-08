@@ -108,12 +108,23 @@ jobs:
             --bundle "${{ steps.inputs.outputs.bundle_path }}" \
             $EXTRA_FLAGS
 
-      - name: Create branch, commit, and open PR
+      - name: Create branch and commit
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           python tools/docs/gitops/create_branch.py --bundle-root "${{ steps.inputs.outputs.bundle_path }}"
           python tools/docs/gitops/commit_changes.py
+          # Check if a commit was actually made
+          if git diff --quiet HEAD~1 HEAD 2>/dev/null; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open PR
+        if: steps.commit.outputs.has_changes == 'true'
+        run: |
           python tools/docs/gitops/open_pr.py --bundle-root "${{ steps.inputs.outputs.bundle_path }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
