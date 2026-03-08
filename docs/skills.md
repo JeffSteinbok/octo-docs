@@ -8,20 +8,20 @@ nav_order: 4
 
 ## Overview
 
-Skills are markdown-defined knowledge resources that provide agents with structured information to assist in their tasks. Unlike plugins, which are executable code, skills are static and serve as a reference for agents to retrieve relevant information during their operations. This approach ensures that agents can access reliable and consistent data without requiring external execution.
+Skills are markdown-defined knowledge resources that agents use to enhance their capabilities. Unlike plugins, which are executable code, skills are static knowledge bases that provide structured information to agents. They are designed to help agents perform tasks more effectively by offering relevant, pre-defined content.
 
 ## Key Concepts
 
-- **Skills**: Markdown-defined knowledge resources that provide structured, static information.
-- **Agents**: Entities that utilize skills to retrieve relevant information for their tasks.
-- **Difference from Plugins**: Skills are static knowledge resources, whereas plugins are executable code.
+- **Skills**: Markdown-defined knowledge resources that provide structured information.
+- **Agents**: Systems or tools that utilize skills to perform tasks.
+- **Difference from Plugins**: Skills are static knowledge, while plugins are executable code.
 
 ## How It Works
 
-1. **Definition**: Skills are defined in markdown format, containing structured knowledge that agents can reference.
-2. **Usage by Agents**: Agents access skills to retrieve relevant information during their operations. This allows them to perform tasks more effectively by leveraging predefined knowledge.
-3. **Static Nature**: Skills are not executable code, ensuring they serve as a reliable and consistent source of information.
+1. **Definition**: Skills are created as markdown files containing structured knowledge.
+2. **Integration**: Agents access these skills to retrieve relevant information.
+3. **Usage**: When an agent encounters a scenario requiring specific knowledge, it queries the appropriate skill to retrieve the necessary content.
 
 ## Example Usage
 
-No example usage is available in the provided source material.
+No examples are available in the provided source material.
