@@ -13,10 +13,13 @@ template: overview
 instructions:
   audience: external developers
   include:
-    - list of agents and their roles
-    - list of channels and how they connect to agents
-    - how agents and channels interact
+    - "These are the actual agents and channels configured in this system — do not refer to them as examples"
+    - list of agents with their roles and descriptions
+    - how agents are configured including permissions, exec settings, and bindings
+    - list of channels with their type and which agents they are bound to
+    - how channels connect users to agents
   exclude:
+    - referring to agents or channels as examples or sample configurations
     - internal service names
     - authentication credentials or token values
     - private hostnames or IP addresses
