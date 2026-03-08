@@ -4,7 +4,7 @@ title: Plugins
 nav_order: 3
 ---
 
-# Plugins Overview
+# Plugins
 
 | Emoji | Plugin Name | Description | Tool Count |
 |-------|-------------|-------------|------------|

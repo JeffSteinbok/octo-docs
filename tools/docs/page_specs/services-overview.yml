@@ -15,7 +15,7 @@ template: overview
 instructions:
   audience: external developers
   include:
-    - list of background services
+    - list of background services as H2 headings with a fitting emoji
     - description and purpose of each service
   exclude:
     - internal implementation details

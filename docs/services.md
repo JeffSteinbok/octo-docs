@@ -4,7 +4,7 @@ title: Services
 nav_order: 5
 ---
 
-# Services Overview
+# Services
 
 ## Overview
 
@@ -24,7 +24,7 @@ This document provides an overview of the background services available in the s
 
 ## List of Services
 
-### FastMail SSE Service
+### 📬 FastMail SSE Service
 
 - **Description**: The FastMail SSE Service is a real-time email notification daemon. It connects to FastMail's JMAP EventSource to monitor new emails in the Inbox. When a new email is detected, the service formats the notification and sends it via OpenClaw's message system.
 - **Purpose**: Enables real-time email notifications for users, ensuring timely updates and improved communication.
