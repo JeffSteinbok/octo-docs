@@ -8,50 +8,35 @@ nav_order: 2
 
 ## Overview
 
-Agents and channels are core components of the system that enable communication between users and automated services. Agents represent specific roles or functionalities, while channels define the communication platforms through which users interact with these agents. This system allows for flexible configuration of agents and channels to suit various use cases.
+Agents and channels are core components that enable communication between users and the system. Agents represent distinct entities with specific roles, while channels define the mediums through which users interact with these agents. This system allows for flexible configuration of agents and channels to support various communication needs.
 
 ## Key Concepts
 
-- **Agents**: Represent distinct roles or functionalities, each with a unique identifier and configuration.
-- **Channels**: Define the communication platforms (e.g., Discord, Telegram) through which users interact with agents.
-- **Bindings**: Specify which agents are accessible through which channels.
-- **Policies**: Define how direct messages (DMs) and group interactions are handled on each channel.
+- **Agents**: Entities that perform specific roles within the system, each identified by a unique ID and associated with a name and emoji.
+- **Channels**: Communication mediums (e.g., Discord, Telegram) that connect users to agents.
+- **Permissions and Policies**: Channels have configurable policies for direct messages (DMs) and group interactions.
+- **Bindings**: Channels are linked to agents to facilitate communication.
 
 ## How It Works
 
-1. **Agent Configuration**: Agents are defined with unique identifiers, names, and optional metadata such as emojis. Each agent can be configured with specific permissions and execution settings.
-2. **Channel Configuration**: Channels are set up to enable communication on specific platforms. Each channel has a type (e.g., Discord, Telegram) and associated policies for handling direct messages and group interactions.
-3. **Binding Agents to Channels**: Agents are bound to specific channels, enabling users to interact with the agents through those platforms.
-4. **User Interaction**: Users connect to the system via the configured channels. Based on the channel's policies and bindings, users can interact with the appropriate agents.
+1. **Agent Configuration**: Each agent is defined with a unique ID, name, and emoji. These attributes help identify the agent and its role in the system.
+2. **Channel Configuration**: Channels are configured with a type (e.g., Discord, Telegram), enabled status, and policies for managing user interactions:
+   - **DM Policy**: Defines how direct messages are handled (e.g., pairing users with agents).
+   - **Group Policy**: Specifies how group interactions are managed (e.g., allowlist or open access).
+   - **Streaming**: Indicates whether real-time streaming is enabled.
+3. **Connecting Users to Agents**: Channels serve as the bridge between users and agents. Based on the configured policies, users can interact with agents via the enabled channels.
 
 ## Agents
 
-| ID    | Name       | Emoji |
-|-------|------------|-------|
-| main  | Octo       | 🐙    |
-| mail  | mail-agent | 📬    |
-| root  | Root       | 🔑    |
-
-### Agent Configuration
-
-- **Permissions**: Each agent can be configured with specific permissions to control its access and capabilities.
-- **Execution Settings**: Agents can be customized with execution settings to define their behavior and operational parameters.
-- **Bindings**: Agents are associated with specific channels to determine where they are accessible.
+| ID    | Name       | Emoji | Description |
+|-------|------------|-------|-------------|
+| main  | Octo       | 🐙    | Represents the primary agent in the system. |
+| mail  | mail-agent | 📬    | Handles email-related interactions. |
+| root  | Root       | 🔑    | Serves as the root-level agent with elevated permissions. |
 
 ## Channels
 
-| Type      | Enabled | DM Policy | Group Policy | Streaming |
-|-----------|---------|-----------|--------------|-----------|
-| Discord   | true    | pairing   | allowlist    | off       |
-| Telegram  | true    | pairing   | open         | off       |
-
-### Channel Details
-
-- **Discord**: Supports direct messages with a pairing policy and group interactions with an allowlist policy. Streaming is disabled.
-- **Telegram**: Supports direct messages with a pairing policy and group interactions with an open policy. Streaming is disabled.
-
-### Channel-User Interaction
-
-Channels serve as the interface between users and agents. Depending on the channel's configuration:
-- Users can initiate direct messages with agents based on the channel's DM policy.
-- Group interactions are governed by the channel's group policy, which determines whether all users or only specific users can interact with agents in group settings.
+| Type      | Enabled | DM Policy | Group Policy | Streaming | Bound Agents |
+|-----------|---------|-----------|--------------|-----------|--------------|
+| Discord   | Yes     | Pairing   | Allowlist    | Off       | All agents   |
+| Telegram  | Yes     | Pairing   | Open         | Off       | All agents   |
