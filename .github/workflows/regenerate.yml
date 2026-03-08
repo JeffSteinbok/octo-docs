@@ -3,6 +3,12 @@ name: Regenerate documentation
 on:
   repository_dispatch:
     types: [docs-update]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'openclaw branch or ref to generate from'
+        required: false
+        default: 'main'
 
 permissions:
   contents: write
@@ -20,7 +26,7 @@ jobs:
           repository: JeffSteinbok/openclaw
           token: ${{ secrets.OPENCLAW_TOKEN }}
           path: openclaw
-          ref: ${{ github.event.client_payload.ref || 'main' }}
+          ref: ${{ github.event.client_payload.ref || github.event.inputs.ref || 'main' }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
