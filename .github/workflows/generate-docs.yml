@@ -42,7 +42,8 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
+  pages: write
+  id-token: write
   models: read
 
 jobs:
@@ -124,39 +125,25 @@ jobs:
             --bundle "${{ steps.inputs.outputs.bundle_path }}" \
             $EXTRA_FLAGS
 
-      - name: Create branch and commit
+      - name: Commit to main
         id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          python tools/docs/gitops/create_branch.py --bundle-root "${{ steps.inputs.outputs.bundle_path }}"
-          python tools/docs/gitops/commit_changes.py
-          # Check if the branch has diverged from main
-          if git diff --quiet origin/main HEAD -- docs/; then
+          git add docs/
+          if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No docs changes to commit."
           else
+            git commit -m "Update generated documentation"
+            git push origin main
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Open PR
-        if: steps.commit.outputs.has_changes == 'true'
-        run: |
-          python tools/docs/gitops/open_pr.py --bundle-root "${{ steps.inputs.outputs.bundle_path }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-
-      - name: Clean up stale branches
-        if: steps.commit.outputs.has_changes == 'false'
-        run: |
-          # Delete remote docs/* branches whose PRs are already merged or closed
-          for branch in $(git ls-remote --heads origin 'refs/heads/docs/*' | awk '{print $2}' | sed 's|refs/heads/||'); do
-            # Check if there's an open PR for this branch
-            STATE=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$branch" --state open --json number --jq 'length')
-            if [ "$STATE" = "0" ]; then
-              echo "Deleting stale branch: $branch"
-              git push origin --delete "$branch" 2>/dev/null || true
-            fi
-          done
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    needs: generate-docs
+    uses: ./.github/workflows/jekyll-gh-pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
