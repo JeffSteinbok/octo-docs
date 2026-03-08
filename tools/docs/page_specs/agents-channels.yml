@@ -1,0 +1,22 @@
+id: agents-channels
+
+output_path: docs/agents-channels.md
+
+sources:
+  - path: config.json
+    select:
+      - agents
+      - channels
+
+template: overview
+
+instructions:
+  audience: external developers
+  include:
+    - list of agents and their roles
+    - list of channels and how they connect to agents
+    - how agents and channels interact
+  exclude:
+    - internal service names
+    - authentication credentials or token values
+    - private hostnames or IP addresses
