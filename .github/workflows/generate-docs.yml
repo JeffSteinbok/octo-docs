@@ -1,0 +1,119 @@
+name: Generate Public Docs
+
+on:
+  # Triggered automatically when the private repo dispatches a `bundle-ready` event.
+  # Expected client_payload fields:
+  #   artifact_name  - name of the uploaded artifact containing the bundle
+  #   run_id         - run ID of the workflow that uploaded the artifact
+  #   regenerate_all - "true" to force a full rebuild (optional, default "false")
+  repository_dispatch:
+    types: [bundle-ready]
+
+  # Manual trigger — either supply an artifact_name to download from a previous
+  # workflow run, or provide a bundle_path that already exists in the workspace.
+  workflow_dispatch:
+    inputs:
+      artifact_name:
+        description: "Name of the workflow artifact containing the bundle (leave blank to use bundle_path)"
+        required: false
+        default: ""
+      artifact_run_id:
+        description: "Run ID that uploaded the artifact (required when artifact_name is set)"
+        required: false
+        default: ""
+      bundle_path:
+        description: "Path to an existing bundle on disk (used when artifact_name is blank)"
+        required: false
+        default: "./bundle"
+      regenerate_all:
+        description: "Regenerate all pages (ignore changed_pages.json)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCS_LLM_MODEL: ${{ vars.DOCS_LLM_MODEL }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r tools/docs/requirements.txt
+
+      # Resolve all trigger-specific inputs into a single set of step outputs so
+      # every subsequent step uses one consistent variable regardless of how the
+      # workflow was triggered.
+      - name: Resolve inputs
+        id: inputs
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "use_artifact=true"                                                 >> "$GITHUB_OUTPUT"
+            echo "artifact_name=${{ github.event.client_payload.artifact_name }}"   >> "$GITHUB_OUTPUT"
+            echo "run_id=${{ github.event.client_payload.run_id }}"                 >> "$GITHUB_OUTPUT"
+            echo "bundle_path=./bundle"                                              >> "$GITHUB_OUTPUT"
+            echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
+          else
+            ARTIFACT_NAME="${{ inputs.artifact_name }}"
+            if [ -n "$ARTIFACT_NAME" ]; then
+              echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
+              echo "artifact_name=$ARTIFACT_NAME"                       >> "$GITHUB_OUTPUT"
+              echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
+              echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
+            else
+              echo "use_artifact=false"                                 >> "$GITHUB_OUTPUT"
+              echo "bundle_path=${{ inputs.bundle_path || './bundle' }}" >> "$GITHUB_OUTPUT"
+            fi
+            echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Download the artifact when one is provided; use `gh run download` so that
+      # the run-id argument is only passed when it is actually set.
+      - name: Download bundle artifact
+        if: steps.inputs.outputs.use_artifact == 'true'
+        run: |
+          ARTIFACT_NAME="${{ steps.inputs.outputs.artifact_name }}"
+          RUN_ID="${{ steps.inputs.outputs.run_id }}"
+          if [ -n "$RUN_ID" ]; then
+            gh run download "$RUN_ID" --name "$ARTIFACT_NAME" --dir ./bundle
+          else
+            gh run download --name "$ARTIFACT_NAME" --dir ./bundle
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate docs
+        run: |
+          EXTRA_FLAGS=""
+          if [ "${{ steps.inputs.outputs.regenerate_all }}" = "true" ]; then
+            EXTRA_FLAGS="--all"
+          fi
+          python tools/docs/generation/generate_all.py \
+            --bundle "${{ steps.inputs.outputs.bundle_path }}" \
+            $EXTRA_FLAGS
+
+      - name: Create branch, commit, and open PR
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python tools/docs/gitops/create_branch.py --bundle-root "${{ steps.inputs.outputs.bundle_path }}"
+          python tools/docs/gitops/commit_changes.py
+          python tools/docs/gitops/open_pr.py --bundle-root "${{ steps.inputs.outputs.bundle_path }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}

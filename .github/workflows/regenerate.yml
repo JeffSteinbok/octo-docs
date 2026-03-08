@@ -1,17 +1,16 @@
-name: Regenerate documentation
+name: Regenerate documentation (bundle-based)
 
 on:
-  repository_dispatch:
-    types: [docs-update]
   workflow_dispatch:
     inputs:
-      ref:
-        description: 'openclaw branch or ref to generate from'
-        required: false
-        default: 'main'
+      bundle_path:
+        description: "Path to the sanitized docs bundle"
+        required: true
+        default: "./bundle"
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   regenerate:
@@ -20,44 +19,28 @@ jobs:
       - name: Checkout octo-docs
         uses: actions/checkout@v4
 
-      - name: Checkout openclaw
-        uses: actions/checkout@v4
-        with:
-          repository: JeffSteinbok/openclaw
-          token: ${{ secrets.OPENCLAW_TOKEN }}
-          path: openclaw
-          ref: ${{ github.event.client_payload.ref || github.event.inputs.ref || 'main' }}
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pyyaml
-
-      - name: Install Copilot CLI
-        run: curl -fsSL https://gh.io/copilot-install | bash
-        env:
-          GH_TOKEN: ${{ secrets.COPILOT_TOKEN }}
+        run: pip install -r tools/docs/requirements.txt
 
       - name: Generate docs
-        run: python skills/generate-docs/generate-docs.py --source ./openclaw --output-dir ./docs
-        env:
-          GH_TOKEN: ${{ secrets.COPILOT_TOKEN }}
-
-      - name: Check for changes
-        id: changes
         run: |
-          git diff --quiet docs/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+          python tools/docs/generation/generate_all.py --bundle "${{ inputs.bundle_path }}"
+        env:
+          DOCS_LLM_MODEL: ${{ vars.DOCS_LLM_MODEL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit and push
-        if: steps.changes.outputs.changed == 'true'
+      - name: Create branch and open PR
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          git commit -m "docs: auto-regenerate from openclaw@${GITHUB_EVENT_CLIENT_PAYLOAD_REF:0:7}
-
-          Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
-          git push
+          python tools/docs/gitops/create_branch.py --bundle-root "${{ inputs.bundle_path }}"
+          python tools/docs/gitops/commit_changes.py
+          python tools/docs/gitops/open_pr.py --bundle-root "${{ inputs.bundle_path }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}

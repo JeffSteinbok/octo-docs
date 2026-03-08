@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PageSpec",
+  "description": "Schema for a documentation page spec file",
+  "type": "object",
+  "required": ["id", "output_path", "sources", "template"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this page spec",
+      "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+    },
+    "output_path": {
+      "type": "string",
+      "description": "Relative path where the generated page should be written"
+    },
+    "sources": {
+      "type": "array",
+      "description": "List of bundle source files to include",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path to the bundle artifact"
+          },
+          "select": {
+            "type": "array",
+            "description": "JSON keys to select from a JSON source (omit to include all)",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "template": {
+      "type": "string",
+      "description": "Name of the prompt template to use",
+      "enum": ["overview", "api_reference", "release_notes"]
+    },
+    "instructions": {
+      "type": "object",
+      "description": "Page-level generation instructions",
+      "additionalProperties": false,
+      "properties": {
+        "audience": {
+          "type": "string",
+          "description": "Intended audience for this page"
+        },
+        "include": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Topics or sections to include"
+        },
+        "exclude": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Topics or details to exclude"
+        }
+      }
+    }
+  }
+}
