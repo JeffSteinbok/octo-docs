@@ -43,9 +43,21 @@ def generate_page(
     base_url = os.environ.get("DOCS_LLM_BASE_URL")
 
     if not api_key:
-        raise EnvironmentError(
-            "DOCS_LLM_API_KEY environment variable is required"
-        )
+        # Fall back to the GitHub token, which is accepted by the GitHub Models
+        # OpenAI-compatible endpoint (https://models.inference.ai.azure.com).
+        # In GitHub Actions, GITHUB_TOKEN is always available without any
+        # additional secrets configuration.
+        github_token = os.environ.get("GITHUB_TOKEN")
+        if github_token:
+            api_key = github_token
+            if not base_url:
+                base_url = "https://models.inference.ai.azure.com"
+            logger.info("DOCS_LLM_API_KEY not set; using GITHUB_TOKEN with GitHub Models endpoint")
+        else:
+            raise EnvironmentError(
+                "No LLM credentials found. Set DOCS_LLM_API_KEY, or set GITHUB_TOKEN "
+                "to use the GitHub Models endpoint (https://models.inference.ai.azure.com)."
+            )
 
     last_error = None
     for attempt in range(1, max_retries + 1):

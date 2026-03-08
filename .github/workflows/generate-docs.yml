@@ -27,7 +27,10 @@ jobs:
     env:
       DOCS_LLM_PROVIDER: ${{ vars.DOCS_LLM_PROVIDER }}
       DOCS_LLM_MODEL: ${{ vars.DOCS_LLM_MODEL }}
+      # DOCS_LLM_API_KEY is optional: if unset, GITHUB_TOKEN is used with
+      # the GitHub Models endpoint (https://models.inference.ai.azure.com).
       DOCS_LLM_API_KEY: ${{ secrets.DOCS_LLM_API_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4

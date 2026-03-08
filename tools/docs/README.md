@@ -114,12 +114,26 @@ Page specs are validated against `tools/docs/schemas/page_spec.schema.json`.
 pip install -r tools/docs/requirements.txt
 ```
 
-Set required environment variables:
+Set LLM credentials — two options:
+
+**Option A — GitHub Models (no extra secrets needed):**
+
+In GitHub Actions the built-in `GITHUB_TOKEN` is automatically used with the
+[GitHub Models](https://github.com/marketplace/models) OpenAI-compatible endpoint
+(`https://models.inference.ai.azure.com`). No additional secrets configuration is
+required. For local use, create a GitHub personal access token and export it:
+
+```bash
+export GITHUB_TOKEN=ghp_your-token
+export DOCS_LLM_MODEL=gpt-4o            # optional, default: gpt-4o
+```
+
+**Option B — Bring your own API key:**
 
 ```bash
 export DOCS_LLM_API_KEY=your-api-key
 export DOCS_LLM_MODEL=gpt-4o            # optional, default: gpt-4o
-export DOCS_LLM_PROVIDER=openai         # optional, default: openai
+export DOCS_LLM_BASE_URL=https://...    # optional, for compatible endpoints
 ```
 
 ### Generate changed pages only
