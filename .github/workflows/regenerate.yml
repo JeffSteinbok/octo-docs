@@ -44,7 +44,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/
-          git add .doc-hashes.json
+          git add .doc-hashes.json 2>/dev/null || true
           git commit -m "docs: auto-regenerate from openclaw@${GITHUB_EVENT_CLIENT_PAYLOAD_REF:0:7}
 
           Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
