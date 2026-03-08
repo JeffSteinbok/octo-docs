@@ -84,18 +84,19 @@ jobs:
 
       # Download the artifact when one is provided; use `gh run download` so that
       # the run-id argument is only passed when it is actually set.
+      # The artifact lives in the private openclaw repo, so we need OPENCLAW_TOKEN.
       - name: Download bundle artifact
         if: steps.inputs.outputs.use_artifact == 'true'
         run: |
           ARTIFACT_NAME="${{ steps.inputs.outputs.artifact_name }}"
           RUN_ID="${{ steps.inputs.outputs.run_id }}"
           if [ -n "$RUN_ID" ]; then
-            gh run download "$RUN_ID" --name "$ARTIFACT_NAME" --dir ./bundle
+            gh run download "$RUN_ID" --repo JeffSteinbok/openclaw --name "$ARTIFACT_NAME" --dir ./bundle
           else
-            gh run download --name "$ARTIFACT_NAME" --dir ./bundle
+            gh run download --repo JeffSteinbok/openclaw --name "$ARTIFACT_NAME" --dir ./bundle
           fi
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.OPENCLAW_TOKEN }}
 
       - name: Generate docs
         run: |
