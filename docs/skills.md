@@ -8,21 +8,21 @@ nav_order: 4
 
 ## Overview
 
-Skills are markdown-defined knowledge components that provide structured information for agents to use in various contexts. Unlike plugins, which are executable code, skills are static knowledge resources that agents reference to enhance their functionality and decision-making.
+Skills are markdown-defined knowledge components that provide structured information to agents. They are designed to help agents perform specific tasks by referencing predefined, static knowledge. Unlike plugins, which are executable code, skills are non-executable and serve as a static knowledge base.
 
 ## Key Concepts
 
-- **Skills**: Markdown-defined knowledge resources used by agents.
-- **Agents**: Entities that utilize skills to perform tasks or provide information.
-- **Static Knowledge**: Skills are not executable code but structured, predefined information.
-- **Difference from Plugins**: Skills are knowledge-based, while plugins are executable.
+- **Skills**: Markdown-defined knowledge components that provide static information.
+- **Agents**: Entities that utilize skills to perform tasks or answer queries.
+- **Non-Executable**: Skills are not executable code; they are purely informational.
+- **Difference from Plugins**: Skills differ from plugins in that they do not execute actions but instead provide structured knowledge.
 
 ## How It Works
 
-1. **Definition**: Skills are created as markdown files containing structured knowledge.
-2. **Usage by Agents**: Agents reference skills to retrieve relevant information and apply it to their tasks.
-3. **Non-Executable**: Skills serve as static resources and do not perform actions or computations like plugins.
+1. **Definition**: Skills are defined in markdown format, containing structured knowledge that agents can reference.
+2. **Usage by Agents**: Agents query skills to retrieve relevant information for specific tasks or questions.
+3. **Static Nature**: Skills provide static, predefined knowledge and do not involve any dynamic execution or processing.
 
-## Example Usage
+## Available Skills
 
-No examples are available in the provided source material.
+There are currently no skills available.
