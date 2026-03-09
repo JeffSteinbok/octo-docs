@@ -41,3 +41,8 @@ class BundleLoader:
     def exists(self, relative_path: str) -> bool:
         """Check if a bundle artifact exists."""
         return (self.bundle_root / relative_path).exists()
+
+    def glob(self, pattern: str) -> list:
+        """Return relative paths matching a glob pattern within the bundle."""
+        matches = sorted(self.bundle_root.glob(pattern))
+        return [str(m.relative_to(self.bundle_root)) for m in matches if m.is_file()]

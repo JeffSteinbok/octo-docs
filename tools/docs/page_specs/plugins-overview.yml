@@ -9,18 +9,7 @@ front_matter:
 
 sources:
   - path: api-index.json
-  - path: plugins/config-backup.json
-  - path: plugins/fastmail.json
-  - path: plugins/hass-camera-snapshot.json
-  - path: plugins/homeassistant-cli.json
-  - path: plugins/ics-calendar.json
-  - path: plugins/opentable.json
-  - path: plugins/opentable-heartbeat.json
-  - path: plugins/outlook-calendar.json
-  - path: plugins/outlook-mail.json
-  - path: plugins/outlook-work-calendar.json
-  - path: plugins/spotify.json
-  - path: plugins/weightwatchers.json
+  - path: plugins/*.json
 
 template: overview
 

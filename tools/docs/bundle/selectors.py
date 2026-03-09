@@ -19,14 +19,32 @@ def select_source(bundle: BundleLoader, source_spec: dict) -> object:
         return bundle.load_text(path)
 
 
+def expand_sources(bundle: BundleLoader, sources: list) -> list:
+    """Expand any glob patterns in the sources list into concrete paths.
+
+    A source with a glob character (* or ?) gets expanded to one source
+    entry per matching file. Non-glob sources pass through unchanged.
+    """
+    expanded = []
+    for source_spec in sources:
+        path = source_spec["path"]
+        if "*" in path or "?" in path:
+            for match in bundle.glob(path):
+                expanded.append({**source_spec, "path": match})
+        else:
+            expanded.append(source_spec)
+    return expanded
+
+
 def build_source_material(bundle: BundleLoader, page_spec: dict) -> dict:
     """
     Read a page spec and load selected source material from the bundle.
 
     Returns a normalized dict suitable for prompt generation.
     """
+    sources = expand_sources(bundle, page_spec.get("sources", []))
     source_material = {}
-    for source_spec in page_spec.get("sources", []):
+    for source_spec in sources:
         path = source_spec["path"]
         if not bundle.exists(path):
             continue
