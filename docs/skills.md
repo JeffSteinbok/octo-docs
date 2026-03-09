@@ -8,19 +8,20 @@ nav_order: 4
 
 ## Overview
 
-Skills are markdown-defined knowledge resources that agents use to enhance their capabilities. Unlike plugins, which are executable code, skills are static knowledge bases that provide structured information to agents. They are designed to help agents perform tasks more effectively by offering relevant, pre-defined content.
+Skills are markdown-defined knowledge components that provide structured information for agents to use in various contexts. Unlike plugins, which are executable code, skills are static knowledge resources that agents reference to enhance their functionality and decision-making.
 
 ## Key Concepts
 
-- **Skills**: Markdown-defined knowledge resources that provide structured information.
-- **Agents**: Systems or tools that utilize skills to perform tasks.
-- **Difference from Plugins**: Skills are static knowledge, while plugins are executable code.
+- **Skills**: Markdown-defined knowledge resources used by agents.
+- **Agents**: Entities that utilize skills to perform tasks or provide information.
+- **Static Knowledge**: Skills are not executable code but structured, predefined information.
+- **Difference from Plugins**: Skills are knowledge-based, while plugins are executable.
 
 ## How It Works
 
 1. **Definition**: Skills are created as markdown files containing structured knowledge.
-2. **Integration**: Agents access these skills to retrieve relevant information.
-3. **Usage**: When an agent encounters a scenario requiring specific knowledge, it queries the appropriate skill to retrieve the necessary content.
+2. **Usage by Agents**: Agents reference skills to retrieve relevant information and apply it to their tasks.
+3. **Non-Executable**: Skills serve as static resources and do not perform actions or computations like plugins.
 
 ## Example Usage
 
