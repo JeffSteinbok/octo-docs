@@ -8,36 +8,39 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of scheduled jobs available in the system. These jobs are automated tasks designed to perform specific operations at predefined intervals, ensuring the system remains up-to-date and operational. Each job has a defined schedule and purpose, which are detailed below.
+This page provides information about scheduled jobs that automate recurring tasks. Each job has a specific purpose, schedule, and configuration to ensure consistent execution. These jobs help streamline processes such as data fetching and backups.
 
 ## Key Concepts
 
-- **Scheduled Jobs**: Automated tasks that run at specific intervals or times.
-- **Cron Schedule**: A time-based job scheduler used to execute tasks at specific times or intervals.
-- **Time Zones**: Some jobs are scheduled based on a specific time zone.
-- **Enabled Jobs**: Only jobs marked as enabled are active and executed.
+- **Scheduled Jobs**: Automated tasks configured to run at specific intervals.
+- **Cron Scheduling**: Defines execution times using cron expressions.
+- **Time Zones**: Some jobs specify a time zone for accurate scheduling.
+- **Conditional Execution**: Certain jobs only perform actions if specific conditions are met.
+
+## How It Works
+
+Scheduled jobs are configured with a defined schedule and purpose. Depending on the job, execution times are determined using either cron expressions or interval-based scheduling. Jobs run automatically based on their configuration and do not require manual intervention.
 
 ## Scheduled Jobs
 
-### 🕒 calendar-fetch-hourly
+### 📅 Calendar Fetch Hourly
 
-- **Description**: Fetches calendar data hourly between 7:00 AM and 5:00 PM PST.
-- **Schedule**: Runs every hour on the hour from 7:00 AM to 5:00 PM (PST).
-  - **Type**: Cron
-  - **Expression**: `0 7-17 * * *`
-  - **Time Zone**: America/Los_Angeles
+**Description**: Fetch calendars hourly between 7am and 5pm PST.  
+**Schedule**: Cron expression `0 7-17 * * *` in the `America/Los_Angeles` time zone.  
+**Purpose**: Ensures calendar data is updated regularly throughout the day.
 
-### 🌙 calendar-fetch-midnight
+---
 
-- **Description**: Fetches calendar data at midnight PST.
-- **Schedule**: Runs daily at 12:00 AM (PST).
-  - **Type**: Cron
-  - **Expression**: `0 0 * * *`
-  - **Time Zone**: America/Los_Angeles
+### 🛠️ Config Backup
 
-### 💾 config-backup
+**Description**: Backup `openclaw.json` to Git daily. Only commits changes if the file has been modified.  
+**Schedule**: Runs every 24 hours (`86400000ms`).  
+**Purpose**: Maintains a daily backup of configuration data to ensure recovery and version control.
 
-- **Description**: Backs up the `openclaw.json` configuration file to Git daily. A commit is only made if changes are detected.
-- **Schedule**: Runs every 24 hours.
-  - **Type**: Interval
-  - **Interval**: 86,400,000 milliseconds (24 hours)
+---
+
+### 🌙 Calendar Fetch Midnight
+
+**Description**: Fetch calendars at midnight PST.  
+**Schedule**: Cron expression `0 0 * * *` in the `America/Los_Angeles` time zone.  
+**Purpose**: Updates calendar data at the start of each day.
