@@ -8,34 +8,35 @@ nav_order: 6
 
 ## Overview
 
-This page provides an overview of scheduled jobs available in the system. Scheduled jobs automate recurring tasks such as fetching calendars and backing up configuration files. Each job is configured with a specific schedule and purpose to ensure consistent and reliable execution.
+This document provides an overview of scheduled jobs available in the system. These jobs automate recurring tasks, such as fetching calendar data or backing up configuration files, to ensure consistent and reliable operation.
 
 ## Key Concepts
 
-- **Jobs**: Automated tasks that run on a predefined schedule.
-- **Schedules**: Define when and how often a job runs, using cron expressions or interval-based timing.
-- **Time Zones**: Some jobs are scheduled relative to a specific time zone.
+- **Scheduled Jobs**: Automate repetitive tasks based on predefined schedules.
+- **Cron Expressions**: Define specific times for job execution.
+- **Time Zones**: Jobs may operate in specific time zones.
+- **Enabled Status**: Indicates whether a job is active.
 
 ## Scheduled Jobs
 
 ### 🕒 Calendar Fetch Hourly
 
 **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.  
-**Schedule**: Cron expression `0 7-17 * * *` (Time zone: America/Los_Angeles).  
-**Purpose**: Ensures calendar data is updated hourly during business hours.
-
----
-
-### 🕛 Calendar Fetch Midnight
-
-**Description**: Fetch calendars at midnight PST.  
-**Schedule**: Cron expression `0 0 * * *` (Time zone: America/Los_Angeles).  
-**Purpose**: Updates calendar data daily at midnight.
+**Schedule**: Cron expression `0 7-17 * * *` in the `America/Los_Angeles` time zone.  
+**Purpose**: Ensures calendar data is updated throughout the day.
 
 ---
 
 ### 💾 Config Backup
 
 **Description**: Backup `openclaw.json` to Git daily. Commits changes only if the file has been modified.  
-**Schedule**: Runs every 24 hours (`everyMs: 86400000`).  
-**Purpose**: Maintains a daily backup of configuration data for version control and recovery.
+**Schedule**: Runs every 24 hours (`86400000ms`).  
+**Purpose**: Maintains a daily backup of critical configuration files.
+
+---
+
+### 🌙 Calendar Fetch Midnight
+
+**Description**: Fetch calendars at midnight PST.  
+**Schedule**: Cron expression `0 0 * * *` in the `America/Los_Angeles` time zone.  
+**Purpose**: Updates calendar data at the start of each day.
