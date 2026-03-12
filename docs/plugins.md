@@ -6,21 +6,19 @@ nav_order: 3
 
 # Plugins
 
-| Emoji | Plugin Name | Description | Tool Count |
-|-------|-------------|-------------|------------|
-| 🛠️ | [Config Backup](#config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | 1 |
-| 📧 | [FastMail](#fastmail) | Send email, search/read inbox, manage calendar events via JMAP and CalDAV | 7 |
-| 🐙 | [GitHub](#github) | Create issues in GitHub repositories as the OpenClaw user | 1 |
-| 📷 | [Home Assistant Camera Snapshot](#hass-camera-snapshot) | Take snapshots from Home Assistant cameras via hass-cli and save locally | 2 |
-| 🏠 | [Home Assistant CLI](#homeassistant-cli) | Control Home Assistant via hass-cli: get/list entity states, call services, and list events | 7 |
-| 📅 | [ICS Calendar](#ics-calendar) | Fetches Nicole's calendar from an ICS feed | 1 |
-| 🍽️ | [OpenTable](#opentable) | Check restaurant availability on OpenTable | 2 |
-| ❤️ | [OpenTable Heartbeat](#opentable-heartbeat) | Health-check for the OpenTable skill | 1 |
-| 📅 | [Outlook Calendar](#outlook-calendar) | Fetch personal and family calendars via Microsoft Graph API | 1 |
-| 📧 | [Outlook Mail](#outlook-mail) | Search and read Outlook inbox via Microsoft Graph API | 3 |
-| 🏢 | [Outlook Work Calendar](#outlook-work-calendar) | Fetches published Outlook work calendar via EWS JSON API (no auth required) | 1 |
-| 🎵 | [Spotify](#spotify) | Control Spotify playback, search music, and manage playlists | 9 |
-| 🍎 | [WeightWatchers](#weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | 7 |
+- 🛠️ [Config Backup](#config-backup) – Backs up OpenClaw config to Git with SHA-256 change detection
+- 📧 [FastMail](#fastmail) – Send email, search/read inbox, manage calendar events via JMAP and CalDAV
+- 🐙 [GitHub](#github) – Create issues in GitHub repositories as the OpenClaw user
+- 📷 [Home Assistant Camera Snapshot](#hass-camera-snapshot) – Take snapshots from Home Assistant cameras via hass-cli and save locally
+- 🏠 [Home Assistant CLI](#homeassistant-cli) – Control Home Assistant via hass-cli: get/list entity states, call services, and list events
+- 📅 [ICS Calendar](#ics-calendar) – Fetches Nicole's calendar from an ICS feed
+- 🍽️ [OpenTable](#opentable) – Check restaurant availability on OpenTable
+- ❤️ [OpenTable Heartbeat](#opentable-heartbeat) – Health-check for the OpenTable skill
+- 📅 [Outlook Calendar](#outlook-calendar) – Fetch personal and family calendars via Microsoft Graph API
+- 📧 [Outlook Mail](#outlook-mail) – Search and read Outlook inbox via Microsoft Graph API
+- 🏢 [Outlook Work Calendar](#outlook-work-calendar) – Fetches published Outlook work calendar via EWS JSON API (no auth required)
+- 🎵 [Spotify](#spotify) – Control Spotify playback, search music, and manage playlists
+- 🍎 [WeightWatchers](#weightwatchers) – Search foods, log meals, view diary and points budget via the unofficial WW API
 
 ---
 

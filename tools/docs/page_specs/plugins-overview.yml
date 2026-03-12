@@ -16,9 +16,9 @@ template: overview
 instructions:
   audience: external developers
   include:
-    - "Start with a summary table of all plugins: columns for emoji, plugin name (linked to its section anchor), short description, and tool count"
-    - "After the table, create an H2 section for each plugin with a fitting emoji in the heading (e.g. 📧 FastMail, 🏠 Home Assistant, 📅 Outlook Calendar, 🎵 Spotify, etc.)"
-    - "IMPORTANT: anchor links in the summary table MUST use lowercase-kebab-case IDs without emojis. For example: [FastMail](#fastmail), [Home Assistant CLI](#home-assistant-cli), [Spotify](#spotify). Add an explicit anchor tag before each H2: <a id=\"fastmail\"></a>, etc."
+    - "Start with a bullet list of all plugins: use the plugin's emoji as the bullet, followed by the plugin name (linked to its section anchor) and a short description. Do not include a tool count."
+    - "After the bullet list, create an H2 section for each plugin with a fitting emoji in the heading (e.g. 📧 FastMail, 🏠 Home Assistant, 📅 Outlook Calendar, 🎵 Spotify, etc.)"
+    - "IMPORTANT: anchor links in the bullet list MUST use lowercase-kebab-case IDs without emojis. For example: [FastMail](#fastmail), [Home Assistant CLI](#home-assistant-cli), [Spotify](#spotify). Add an explicit anchor tag before each H2: <a id=\"fastmail\"></a>, etc."
     - "In each plugin section, list every tool as an H4 heading with the tool name"
     - "Under each tool H4, include the tool's description and a table of its parameters (name, type, description) if parameter info is available in the source data; otherwise just show the description"
   exclude:
