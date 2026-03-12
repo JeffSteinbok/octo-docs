@@ -8,22 +8,20 @@ nav_order: 5
 
 ## Overview
 
-This document provides an overview of the background services available in the system. These services are designed to handle specific tasks, such as real-time notifications, to enhance functionality and provide seamless integration with external systems.
+This page provides an overview of the background services available. These services are designed to handle specific tasks such as real-time notifications, ensuring smooth and efficient operations for external developers integrating with the system.
 
 ## Key Concepts
 
-- Background services operate independently to perform specific tasks.
-- Services are designed to integrate with external systems and APIs.
-- Each service has a defined purpose and operates autonomously.
-
-## How It Works
-
-Background services run continuously to perform their designated tasks. They often connect to external APIs or systems, monitor for specific events, and trigger actions based on those events. These services are designed to operate reliably and efficiently in the background.
+- Background services operate independently to perform specialized tasks.
+- Services are designed to integrate with external systems and provide real-time functionality.
+- Notifications and data processing are key features of these services.
 
 ## FastMail SSE Service 📧
 
-**Description**:  
-The FastMail SSE Service is a real-time email notification daemon. It connects to FastMail's JMAP EventSource to monitor for new emails in the Inbox. When a new email is detected, the service formats a notification and sends it through OpenClaw's message system.
+### Description
 
-**Purpose**:  
-This service ensures users receive timely notifications for new emails, enabling faster response times and improved communication.
+The FastMail SSE Service is a real-time email notification daemon. It connects to FastMail's JMAP EventSource to monitor new emails arriving in the Inbox. Upon detecting new emails, it formats notifications and sends them via OpenClaw's message system.
+
+### Purpose
+
+This service ensures timely delivery of email notifications, enabling external systems to act on new messages as they arrive. It simplifies the process of monitoring inbox activity and provides formatted notifications for downstream consumption.
