@@ -6,19 +6,19 @@ nav_order: 3
 
 # Plugins
 
-- 🛠️ [Config Backup](#config-backup): Backs up OpenClaw config to Git with SHA-256 change detection.
-- 📧 [FastMail](#fastmail): Send email, search/read inbox, manage calendar events via JMAP and CalDAV.
-- 🐙 [GitHub](#github): Create issues in GitHub repositories as the OpenClaw user.
-- 📷 [Home Assistant Camera Snapshot](#hass-camera-snapshot): Take snapshots from Home Assistant cameras via hass-cli and save locally.
-- 🏠 [Home Assistant CLI](#homeassistant-cli): Control Home Assistant via hass-cli: get/list entity states, call services, and list events.
-- 📅 [ICS Calendar](#ics-calendar): Fetches Nicole's calendar from an ICS feed.
-- 🍽️ [OpenTable](#opentable): Check restaurant availability on OpenTable.
-- ❤️ [OpenTable Heartbeat](#opentable-heartbeat): Health-check for the OpenTable skill. Alerts on failure via configured notification channel.
-- 📅 [Outlook Calendar](#outlook-calendar): Fetch personal and family calendars via Microsoft Graph API.
-- 📧 [Outlook Mail](#outlook-mail): Search and read Outlook inbox via Microsoft Graph API.
-- 🏢 [Outlook Work Calendar](#outlook-work-calendar): Fetches published Outlook work calendar via EWS JSON API (no auth required).
-- 🎵 [Spotify](#spotify): Control Spotify playback, search music, and manage playlists.
-- 🍎 [WeightWatchers](#weightwatchers): Search foods, log meals, view diary and points budget via the unofficial WW API.
+- 🛠️ **[Config Backup](#config-backup)**: Backs up OpenClaw config to Git with SHA-256 change detection.
+- 📧 **[FastMail](#fastmail)**: Send email, search/read inbox, manage calendar events via JMAP and CalDAV.
+- 🐙 **[GitHub](#github)**: Create issues in GitHub repositories as the OpenClaw user.
+- 📷 **[Home Assistant Camera Snapshot](#hass-camera-snapshot)**: Take snapshots from Home Assistant cameras via hass-cli and save locally.
+- 🏠 **[Home Assistant CLI](#homeassistant-cli)**: Control Home Assistant via hass-cli: get/list entity states, call services, and list events.
+- 📅 **[ICS Calendar](#ics-calendar)**: Fetches Nicole's calendar from an ICS feed.
+- 🍽️ **[OpenTable](#opentable)**: Check restaurant availability on OpenTable.
+- ❤️ **[OpenTable Heartbeat](#opentable-heartbeat)**: Health-check for the OpenTable skill. Alerts on failure via configured notification channel.
+- 📅 **[Outlook Calendar](#outlook-calendar)**: Fetch personal and family calendars via Microsoft Graph API.
+- 📧 **[Outlook Mail](#outlook-mail)**: Search and read Outlook inbox via Microsoft Graph API.
+- 🏢 **[Outlook Work Calendar](#outlook-work-calendar)**: Fetches published Outlook work calendar via EWS JSON API (no auth required).
+- 🎵 **[Spotify](#spotify)**: Control Spotify playback, search music, and manage playlists.
+- 🍎 **[WeightWatchers](#weightwatchers)**: Search foods, log meals, view diary and points budget via the unofficial WW API.
 
 ---
 
