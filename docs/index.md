@@ -70,7 +70,7 @@ Security is the most important aspect of this experiment — even above just hav
 
 - **Full mail read access** — Octo reads Jeff's personal Outlook inbox directly via the Microsoft Graph API (OAuth2). Mail is never injected into the AI as raw content — Octo queries it on demand using structured API calls.
 - **Calendar access** — Octo fetches Jeff's personal and family calendars via Graph API, Nicole's calendar via ICS feed, and the work calendar via Exchange/Graph API. Calendars are synced to markdown files in memory every hour (7 AM–5 PM) and at midnight.
-- **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) (`octo@steinbok.net`) where it sends mail on Jeff's behalf. Incoming mail to that address is monitored via a Python SSE service.
+- **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) where it sends mail on Jeff's behalf. Incoming mail to that address is monitored via a Python SSE service.
 
 ## 💰 Cost
 
