@@ -8,20 +8,20 @@ nav_order: 5
 
 ## Overview
 
-This page provides an overview of background services that facilitate various functionalities. These services are designed to handle specific tasks such as real-time notifications, ensuring seamless integration and communication across systems.
+This page provides an overview of background services designed to support real-time and asynchronous operations. These services enable seamless integration and efficient communication between systems, solving specific operational challenges such as real-time notifications.
 
 ## Key Concepts
 
-- Background services operate independently to perform specialized tasks.
-- Each service is tailored to solve a specific problem or provide a distinct functionality.
-- Services interact with external systems and internal messaging frameworks.
+- Background services operate independently to handle specific tasks.
+- Services are designed to integrate with external systems and protocols.
+- Each service fulfills a distinct purpose, such as real-time notifications or data processing.
 
 ## FastMail SSE Service 📧
 
 ### Description
 
-The FastMail SSE Service is a real-time email notification daemon. It connects to FastMail's JMAP EventSource to monitor new emails in one or more mailboxes. When new emails are detected, the service formats notifications and sends them via OpenClaw's message system.
+The FastMail SSE Service is a real-time email notification daemon. It connects to FastMail's JMAP EventSource, monitors new emails in one or more mailboxes, formats notifications, and sends them via OpenClaw's message system.
 
 ### Purpose
 
-This service ensures users receive timely notifications about new emails, enhancing responsiveness and communication efficiency.
+This service ensures users receive timely notifications for new emails, enabling efficient communication and responsiveness.
