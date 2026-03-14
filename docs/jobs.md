@@ -8,34 +8,39 @@ nav_order: 6
 
 ## Overview
 
-This page provides an overview of scheduled jobs available in the system. Scheduled jobs automate recurring tasks such as fetching calendars and backing up configuration files. Each job is configured with a specific schedule and purpose to ensure consistent and reliable execution.
+This page provides an overview of scheduled jobs, their purpose, and their execution schedules. These jobs automate recurring tasks such as fetching data, backing up configurations, and generating briefings.
 
 ## Key Concepts
 
-- **Jobs**: Automated tasks that run on a predefined schedule.
-- **Schedules**: Define when and how often a job runs, using cron expressions or interval-based timing.
-- **Time Zones**: Some jobs are scheduled relative to a specific time zone.
+- **Scheduled Jobs**: Automated tasks that run on predefined schedules.
+- **Cron Expressions**: Used to define specific times for job execution.
+- **Time Zones**: Jobs may be scheduled in specific time zones.
+- **Enabled Status**: Indicates whether a job is active and running.
 
 ## Scheduled Jobs
 
-### 🕒 Calendar Fetch Hourly
+### 🕒 calendar-fetch-hourly
 
 **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.  
-**Schedule**: Cron expression `0 7-17 * * *` (Time zone: America/Los_Angeles).  
-**Purpose**: Ensures calendar data is updated hourly during business hours.
+**Schedule**: Cron expression `0 7-17 * * *` in the time zone `America/Los_Angeles`.
 
 ---
 
-### 🕛 Calendar Fetch Midnight
+### 🕒 config-backup
+
+**Description**: Backup `openclaw.json` to Git daily. Commits only if changes are detected.  
+**Schedule**: Runs every 24 hours (`86400000 ms`).
+
+---
+
+### 🕒 calendar-fetch-midnight
 
 **Description**: Fetch calendars at midnight PST.  
-**Schedule**: Cron expression `0 0 * * *` (Time zone: America/Los_Angeles).  
-**Purpose**: Updates calendar data daily at midnight.
+**Schedule**: Cron expression `0 0 * * *` in the time zone `America/Los_Angeles`.
 
 ---
 
-### 💾 Config Backup
+### 🕒 evening-briefing
 
-**Description**: Backup `openclaw.json` to Git daily. Commits changes only if the file has been modified.  
-**Schedule**: Runs every 24 hours (`everyMs: 86400000`).  
-**Purpose**: Maintains a daily backup of configuration data for version control and recovery.
+**Description**: Weekday 9 PM briefing summarizing tasks for the next morning.  
+**Schedule**: Cron expression `0 21 * * 0-4` in the time zone `America/Los_Angeles`.
