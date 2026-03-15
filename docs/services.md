@@ -2,26 +2,46 @@
 layout: default
 title: Services
 nav_order: 5
+has_children: true
 ---
 
 # Services Overview
 
 ## Overview
 
-This page provides an overview of background services designed to support real-time and asynchronous operations. These services enable developers to integrate and leverage functionality such as notifications and event handling in their applications.
+This page provides an overview of the available background services that can be used to enhance your system's functionality. Each service is designed to address specific use cases, such as real-time notifications or data processing, and integrates seamlessly with OpenClaw's ecosystem.
 
 ## Key Concepts
 
-- Background services operate independently to provide specific functionalities.
-- Services are designed to handle real-time or asynchronous tasks.
-- Each service has a distinct purpose and integrates with external systems or APIs.
+- Background services operate independently to perform specific tasks.
+- Each service has configurable features tailored to different use cases.
+- Environment variables are used to configure service behavior and authentication.
+- Services can be monitored and managed using system tools like `systemctl`.
 
 ## FastMail SSE Service 📧
 
-### Description
+The FastMail SSE Service is a real-time email notification daemon. It connects to FastMail's JMAP EventSource, monitors new emails in one or more mailboxes, formats notifications, and sends them via OpenClaw's message system.
 
-The FastMail SSE Service is a real-time email notification daemon. It connects to FastMail's JMAP EventSource to monitor new emails in one or more mailboxes. When a new email is detected, the service formats notifications and sends them via OpenClaw's message system.
+### Key Features
 
-### Purpose
+- Per-account rules: Configure notification behavior per account.
+- Multi-mailbox monitoring: Monitor personal inbox and shared mailboxes simultaneously.
+- Package tracking detection: Automatically detect and register tracking numbers.
+- Meeting updates: Notify on calendar accept/decline/tentative responses.
+- Connects to JMAP SSE endpoint for real-time state changes.
+- Skips spam/noreply senders.
+- Sends notifications via `openclaw message send --channel <NOTIFY_CHANNEL> --target <NOTIFY_TARGET>`.
 
-This service enables applications to receive real-time notifications for new emails, ensuring timely updates and seamless integration with FastMail's email infrastructure.
+[Read more →](services/fastmail-sse)
+
+### Environment Variables
+
+| Variable              | Required | Description                                                                 |
+|-----------------------|----------|-----------------------------------------------------------------------------|
+| `FASTMAIL_JMAP_TOKEN` | Yes      | JMAP authentication token (or put in `~/.fastmail_token`).                  |
+| `FASTMAIL_INBOX_IDS`  | Yes*     | Comma-separated mailbox IDs to monitor (e.g., `inbox1,inbox2`).             |
+| `FASTMAIL_INBOX_ID`   | Yes*     | Single mailbox ID (legacy, use `FASTMAIL_INBOX_IDS` for multiple).          |
+| `NOTIFY_CHANNEL`      | No       | Notification channel (default: `telegram`).                                 |
+| `NOTIFY_TARGET`       | Yes      | Target ID for the notification channel.                                     |
+
+*Either `FASTMAIL_INBOX_IDS` or `FASTMAIL_INBOX_ID` is required.
