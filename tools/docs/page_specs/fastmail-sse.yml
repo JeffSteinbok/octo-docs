@@ -1,0 +1,32 @@
+id: fastmail-sse
+
+output_path: docs/services/fastmail-sse.md
+
+front_matter:
+  layout: default
+  title: FastMail SSE Service
+  parent: Services
+  nav_order: 1
+
+sources:
+  - path: services/fastmail-sse.json
+
+template: overview
+
+instructions:
+  audience: external developers and self-hosters
+  include:
+    - overview of the FastMail SSE real-time notification daemon
+    - features list with descriptions
+    - configuration section explaining the per-account rules system with the three rule types (notify_all, notify_meeting_updates, detect_tracking) and JSON config examples
+    - environment variables reference table (name, required, description) — names only, never actual values
+    - package tracking section covering the full extraction pipeline (sender allowlist, inline regex scan with carrier patterns, URL parameter extraction with URL pattern table, Narvar link following)
+    - automatic package management (add on detect, auto-remove on delivery confirmation)
+    - multi-mailbox monitoring with notification format examples showing mailbox prefix
+    - notification format examples for general email, meeting responses, multi-account, and package detection
+    - systemd service setup commands (enable, start, status, logs)
+  exclude:
+    - How It Works / Key Concepts / Common Pitfalls boilerplate sections
+    - actual JMAP tokens, account IDs, or credentials
+    - real email addresses or personal identifiers
+    - private hostnames or IP addresses
