@@ -8,63 +8,60 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of scheduled jobs, their purpose, and their execution schedules. These jobs automate recurring tasks such as calendar fetching, data backups, and daily briefings, ensuring consistent and timely operations.
+This page provides an overview of scheduled jobs within the system. Each job is designed to perform specific tasks at predefined intervals, ensuring consistent and reliable execution of critical operations. The schedules are configured using cron expressions or interval-based timing.
 
 ## Key Concepts
 
-- **Scheduled Jobs**: Automated tasks that run at predefined intervals or times.
-- **Cron Expressions**: Used to define specific schedules for jobs.
-- **Time Zones**: Jobs may operate in specific time zones, such as PST.
-
-## How It Works
-
-Scheduled jobs are configured with specific execution times or intervals. Each job has a defined purpose and runs automatically based on its schedule. Jobs can use either cron expressions or interval-based scheduling.
+- **Scheduled Jobs**: Automated tasks that run at specific times or intervals.
+- **Cron Expressions**: Define precise schedules for jobs based on time and day.
+- **Time Zones**: Jobs are scheduled in the `America/Los_Angeles` time zone unless otherwise specified.
+- **Enabled Jobs**: Only jobs marked as enabled are actively running.
 
 ## Scheduled Jobs
 
-### 🕒 Calendar Fetch Hourly
+### 🕒 calendar-fetch-hourly
 
-- **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.
-- **Schedule**: Cron expression `0 7-17 * * *` in the `America/Los_Angeles` time zone.
-
----
-
-### 🗂️ Config Backup
-
-- **Description**: Backup `openclaw.json` daily to Git, committing only if changes are detected.
-- **Schedule**: Runs every 24 hours (`86400000 ms`).
+**Description**: Fetch calendars hourly between 7 AM and 5 PM PST.  
+**Schedule**: Cron expression `0 7-17 * * *` in `America/Los_Angeles` time zone.
 
 ---
 
-### 🌙 Calendar Fetch Midnight
+### 🌙 calendar-fetch-midnight
 
-- **Description**: Fetch calendars at midnight PST.
-- **Schedule**: Cron expression `0 0 * * *` in the `America/Los_Angeles` time zone.
-
----
-
-### 🌅 Evening Briefing
-
-- **Description**: Weekday 9 PM briefing summarizing the next morning's agenda.
-- **Schedule**: Cron expression `0 21 * * 0-4` in the `America/Los_Angeles` time zone.
+**Description**: Fetch calendars at midnight PST.  
+**Schedule**: Cron expression `0 0 * * *` in `America/Los_Angeles` time zone.
 
 ---
 
-### 📈 Portfolio Closing Briefing
+### 💾 config-backup
 
-- **Description**: No description provided.
-- **Schedule**: Cron expression `0 21 * * *` in the `America/Los_Angeles` time zone.
-
----
-
-### ⏰ Weekend Morning Alarm Reminder
-
-- **Description**: No description provided.
-- **Schedule**: Cron expression `0 22 * * 5,6` in the `America/Los_Angeles` time zone.
+**Description**: Backup `openclaw.json` to Git daily. Only commits changes if the file has been modified.  
+**Schedule**: Runs every 24 hours (`86400000 ms`).
 
 ---
 
-### 📦 Daily Package Delivery Check
+### 📋 evening-briefing
 
-- **Description**: No description provided.
-- **Schedule**: Cron expression `0 8 * * *` in the `America/Los_Angeles` time zone.
+**Description**: Weekday 9 PM briefing summarizing tasks scheduled for the next morning.  
+**Schedule**: Cron expression `0 21 * * 0-4` in `America/Los_Angeles` time zone.
+
+---
+
+### 📈 portfolio-closing-briefing
+
+**Description**: No description provided.  
+**Schedule**: Cron expression `0 21 * * 1-5` in `America/Los_Angeles` time zone.
+
+---
+
+### ⏰ weekend-morning-alarm-reminder
+
+**Description**: No description provided.  
+**Schedule**: Cron expression `0 22 * * 5,6` in `America/Los_Angeles` time zone.
+
+---
+
+### 📦 Daily package delivery check
+
+**Description**: No description provided.  
+**Schedule**: Cron expression `0 8 * * *` in `America/Los_Angeles` time zone.
