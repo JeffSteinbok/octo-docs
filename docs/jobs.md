@@ -8,60 +8,64 @@ nav_order: 6
 
 ## Overview
 
-This page provides an overview of scheduled jobs within the system. Each job is designed to perform specific tasks at predefined intervals, ensuring consistent and reliable execution of critical operations. The schedules are configured using cron expressions or interval-based timing.
+This document provides an overview of scheduled jobs, their purposes, and their execution schedules. These jobs automate recurring tasks, ensuring timely and consistent operations.
 
 ## Key Concepts
 
-- **Scheduled Jobs**: Automated tasks that run at specific times or intervals.
-- **Cron Expressions**: Define precise schedules for jobs based on time and day.
-- **Time Zones**: Jobs are scheduled in the `America/Los_Angeles` time zone unless otherwise specified.
-- **Enabled Jobs**: Only jobs marked as enabled are actively running.
+- **Scheduled Jobs**: Automated tasks executed at predefined intervals or times.
+- **Cron Schedule**: A time-based job scheduler using cron expressions to define execution times.
+- **Interval Schedule**: Jobs scheduled to run at fixed intervals, defined in milliseconds.
+- **Time Zone**: All schedules are specified in the `America/Los_Angeles` time zone.
+
+## How It Works
+
+Scheduled jobs are configured to run automatically based on their defined schedules. Jobs can be triggered using either a cron expression or a fixed interval. Each job has a specific purpose, such as fetching data, creating backups, or sending reminders. The system ensures that these tasks are executed reliably and on time.
 
 ## Scheduled Jobs
 
-### 🕒 calendar-fetch-hourly
+### 📅 Calendar Fetch Hourly
 
-**Description**: Fetch calendars hourly between 7 AM and 5 PM PST.  
-**Schedule**: Cron expression `0 7-17 * * *` in `America/Los_Angeles` time zone.
-
----
-
-### 🌙 calendar-fetch-midnight
-
-**Description**: Fetch calendars at midnight PST.  
-**Schedule**: Cron expression `0 0 * * *` in `America/Los_Angeles` time zone.
+- **Description**: Fetches calendar data hourly between 7:00 AM and 5:00 PM PST.
+- **Schedule**: Cron-based, runs at the top of every hour from 7:00 AM to 5:00 PM (`0 7-17 * * *`).
 
 ---
 
-### 💾 config-backup
+### 🗂️ Config Backup
 
-**Description**: Backup `openclaw.json` to Git daily. Only commits changes if the file has been modified.  
-**Schedule**: Runs every 24 hours (`86400000 ms`).
-
----
-
-### 📋 evening-briefing
-
-**Description**: Weekday 9 PM briefing summarizing tasks scheduled for the next morning.  
-**Schedule**: Cron expression `0 21 * * 0-4` in `America/Los_Angeles` time zone.
+- **Description**: Backs up the `openclaw.json` configuration file to Git daily. Commits only if changes are detected.
+- **Schedule**: Runs every 24 hours (86400000 milliseconds).
 
 ---
 
-### 📈 portfolio-closing-briefing
+### 🌙 Calendar Fetch Midnight
 
-**Description**: No description provided.  
-**Schedule**: Cron expression `0 21 * * 1-5` in `America/Los_Angeles` time zone.
-
----
-
-### ⏰ weekend-morning-alarm-reminder
-
-**Description**: No description provided.  
-**Schedule**: Cron expression `0 22 * * 5,6` in `America/Los_Angeles` time zone.
+- **Description**: Fetches calendar data at midnight PST.
+- **Schedule**: Cron-based, runs daily at 12:00 AM (`0 0 * * *`).
 
 ---
 
-### 📦 Daily package delivery check
+### 🌅 Evening Briefing
 
-**Description**: No description provided.  
-**Schedule**: Cron expression `0 8 * * *` in `America/Los_Angeles` time zone.
+- **Description**: Provides a weekday 9:00 PM briefing about the next morning's schedule.
+- **Schedule**: Cron-based, runs Monday through Friday at 9:00 PM (`0 21 * * 0-4`).
+
+---
+
+### 📈 Portfolio Closing Briefing
+
+- **Description**: (No description provided)
+- **Schedule**: Cron-based, runs Monday through Friday at 9:00 PM (`0 21 * * 1-5`).
+
+---
+
+### ⏰ Weekend Morning Alarm Reminder
+
+- **Description**: (No description provided)
+- **Schedule**: Cron-based, runs Friday and Saturday at 10:00 PM (`0 22 * * 5,6`).
+
+---
+
+### 📦 Daily Package Delivery Check
+
+- **Description**: (No description provided)
+- **Schedule**: Cron-based, runs daily at 8:00 AM (`0 8 * * *`).
