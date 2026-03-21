@@ -8,68 +8,81 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of the scheduled jobs available in the system. Each job is designed to perform a specific task at a predefined schedule, ensuring the system operates efficiently and critical tasks are executed on time.
+This document provides an overview of scheduled jobs, their purposes, and their execution schedules. These jobs are designed to automate recurring tasks, ensuring consistent and timely operations.
 
 ## Key Concepts
 
 - **Job Name**: A unique identifier for each scheduled job.
 - **Description**: A brief explanation of the job's purpose.
-- **Schedule**: The timing and frequency at which the job is executed.
-  - **Cron**: Specifies the schedule using a cron expression.
-  - **Every**: Specifies the interval in milliseconds between executions.
-- **Time Zone**: The time zone in which the job's schedule is defined.
+- **Schedule**: Defines when and how often the job runs, using either cron expressions or fixed intervals.
+- **Time Zone**: Specifies the time zone for the job's schedule.
+
+## How It Works
+
+Each job is configured with a schedule that determines its execution frequency. Schedules are defined using either:
+- **Cron expressions**: Specify precise times and days for execution.
+- **Fixed intervals**: Define a recurring time period in milliseconds.
+
+Jobs are executed automatically based on their defined schedules.
 
 ## Scheduled Jobs
 
-### 🕒 calendar-fetch-hourly
+### 🗓️ Calendar Fetch Hourly
 
 - **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.
-- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7 AM to 5 PM).
-- **Time Zone**: America/Los_Angeles.
+- **Schedule**: Cron-based, runs at the start of every hour from 7 AM to 5 PM PST.
+- **Cron Expression**: `0 7-17 * * *`
+- **Time Zone**: America/Los_Angeles
 
 ---
 
-### 🗂️ config-backup
+### 🛠️ Config Backup
 
-- **Description**: Backup `openclaw.json` to Git daily. Only commits changes if the file has been modified.
-- **Schedule**: Every 86,400,000 milliseconds (24 hours).
+- **Description**: Backup `openclaw.json` to Git daily. Commits only if changes are detected.
+- **Schedule**: Runs every 24 hours.
+- **Interval**: 86,400,000 milliseconds (24 hours)
 
 ---
 
-### 🌙 calendar-fetch-midnight
+### 🌙 Calendar Fetch Midnight
 
 - **Description**: Fetch calendars at midnight PST.
-- **Schedule**: Cron expression `0 0 * * *` (daily at midnight).
-- **Time Zone**: America/Los_Angeles.
+- **Schedule**: Cron-based, runs daily at midnight PST.
+- **Cron Expression**: `0 0 * * *`
+- **Time Zone**: America/Los_Angeles
 
 ---
 
-### 🌅 evening-briefing
+### 🌅 Evening Briefing
 
-- **Description**: Weekday 9 PM briefing summarizing tasks for the following morning.
-- **Schedule**: Cron expression `0 22 * * 0-4` (Sunday through Thursday at 9 PM).
-- **Time Zone**: America/Los_Angeles.
-
----
-
-### 🌇 portfolio-closing-briefing
-
-- **Description**: No description provided.
-- **Schedule**: Cron expression `0 21 * * 1-5` (Monday through Friday at 9 PM).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Weekday 9 PM briefing to prepare for the next morning.
+- **Schedule**: Cron-based, runs at 9 PM PST on weekdays (Sunday through Thursday).
+- **Cron Expression**: `0 22 * * 0-4`
+- **Time Zone**: America/Los_Angeles
 
 ---
 
-### ⏰ weekend-morning-alarm-reminder
+### 📈 Portfolio Closing Briefing
 
-- **Description**: No description provided.
-- **Schedule**: Cron expression `0 22 * * 5,6` (Friday and Saturday at 10 PM).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: (No description provided)
+- **Schedule**: Cron-based, runs at 9 PM PST on weekdays (Monday through Friday).
+- **Cron Expression**: `0 21 * * 1-5`
+- **Time Zone**: America/Los_Angeles
 
 ---
 
-### 📦 Daily package delivery check
+### ⏰ Weekend Morning Alarm Reminder
 
-- **Description**: No description provided.
-- **Schedule**: Cron expression `0 8 * * *` (daily at 8 AM).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: (No description provided)
+- **Schedule**: Cron-based, runs at 10 PM PST on weekends (Friday and Saturday).
+- **Cron Expression**: `0 22 * * 5,6`
+- **Time Zone**: America/Los_Angeles
+
+---
+
+### 📦 Daily Package Delivery Check
+
+- **Description**: (No description provided)
+- **Schedule**: Cron-based, runs daily at 8 AM PST.
+- **Cron Expression**: `0 8 * * *`
+- **Time Zone**: America/Los_Angeles
