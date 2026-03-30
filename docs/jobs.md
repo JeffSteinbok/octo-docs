@@ -8,85 +8,76 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of scheduled jobs, their purposes, and their execution schedules. These jobs automate various tasks, such as data fetching, backups, and notifications, to ensure system reliability and operational efficiency.
+This document provides an overview of the scheduled jobs in the system. Each job is designed to perform a specific task at a predefined schedule, ensuring the system operates efficiently and critical processes are executed on time.
 
 ## Key Concepts
 
-- **Scheduled Jobs**: Automated tasks that run at predefined intervals or times.
-- **Cron Schedule**: A time-based job scheduler using cron expressions to define execution times.
-- **Interval Schedule**: Jobs that run at regular intervals, defined in milliseconds.
-
-## How It Works
-
-Scheduled jobs are configured to run automatically based on their defined schedules. These schedules can either be specified using cron expressions or fixed intervals. Each job has a specific purpose, such as fetching data, sending notifications, or performing system checks. The jobs are executed in the specified time zone, ensuring consistency across operations.
+- **Job Name**: A unique identifier for the scheduled job.
+- **Description**: A brief explanation of the job's purpose.
+- **Schedule**: The timing and frequency at which the job is executed.
+  - **Cron**: Specifies a schedule using a cron expression.
+  - **Every**: Specifies a schedule based on a fixed interval in milliseconds.
+- **Timezone**: The timezone in which the schedule is defined.
 
 ## Scheduled Jobs
 
-### 🗓️ calendar-fetch-hourly
+### 🕒 calendar-fetch-hourly
 
 - **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.
-- **Schedule**: Cron-based, runs every hour from 7:00 AM to 5:00 PM (PST).
-- **Cron Expression**: `0 7-17 * * *`
-- **Time Zone**: America/Los_Angeles
+- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7 AM to 5 PM).
+- **Timezone**: America/Los_Angeles.
 
 ---
 
-### 💾 config-backup
+### 🗂️ config-backup
 
 - **Description**: Backup `openclaw.json` to Git daily. Commits only if changes are detected.
-- **Schedule**: Runs every 24 hours.
-- **Interval**: 86,400,000 milliseconds (24 hours)
+- **Schedule**: Every 86,400,000 milliseconds (24 hours).
 
 ---
 
 ### 🌙 calendar-fetch-midnight
 
 - **Description**: Fetch calendars at midnight PST.
-- **Schedule**: Cron-based, runs daily at 12:00 AM (PST).
-- **Cron Expression**: `0 0 * * *`
-- **Time Zone**: America/Los_Angeles
+- **Schedule**: Cron expression `0 0 * * *` (daily at midnight).
+- **Timezone**: America/Los_Angeles.
 
 ---
 
 ### 🌅 evening-briefing
 
-- **Description**: Weekday 9 PM briefing to summarize tasks for the next morning.
-- **Schedule**: Cron-based, runs Monday through Friday at 9:00 PM (PST).
-- **Cron Expression**: `0 22 * * 0-4`
-- **Time Zone**: America/Los_Angeles
+- **Description**: Weekday 9 PM briefing summarizing what's on tap for the next morning.
+- **Schedule**: Cron expression `0 22 * * 0-4` (Sunday to Thursday at 9 PM).
+- **Timezone**: America/Los_Angeles.
 
 ---
 
 ### 📈 portfolio-closing-briefing
 
-- **Description**: Not provided.
-- **Schedule**: Cron-based, runs Monday through Friday at 9:00 PM (PST).
-- **Cron Expression**: `0 21 * * 1-5`
-- **Time Zone**: America/Los_Angeles
+- **Description**: *(No description provided)*.
+- **Schedule**: Cron expression `0 21 * * 1-5` (Monday to Friday at 9 PM).
+- **Timezone**: America/Los_Angeles.
 
 ---
 
 ### ⏰ weekend-morning-alarm-reminder
 
-- **Description**: Not provided.
-- **Schedule**: Cron-based, runs on Fridays and Saturdays at 10:00 PM (PST).
-- **Cron Expression**: `0 22 * * 5,6`
-- **Time Zone**: America/Los_Angeles
+- **Description**: *(No description provided)*.
+- **Schedule**: Cron expression `0 22 * * 5,6` (Friday and Saturday at 10 PM).
+- **Timezone**: America/Los_Angeles.
 
 ---
 
 ### 📦 Daily package delivery check
 
-- **Description**: Not provided.
-- **Schedule**: Cron-based, runs daily at 8:00 AM (PST).
-- **Cron Expression**: `0 8 * * *`
-- **Time Zone**: America/Los_Angeles
+- **Description**: *(No description provided)*.
+- **Schedule**: Cron expression `0 8 * * *` (daily at 8 AM).
+- **Timezone**: America/Los_Angeles.
 
 ---
 
-### 🩺 daily-health-check
+### ✅ daily-health-check
 
 - **Description**: Daily health check to verify email functionality. Sends a direct message to Jeff if any issues are detected.
-- **Schedule**: Cron-based, runs daily at 9:00 AM (PST).
-- **Cron Expression**: `0 9 * * *`
-- **Time Zone**: America/Los_Angeles
+- **Schedule**: Cron expression `0 9 * * *` (daily at 9 AM).
+- **Timezone**: America/Los_Angeles.
