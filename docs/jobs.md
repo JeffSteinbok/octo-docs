@@ -4,78 +4,57 @@ title: Scheduled Jobs
 nav_order: 6
 ---
 
-# Jobs Overview
+# Scheduled Jobs
 
-## Overview
+Automated tasks that run on cron schedules or fixed intervals. All times are in **America/Los_Angeles** unless noted.
 
-This document provides an overview of the scheduled jobs available in the system. These jobs are automated tasks designed to perform specific functions at predefined intervals, ensuring the system operates efficiently and reliably. Each job includes a description, its purpose, and scheduling details.
+### 🕖 Calendar Fetch Hourly
 
-## Key Concepts
+- **Description**: Fetches calendar data hourly between 7:00 AM and 5:00 PM PST.
+- **Schedule**: Cron-based, runs at the start of every hour from 7:00 AM to 5:00 PM (`0 7-17 * * *`).
 
-- **Scheduled Jobs**: Automated tasks that run at specified intervals or times.
-- **Cron Schedule**: A time-based job scheduler using cron expressions to define execution times.
-- **Interval Schedule**: Jobs that run at fixed time intervals, specified in milliseconds.
-- **Time Zone Awareness**: All schedules are configured with a specific time zone to ensure consistent execution.
+---
 
-## Scheduled Jobs
+### 🕛 Calendar Fetch Midnight
 
-### 🗓️ Calendar Fetch Hourly
-
-- **Description**: Fetches calendars hourly between 7:00 AM and 5:00 PM PST.
-- **Schedule**: Cron-based, runs at the top of every hour (`0 7-17 * * *`).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Fetches calendar data at midnight PST.
+- **Schedule**: Cron-based, runs daily at 12:00 AM (`0 0 * * *`).
 
 ---
 
 ### 🗂️ Config Backup
 
-- **Description**: Backs up the `openclaw.json` configuration file daily. Commits changes only if modifications are detected.
-- **Schedule**: Runs every 24 hours (86400000 milliseconds).
-
----
-
-### 🌙 Calendar Fetch Midnight
-
-- **Description**: Fetches calendars at midnight PST.
-- **Schedule**: Cron-based, runs at midnight (`0 0 * * *`).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Backs up the `openclaw.json` configuration file to Git daily. Commits changes only if the file has been modified.
+- **Schedule**: Interval-based, runs every 24 hours (86,400,000 milliseconds).
 
 ---
 
 ### 🌅 Evening Briefing
 
-- **Description**: Provides a weekday 9:00 PM briefing about tasks scheduled for the following morning.
-- **Schedule**: Cron-based, runs at 10:00 PM Sunday through Thursday (`0 22 * * 0-4`).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Sends a weekday 9:00 PM briefing about the next morning's schedule.
+- **Schedule**: Cron-based, runs Monday through Friday at 9:00 PM (`0 22 * * 0-4`).
 
 ---
 
 ### 📈 Portfolio Closing Briefing
 
-- **Description**: (No description provided in source material.)
-- **Schedule**: Cron-based, runs at 9:00 PM Monday through Friday (`0 21 * * 1-5`).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: End-of-day portfolio summary after market close.
 
 ---
 
 ### ⏰ Weekend Morning Alarm Reminder
 
-- **Description**: (No description provided in source material.)
-- **Schedule**: Cron-based, runs at 10:00 PM on Fridays and Saturdays (`0 22 * * 5,6`).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Reminds about weekend morning alarm settings on Friday and Saturday nights.
 
 ---
 
 ### 📦 Daily Package Delivery Check
 
-- **Description**: (No description provided in source material.)
-- **Schedule**: Cron-based, runs at 8:00 AM daily (`0 8 * * *`).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Checks status of all tracked packages and notifies about expected deliveries.
 
 ---
 
 ### ✅ Daily Health Check
 
-- **Description**: Performs a daily health check to verify email functionality. Sends a direct message to Jeff if any issues are detected.
-- **Schedule**: Cron-based, runs at 9:00 AM daily (`0 9 * * *`).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Verifies email sending functionality and notifies Jeff via direct message if any issues are detected.
+- **Schedule**: Cron-based, runs daily at 9:00 AM (`0 9 * * *`).

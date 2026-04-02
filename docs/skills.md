@@ -4,72 +4,47 @@ title: Skills
 nav_order: 4
 ---
 
-# Skills
+# Skills Overview
 
 ## Overview
 
-Skills are predefined sets of markdown-defined knowledge that enable agents to perform specific tasks or interact with external systems. Unlike plugins, which execute code, skills provide structured information and instructions that agents use to process and respond to user requests. Skills are designed to simplify complex operations and provide a consistent interface for interacting with various domains.
+Skills are predefined sets of markdown-defined knowledge that enable agents to perform specific tasks or provide information. Unlike plugins, which are executable code, skills are structured as static knowledge bases that guide agents in handling particular scenarios. Skills are used by agents to enhance their functionality and provide targeted assistance in specific domains.
 
 ## Key Concepts
 
-- **Skills vs Plugins**: Skills are markdown-defined knowledge, while plugins execute code. Skills focus on providing structured information for agents to use.
-- **Agent Usage**: Agents use skills to interpret user requests and perform actions based on the knowledge defined in the skill.
-- **Purpose**: Skills are tailored to specific domains or tasks, enabling agents to handle specialized scenarios effectively.
+- **Skills**: Markdown-defined knowledge bases that guide agents in specific tasks.
+- **Agents**: Utilize skills to perform actions or provide information based on user requests.
+- **Difference from Plugins**: Skills are not executable code; they are static knowledge resources that inform agent behavior.
 
 ## How It Works
 
-1. **Skill Definition**: Each skill is defined in markdown format, containing structured information about its purpose, rules, and supported operations.
-2. **Agent Interaction**: When an agent receives a user request, it identifies the relevant skill based on the context and uses the knowledge defined within the skill to respond or perform actions.
-3. **Execution**: The agent may use plugins to execute actions described in the skill, such as calling APIs or interacting with external systems.
+1. **Skill Definition**: Each skill is defined in markdown format and contains detailed instructions, rules, and examples for handling specific tasks.
+2. **Agent Utilization**: Agents reference skills to determine how to respond to user requests. Skills provide guidance on what actions to take and how to structure responses.
+3. **Non-Executable**: Unlike plugins, skills do not execute code but instead serve as a knowledge base for agents.
 
 ## Available Skills
 
 ### 🎵 Home Music
 
 **Purpose**:  
-The Home Music skill enables agents to control music playback and speakers in various rooms via Home Assistant. It is used for tasks such as adjusting volume, checking what's playing, pausing/resuming/skipping tracks, muting, and controlling Alexa, Sonos, or other media players.
+The Home Music skill enables agents to control music and speakers in a home environment via Home Assistant. It is used for tasks such as adjusting volume, checking what is playing, pausing, resuming, skipping tracks, muting, and controlling devices like Alexa, Sonos, or other media players.
 
-**Supported Rooms and Entities**:  
-The skill covers the following rooms and media player entities:  
+**Usage by Agents**:  
+Agents use the Home Music skill to interact with home media players by leveraging Home Assistant service calls and state queries. This allows agents to perform actions such as retrieving the current volume, adjusting it, or controlling playback.
 
-| Room          | Entity ID                     |
-|---------------|-------------------------------|
-| Living Room   | `media_player.alexa_living_room` |
-| Kitchen       | `media_player.alexa_kitchen`     |
-| Home Theater  | `media_player.home_theater`      |
-| Hallway       | `media_player.hallway`           |
-| Bonus Room    | `media_player.bonus_room`        |
-| Family Room   | `media_player.family_room`       |
-| Main Bedroom  | `media_player.main_bedroom`      |
-| Outside       | `media_player.alexa_outside`     |
+**Key Features**:  
+- Control individual or grouped speakers in various rooms or zones (e.g., living room, kitchen, bedroom).
+- Retrieve and report current playback state, including volume, track, and artist.
+- Perform common operations like play, pause, skip, mute, and adjust volume.
+- Support for Spotify integration with basic controls (future enhancements planned for playlist and search functionality).
 
-**Usage**:  
-Agents use this skill to perform the following operations:  
+**Room Layout and Zones**:  
+The Home Music skill organizes speakers into rooms and zones for easier control. For example:
+- **Downstairs**: Living Room, Kitchen, Home Theater
+- **Upstairs**: Main Bedroom, Hallway, Bonus Room
+- **Outside**: Outside Speakers
 
-- **Get Current State**: Retrieve the current volume, track, and artist for a specific media player.  
-- **Set Volume**: Adjust the volume of a media player to a specific level.  
-- **Volume Up/Down**: Increase or decrease the volume relative to the current level.  
-- **Mute/Unmute**: Toggle mute status for a media player.  
-- **Playback Control**: Pause, play, skip, or go back to the previous track.  
-- **Play Specific Media**: Start playback of a specific playlist or station.  
+Commands can target specific rooms, zones, or all speakers simultaneously.
 
-**Zones**:  
-Rooms are grouped into zones for easier control:  
-
-| Zone       | Rooms                          | Entities                                   |
-|------------|--------------------------------|-------------------------------------------|
-| Downstairs | Living Room, Kitchen, Home Theater | `media_player.alexa_living_room`, `media_player.alexa_kitchen`, `media_player.home_theater` |
-| Upstairs   | Main Bedroom, Hallway, Bonus Room | `media_player.main_bedroom`, `media_player.hallway`, `media_player.bonus_room` |
-| Outside    | Outside Speakers               | `media_player.alexa_outside`              |
-
-Commands can target individual rooms, zones, or all speakers (`media_player.all_speakers`).  
-
-**Spotify Integration**:  
-Spotify is supported via the `media_player.spotify_jeff_steinbok` entity. Standard playback and volume controls are available, with playlist and search functionality planned for future updates.  
-
-**Discovery**:  
-To discover available media player entities, agents can use the following command:  
-```python
-ha_state_list(domain="media_player")
-```  
-This will return a list of entities, including their current state and attributes.
+**How It Differs from Plugins**:  
+The Home Music skill provides structured knowledge on how to interact with media players using Home Assistant. It does not execute code directly but instead guides agents on how to use Home Assistant plugins like `ha_state_get` and `ha_service_call` to perform actions.

@@ -4,79 +4,47 @@ title: Agents & Channels
 nav_order: 2
 ---
 
-# Agents and Channels
+# Agents & Channels
 
-## Overview
-
-Agents and channels are core components of the system that enable user interactions and task execution. Agents represent distinct entities with specific capabilities and permissions, while channels provide the communication pathways connecting users to these agents. This configuration allows for flexible and secure interactions across multiple platforms.
-
-## Key Concepts
-
-- **Agents**: Entities with defined permissions, tools, and plugins for executing tasks.
-- **Channels**: Communication pathways that connect users to agents.
-- **Security Model**: Each agent has specific permissions and settings, including whether execution (`exec`) is enabled.
-- **Bindings**: Channels are bound to agents, determining which agent handles user interactions on a given platform.
-
-## How It Works
-
-1. **Agents Configuration**: Each agent is configured with a unique identifier, name, emoji, permissions, and tools/plugins. Execution (`exec`) settings determine whether the agent can perform tasks directly.
-2. **Channels Setup**: Channels are configured with specific policies for direct messages (DMs) and group interactions. Enabled channels are bound to agents, facilitating communication between users and agents.
-3. **User Interaction**: Users interact with agents through channels. Channels route messages and requests to the appropriate agent based on the binding configuration.
+OpenClaw uses multiple agents with distinct roles and security boundaries, connected to users via communication channels.
 
 ## Agents
 
-### 🐙 Octo
+| Agent | Emoji | Role | Exec |
+|-------|-------|------|------|
+| **Octo** (main) | 🐙 | Primary assistant — handles most tasks | ❌ Denied |
+| **mail-agent** | 📬 | Email processing — minimal profile, read-only | ❌ Denied |
+| **Root** | 🔑 | Privileged agent with full system access | ✅ Enabled |
+| **Family** | 👨‍👩‍👧‍👦 | Family agent (placeholder) | ❌ Denied |
 
-- **Security Model**:
-  - Exec: Enabled
-  - Permissions: Full access
-  - Tools/Plugins: All available tools and plugins
-- **Description**: Octo is the primary agent responsible for handling most tasks and interactions.
+### 🐙 Octo (main)
 
-### 📫 mail-agent
+The primary agent responsible for handling most user interactions. **Exec, process, and gateway access are denied** — Octo operates through plugins and tools only. When system-level operations are needed, Octo delegates to the Root agent.
 
-- **Security Model**:
-  - Exec: Disabled
-  - Permissions: None
-  - Tools/Plugins: None
-- **Description**: The mail agent is currently unused and does not handle any tasks or interactions.
+### 📬 mail-agent
+
+Handles email processing with a minimal, read-only profile. Used for automated email notification tasks.
 
 ### 🔑 Root
 
-- **Security Model**:
-  - Exec: Enabled
-  - Permissions: Elevated access
-  - Tools/Plugins: Administrative tools only
-- **Description**: Root is a specialized agent with elevated permissions for administrative tasks.
+A high-privilege agent with full access to system tools and exec capabilities. Root is never directly exposed to users — it is invoked explicitly by the main agent when elevated permissions are required.
 
 ### 👨‍👩‍👧‍👦 Family
 
-- **Security Model**:
-  - Exec: Enabled
-  - Permissions: Limited access
-  - Tools/Plugins: Family-specific tools and plugins
-- **Description**: Family is an agent configured for handling tasks related to family-oriented interactions.
+A specialized agent for family-related interactions (currently a placeholder).
 
 ## Channels
 
-### Discord
+| Channel Type | Enabled | DM Policy | Group Policy | Streaming | Bound Agents |
+|--------------|---------|-----------|--------------|-----------|--------------|
+| Discord      | Yes     | Pairing   | Allowlist    | Off       | Octo, Root, Family |
+| Telegram     | Yes     | Pairing   | Open         | Off       | Octo, Root, Family |
 
-- **Type**: Discord
-- **Enabled**: Yes
-- **DM Policy**: Pairing
-- **Group Policy**: Allowlist
-- **Streaming**: Off
-- **Bound Agents**: Octo, Family
+### Channel Details
 
-### Telegram
+- **Discord**: Supports direct messages with a pairing policy and group interactions restricted to an allowlist.
+- **Telegram**: Allows direct messages with a pairing policy and open group interactions.
 
-- **Type**: Telegram
-- **Enabled**: Yes
-- **DM Policy**: Pairing
-- **Group Policy**: Open
-- **Streaming**: Off
-- **Bound Agents**: Octo, Family
+## Sessions
 
-## How Channels Connect Users to Agents
-
-Channels act as communication pathways, routing user messages and requests to the appropriate agent based on the binding configuration. Each channel has specific policies for direct messages and group interactions, ensuring secure and controlled communication.
+Sessions are scoped **per-channel-peer** and reset daily at 4:00 AM UTC.
