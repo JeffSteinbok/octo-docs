@@ -8,56 +8,73 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of scheduled jobs, their purposes, and their execution schedules. These jobs are designed to automate recurring tasks, ensuring consistent and timely operations.
+This document provides an overview of the scheduled jobs available in the system. Each job is designed to perform a specific task at a predefined schedule, ensuring the system operates efficiently and reliably. The schedules are defined using cron expressions or time intervals, and all times are specified in the Pacific Time Zone (PST).
 
 ## Key Concepts
 
-- **Scheduled Jobs**: Automated tasks that run at predefined intervals or times.
-- **Cron Schedule**: Specifies the exact times a job should run using cron expressions.
-- **Interval Schedule**: Specifies the frequency of job execution in milliseconds.
+- **Scheduled Jobs**: Tasks that run automatically based on a predefined schedule.
+- **Cron Expressions**: A time-based job scheduler format used to define when a job should run.
+- **Time Zones**: All schedules are configured in the `America/Los_Angeles` time zone (PST).
+- **Enabled Jobs**: Only jobs marked as `enabled` are active and executed.
 
 ## How It Works
 
-Each job is configured with a specific schedule and runs automatically based on its defined timing. The schedules are either cron-based, allowing precise timing, or interval-based, specifying a fixed duration between executions. Jobs are designed to perform specific tasks, such as fetching data, sending notifications, or performing system checks.
+1. Each job is configured with a name, description, and schedule.
+2. The schedule determines when the job will execute, either using a cron expression or a fixed time interval.
+3. Enabled jobs run automatically at their scheduled times.
 
 ## Scheduled Jobs
 
-### 🕒 calendar-fetch-hourly
+### 🕒 Calendar Fetch Hourly
 
-- **Description**: Fetch calendars hourly between 7:00 AM and 5:00 PM PST.
-- **Schedule**: Cron-based, runs every hour from 7:00 AM to 5:00 PM PST (`0 7-17 * * *`).
+- **Description**: Fetches calendars hourly between 7:00 AM and 5:00 PM PST.
+- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7:00 AM to 5:00 PM PST).
 
-### 🗂️ config-backup
+---
 
-- **Description**: Backup `openclaw.json` to Git daily. Commits only if changes are detected.
-- **Schedule**: Interval-based, runs every 24 hours (86,400,000 milliseconds).
+### 🌙 Calendar Fetch Midnight
 
-### 🌙 calendar-fetch-midnight
+- **Description**: Fetches calendars at midnight PST.
+- **Schedule**: Cron expression `0 0 * * *` (daily at 12:00 AM PST).
 
-- **Description**: Fetch calendars at midnight PST.
-- **Schedule**: Cron-based, runs daily at 12:00 AM PST (`0 0 * * *`).
+---
 
-### 🌅 evening-briefing
+### 📦 Config Backup
 
-- **Description**: Provides a weekday 9:00 PM briefing on tasks scheduled for the next morning.
-- **Schedule**: Cron-based, runs Monday through Friday at 9:00 PM PST (`0 22 * * 0-4`).
+- **Description**: Backs up `openclaw.json` to Git daily. Commits changes only if the file has been modified.
+- **Schedule**: Every 24 hours (86,400,000 milliseconds).
 
-### 📊 portfolio-closing-briefing
+---
 
-- **Description**: No description provided.
-- **Schedule**: Cron-based, runs Monday through Friday at 9:00 PM PST (`0 21 * * 1-5`).
+### 🌅 Evening Briefing
 
-### ⏰ weekend-morning-alarm-reminder
+- **Description**: Provides a weekday 9:00 PM briefing about the tasks scheduled for the next morning.
+- **Schedule**: Cron expression `0 22 * * 0-4` (Sunday to Thursday at 9:00 PM PST).
 
-- **Description**: No description provided.
-- **Schedule**: Cron-based, runs on Fridays and Saturdays at 10:00 PM PST (`0 22 * * 5,6`).
+---
 
-### 📦 Daily package delivery check
+### 🌇 Portfolio Closing Briefing
 
-- **Description**: No description provided.
-- **Schedule**: Cron-based, runs daily at 8:00 AM PST (`0 8 * * *`).
+- **Description**: *No description provided.*
+- **Schedule**: Cron expression `0 21 * * 1-5` (Monday to Friday at 9:00 PM PST).
 
-### ✅ daily-health-check
+---
+
+### ⏰ Weekend Morning Alarm Reminder
+
+- **Description**: *No description provided.*
+- **Schedule**: Cron expression `0 22 * * 5,6` (Friday and Saturday at 10:00 PM PST).
+
+---
+
+### 📦 Daily Package Delivery Check
+
+- **Description**: *No description provided.*
+- **Schedule**: Cron expression `0 8 * * *` (daily at 8:00 AM PST).
+
+---
+
+### ✅ Daily Health Check
 
 - **Description**: Performs a daily health check to verify email functionality. Sends a direct message to Jeff if any issues are detected.
-- **Schedule**: Cron-based, runs daily at 9:00 AM PST (`0 9 * * *`).
+- **Schedule**: Cron expression `0 9 * * *` (daily at 9:00 AM PST).
