@@ -8,73 +8,74 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of the scheduled jobs available in the system. Each job is designed to perform a specific task at a predefined schedule, ensuring the system operates efficiently and reliably. The schedules are defined using cron expressions or time intervals, and all times are specified in the Pacific Time Zone (PST).
+This document provides an overview of scheduled jobs, their purposes, and their execution schedules. These jobs are designed to automate recurring tasks, ensuring consistent and timely operations.
 
 ## Key Concepts
 
-- **Scheduled Jobs**: Tasks that run automatically based on a predefined schedule.
-- **Cron Expressions**: A time-based job scheduler format used to define when a job should run.
-- **Time Zones**: All schedules are configured in the `America/Los_Angeles` time zone (PST).
-- **Enabled Jobs**: Only jobs marked as `enabled` are active and executed.
-
-## How It Works
-
-1. Each job is configured with a name, description, and schedule.
-2. The schedule determines when the job will execute, either using a cron expression or a fixed time interval.
-3. Enabled jobs run automatically at their scheduled times.
+- **Job Name**: A unique identifier for each scheduled task.
+- **Description**: A brief explanation of the job's purpose.
+- **Schedule**: Specifies when and how often the job runs, using either cron expressions or time intervals.
+- **Time Zone**: All schedules are based on the `America/Los_Angeles` time zone unless otherwise specified.
 
 ## Scheduled Jobs
 
-### 🕒 Calendar Fetch Hourly
+### 🕒 calendar-fetch-hourly
 
-- **Description**: Fetches calendars hourly between 7:00 AM and 5:00 PM PST.
-- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7:00 AM to 5:00 PM PST).
-
----
-
-### 🌙 Calendar Fetch Midnight
-
-- **Description**: Fetches calendars at midnight PST.
-- **Schedule**: Cron expression `0 0 * * *` (daily at 12:00 AM PST).
+- **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.
+- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7 AM to 5 PM).
 
 ---
 
-### 📦 Config Backup
+### 🕒 config-backup
 
-- **Description**: Backs up `openclaw.json` to Git daily. Commits changes only if the file has been modified.
-- **Schedule**: Every 24 hours (86,400,000 milliseconds).
-
----
-
-### 🌅 Evening Briefing
-
-- **Description**: Provides a weekday 9:00 PM briefing about the tasks scheduled for the next morning.
-- **Schedule**: Cron expression `0 22 * * 0-4` (Sunday to Thursday at 9:00 PM PST).
+- **Description**: Backup `openclaw.json` to Git daily. Commits changes only if the file has been modified.
+- **Schedule**: Every 24 hours (86400000 milliseconds).
 
 ---
 
-### 🌇 Portfolio Closing Briefing
+### 🌙 calendar-fetch-midnight
 
-- **Description**: *No description provided.*
-- **Schedule**: Cron expression `0 21 * * 1-5` (Monday to Friday at 9:00 PM PST).
-
----
-
-### ⏰ Weekend Morning Alarm Reminder
-
-- **Description**: *No description provided.*
-- **Schedule**: Cron expression `0 22 * * 5,6` (Friday and Saturday at 10:00 PM PST).
+- **Description**: Fetch calendars at midnight PST.
+- **Schedule**: Cron expression `0 0 * * *` (daily at midnight).
 
 ---
 
-### 📦 Daily Package Delivery Check
+### 🌅 evening-briefing
 
-- **Description**: *No description provided.*
-- **Schedule**: Cron expression `0 8 * * *` (daily at 8:00 AM PST).
+- **Description**: Weekday 9 PM briefing summarizing tasks for the following morning.
+- **Schedule**: Cron expression `0 22 * * 0-4` (Sunday through Thursday at 9 PM).
 
 ---
 
-### ✅ Daily Health Check
+### 🌇 portfolio-closing-briefing
 
-- **Description**: Performs a daily health check to verify email functionality. Sends a direct message to Jeff if any issues are detected.
-- **Schedule**: Cron expression `0 9 * * *` (daily at 9:00 AM PST).
+- **Description**: (No description provided).
+- **Schedule**: Cron expression `0 21 * * 1-5` (Monday through Friday at 9 PM).
+
+---
+
+### ⏰ weekend-morning-alarm-reminder
+
+- **Description**: (No description provided).
+- **Schedule**: Cron expression `0 22 * * 5,6` (Friday and Saturday at 10 PM).
+
+---
+
+### 📦 Daily package delivery check
+
+- **Description**: (No description provided).
+- **Schedule**: Cron expression `0 8 * * *` (daily at 8 AM).
+
+---
+
+### ✅ daily-health-check
+
+- **Description**: Daily health check to verify email functionality. Sends a direct message to Jeff if any issues are detected.
+- **Schedule**: Cron expression `0 9 * * *` (daily at 9 AM).
+
+---
+
+### 📊 WW Daily Points Check-in
+
+- **Description**: (No description provided).
+- **Schedule**: Cron expression `30 17 * * *` (daily at 5:30 PM).
