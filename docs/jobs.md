@@ -8,74 +8,82 @@ nav_order: 6
 
 ## Overview
 
-This document provides an overview of scheduled jobs, their purposes, and their execution schedules. These jobs are designed to automate recurring tasks, ensuring consistent and timely operations.
+This document provides an overview of the scheduled jobs available in the system. Each job is designed to automate specific tasks, such as fetching data, performing backups, or sending reminders, at predefined intervals. The schedules are configured using cron expressions or interval-based timing to ensure timely execution.
 
 ## Key Concepts
 
-- **Job Name**: A unique identifier for each scheduled task.
+- **Job Name**: A unique identifier for each scheduled job.
 - **Description**: A brief explanation of the job's purpose.
-- **Schedule**: Specifies when and how often the job runs, using either cron expressions or time intervals.
-- **Time Zone**: All schedules are based on the `America/Los_Angeles` time zone unless otherwise specified.
+- **Schedule**: The timing configuration for when the job runs, defined using cron expressions or interval-based schedules.
+- **Time Zone**: All cron-based schedules are configured in the `America/Los_Angeles` time zone unless otherwise specified.
+- **Enabled Status**: Only enabled jobs are active and executed as per their schedule.
+
+## How It Works
+
+1. Each job is defined with a name, description, and schedule.
+2. Jobs are executed automatically based on their configured schedule.
+3. Cron-based jobs use standard cron expressions to specify execution times, while interval-based jobs use a millisecond interval.
+4. Disabled jobs are not executed, even if their schedule is defined.
 
 ## Scheduled Jobs
 
-### 🕒 calendar-fetch-hourly
+### 📅 Calendar Fetch Hourly
 
-- **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.
-- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7 AM to 5 PM).
-
----
-
-### 🕒 config-backup
-
-- **Description**: Backup `openclaw.json` to Git daily. Commits changes only if the file has been modified.
-- **Schedule**: Every 24 hours (86400000 milliseconds).
+- **Description**: Fetches calendars hourly between 7:00 AM and 5:00 PM PST.
+- **Schedule**: Cron-based (`0 7-17 * * *`, time zone: `America/Los_Angeles`).
 
 ---
 
-### 🌙 calendar-fetch-midnight
+### 🗂️ Config Backup
 
-- **Description**: Fetch calendars at midnight PST.
-- **Schedule**: Cron expression `0 0 * * *` (daily at midnight).
-
----
-
-### 🌅 evening-briefing
-
-- **Description**: Weekday 9 PM briefing summarizing tasks for the following morning.
-- **Schedule**: Cron expression `0 22 * * 0-4` (Sunday through Thursday at 9 PM).
+- **Description**: Backs up `openclaw.json` to Git daily. Commits only if changes are detected.
+- **Schedule**: Runs every 24 hours (interval-based).
 
 ---
 
-### 🌇 portfolio-closing-briefing
+### 🌙 Calendar Fetch Midnight
 
-- **Description**: (No description provided).
-- **Schedule**: Cron expression `0 21 * * 1-5` (Monday through Friday at 9 PM).
-
----
-
-### ⏰ weekend-morning-alarm-reminder
-
-- **Description**: (No description provided).
-- **Schedule**: Cron expression `0 22 * * 5,6` (Friday and Saturday at 10 PM).
+- **Description**: Fetches calendars at midnight PST.
+- **Schedule**: Cron-based (`0 0 * * *`, time zone: `America/Los_Angeles`).
 
 ---
 
-### 📦 Daily package delivery check
+### 🌅 Evening Briefing
 
-- **Description**: (No description provided).
-- **Schedule**: Cron expression `0 8 * * *` (daily at 8 AM).
-
----
-
-### ✅ daily-health-check
-
-- **Description**: Daily health check to verify email functionality. Sends a direct message to Jeff if any issues are detected.
-- **Schedule**: Cron expression `0 9 * * *` (daily at 9 AM).
+- **Description**: Sends a weekday 9:00 PM briefing about the next morning's schedule.
+- **Schedule**: Cron-based (`0 22 * * 0-4`, time zone: `America/Los_Angeles`).
 
 ---
 
-### 📊 WW Daily Points Check-in
+### 📈 Portfolio Closing Briefing
 
-- **Description**: (No description provided).
-- **Schedule**: Cron expression `30 17 * * *` (daily at 5:30 PM).
+- **Description**: (No description provided)
+- **Schedule**: Cron-based (`0 21 * * 1-5`, time zone: `America/Los_Angeles`).
+
+---
+
+### ⏰ Weekend Morning Alarm Reminder
+
+- **Description**: (No description provided)
+- **Schedule**: Cron-based (`0 22 * * 5,6`, time zone: `America/Los_Angeles`).
+
+---
+
+### 📦 Daily Package Delivery Check
+
+- **Description**: (No description provided)
+- **Schedule**: Cron-based (`0 8 * * *`, time zone: `America/Los_Angeles`).
+
+---
+
+### ✅ Daily Health Check
+
+- **Description**: Performs a daily health check to verify email functionality. Sends a direct message to Jeff if any issues are detected.
+- **Schedule**: Cron-based (`0 9 * * *`, time zone: `America/Los_Angeles`).
+
+---
+
+### 🕔 WW Daily Points Check-in
+
+- **Description**: (No description provided)
+- **Schedule**: Cron-based (`30 17 * * *`, time zone: `America/Los_Angeles`).
