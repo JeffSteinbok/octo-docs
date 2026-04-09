@@ -4,7 +4,7 @@ title: Scheduled Jobs
 nav_order: 6
 ---
 
-# Scheduled Jobs
+# Jobs Overview
 
 ## Overview
 
@@ -12,74 +12,98 @@ This document provides an overview of scheduled jobs, their purposes, and execut
 
 ## Key Concepts
 
-- **Job Name**: A unique identifier for each scheduled job.
+- **Job Name**: A unique identifier for each job.
 - **Description**: A brief explanation of the job's purpose.
-- **Schedule**: Defines when and how often the job runs, using either a cron expression or a time interval.
-- **Time Zone**: Specifies the time zone for the job's schedule.
+- **Schedule**: Defines when and how often the job runs, using either cron expressions or interval-based timing.
+- **Time Zone**: Specifies the time zone for scheduled jobs.
 
 ## Scheduled Jobs
 
-### 🕒 Calendar Fetch (Hourly)
+### 📅 Calendar Fetch Hourly
 
 - **Description**: Fetch calendars hourly between 7 AM and 5 PM PST.
-- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7 AM to 5 PM).
-- **Time Zone**: America/Los_Angeles.
+- **Schedule**: Cron expression `0 7-17 * * *` (hourly from 7 AM to 5 PM, PST).
+
+---
 
 ### 💾 Config Backup
 
 - **Description**: Backup `openclaw.json` to Git daily. Commits only if changes are detected.
-- **Schedule**: Every 24 hours (86,400,000 milliseconds).
+- **Schedule**: Every 24 hours.
 
-### 📅 Evening Briefing
+---
 
-- **Description**: Weekday 9 PM briefing to outline tasks for the following morning.
-- **Schedule**: Cron expression `0 22 * * 0-4` (9 PM, Monday to Friday).
-- **Time Zone**: America/Los_Angeles.
+### 🌅 Evening Briefing
 
-### 🕘 Portfolio Closing Briefing
+- **Description**: Provides a weekday 9 PM briefing about the next morning's schedule.
+- **Schedule**: Cron expression `0 22 * * 0-4` (9 PM, Monday to Friday, PST).
 
-- **Description**: *No description provided.*
-- **Schedule**: Cron expression `0 21 * * 1-5` (9 PM, Monday to Friday).
-- **Time Zone**: America/Los_Angeles.
+---
+
+### 📈 Portfolio Closing Briefing
+
+- **Description**: (No description provided)
+- **Schedule**: Cron expression `0 21 * * 1-5` (9 PM, Monday to Friday, PST).
+
+---
 
 ### ⏰ Evening Alarm Reminder
 
-- **Description**: Nightly 10:30 PM reminder for Jeff to check the alarm if there is an early morning work meeting.
-- **Schedule**: Cron expression `30 22 * * *` (10:30 PM daily).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Nightly 10:30 PM reminder for Jeff to check the alarm if there is an early morning meeting.
+- **Schedule**: Cron expression `30 22 * * *` (10:30 PM, PST).
+
+---
 
 ### 📦 Daily Package Delivery Check
 
-- **Description**: *No description provided.*
-- **Schedule**: Cron expression `0 8 * * *` (8 AM daily).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: (No description provided)
+- **Schedule**: Cron expression `0 8 * * *` (8 AM, PST).
+
+---
 
 ### 🩺 Daily Health Check
 
 - **Description**: Verifies email sending functionality daily and sends a direct message to Jeff if any issues are detected.
-- **Schedule**: Cron expression `0 9 * * *` (9 AM daily).
-- **Time Zone**: America/Los_Angeles.
+- **Schedule**: Cron expression `0 9 * * *` (9 AM, PST).
 
-### 🕔 WW Daily Points Check-in
-
-- **Description**: *No description provided.*
-- **Schedule**: Cron expression `30 17 * * *` (5:30 PM daily).
-- **Time Zone**: America/Los_Angeles.
-
-### ⚠️ Late-Early Conflict Morning Check
-
-- **Description**: Flags if there is a late meeting (after 6 PM) today and an early meeting (before 9 AM) tomorrow. Runs daily at 10 AM.
-- **Schedule**: Cron expression `0 10 * * *` (10 AM daily).
-- **Time Zone**: America/Los_Angeles.
+---
 
 ### 🦞 Lobster Changelog Weekly Scan
 
-- **Description**: Weekly scan of `lobster.shahine.com/changelog` for new ideas.
-- **Schedule**: Cron expression `0 9 * * 1` (9 AM every Monday).
-- **Time Zone**: America/Los_Angeles.
+- **Description**: Weekly Monday scan of `lobster.shahine.com/changelog` for new ideas.
+- **Schedule**: Cron expression `0 9 * * 1` (9 AM, Monday, PST).
 
-### 🌙 Calendar Fetch (Midnight)
+---
+
+### 🌙 Calendar Fetch Midnight
 
 - **Description**: Fetch calendars at midnight PST.
-- **Schedule**: Cron expression `0 0 * * *` (12 AM daily).
-- **Time Zone**: America/Los_Angeles.
+- **Schedule**: Cron expression `0 0 * * *` (12 AM, PST).
+
+---
+
+### ⚖️ Late-Early Conflict Morning Check
+
+- **Description**: Daily 10 AM check to flag if there is a late meeting (after 6 PM) today and an early meeting (before 9 AM) tomorrow.
+- **Schedule**: Cron expression `0 10 * * *` (10 AM, PST).
+
+---
+
+### 📊 WW Daily Points Check-in
+
+- **Description**: (No description provided)
+- **Schedule**: Cron expression `30 17 * * *` (5:30 PM, PST).
+
+---
+
+### 🥗 WW Diet Sync Progress
+
+- **Description**: (No description provided)
+- **Schedule**: Every 90 seconds.
+
+---
+
+### 🥗 WW Diet Sync
+
+- **Description**: (No description provided)
+- **Schedule**: Cron expression `0 4 * * *` (4 AM, PST).
