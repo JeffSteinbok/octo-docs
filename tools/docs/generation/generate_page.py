@@ -8,7 +8,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_MODEL = "gpt-4.1"
+_DEFAULT_MODEL = "openai/gpt-4.1"
 _DEFAULT_MAX_RETRIES = 3
 _DEFAULT_RETRY_DELAY = 2.0
 
@@ -32,7 +32,7 @@ def generate_page(
 
     Args:
         prompt: The assembled prompt string
-        model: Model override (default: gpt-4.1)
+        model: Model override (default: openai/gpt-4.1)
         max_retries: Number of retry attempts on transient failures
         retry_delay: Seconds to wait between retries
 
@@ -41,7 +41,7 @@ def generate_page(
     """
     model = model or _DEFAULT_MODEL
     api_key = os.environ.get("GITHUB_TOKEN")
-    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.github.ai")
+    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.github.ai/inference")
 
     if not api_key:
         raise EnvironmentError(
