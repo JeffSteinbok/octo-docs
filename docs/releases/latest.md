@@ -10,4 +10,4 @@ Page ID: release-latest
 
 ## Summary
 
-No changes have been introduced in this release.
+No changes are included in this release.
