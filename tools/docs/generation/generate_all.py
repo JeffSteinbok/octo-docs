@@ -101,14 +101,50 @@ def _slugify(text: str) -> str:
     return re.sub(r'[\s_]+', '-', text.strip().lower())
 
 
-def _extract_heading_emoji(markdown: str) -> str | None:
-    """Extract the leading emoji from the first H1 or H2 heading, if present."""
+def _extract_heading_emoji(markdown: str) -> str:
+    """Extract the leading emoji from the first heading or first non-blank line."""
+    # Try H1/H2 heading first
     match = re.search(r'^#{1,2}\s+(\S+)\s+', markdown, re.MULTILINE)
-    if match:
-        token = match.group(1)
-        if not token.isascii():
-            return token
-    return None
+    if match and not match.group(1).isascii():
+        return match.group(1)
+    # Fall back: first non-blank line may start with an emoji (LLM sometimes omits #)
+    for line in markdown.split("\n"):
+        stripped = line.strip()
+        if stripped:
+            token = stripped.split()[0] if stripped.split() else ""
+            if token and not token.isascii():
+                return token
+            break
+    return ""
+
+
+def _extract_first_paragraph(markdown: str) -> str:
+    """Extract the first paragraph after the heading (for use as description)."""
+    lines = markdown.strip().split("\n")
+    # Skip heading line(s) and blank lines
+    idx = 0
+    while idx < len(lines):
+        line = lines[idx].strip()
+        if line.startswith("#") or not line:
+            idx += 1
+            continue
+        # First non-heading, non-blank line — check if it's the title line (emoji prefix)
+        if not line[0].isascii():
+            idx += 1
+            # Skip blank lines after emoji title
+            while idx < len(lines) and not lines[idx].strip():
+                idx += 1
+            break
+        break
+    # Collect paragraph lines until next blank line or heading
+    para = []
+    while idx < len(lines):
+        line = lines[idx].strip()
+        if not line or line.startswith("#"):
+            break
+        para.append(line)
+        idx += 1
+    return " ".join(para)
 
 
 def _count_tools(plugin_json: dict) -> int:
@@ -129,9 +165,9 @@ def _build_index_table(entries: list, link_prefix: str = "plugins") -> str:
         "|---|--------|-------------|:-----:|",
     ]
     for e in entries:
-        emoji = e.get("emoji", "")
+        emoji = e.get("emoji") or ""
         link = f"[{e['name']}]({link_prefix}/{e['slug']})"
-        desc = e.get("description", "")
+        desc = e.get("description") or ""
         count = e.get("tool_count", 0)
         lines.append(f"| {emoji} | {link} | {desc} | {count} |")
     return "\n".join(lines)
@@ -210,6 +246,8 @@ def _process_chunked_page(
         content = generate_page(prompt)
 
         emoji = _extract_heading_emoji(content)
+        # Prefer LLM-generated description over JSON metadata
+        llm_desc = _extract_first_paragraph(content)
         formatted = format_markdown(content)
 
         # Write individual child page
@@ -227,7 +265,7 @@ def _process_chunked_page(
         plugin_entries.append({
             "name": plugin_name,
             "slug": slug,
-            "description": plugin_desc,
+            "description": llm_desc or plugin_desc,
             "emoji": emoji,
             "tool_count": tool_count,
         })
