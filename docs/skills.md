@@ -8,40 +8,49 @@ nav_order: 4
 
 ## Overview
 
-Skills are markdown-defined knowledge modules that provide agents with structured information and guidance for specific tasks. Unlike plugins, which are executable code, skills offer detailed instructions, rules, and context to help agents interact with external systems or perform domain-specific actions. Skills solve the problem of encapsulating operational knowledge in a reusable, accessible format for agents.
+Skills are markdown-defined knowledge modules that provide agents with structured information and guidance for specific tasks. Unlike plugins, which are executable code, skills are not code—they are documentation that helps agents understand how to interact with external systems or perform domain-specific operations. Skills solve the problem of giving agents clear, actionable instructions for complex tasks without requiring code execution.
+
+Agents use skills to inform their decision-making and generate actions based on the documented procedures and rules. This enables agents to operate effectively within defined domains, such as home automation, by referencing skill content for context, entity mapping, and operational guidelines.
 
 ## Key Concepts
 
-- **Skills**: Markdown-defined knowledge modules containing instructions, rules, and context for specific tasks.
-- **Agents**: Entities that use skills to perform actions or answer questions based on the provided knowledge.
-- **Plugins vs. Skills**: Plugins are executable code, while skills are static knowledge and operational guidance.
-- **Skill Usage**: Agents reference skills to determine how to interact with external systems or follow domain-specific procedures.
+- **Skills**: Markdown-defined knowledge modules containing instructions, rules, and entity mappings for specific domains.
+- **Agents**: Systems or processes that use skills to guide their actions and interactions.
+- **Plugins vs. Skills**: Plugins are executable code; skills are documentation and knowledge, not code.
+- **Entity Mapping**: Skills often include mappings between domain concepts (e.g., rooms) and system entities.
+- **Operational Rules**: Skills specify rules and best practices for performing tasks (e.g., always check current volume before changing it).
 
 ## How It Works
 
-1. Skills are defined in markdown and include detailed instructions, rules, and context for a specific domain or task.
-2. Agents consult skills to understand how to perform actions, such as controlling devices or reporting status.
-3. Skills guide agents on which entities to interact with, what operations are allowed, and how to interpret and present information.
-4. Agents use plugins to execute actions, but rely on skills for the knowledge of when and how to use those plugins.
-
----
+1. Agents reference skills to understand how to perform domain-specific tasks.
+2. Skills provide detailed instructions, entity mappings, and operational rules.
+3. Agents use this information to generate actions, such as querying the state of a device or adjusting settings.
+4. Skills guide agents in interpreting user commands, mapping them to system entities, and following best practices (e.g., reporting volume changes).
+5. Skills are not executable; agents use them as knowledge sources to inform their behavior.
 
 ## Available Skills
 
 ### 🎵 Home Music
 
-Control music and speakers at home via Home Assistant. Use this skill when adjusting volume on any speaker or room, checking what's playing, pausing/resuming/skipping music, muting, or controlling Alexa, Sonos, and other media players. Covers living room, kitchen, bedroom, bonus room, family room, hallway, and other Home Assistant media players.
-
 **Purpose**:  
-Provides agents with detailed instructions for controlling home audio devices, including entity mapping, volume rules, zone definitions, and common operations.
+Control music and speakers at home via Home Assistant. This skill covers adjusting volume, checking what's playing, pausing/resuming/skipping music, muting, and controlling Alexa, Sonos, and other media players across various rooms.
 
-**How Agents Use It**:
-- Reference entity IDs for specific rooms or zones.
-- Follow rules for volume adjustment (always check current volume before changing).
-- Use provided operations for play, pause, mute, skip, and playlist selection.
-- Aggregate and report speaker status by querying individual entities.
-- Apply commands to zones (downstairs, upstairs, outside) or all speakers as needed.
-- Discover available media players and their states.
+**Description**:  
+- Provides entity mappings for speakers in rooms such as Living Room, Kitchen, Bedroom, Bonus Room, Family Room, Hallway, and more.
+- Specifies operational rules, such as always checking current volume before changing it and reporting both old and new values.
+- Details common operations: getting current state, setting volume, muting/unmuting, playback controls, and playing specific playlists or stations.
+- Includes guidance for zone-based commands (e.g., "downstairs", "upstairs", "outside") and reporting speaker status.
+- Spotify integration is available as a media player entity, with standard controls.
 
-**Skill vs. Plugin**:  
-This skill contains operational knowledge and guidance. Actual actions (such as changing volume or playing music) are performed by plugins like `hass_state_get` and `hass_service_call`, but the skill provides the context and rules for their use.
+**How Agents Use This Skill**:  
+Agents use the Home Music skill to:
+- Map user commands to the correct Home Assistant entities.
+- Follow documented procedures for querying and controlling media players.
+- Apply zone-based actions when users reference areas like "downstairs" or "all speakers".
+- Report speaker status and track information according to documented rules.
+
+## How Skills Differ from Plugins
+
+- **Skills** are markdown-defined documentation and knowledge, not executable code.
+- **Plugins** are executable code modules that perform actions.
+- Agents use skills for guidance and context, while plugins are used to execute specific operations.
