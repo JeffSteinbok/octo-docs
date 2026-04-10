@@ -5,9 +5,9 @@ parent: Plugins
 nav_order: 1
 ---
 
-🗄️ Config Backup
+🗂️ Config Backup
 
-Backs up OpenClaw config to Git with SHA-256 change detection. This plugin ensures that configuration files are only committed and pushed when their contents have changed.
+Backs up OpenClaw config to Git with SHA-256 change detection. Only commits and pushes when content has changed.
 
 ### config_backup_run
 

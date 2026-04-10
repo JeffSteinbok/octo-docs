@@ -26,24 +26,24 @@ Start or resume Spotify playback. Optionally provide a Spotify URI (track, album
 
 Pause Spotify playback.
 
-| Name      | Type   | Description                                 |
-|-----------|--------|---------------------------------------------|
+| Name      | Type   | Description                                  |
+|-----------|--------|----------------------------------------------|
 | device_id | string | Target device ID. Omit to use the active device. |
 
 ### spotify_next
 
 Skip to the next track in the Spotify queue.
 
-| Name      | Type   | Description                                 |
-|-----------|--------|---------------------------------------------|
+| Name      | Type   | Description                                  |
+|-----------|--------|----------------------------------------------|
 | device_id | string | Target device ID. Omit to use the active device. |
 
 ### spotify_previous
 
 Go back to the previous track on Spotify.
 
-| Name      | Type   | Description                                 |
-|-----------|--------|---------------------------------------------|
+| Name      | Type   | Description                                  |
+|-----------|--------|----------------------------------------------|
 | device_id | string | Target device ID. Omit to use the active device. |
 
 ### spotify_search
@@ -53,24 +53,24 @@ Search Spotify for tracks, albums, artists, or playlists. Returns names, URIs, a
 | Name   | Type    | Description                                                                                  |
 |--------|---------|----------------------------------------------------------------------------------------------|
 | query  | string  | Search query (e.g. 'Daft Punk Digital Love', 'chill jazz playlist').                         |
-| type   | string  | Type of result to search for (default: track).                                               |
+| type   | string  | Type of result to search for (default: track). Possible values: track, album, artist, playlist. |
 | limit  | integer | Max number of results to return (default: 10, max: 50).                                      |
 
 ### spotify_add_to_playlist
 
 Add a track to a Spotify playlist by playlist ID and track URI.
 
-| Name        | Type   | Description                                              |
-|-------------|--------|----------------------------------------------------------|
-| playlist_id | string | Spotify playlist ID (from spotify_get_playlists).        |
-| track_uri   | string | Spotify track URI to add (e.g. spotify:track:...).       |
+| Name        | Type   | Description                                         |
+|-------------|--------|-----------------------------------------------------|
+| playlist_id | string | Spotify playlist ID (from spotify_get_playlists).   |
+| track_uri   | string | Spotify track URI to add (e.g. spotify:track:...).  |
 
 ### spotify_get_playlists
 
 List the current user's Spotify playlists with IDs and track counts.
 
-| Name   | Type    | Description                                         |
-|--------|---------|-----------------------------------------------------|
+| Name   | Type    | Description                                           |
+|--------|---------|-------------------------------------------------------|
 | limit  | integer | Max number of playlists to return (default: 20, max: 50). |
 
 ### spotify_get_devices

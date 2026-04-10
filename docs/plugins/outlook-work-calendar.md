@@ -7,7 +7,7 @@ nav_order: 11
 
 📅 Outlook Work Calendar
 
-Fetches published Outlook work calendar events via the EWS JSON API without requiring authentication.
+Fetches published Outlook work calendar via EWS JSON API (no authentication required).
 
 ### outlook_work_calendar_fetch
 

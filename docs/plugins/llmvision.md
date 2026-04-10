@@ -7,7 +7,7 @@ nav_order: 6
 
 🖼️ Llmvision
 
-Home Assistant LLM Vision integration enables AI-powered analysis of camera images, querying the vision timeline, and creating timeline events.
+Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events.
 
 ### llmvision_timeline_get
 
@@ -24,17 +24,17 @@ Get events from the LLM Vision timeline (calendar.llm_vision_timeline). Returns 
 
 Trigger an AI image analysis on a Home Assistant camera entity using LLM Vision. Sends the current camera snapshot to the specified AI provider with a custom prompt and returns the AI-generated description. Can optionally store the result in the timeline.
 
-| Name             | Type     | Description                                                                                      |
-|------------------|----------|--------------------------------------------------------------------------------------------------|
-| camera_entity    | string   | Camera entity ID to analyze (e.g. camera.front_door).                                            |
-| message          | string   | Prompt / question to send to the AI about the image.                                             |
-| provider         | string   | LLM Vision provider to use (e.g. 'anthropic', 'openai', 'ollama').                              |
-| model            | string   | Specific model override (optional, uses provider default if omitted).                            |
-| store_in_timeline| boolean  | Whether to save the result as a timeline event (default: false).                                 |
-| expose_images    | boolean  | Whether to expose the captured image in the timeline event.                                      |
-| generate_title   | boolean  | Whether to auto-generate a title for the timeline event.                                         |
-| response_format  | string   | Response format from the AI: 'text' (default) or 'json'.                                         |
-| max_tokens       | integer  | Maximum tokens for the AI response.                                                              |
+| Name              | Type     | Description                                                                                   |
+|-------------------|----------|-----------------------------------------------------------------------------------------------|
+| camera_entity     | string   | Camera entity ID to analyze (e.g. camera.front_door).                                          |
+| message           | string   | Prompt / question to send to the AI about the image.                                           |
+| provider          | string   | LLM Vision provider to use (e.g. 'anthropic', 'openai', 'ollama').                            |
+| model             | string   | Specific model override (optional, uses provider default if omitted).                         |
+| store_in_timeline | boolean  | Whether to save the result as a timeline event (default: false).                              |
+| expose_images     | boolean  | Whether to expose the captured image in the timeline event.                                   |
+| generate_title    | boolean  | Whether to auto-generate a title for the timeline event.                                      |
+| response_format   | string   | Response format from the AI: 'text' (default) or 'json'.                                      |
+| max_tokens        | integer  | Maximum tokens for the AI response.                                                           |
 
 ### llmvision_create_event
 

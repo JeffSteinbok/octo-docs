@@ -7,7 +7,7 @@ nav_order: 7
 
 🩺 Opentable Heartbeat
 
-Opentable Heartbeat provides a health-check for the OpenTable skill and alerts on failure via a configured notification channel.
+Health-check for the OpenTable skill. Alerts on failure via configured notification channel.
 
 ### opentable_heartbeat_check
 
