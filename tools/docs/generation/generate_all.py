@@ -102,8 +102,8 @@ def _slugify(text: str) -> str:
 
 
 def _extract_heading_emoji(markdown: str) -> str | None:
-    """Extract the leading emoji from the first H2 heading, if present."""
-    match = re.search(r'^##\s+(\S+)\s+', markdown, re.MULTILINE)
+    """Extract the leading emoji from the first H1 or H2 heading, if present."""
+    match = re.search(r'^#{1,2}\s+(\S+)\s+', markdown, re.MULTILINE)
     if match:
         token = match.group(1)
         if not token.isascii():
@@ -111,21 +111,49 @@ def _extract_heading_emoji(markdown: str) -> str | None:
     return None
 
 
+def _count_tools(plugin_json: dict) -> int:
+    """Count tools defined in a plugin JSON structure."""
+    tools = plugin_json.get("tools")
+    if isinstance(tools, (list, dict)):
+        return len(tools)
+    functions = plugin_json.get("functions")
+    if isinstance(functions, (list, dict)):
+        return len(functions)
+    return 0
+
+
+def _build_index_table(entries: list, link_prefix: str = "plugins") -> str:
+    """Build a markdown summary table for a chunked index page."""
+    lines = [
+        "| | Plugin | Description | Tools |",
+        "|---|--------|-------------|:-----:|",
+    ]
+    for e in entries:
+        emoji = e.get("emoji", "")
+        link = f"[{e['name']}]({link_prefix}/{e['slug']})"
+        desc = e.get("description", "")
+        count = e.get("tool_count", 0)
+        lines.append(f"| {emoji} | {link} | {desc} | {count} |")
+    return "\n".join(lines)
+
+
 def _process_chunked_page(
     page_spec: dict,
     bundle: BundleLoader,
     dry_run: bool = False,
 ) -> str:
-    """Generate a page by processing each chunk source individually.
+    """Generate separate child pages for each chunk source, plus an index page.
 
-    Splits the glob source (chunk_source) into separate LLM calls so each
-    stays within token limits.  The bullet-list index is built deterministically
-    in Python from the generated section headings.
+    Each glob-expanded source is sent to the LLM individually and written as its
+    own page under ``chunk_output_dir``.  The main ``output_path`` becomes an
+    index page with a summary table linking to the children.
     """
     page_id = page_spec["id"]
     output_path = REPO_ROOT / page_spec["output_path"]
     chunk_pattern = page_spec["chunk_source"]
+    chunk_output_dir = page_spec.get("chunk_output_dir")
     instructions = page_spec.get("instructions", {})
+    parent_title = page_spec.get("front_matter", {}).get("title", "")
 
     logger.info("Processing chunked page: %s -> %s", page_id, page_spec["output_path"])
 
@@ -136,10 +164,14 @@ def _process_chunked_page(
         logger.info("[dry-run] Would generate chunked page: %s (%d chunks)", page_id, len(chunk_paths))
         return page_spec["output_path"]
 
-    # Generate each chunk section via its own LLM call
-    section_data = []
-    for chunk_path in chunk_paths:
-        # Extract plugin name from JSON for deterministic anchoring
+    if chunk_output_dir:
+        child_dir = REPO_ROOT / chunk_output_dir
+        child_dir.mkdir(parents=True, exist_ok=True)
+
+    # Generate each chunk as a separate page
+    plugin_entries = []
+    for nav_index, chunk_path in enumerate(chunk_paths, start=1):
+        # Extract metadata from plugin JSON
         try:
             plugin_json = bundle.load_json(chunk_path)
             plugin_name = (
@@ -148,11 +180,13 @@ def _process_chunked_page(
                 or Path(chunk_path).stem.replace("-", " ").title()
             )
             plugin_desc = plugin_json.get("description", "")
+            tool_count = _count_tools(plugin_json)
         except Exception:
             plugin_name = Path(chunk_path).stem.replace("-", " ").title()
             plugin_desc = ""
+            tool_count = 0
 
-        anchor = _slugify(plugin_name)
+        slug = _slugify(plugin_name)
 
         chunk_spec = {
             "id": page_id,
@@ -162,10 +196,10 @@ def _process_chunked_page(
             "instructions": {
                 "audience": instructions.get("audience", "developers"),
                 "include": [
-                    f"Generate ONLY the H2 section for the '{plugin_name}' plugin",
-                    "Use a fitting emoji in the H2 heading",
-                    "List every tool as an H4 heading with the tool name",
-                    "Under each tool H4, include the tool's description and a "
+                    f"Generate a standalone documentation page for the '{plugin_name}' plugin",
+                    "Use a fitting emoji in the H1 heading",
+                    "List every tool as an H3 heading with the tool name",
+                    "Under each tool H3, include the tool's description and a "
                     "parameter table (name, type, description) if available",
                 ],
                 "exclude": instructions.get("exclude", []),
@@ -176,35 +210,36 @@ def _process_chunked_page(
         content = generate_page(prompt)
 
         emoji = _extract_heading_emoji(content)
+        formatted = format_markdown(content)
 
-        section_data.append({
+        # Write individual child page
+        if chunk_output_dir:
+            child_front_matter = {
+                "layout": "default",
+                "title": plugin_name,
+                "parent": parent_title,
+                "nav_order": nav_index,
+            }
+            child_path = child_dir / f"{slug}.md"
+            write_page(child_path, formatted, front_matter=child_front_matter)
+            logger.info("Written child page: %s", child_path)
+
+        plugin_entries.append({
             "name": plugin_name,
+            "slug": slug,
             "description": plugin_desc,
-            "anchor": anchor,
             "emoji": emoji,
-            "content": content.strip(),
+            "tool_count": tool_count,
         })
         logger.info("Generated chunk: %s (%s)", chunk_path, plugin_name)
 
-    # Build deterministic index bullet list
-    index_lines = []
-    for s in section_data:
-        prefix = f"{s['emoji']} " if s["emoji"] else ""
-        desc = f" — {s['description']}" if s["description"] else ""
-        index_lines.append(f"- {prefix}[{s['name']}](#{s['anchor']}){desc}")
-    index_block = "\n".join(index_lines)
+    # Build and write the index page with summary table
+    link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "plugins"
+    index_content = _build_index_table(plugin_entries, link_prefix)
+    formatted_index = format_markdown(index_content)
+    write_page(output_path, formatted_index, front_matter=page_spec.get("front_matter"))
 
-    # Prepend deterministic anchor tags and assemble final page
-    parts = [index_block, ""]
-    for s in section_data:
-        parts.append(f'<a id="{s["anchor"]}"></a>\n\n{s["content"]}')
-
-    combined = "\n\n".join(parts)
-    formatted = format_markdown(combined)
-    front_matter = page_spec.get("front_matter")
-    write_page(output_path, formatted, front_matter=front_matter)
-
-    logger.info("Written chunked page: %s (%d sections)", output_path, len(section_data))
+    logger.info("Written index page: %s (%d plugins)", output_path, len(plugin_entries))
     return page_spec["output_path"]
 
 

@@ -50,6 +50,10 @@
       "type": "string",
       "description": "Glob pattern identifying which source to chunk on (required when strategy is chunked)"
     },
+    "chunk_output_dir": {
+      "type": "string",
+      "description": "Directory for individual child pages (when set, each chunk becomes its own page)"
+    },
     "front_matter": {
       "type": "object",
       "description": "Jekyll front matter to prepend to the generated page",

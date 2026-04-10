@@ -6,6 +6,7 @@ front_matter:
   layout: default
   title: Plugins
   nav_order: 3
+  has_children: true
 
 sources:
   - path: api-index.json
@@ -14,6 +15,7 @@ sources:
 template: overview
 strategy: chunked
 chunk_source: "plugins/*.json"
+chunk_output_dir: docs/plugins
 
 instructions:
   audience: external developers
