@@ -41,7 +41,7 @@ def generate_page(
     """
     model = model or _DEFAULT_MODEL
     api_key = os.environ.get("GITHUB_TOKEN")
-    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.inference.ai.azure.com")
+    base_url = os.environ.get("DOCS_LLM_BASE_URL", "https://models.github.ai")
 
     if not api_key:
         raise EnvironmentError(
