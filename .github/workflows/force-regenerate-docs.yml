@@ -35,14 +35,23 @@ jobs:
         run: python tools/docs/generation/generate_all.py --bundle ./bundle --all
 
       - name: Commit to main
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/
           git add .last_bundle_ref 2>/dev/null || true
           if git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No docs changes to commit."
           else
             git commit -m "Force regenerate all documentation"
             git push origin main
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Trigger deploy
+        if: steps.commit.outputs.has_changes == 'true'
+        run: gh workflow run jekyll-gh-pages.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

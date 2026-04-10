@@ -128,8 +128,8 @@ jobs:
 
       # Always attempt to commit, even if generation had partial failures,
       # so that successfully generated pages are not lost.
-      # NOTE: the push to main triggers jekyll-gh-pages.yml via its push
-      # trigger (paths: docs/**) which correctly checks out the new commit.
+      # NOTE: Commits pushed with GITHUB_TOKEN do NOT trigger other workflows'
+      # push events, so we explicitly dispatch the deploy workflow below.
       - name: Commit to main
         if: always() && steps.inputs.conclusion == 'success'
         id: commit
@@ -146,3 +146,9 @@ jobs:
             git push origin main
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Trigger deploy
+        if: always() && steps.commit.outputs.has_changes == 'true'
+        run: gh workflow run jekyll-gh-pages.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
