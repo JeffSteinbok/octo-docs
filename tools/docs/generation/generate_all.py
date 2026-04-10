@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import hashlib
 import logging
 import sys
 from pathlib import Path
@@ -37,6 +38,7 @@ logger = logging.getLogger(__name__)
 _DOCS_ROOT = _TOOLS_ROOT / "docs"
 PAGE_SPECS_DIR = _DOCS_ROOT / "page_specs"
 REPO_ROOT = _TOOLS_ROOT.parent
+LAST_REF_PATH = REPO_ROOT / ".last_bundle_ref"
 
 
 def load_page_spec(spec_path: Path) -> dict:
@@ -53,6 +55,43 @@ def get_all_page_specs() -> dict:
         if spec and "id" in spec:
             specs[spec["id"]] = spec
     return specs
+
+
+def _bundle_fingerprint(bundle: BundleLoader) -> str | None:
+    """Compute a stable content fingerprint of all bundle artifacts.
+
+    Uses a SHA-256 hash of sorted artifact paths and their contents so that
+    identical bundle content produces the same fingerprint regardless of the
+    source commit (avoids false rebuilds from non-doc commits).
+    """
+    try:
+        manifest = bundle.load_manifest()
+        artifacts = sorted(manifest.get("artifacts", []))
+    except FileNotFoundError:
+        return None
+
+    h = hashlib.sha256()
+    for artifact_path in artifacts:
+        h.update(artifact_path.encode("utf-8"))
+        try:
+            data = bundle.load_text(artifact_path)
+            h.update(data.encode("utf-8"))
+        except FileNotFoundError:
+            continue
+    return h.hexdigest()
+
+
+def _read_last_ref() -> str | None:
+    """Read the last successfully processed bundle fingerprint."""
+    try:
+        return LAST_REF_PATH.read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        return None
+
+
+def _write_last_ref(ref: str) -> None:
+    """Record the bundle fingerprint after a successful generation run."""
+    LAST_REF_PATH.write_text(ref + "\n", encoding="utf-8")
 
 
 def process_page(
@@ -134,8 +173,21 @@ def main():
             changed = list(all_specs.keys())
         pages_to_run = [p for p in changed if p in all_specs]
         if not pages_to_run:
-            logger.info("No matching pages in changed_pages.json. Nothing to do.")
-            return
+            # Drift detection: compare a content fingerprint of the bundle
+            # against the last successfully processed fingerprint.  If they
+            # differ (or the ref file is missing), trigger a full rebuild.
+            fingerprint = _bundle_fingerprint(bundle)
+            last_ref = _read_last_ref()
+            if fingerprint is None or fingerprint != last_ref:
+                logger.info(
+                    "Bundle content changed (%s -> %s) but changed_pages is empty — full rebuild",
+                    (last_ref or "none")[:12],
+                    (fingerprint or "unknown")[:12],
+                )
+                pages_to_run = list(all_specs.keys())
+            else:
+                logger.info("No matching pages in changed_pages.json. Nothing to do.")
+                return
 
     generated = []
     errors = []
@@ -148,6 +200,14 @@ def main():
         except Exception as exc:
             logger.error("Failed to generate page %s: %s", page_id, exc)
             errors.append((page_id, str(exc)))
+
+    # Record the bundle fingerprint on full success (not --page or --dry-run)
+    # so future runs can detect content drift.
+    if not errors and not args.dry_run and not args.page:
+        fingerprint = _bundle_fingerprint(bundle)
+        if fingerprint:
+            _write_last_ref(fingerprint)
+            logger.info("Updated last bundle ref: %s", fingerprint[:12])
 
     print(f"\nSummary: {len(generated)} page(s) generated, {len(errors)} error(s)")
     for path in generated:

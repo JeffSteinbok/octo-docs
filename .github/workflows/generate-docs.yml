@@ -116,6 +116,7 @@ jobs:
           GH_TOKEN: ${{ secrets.OPENCLAW_TOKEN }}
 
       - name: Generate docs
+        id: generate
         run: |
           EXTRA_FLAGS=""
           if [ "${{ steps.inputs.outputs.regenerate_all }}" = "true" ]; then
@@ -125,12 +126,15 @@ jobs:
             --bundle "${{ steps.inputs.outputs.bundle_path }}" \
             $EXTRA_FLAGS
 
+      # Always attempt to commit, even if generation had partial failures,
+      # so that successfully generated pages are not lost.
       - name: Commit to main
+        if: always() && steps.inputs.conclusion == 'success'
         id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
+          git add docs/ .last_bundle_ref
           if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No docs changes to commit."
@@ -142,6 +146,7 @@ jobs:
 
   deploy:
     needs: generate-docs
+    if: always() && needs.generate-docs.result != 'cancelled'
     uses: ./.github/workflows/jekyll-gh-pages.yml
     permissions:
       contents: read

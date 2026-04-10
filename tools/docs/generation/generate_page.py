@@ -8,7 +8,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_MODEL = "gpt-4o"
+_DEFAULT_MODEL = "gpt-4.1-mini"
 _DEFAULT_MAX_RETRIES = 3
 _DEFAULT_RETRY_DELAY = 2.0
 
@@ -32,7 +32,7 @@ def generate_page(
 
     Args:
         prompt: The assembled prompt string
-        model: Model override (default: claude-sonnet-4-6)
+        model: Model override (default: gpt-4.1-mini)
         max_retries: Number of retry attempts on transient failures
         retry_delay: Seconds to wait between retries
 
@@ -104,6 +104,10 @@ def _call_openai_compatible(
     except openai.APIConnectionError as e:
         raise _TransientError(str(e)) from e
     except openai.APITimeoutError as e:
+        raise _TransientError(str(e)) from e
+    except openai.APIStatusError as e:
+        if e.status_code == 413:
+            raise  # payload too large — not retriable
         raise _TransientError(str(e)) from e
 
     choice = response.choices[0]
