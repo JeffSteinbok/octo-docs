@@ -17,10 +17,10 @@ Get the currently playing track on Spotify, including artist, album, and playbac
 
 Start or resume Spotify playback. Optionally provide a Spotify URI (track, album, artist, or playlist) to play something specific.
 
-| Name      | Type   | Description                                                                                   |
-|-----------|--------|-----------------------------------------------------------------------------------------------|
+| Name      | Type   | Description                                                                                  |
+|-----------|--------|----------------------------------------------------------------------------------------------|
 | uri       | string | Spotify URI to play (e.g. spotify:track:..., spotify:album:..., spotify:playlist:...). Omit to resume current playback. |
-| device_id | string | Target device ID (from spotify_get_devices). Omit to use the active device.                   |
+| device_id | string | Target device ID (from spotify_get_devices). Omit to use the active device.                  |
 
 ### spotify_pause
 
@@ -50,11 +50,11 @@ Go back to the previous track on Spotify.
 
 Search Spotify for tracks, albums, artists, or playlists. Returns names, URIs, and metadata for use with other Spotify tools.
 
-| Name  | Type    | Description                                                                                  |
-|-------|---------|----------------------------------------------------------------------------------------------|
-| query | string  | Search query (e.g. 'Daft Punk Digital Love', 'chill jazz playlist').                         |
-| type  | string  | Type of result to search for (default: track).                                               |
-| limit | integer | Max number of results to return (default: 10, max: 50).                                      |
+| Name   | Type    | Description                                                                                         |
+|--------|---------|-----------------------------------------------------------------------------------------------------|
+| query  | string  | Search query (e.g. 'Daft Punk Digital Love', 'chill jazz playlist').                                |
+| type   | string  | Type of result to search for (default: track). Allowed values: track, album, artist, playlist.      |
+| limit  | integer | Max number of results to return (default: 10, max: 50).                                             |
 
 ### spotify_add_to_playlist
 
@@ -69,9 +69,9 @@ Add a track to a Spotify playlist by playlist ID and track URI.
 
 List the current user's Spotify playlists with IDs and track counts.
 
-| Name  | Type    | Description                                      |
-|-------|---------|--------------------------------------------------|
-| limit | integer | Max number of playlists to return (default: 20, max: 50). |
+| Name   | Type    | Description                                      |
+|--------|---------|--------------------------------------------------|
+| limit  | integer | Max number of playlists to return (default: 20, max: 50). |
 
 ### spotify_get_devices
 
