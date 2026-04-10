@@ -6,4 +6,8 @@ nav_order: 7
 
 # Release Notes
 
-No changes are available for this release.
+Page ID: release-latest
+
+## Summary
+
+No changes have been introduced in this release.
