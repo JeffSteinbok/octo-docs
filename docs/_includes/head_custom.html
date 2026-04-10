@@ -11,6 +11,12 @@
     background-color: transparent !important;
   }
 
+  /* ── Hide auto-generated child page listing on parent pages ─ */
+  /* (redundant when the page already has a summary table)       */
+  main > hr:has(+ h2.text-delta) { display: none; }
+  main > h2.text-delta { display: none; }
+  main > h2.text-delta + ul { display: none; }
+
   /* ── Hero section ─────────────────────────────────── */
   .hero {
     text-align: center;

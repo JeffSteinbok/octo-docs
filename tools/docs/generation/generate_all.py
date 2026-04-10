@@ -159,8 +159,21 @@ def _count_tools(plugin_json: dict) -> int:
 
 
 def _build_index_table(entries: list, link_prefix: str = "plugins") -> str:
-    """Build a markdown summary table for a chunked index page."""
-    lines = [
+    """Build a markdown index page with intro text and summary table."""
+    total_tools = sum(e.get("tool_count", 0) for e in entries)
+    intro = (
+        "Plugins are self-contained capabilities that Octo's agents can invoke — "
+        "sending email, checking restaurant availability, controlling smart home "
+        "devices, tracking packages, and more. Each plugin is independently "
+        "developed and declares its own tools, parameters, and dependencies.\n"
+        "\n"
+        "Unlike [skills](skills), which provide knowledge through markdown prompts, "
+        "plugins execute real code and interact with external APIs. Think of plugins "
+        "as _tools_ and skills as _knowledge_.\n"
+        "\n"
+        f"Octo currently has **{len(entries)} plugins** providing **{total_tools} tools** in total.\n"
+    )
+    table_lines = [
         "| | Plugin | Description | Tools |",
         "|---|--------|-------------|:-----:|",
     ]
@@ -169,8 +182,8 @@ def _build_index_table(entries: list, link_prefix: str = "plugins") -> str:
         link = f"[{e['name']}]({link_prefix}/{e['slug']})"
         desc = e.get("description") or ""
         count = e.get("tool_count", 0)
-        lines.append(f"| {emoji} | {link} | {desc} | {count} |")
-    return "\n".join(lines)
+        table_lines.append(f"| {emoji} | {link} | {desc} | {count} |")
+    return intro + "\n" + "\n".join(table_lines)
 
 
 def _process_chunked_page(
