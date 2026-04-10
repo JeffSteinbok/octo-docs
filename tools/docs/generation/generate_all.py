@@ -158,10 +158,13 @@ def _count_tools(plugin_json: dict) -> int:
     return 0
 
 
-def _build_index_table(entries: list, link_prefix: str = "plugins") -> str:
-    """Build a markdown index page with intro text and summary table."""
+def _build_index_table(entries: list, link_prefix: str = "plugins",
+                       title: str = "Plugins") -> str:
+    """Build a markdown index page with title, intro text and summary table."""
     total_tools = sum(e.get("tool_count", 0) for e in entries)
     intro = (
+        f"# {title}\n"
+        "\n"
         "Plugins are self-contained capabilities that Octo's agents can invoke — "
         "sending email, checking restaurant availability, controlling smart home "
         "devices, tracking packages, and more. Each plugin is independently "
@@ -286,7 +289,7 @@ def _process_chunked_page(
 
     # Build and write the index page with summary table
     link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "plugins"
-    index_content = _build_index_table(plugin_entries, link_prefix)
+    index_content = _build_index_table(plugin_entries, link_prefix, title=parent_title)
     formatted_index = format_markdown(index_content)
     write_page(output_path, formatted_index, front_matter=page_spec.get("front_matter"))
 
