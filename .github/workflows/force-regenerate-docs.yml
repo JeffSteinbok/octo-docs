@@ -38,7 +38,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/ .last_bundle_ref
+          git add docs/
+          git add .last_bundle_ref 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No docs changes to commit."
           else
