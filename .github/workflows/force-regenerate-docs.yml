@@ -8,6 +8,7 @@ permissions:
   pages: write
   id-token: write
   models: read
+  actions: write
 
 jobs:
   regenerate:

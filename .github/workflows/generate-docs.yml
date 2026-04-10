@@ -45,6 +45,7 @@ permissions:
   pages: write
   id-token: write
   models: read
+  actions: write
 
 jobs:
   generate-docs:
@@ -149,6 +150,6 @@ jobs:
 
       - name: Trigger deploy
         if: always() && steps.commit.outputs.has_changes == 'true'
-        run: gh workflow run jekyll-gh-pages.yml --ref main
+        run: gh workflow run jekyll-gh-pages.yml --ref main || echo "Deploy trigger failed; deploy manually if needed."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
