@@ -7,7 +7,7 @@ nav_order: 1
 
 🗄️ Config Backup
 
-Backs up OpenClaw config to Git with SHA-256 change detection. Ensures that configuration and agent workspace files are committed and pushed only when content changes are detected.
+Backs up OpenClaw config to Git with SHA-256 change detection. This plugin ensures that configuration files are only committed and pushed when their contents have changed.
 
 ### config_backup_run
 

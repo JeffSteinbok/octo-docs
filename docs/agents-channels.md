@@ -4,79 +4,75 @@ title: Agents & Channels
 nav_order: 2
 ---
 
-# Agents and Channels
+# agents-channels
 
 ## Overview
 
-This system is configured with multiple agents and channels to facilitate communication and automation. Agents are specialized entities with distinct roles and permissions, while channels connect users to these agents through supported platforms. The configuration defines how agents operate, their security models, and how channels bind users to agents.
+This page describes the agents and channels configured in the system. Agents are specialized entities with distinct roles and permissions, while channels provide the interface through which users interact with agents. The configuration determines how agents are secured, what capabilities they have, and how channels connect users to them.
+
+Agents are configured with specific permissions, exec settings, and bindings. Channels define the communication medium and policies for connecting users to agents.
 
 ## Key Concepts
 
-- **Agents**: Entities with specific roles, permissions, and access to tools or plugins.
+- **Agents**: Entities with unique roles, permissions, and access to tools/plugins.
 - **Channels**: Communication interfaces (such as Discord) that connect users to agents.
-- **Bindings**: Associations between channels and agents, determining which agents are accessible through each channel.
-- **Security Model**: Each agent has defined permissions and exec settings.
-- **Permissions and Exec Settings**: Control what actions agents can perform and which tools/plugins they can access.
+- **Permissions**: Define what actions agents can perform and which tools/plugins they can access.
+- **Exec Settings**: Control whether agents can execute commands or scripts.
+- **Bindings**: Specify which agents are accessible through each channel.
+- **Channel Policies**: Determine how users are paired with agents and which groups are allowed.
 
 ## How It Works
 
-1. Agents are configured with unique identifiers, names, emojis, permissions, exec settings, and access to tools/plugins.
-2. Channels are set up with specific types (e.g., Discord), enabled status, policies for direct messages and groups, and streaming modes.
-3. Channels bind users to agents, allowing communication and interaction according to channel policies.
-4. Permissions and exec settings for each agent determine their capabilities and security boundaries.
-5. The mail agent is currently unused and does not participate in channel bindings.
+1. Agents are configured with unique identifiers, names, emojis, permissions, exec settings, and tool/plugin access.
+2. Channels are set up with a specific type (e.g., Discord), enabled status, and policies for direct messaging and group access.
+3. Each channel binds to one or more agents, allowing users to interact with those agents through the channel.
+4. Channel policies control user pairing and group allowlisting, determining who can access which agents.
+5. Users connect to agents via channels, subject to the channel's policies and the agent's permissions.
 
 ## 🐙 Octo
 
-- **Agent ID**: main
 - **Security Model**:
   - Exec enabled: Not specified
   - Permissions: Not specified
-  - Tools/plugins access: Not specified
+  - Tools/plugins: Not specified
 
 ## 📧 mail-agent
 
-- **Agent ID**: mail
 - **Security Model**:
   - Exec enabled: Not specified
   - Permissions: Not specified
-  - Tools/plugins access: Not specified
-- **Note**: This agent is currently unused.
+  - Tools/plugins: Not specified
+- **Note**: The mail agent is currently unused.
 
 ## 🔑 Root
 
-- **Agent ID**: root
 - **Security Model**:
   - Exec enabled: Not specified
   - Permissions: Not specified
-  - Tools/plugins access: Not specified
+  - Tools/plugins: Not specified
 
 ## 👨‍👩‍👧‍👦 Family
 
-- **Agent ID**: family
 - **Security Model**:
   - Exec enabled: Not specified
   - Permissions: Not specified
-  - Tools/plugins access: Not specified
+  - Tools/plugins: Not specified
 
 ## 📷 HA Hooks
 
-- **Agent ID**: hass-hooks
 - **Security Model**:
   - Exec enabled: Not specified
   - Permissions: Not specified
-  - Tools/plugins access: Not specified
+  - Tools/plugins: Not specified
 
 ## Channels
 
 | Type     | Enabled | DM Policy | Group Policy | Streaming Mode | Bound Agents |
 |----------|---------|-----------|--------------|---------------|--------------|
-| Discord  | Yes     | pairing   | allowlist    | off           | All agents except mail-agent (mail-agent is unused) |
-| Telegram | No      | pairing   | allowlist    | off           | None (channel disabled) |
+| Discord  | Yes     | Pairing   | Allowlist    | Off           | All agents   |
+| Telegram | No      | Pairing   | Allowlist    | Off           | All agents   |
 
-- **Discord**: Enabled and connects users to agents with pairing DM policy and allowlist group policy. Streaming mode is off.
-- **Telegram**: Disabled and does not connect users to any agents.
+- **Discord**: Enabled. Connects users to all configured agents. Direct messaging uses pairing policy; group access is controlled by an allowlist. Streaming mode is off.
+- **Telegram**: Disabled. Would connect users to all agents with pairing and allowlist policies if enabled.
 
-## How Channels Connect Users to Agents
-
-Channels serve as the interface between users and agents. When a channel is enabled, it allows users to interact with agents according to the channel's policies. The Discord channel is active and binds users to all configured agents except the unused mail-agent. The Telegram channel is currently disabled and does not provide access to any agents.
+Channels connect users to agents according to the channel's policies, enabling communication and interaction with the agents.

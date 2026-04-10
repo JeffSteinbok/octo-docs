@@ -5,75 +5,83 @@ nav_order: 5
 has_children: true
 ---
 
-# Services
+# Services Overview
 
 ## Overview
 
-OpenClaw includes a set of background services that enable real-time email ingestion, rule-based processing, and provider-agnostic mail workflows. These services solve the problem of integrating multiple mail sources (such as FastMail and Outlook) into a unified pipeline, allowing deterministic rule matching, action execution, and notification delivery.
+OpenClaw uses a set of background services to provide real-time email ingestion, rule-based processing, and provider-agnostic mail workflows. These services enable automated actions such as notifications, package tracking, and calendar event updates across multiple mail sources and accounts.
 
-Each service is designed to be modular and extensible, supporting custom rules, actions, and multi-mailbox monitoring. The shared mail runtime ensures consistent processing regardless of the underlying provider, while specialized ingestion daemons handle real-time updates and source-specific features.
+Each service is designed to be modular and extensible, allowing external developers and self-hosters to configure mail pipelines, define custom rules, and integrate with notification channels.
 
 ## Key Concepts
 
-- **Provider-agnostic mail pipeline**: Unified processing for emails from different sources.
-- **Normalized envelope model**: Standardized message structure for rule matching and actions.
+- **Provider-agnostic mail pipeline**: Unified processing flow for emails from different sources.
+- **Normalized envelope model**: Standardized message shape for rule matching and actions.
 - **Rule engine**: Declarative JSON rules for filtering and triggering actions.
-- **Action registry**: Named handlers for notifications, tracking, and custom workflows.
+- **Action registry**: Named handlers for notifications, package tracking, and custom workflows.
 - **Multi-mailbox monitoring**: Support for personal and shared mailboxes.
-- **Real-time ingestion**: Immediate processing of new messages via streaming endpoints.
+- **Notification integration**: Configurable channels and targets for alerts.
 
 ## How It Works
 
-1. **Mail Source Connection**: Each ingestion daemon connects to its provider (e.g., FastMail's JMAP EventSource).
-2. **Envelope Normalization**: Incoming messages are transformed into a provider-agnostic envelope.
-3. **Rule Evaluation**: The shared runtime applies deterministic and legacy rules to each envelope.
-4. **Action Execution**: Matching rules trigger registered actions (e.g., notifications, package tracking).
-5. **Notification Delivery**: Actions send notifications to configured channels and targets.
-6. **Package Tracking**: Emails are scanned for tracking numbers and managed automatically.
-7. **Multi-account Support**: Rules and actions can be configured per account and mailbox.
+1. **Mail Source Connection**: Services connect to mail providers (e.g., FastMail via JMAP SSE) to receive new messages in real time.
+2. **Normalization**: Incoming messages are normalized into a provider-agnostic envelope format.
+3. **Rule Matching**: Each message is evaluated against configured rules, matching on sender, subject, body, and other fields.
+4. **Action Execution**: When a rule matches, corresponding actions (such as notifications or package tracking) are executed.
+5. **Notification Dispatch**: Alerts are sent to configured channels and targets.
+6. **Package Tracking**: Tracking numbers are extracted and managed automatically.
+7. **Multi-account Support**: Multiple accounts and mailboxes can be monitored simultaneously, with per-account rules and labels.
 
 ---
 
 ## 📧 FastMail SSE Service
 
-Real-time email ingestion daemon for FastMail accounts. Connects to FastMail's JMAP EventSource, normalizes each new message, applies deterministic and legacy rules, and executes Python actions. Designed for extensibility to future mail sources.
-
-**Key Features:**
-- Shared mail pipeline: `source -> envelope -> rules -> Python actions`
-- Per-account legacy rules: `notify_all`, `notify_meeting_updates`, `detect_tracking`
-- Deterministic mail rules: Match on source/account/sender/subject/body
-- Multi-mailbox monitoring: Personal and shared mailboxes
-- Package tracking detection: Automatic extraction and registration
-- Meeting updates: Notify on calendar responses
-- USPS digest processing: Download assets, scan vision, structured follow-up
-- Real-time updates via JMAP SSE
-- Spam/noreply sender filtering
-- Notification delivery via `openclaw message send`
-
-**Environment Variables**
-
-| Name                  | Required | Description                                               |
-|-----------------------|----------|-----------------------------------------------------------|
-| FASTMAIL_JMAP_TOKEN   | Yes      | JMAP authentication token (or put in `~/.fastmail_token`) |
-| FASTMAIL_INBOX_IDS    | Yes*     | Comma-separated mailbox IDs to monitor                    |
-| FASTMAIL_INBOX_ID     | Yes*     | Single mailbox ID (legacy, use INBOX_IDS for multiple)    |
-| NOTIFY_CHANNEL        | No       | Notification channel (default: `discord`)                 |
-| NOTIFY_TARGET         | Yes      | Target ID for the notification channel                    |
-
-*Either `FASTMAIL_INBOX_IDS` or `FASTMAIL_INBOX_ID` is required.
+Real-time email ingestion daemon. Connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and runs Python actions. The rule/action runtime is designed to be shared with future Outlook poll/webhook sources.
 
 [Read more →](services/fastmail-sse)
 
+### Key Features
+
+- Shared mail pipeline: `source -> envelope -> rules -> Python actions`
+- Per-account legacy rules: Preserve `notify_all`, `notify_meeting_updates`, and `detect_tracking`
+- Deterministic mail rules: Top-level `mail_rules` for source/account/sender/subject matching
+- Multi-mailbox monitoring: Monitor personal inbox + shared mailboxes simultaneously
+- Package tracking detection: Automatically detect and register tracking numbers
+- Meeting updates: Notify on calendar accept/decline/tentative responses
+- USPS digest processing: Download images/body HTML, scan vision, send direct alert, hand structured result to main for memory/follow-up
+- Connects to JMAP SSE endpoint for real-time state changes
+- Skips spam/noreply senders
+- Sends notifications via `openclaw message send --channel <NOTIFY_CHANNEL> --target <NOTIFY_TARGET>`
+
+### Environment Variables
+
+| Name                  | Required | Description                                                        |
+|-----------------------|----------|--------------------------------------------------------------------|
+| FASTMAIL_JMAP_TOKEN   | Yes      | JMAP authentication token (or put in `~/.fastmail_token`)          |
+| FASTMAIL_INBOX_IDS    | Yes*     | Comma-separated mailbox IDs to monitor (e.g., `inbox1,inbox2`)     |
+| FASTMAIL_INBOX_ID     | Yes*     | Single mailbox ID (legacy, use INBOX_IDS for multiple)             |
+| NOTIFY_CHANNEL        | No       | Notification channel (default: `discord`)                          |
+| NOTIFY_TARGET         | Yes      | Target ID for the notification channel                             |
+
+*Either `FASTMAIL_INBOX_IDS` or `FASTMAIL_INBOX_ID` is required.
+
 ---
 
-## 🔄 Shared Mail Runtime
+## 🛠️ Shared Mail Runtime
 
-Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Offers a normalized envelope model, rule matching engine, action registry, and dispatch loop. Any mail source (FastMail SSE, Outlook, etc.) can integrate via the provider protocol.
-
-**Key Features:**
-- MailEnvelope: Standardized message shape for rules and actions
-- Rule engine: Declarative JSON rules with match conditions (sender, subject, domain, regex, attachments, body)
-- Action registry: Named action handlers with automatic body fetching and attachment downloading
-- Provider protocol: `MailProviderClient` interface for source integration
+Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Provides a normalized envelope model, rule matching engine, action registry, and dispatch loop that any mail source (Fastmail SSE, Outlook, etc.) can plug into.
 
 [Read more →](services/shared_mail_runtime)
+
+### Key Features
+
+- MailEnvelope — Normalized message shape consumed by rules and actions
+- Rule engine — Declarative JSON rules with match conditions (sender, subject, domain, regex, attachments, body)
+- Action registry — Named action handlers with automatic body fetching and attachment downloading
+- Provider protocol — `MailProviderClient` interface that sources implement to plug into the pipeline
+
+### Environment Variables
+
+_No environment variables required._
+
+---

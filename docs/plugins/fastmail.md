@@ -60,46 +60,46 @@ Show recent emails from the Fastmail inbox, optionally filtered to unread only.
 
 Create a calendar meeting invite via CalDAV and send iMIP invitations to attendees.
 
-| Name       | Type   | Description                                     |
-|------------|--------|-------------------------------------------------|
-| to         | string | Attendee email address(es)                      |
-| cc         | array  | CC recipient email address(es)                  |
-| subject    | string | Meeting title                                   |
+| Name       | Type   | Description                                    |
+|------------|--------|------------------------------------------------|
+| to         | string | Attendee email address(es)                     |
+| cc         | array  | CC recipient email address(es)                 |
+| subject    | string | Meeting title                                  |
 | start      | string | Start datetime in ISO format (e.g. 2026-03-15T14:00) |
-| duration   | string | Duration: '1h', '30m', '1.5h' (default: 1h)    |
-| location   | string | Meeting location                                |
-| description| string | Meeting description / agenda                    |
-| timezone   | string | IANA timezone (default: America/Los_Angeles)    |
-| signature  | string | Signature block for the invite email            |
+| duration   | string | Duration: '1h', '30m', '1.5h' (default: 1h)   |
+| location   | string | Meeting location                               |
+| description| string | Meeting description / agenda                   |
+| timezone   | string | IANA timezone (default: America/Los_Angeles)   |
+| signature  | string | Signature block for the invite email           |
 
 ### fastmail_update_event
 
 Find a calendar event by UID or text search and update its title, time, location, attendees, or status.
 
-| Name           | Type    | Description                                        |
-|----------------|---------|----------------------------------------------------|
-| uid            | string  | Exact event UID to target                          |
-| find           | string  | Free-text search across event title/description    |
-| new_title      | string  | Replace the event title                            |
-| new_start      | string  | New start time (ISO format)                        |
-| new_duration   | string  | New duration (e.g. '1h', '30m')                    |
-| new_location   | string  | Replace location                                   |
-| new_description| string  | Replace description/notes                          |
+| Name           | Type    | Description                                    |
+|----------------|---------|------------------------------------------------|
+| uid            | string  | Exact event UID to target                      |
+| find           | string  | Free-text search across event title/description|
+| new_title      | string  | Replace the event title                        |
+| new_start      | string  | New start time (ISO format)                    |
+| new_duration   | string  | New duration (e.g. '1h', '30m')                |
+| new_location   | string  | Replace location                               |
+| new_description| string  | Replace description/notes                      |
 | timezone       | string  | Timezone for --new-start (default: America/Los_Angeles) |
-| status         | string  | Update event status ('confirmed', 'tentative', 'cancelled') |
-| add_attendee   | array   | Email(s) to add as attendees                       |
-| remove_attendee| array   | Email(s) to remove from attendees                  |
-| no_notify      | boolean | Skip iMIP update notifications                     |
-| force          | boolean | Update all matching events when multiple found     |
+| status         | string  | Update event status (`confirmed`, `tentative`, `cancelled`) |
+| add_attendee   | array   | Email(s) to add as attendees                   |
+| remove_attendee| array   | Email(s) to remove from attendees              |
+| no_notify      | boolean | Skip iMIP update notifications                 |
+| force          | boolean | Update all matching events when multiple found |
 
 ### fastmail_query_events
 
 Query calendar events by date range, text, attendee email, or UID. Shows attendee RSVP status.
 
-| Name    | Type   | Description                                             |
-|---------|--------|---------------------------------------------------------|
+| Name    | Type   | Description                                    |
+|---------|--------|------------------------------------------------|
 | after   | string | Only events starting at or after this date (ISO, e.g. 2026-03-01) |
-| before  | string | Only events starting before this date (ISO, e.g. 2026-04-01)      |
-| text    | string | Filter by text match on title/description               |
-| attendee| string | Filter to events including this attendee email          |
-| uid     | string | Return the single event with this exact UID             |
+| before  | string | Only events starting before this date (ISO, e.g. 2026-04-01)     |
+| text    | string | Filter by text match on title/description       |
+| attendee| string | Filter to events including this attendee email  |
+| uid     | string | Return the single event with this exact UID     |

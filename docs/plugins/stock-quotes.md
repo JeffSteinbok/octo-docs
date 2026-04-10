@@ -13,9 +13,9 @@ Fetch real-time stock, ETF, and mutual fund prices server-side.
 
 Get current stock price, change, and percent change for a single ticker symbol. Works for stocks, ETFs, and mutual funds (e.g., MSFT, QQQ, FXAIX). Uses Yahoo Finance by default (no auth required). If FINNHUB_API_KEY is set, uses Finnhub API as primary source with Yahoo Finance fallback.
 
-| Name   | Type   | Description                                             |
-|--------|--------|---------------------------------------------------------|
-| symbol | string | Stock ticker symbol (e.g., AAPL, GOOGL, QQQ, FXAIX)     |
+| Name   | Type   | Description                                                |
+|--------|--------|------------------------------------------------------------|
+| symbol | string | Stock ticker symbol (e.g., AAPL, GOOGL, QQQ, FXAIX)        |
 
 ### stock_quotes
 
