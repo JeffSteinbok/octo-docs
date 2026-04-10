@@ -39,7 +39,16 @@
     "template": {
       "type": "string",
       "description": "Name of the prompt template to use",
-      "enum": ["overview", "api_reference", "release_notes"]
+      "enum": ["overview", "api_reference", "release_notes", "chunk_section"]
+    },
+    "strategy": {
+      "type": "string",
+      "description": "Generation strategy: default sends all sources in one prompt; chunked splits glob sources into individual LLM calls",
+      "enum": ["default", "chunked"]
+    },
+    "chunk_source": {
+      "type": "string",
+      "description": "Glob pattern identifying which source to chunk on (required when strategy is chunked)"
     },
     "front_matter": {
       "type": "object",

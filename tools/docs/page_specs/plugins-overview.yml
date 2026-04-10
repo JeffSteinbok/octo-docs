@@ -12,6 +12,8 @@ sources:
   - path: plugins/*.json
 
 template: overview
+strategy: chunked
+chunk_source: "plugins/*.json"
 
 instructions:
   audience: external developers

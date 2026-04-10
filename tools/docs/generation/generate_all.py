@@ -12,6 +12,7 @@ Usage:
 import argparse
 import hashlib
 import logging
+import re
 import sys
 from pathlib import Path
 
@@ -94,12 +95,127 @@ def _write_last_ref(ref: str) -> None:
     LAST_REF_PATH.write_text(ref + "\n", encoding="utf-8")
 
 
+def _slugify(text: str) -> str:
+    """Convert text to a lowercase-kebab-case anchor ID (no emojis/special chars)."""
+    text = re.sub(r'[^\w\s-]', '', text)  # strip non-word chars (emojis, punctuation)
+    return re.sub(r'[\s_]+', '-', text.strip().lower())
+
+
+def _extract_heading_emoji(markdown: str) -> str | None:
+    """Extract the leading emoji from the first H2 heading, if present."""
+    match = re.search(r'^##\s+(\S+)\s+', markdown, re.MULTILINE)
+    if match:
+        token = match.group(1)
+        if not token.isascii():
+            return token
+    return None
+
+
+def _process_chunked_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Generate a page by processing each chunk source individually.
+
+    Splits the glob source (chunk_source) into separate LLM calls so each
+    stays within token limits.  The bullet-list index is built deterministically
+    in Python from the generated section headings.
+    """
+    page_id = page_spec["id"]
+    output_path = REPO_ROOT / page_spec["output_path"]
+    chunk_pattern = page_spec["chunk_source"]
+    instructions = page_spec.get("instructions", {})
+
+    logger.info("Processing chunked page: %s -> %s", page_id, page_spec["output_path"])
+
+    chunk_paths = sorted(bundle.glob(chunk_pattern))
+    logger.info("Found %d chunks for pattern: %s", len(chunk_paths), chunk_pattern)
+
+    if dry_run:
+        logger.info("[dry-run] Would generate chunked page: %s (%d chunks)", page_id, len(chunk_paths))
+        return page_spec["output_path"]
+
+    # Generate each chunk section via its own LLM call
+    section_data = []
+    for chunk_path in chunk_paths:
+        # Extract plugin name from JSON for deterministic anchoring
+        try:
+            plugin_json = bundle.load_json(chunk_path)
+            plugin_name = (
+                plugin_json.get("name")
+                or plugin_json.get("plugin_name")
+                or Path(chunk_path).stem.replace("-", " ").title()
+            )
+            plugin_desc = plugin_json.get("description", "")
+        except Exception:
+            plugin_name = Path(chunk_path).stem.replace("-", " ").title()
+            plugin_desc = ""
+
+        anchor = _slugify(plugin_name)
+
+        chunk_spec = {
+            "id": page_id,
+            "output_path": page_spec["output_path"],
+            "template": "chunk_section",
+            "sources": [{"path": chunk_path}],
+            "instructions": {
+                "audience": instructions.get("audience", "developers"),
+                "include": [
+                    f"Generate ONLY the H2 section for the '{plugin_name}' plugin",
+                    "Use a fitting emoji in the H2 heading",
+                    "List every tool as an H4 heading with the tool name",
+                    "Under each tool H4, include the tool's description and a "
+                    "parameter table (name, type, description) if available",
+                ],
+                "exclude": instructions.get("exclude", []),
+            },
+        }
+        selected = build_source_material(bundle, chunk_spec)
+        prompt = build_prompt(chunk_spec, selected)
+        content = generate_page(prompt)
+
+        emoji = _extract_heading_emoji(content)
+
+        section_data.append({
+            "name": plugin_name,
+            "description": plugin_desc,
+            "anchor": anchor,
+            "emoji": emoji,
+            "content": content.strip(),
+        })
+        logger.info("Generated chunk: %s (%s)", chunk_path, plugin_name)
+
+    # Build deterministic index bullet list
+    index_lines = []
+    for s in section_data:
+        prefix = f"{s['emoji']} " if s["emoji"] else ""
+        desc = f" — {s['description']}" if s["description"] else ""
+        index_lines.append(f"- {prefix}[{s['name']}](#{s['anchor']}){desc}")
+    index_block = "\n".join(index_lines)
+
+    # Prepend deterministic anchor tags and assemble final page
+    parts = [index_block, ""]
+    for s in section_data:
+        parts.append(f'<a id="{s["anchor"]}"></a>\n\n{s["content"]}')
+
+    combined = "\n\n".join(parts)
+    formatted = format_markdown(combined)
+    front_matter = page_spec.get("front_matter")
+    write_page(output_path, formatted, front_matter=front_matter)
+
+    logger.info("Written chunked page: %s (%d sections)", output_path, len(section_data))
+    return page_spec["output_path"]
+
+
 def process_page(
     page_spec: dict,
     bundle: BundleLoader,
     dry_run: bool = False,
 ) -> str:
     """Process a single page: select sources, build prompt, call LLM, write."""
+    if page_spec.get("strategy") == "chunked":
+        return _process_chunked_page(page_spec, bundle, dry_run)
     page_id = page_spec["id"]
     output_path = REPO_ROOT / page_spec["output_path"]
 
