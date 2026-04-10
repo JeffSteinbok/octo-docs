@@ -46,11 +46,3 @@ jobs:
             git commit -m "Force regenerate all documentation"
             git push origin main
           fi
-
-  deploy:
-    needs: regenerate
-    uses: ./.github/workflows/jekyll-gh-pages.yml
-    permissions:
-      contents: read
-      pages: write
-      id-token: write

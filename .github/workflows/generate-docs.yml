@@ -128,6 +128,8 @@ jobs:
 
       # Always attempt to commit, even if generation had partial failures,
       # so that successfully generated pages are not lost.
+      # NOTE: the push to main triggers jekyll-gh-pages.yml via its push
+      # trigger (paths: docs/**) which correctly checks out the new commit.
       - name: Commit to main
         if: always() && steps.inputs.conclusion == 'success'
         id: commit
@@ -144,12 +146,3 @@ jobs:
             git push origin main
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
-
-  deploy:
-    needs: generate-docs
-    if: always() && needs.generate-docs.result != 'cancelled'
-    uses: ./.github/workflows/jekyll-gh-pages.yml
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
