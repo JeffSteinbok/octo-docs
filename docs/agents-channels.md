@@ -4,67 +4,68 @@ title: Agents & Channels
 nav_order: 2
 ---
 
-# Agents and Channels
+# agents-channels
 
 ## Overview
 
-This system connects users to agents through configurable channels. Agents are specialized entities with distinct permissions and capabilities, while channels serve as the interface between users and agents. The configuration determines which agents are available, their security models, and how users interact with them via channels.
+This page describes the agents and channels configured in the system. Agents are specialized entities with distinct roles, permissions, and security models. Channels serve as communication pathways, connecting users to agents and facilitating interactions. The configuration determines which agents are available, their permissions, and how users can access them through various channels.
 
 ## Key Concepts
 
-- **Agents:** Entities that perform tasks, each with specific permissions and access controls.
-- **Channels:** Communication interfaces (such as Discord) that connect users to agents.
-- **Permissions:** Define what actions agents can perform, including access to plugins and exec capabilities.
-- **Bindings:** Channels are configured to connect users to specific agents.
-- **Security Model:** Each agent has defined permissions and exec settings.
+- **Agents**: Entities with specific roles, permissions, and access to tools or plugins.
+- **Channels**: Communication interfaces (such as Discord) that connect users to agents.
+- **Agent Security Model**: Defines exec settings, permissions, and accessible tools/plugins for each agent.
+- **Bindings**: Associations between channels and agents, determining which agents are accessible via each channel.
+- **Channel Policies**: Rules governing direct messages and group interactions.
 
 ## How It Works
 
-1. **Agent Configuration:** Agents are defined with unique IDs, names, and emojis. Each agent is assigned a security model specifying permissions, exec settings, and accessible tools or plugins.
-2. **Channel Setup:** Channels are configured by type (e.g., Discord), enabled status, and policies for direct messages and group interactions.
-3. **Binding Agents to Channels:** Channels connect users to agents based on the configuration, allowing interactions according to the channel's policies.
-4. **User Interaction:** Users communicate with agents through enabled channels. The channel's policies determine how users are paired with agents and which agents are accessible in group contexts.
+1. Agents are configured with unique identifiers, names, emojis, and security models, including exec settings and permissions.
+2. Channels are set up with types (e.g., Discord), enabled status, and policies for direct messages and group interactions.
+3. Each channel binds to specific agents, allowing users to interact with those agents through the channel.
+4. Channel policies define how users can connect to agents, including pairing for direct messages and allowlist for group access.
+5. Users communicate with agents via enabled channels, following the channel's policies and the agent's permissions.
 
 ## 🐙 Octo
 
-- **Security Model:** Exec is enabled. Octo has permissions to access tools and plugins as configured.
-- **Permissions:** Octo can perform actions as allowed by its configuration.
-- **Channel Access:** Available through enabled channels.
+- **Security Model**: Exec is enabled. Octo has permissions to access tools and plugins as configured.
+- **Permissions**: Full access to tools/plugins as defined in the system configuration.
+- **Bindings**: Available through enabled channels.
 
 ## 📧 mail-agent
 
-- **Security Model:** Currently unused.
-- **Permissions:** Not active in any channel.
-- **Channel Access:** Not connected to any channel.
+- **Security Model**: Currently unused.
+- **Permissions**: Not active; no permissions granted.
+- **Bindings**: Not bound to any channel.
 
 ## 🔑 Root
 
-- **Security Model:** Exec is enabled. Root has elevated permissions and access to tools/plugins.
-- **Permissions:** Root can perform privileged actions as allowed by its configuration.
-- **Channel Access:** Available through enabled channels.
+- **Security Model**: Exec is enabled. Root has elevated permissions.
+- **Permissions**: Access to tools/plugins with higher privileges.
+- **Bindings**: Available through enabled channels.
 
 ## 👨‍👩‍👧‍👦 Family
 
-- **Security Model:** Exec is enabled. Family agent has permissions to access tools/plugins.
-- **Permissions:** Family can perform actions as allowed by its configuration.
-- **Channel Access:** Available through enabled channels.
+- **Security Model**: Exec is enabled. Family agent has permissions suitable for family-related tasks.
+- **Permissions**: Access to tools/plugins as configured for family use.
+- **Bindings**: Available through enabled channels.
 
 ## 📷 HA Hooks
 
-- **Security Model:** Exec is enabled. HA Hooks agent has permissions to access tools/plugins.
-- **Permissions:** HA Hooks can perform actions as allowed by its configuration.
-- **Channel Access:** Available through enabled channels.
+- **Security Model**: Exec is enabled. HA Hooks agent has permissions for home automation hooks.
+- **Permissions**: Access to tools/plugins related to home automation.
+- **Bindings**: Available through enabled channels.
 
 ## Channels
 
-| Channel Type | Enabled | DM Policy  | Group Policy | Streaming Mode | Bound Agents           |
-|--------------|---------|------------|--------------|---------------|------------------------|
-| Discord      | Yes     | Pairing    | Allowlist    | Off           | Octo, Root, Family, HA Hooks |
-| Telegram     | No      | Pairing    | Allowlist    | Off           | Octo, Root, Family, HA Hooks |
+| Channel Type | Enabled | DM Policy | Group Policy | Streaming Mode | Bound Agents |
+|--------------|---------|-----------|--------------|---------------|--------------|
+| Discord      | Yes     | Pairing   | Allowlist    | Off           | Octo, Root, Family, HA Hooks |
+| Telegram     | No      | Pairing   | Allowlist    | Off           | None (disabled) |
 
-- **Discord Channel:** Enabled. Connects users to Octo, Root, Family, and HA Hooks agents. Direct messages use a pairing policy; group interactions use an allowlist policy. Streaming is off.
-- **Telegram Channel:** Disabled. Not currently connecting users to any agents.
+- **Discord**: Connects users to Octo, Root, Family, and HA Hooks agents. Direct messages require pairing; group access is managed by an allowlist. Streaming is disabled.
+- **Telegram**: Currently disabled; does not connect users to any agents.
 
 ## How Channels Connect Users to Agents
 
-Channels serve as the bridge between users and agents. When a channel is enabled, users can interact with agents according to the channel's policies. Direct messages are managed by a pairing policy, while group interactions are governed by an allowlist. Only agents bound to enabled channels are accessible to users.
+Channels act as bridges between users and agents. When a channel is enabled, users can interact with the agents bound to that channel, subject to the channel's policies for direct messages and group interactions. Disabled channels do not provide access to any agents.
