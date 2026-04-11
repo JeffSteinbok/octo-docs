@@ -80,6 +80,9 @@ SERVICE_EMOJIS = {
     "fastmail-sse": "📡",
     "shared_mail_runtime": "🔄",
 }
+HOOK_EMOJIS = {
+    "hass-hooks": "🪝",
+}
 SKILL_EMOJIS = {
     "home-music": "🎵",
 }
@@ -225,6 +228,45 @@ def _plugin_emoji(plugin_id: str) -> str:
     return PLUGIN_EMOJIS.get(plugin_id, "")
 
 
+def _hook_id(hook_json: dict, chunk_path: str) -> str:
+    """Return the stable hook identifier from bundle data or path."""
+    hook_id = hook_json.get("agent") or hook_json.get("name")
+    if isinstance(hook_id, str) and hook_id.strip():
+        return hook_id.strip()
+    return Path(chunk_path).stem
+
+
+def _hook_name(hook_json: dict, chunk_path: str) -> str:
+    """Return a human-friendly hook name for public docs."""
+    hook_id = _hook_id(hook_json, chunk_path)
+    explicit_name = hook_json.get("title")
+    if isinstance(explicit_name, str) and explicit_name.strip():
+        return explicit_name.strip()
+    return hook_id.replace("-", " ").title()
+
+
+def _hook_emoji(hook_id: str) -> str:
+    """Return a stable emoji for hook pages."""
+    return HOOK_EMOJIS.get(hook_id, "🪝")
+
+
+def _skill_id(skill_json: dict, chunk_path: str) -> str:
+    """Return the stable skill identifier from bundle data or path."""
+    skill_id = skill_json.get("name")
+    if isinstance(skill_id, str) and skill_id.strip():
+        return skill_id.strip()
+    return Path(chunk_path).stem
+
+
+def _skill_name(skill_json: dict, chunk_path: str) -> str:
+    """Return a human-friendly skill name for public docs."""
+    skill_id = _skill_id(skill_json, chunk_path)
+    explicit_title = skill_json.get("title")
+    if isinstance(explicit_title, str) and explicit_title.strip():
+        return explicit_title.strip()
+    return skill_id.replace("-", " ").title()
+
+
 def _stringify_param_type(param_type: object) -> str:
     """Render a schema type value as human-readable text."""
     if isinstance(param_type, list):
@@ -345,6 +387,31 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str) -> tuple[str
         "emoji": emoji,
         "description": summary,
         "tool_count": _count_tools(plugin_json),
+    }
+
+
+def _render_hook_page_content(hook_json: dict, chunk_path: str) -> tuple[str, dict]:
+    """Render a hook child page deterministically from bundle JSON."""
+    hook_id = _hook_id(hook_json, chunk_path)
+    hook_name = _hook_name(hook_json, chunk_path)
+    emoji = _hook_emoji(hook_id)
+    summary = _sentence_case_lead(hook_json.get("summary", ""))
+    sections = hook_json.get("sections", {})
+
+    lines = [f"# {emoji} {hook_name}" if emoji else f"# {hook_name}"]
+    if summary:
+        lines.extend(["", summary])
+
+    for title, body in sections.items():
+        lines.extend(["", *_render_markdown_section(title, body)])
+
+    return "\n".join(lines).strip() + "\n", {
+        "id": hook_id,
+        "slug": hook_id,
+        "name": hook_name,
+        "emoji": emoji,
+        "description": summary,
+        "section_count": len(sections) if isinstance(sections, dict) else 0,
     }
 
 
@@ -526,29 +593,64 @@ def _process_hooks_page(
     bundle: BundleLoader,
     dry_run: bool = False,
 ) -> str:
-    """Render the Home Assistant hooks page from the hass-hooks bundle artifact."""
+    """Render hook overview and child pages directly from structured bundle data."""
+    page_id = page_spec["id"]
     output_path = REPO_ROOT / page_spec["output_path"]
-    hooks = bundle.load_json("agents/hass-hooks.json")
-    summary = _sentence_case_lead(hooks.get("summary", ""))
-    sections = hooks.get("sections", {})
+    chunk_pattern = page_spec["chunk_source"]
+    chunk_output_dir = page_spec.get("chunk_output_dir")
+    parent_title = page_spec.get("front_matter", {}).get("title", "")
+
+    logger.info("Processing bundle-rendered hooks page: %s -> %s", page_id, page_spec["output_path"])
+
+    chunk_paths = sorted(bundle.glob(chunk_pattern))
+    logger.info("Found %d hook chunks for pattern: %s", len(chunk_paths), chunk_pattern)
+
+    if dry_run:
+        logger.info("[dry-run] Would generate bundle-rendered page: %s (%d chunks)", page_id, len(chunk_paths))
+        return page_spec["output_path"]
+
+    child_dir = None
+    if chunk_output_dir:
+        child_dir = REPO_ROOT / chunk_output_dir
+        child_dir.mkdir(parents=True, exist_ok=True)
+
+    hook_entries = []
+    for nav_index, chunk_path in enumerate(chunk_paths, start=1):
+        hook_json = bundle.load_json(chunk_path)
+        page_content, metadata = _render_hook_page_content(hook_json, chunk_path)
+        hook_entries.append(metadata)
+
+        if child_dir:
+            child_front_matter = {
+                "layout": "default",
+                "title": metadata["name"],
+                "parent": parent_title,
+                "nav_order": nav_index,
+            }
+            child_path = child_dir / f"{metadata['id']}.md"
+            write_page(child_path, format_markdown(page_content), front_matter=child_front_matter)
+            logger.info("Written hook child page: %s", child_path)
 
     lines = [
         "# Hooks",
         "",
         "Hooks are event-driven entry points that react to real-world signals instead of running on a timer.",
         "",
-        summary,
+        f"Octo currently publishes **{len(hook_entries)} hook{'s' if len(hook_entries) != 1 else ''}** in the public bundle.",
+        "",
+        "| | Hook | Description | Sections |",
+        "|---|------|-------------|:--------:|",
     ]
-
-    for title, body in sections.items():
-        lines.extend(["", *_render_markdown_section(title, body)])
+    link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "hooks"
+    for entry in hook_entries:
+        link = f"[{entry['name']}]({link_prefix}/{entry['slug']})"
+        lines.append(
+            f"| {entry.get('emoji') or '🪝'} | {link} | {entry.get('description') or ''} | {entry.get('section_count', 0)} |"
+        )
 
     content = format_markdown("\n".join(lines))
-    if dry_run:
-        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
-        return page_spec["output_path"]
     write_page(output_path, content, front_matter=page_spec.get("front_matter"))
-    logger.info("Written: %s", output_path)
+    logger.info("Written hook index page: %s (%d hooks)", output_path, len(hook_entries))
     return page_spec["output_path"]
 
 
@@ -641,9 +743,61 @@ def _process_skills_page(
     bundle: BundleLoader,
     dry_run: bool = False,
 ) -> str:
-    """Render the skills overview page from skills.json."""
+    """Render skill overview and child pages directly from structured bundle data."""
+    page_id = page_spec["id"]
     output_path = REPO_ROOT / page_spec["output_path"]
-    skills = bundle.load_json("skills.json").get("skills", [])
+    chunk_pattern = page_spec["chunk_source"]
+    chunk_output_dir = page_spec.get("chunk_output_dir")
+    parent_title = page_spec.get("front_matter", {}).get("title", "")
+
+    logger.info("Processing bundle-rendered skills page: %s -> %s", page_id, page_spec["output_path"])
+
+    chunk_paths = sorted(bundle.glob(chunk_pattern))
+    logger.info("Found %d skill chunks for pattern: %s", len(chunk_paths), chunk_pattern)
+
+    if dry_run:
+        logger.info("[dry-run] Would generate bundle-rendered page: %s (%d chunks)", page_id, len(chunk_paths))
+        return page_spec["output_path"]
+
+    child_dir = None
+    if chunk_output_dir:
+        child_dir = REPO_ROOT / chunk_output_dir
+        child_dir.mkdir(parents=True, exist_ok=True)
+
+    skill_entries = []
+    for nav_index, chunk_path in enumerate(chunk_paths, start=1):
+        skill_json = bundle.load_json(chunk_path)
+        skill_id = _skill_id(skill_json, chunk_path)
+        skill_name = _skill_name(skill_json, chunk_path)
+        emoji = SKILL_EMOJIS.get(skill_id, "🧠")
+        description = skill_json.get("description", "")
+        description = description.strip() if isinstance(description, str) else ""
+        agent = skill_json.get("agent", "unknown")
+        topics = _extract_skill_topics(skill_json.get("content", ""))
+        content = skill_json.get("content", "").strip()
+        formatted = format_markdown(content if isinstance(content, str) and content.strip() else f"# {skill_name}\n")
+        formatted = _replace_h1(formatted, emoji, skill_name)
+
+        if child_dir:
+            child_front_matter = {
+                "layout": "default",
+                "title": skill_name,
+                "parent": parent_title,
+                "nav_order": nav_index,
+            }
+            child_path = child_dir / f"{skill_id}.md"
+            write_page(child_path, formatted, front_matter=child_front_matter)
+            logger.info("Written skill child page: %s", child_path)
+
+        skill_entries.append({
+            "id": skill_id,
+            "slug": skill_id,
+            "name": skill_name,
+            "emoji": emoji,
+            "description": description,
+            "agent": agent,
+            "topics": topics,
+        })
 
     lines = [
         "# Skills",
@@ -652,30 +806,17 @@ def _process_skills_page(
         "",
         "Unlike plugins, skills do not execute code. They give agents shared instructions for how to use tools and interpret a problem domain.",
         "",
-        "## Skill Summary",
+        f"Octo currently publishes **{len(skill_entries)} skill{'s' if len(skill_entries) != 1 else ''}** in the public bundle.",
         "",
-        "| Skill | Used by | Description |",
-        "|-------|---------|-------------|",
+        "| | Skill | Used by | Description |",
+        "|---|-------|---------|-------------|",
     ]
-    for skill in skills:
+    link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "skills"
+    for entry in skill_entries:
+        link = f"[{entry['name']}]({link_prefix}/{entry['slug']})"
         lines.append(
-            f"| {SKILL_EMOJIS.get(skill.get('name', ''), '🧠')} {skill.get('name', '')} | "
-            f"`{_markdown_cell(skill.get('agent', 'unknown'))}` | "
-            f"{_markdown_cell(skill.get('description', ''))} |"
+            f"| {entry.get('emoji') or '🧠'} | {link} | `{_markdown_cell(entry.get('agent', 'unknown'))}` | {entry.get('description') or ''} |"
         )
-
-    for skill in skills:
-        topics = _extract_skill_topics(skill.get("content", ""))
-        lines.extend([
-            "",
-            f"## {SKILL_EMOJIS.get(skill.get('name', ''), '🧠')} {skill.get('name', '')}",
-            "",
-            skill.get("description", ""),
-            "",
-            f"- **Used by agent:** `{skill.get('agent', 'unknown')}`",
-        ])
-        if topics:
-            lines.append(f"- **Published sections:** {', '.join(f'`{topic}`' for topic in topics)}")
 
     lines.extend([
         "",
@@ -687,11 +828,8 @@ def _process_skills_page(
     ])
 
     content = format_markdown("\n".join(lines))
-    if dry_run:
-        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
-        return page_spec["output_path"]
     write_page(output_path, content, front_matter=page_spec.get("front_matter"))
-    logger.info("Written: %s", output_path)
+    logger.info("Written skills index page: %s (%d skills)", output_path, len(skill_entries))
     return page_spec["output_path"]
 
 
@@ -765,6 +903,23 @@ def _ensure_h1(content: str, emoji: str, name: str) -> str:
             lines[i] = heading
             return "\n".join(lines)
     return content
+
+
+def _replace_h1(content: str, emoji: str, name: str) -> str:
+    """Replace the first H1 with a deterministic heading, or insert one if missing."""
+    heading = f"# {emoji} {name}" if emoji else f"# {name}"
+    lines = content.split("\n")
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("# "):
+            lines[i] = heading
+            return "\n".join(lines)
+        lines.insert(i, heading)
+        lines.insert(i + 1, "")
+        return "\n".join(lines)
+    return heading + "\n"
 
 
 def _build_index_table(entries: list, link_prefix: str = "plugins",

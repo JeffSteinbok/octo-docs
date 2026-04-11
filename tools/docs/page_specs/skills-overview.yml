@@ -6,12 +6,16 @@ front_matter:
   layout: default
   title: Skills
   nav_order: 4
+  has_children: true
 
 sources:
   - path: skills.json
+  - path: skills/*.json
 
 template: overview
 strategy: bundle-skills
+chunk_source: "skills/*.json"
+chunk_output_dir: docs/skills
 
 instructions:
   audience: external developers

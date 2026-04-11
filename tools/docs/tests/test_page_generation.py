@@ -271,24 +271,95 @@ def test_process_page_bundle_hooks_renders_without_llm(tmp_path, monkeypatch):
         "output_path": "docs/hooks.md",
         "template": "overview",
         "strategy": "bundle-hooks",
+        "chunk_source": "agents/*hooks*.json",
+        "chunk_output_dir": "docs/hooks",
         "front_matter": {
             "layout": "default",
             "title": "Hooks",
             "nav_order": 6,
+            "has_children": True,
         },
         "sources": [
-            {"path": "agents/hass-hooks.json"},
+            {"path": "agents/*hooks*.json"},
         ],
     }
 
     output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
 
     assert output == "docs/hooks.md"
-    content = (repo_root / "docs/hooks.md").read_text(encoding="utf-8")
-    assert "# Hooks" in content
-    assert "React to Home Assistant webhooks." in content
-    assert "## What arrives" in content
-    assert "## Step 1" in content
+    index_content = (repo_root / "docs/hooks.md").read_text(encoding="utf-8")
+    child_content = (repo_root / "docs/hooks/hass-hooks.md").read_text(encoding="utf-8")
+    assert "# Hooks" in index_content
+    assert "[Hass Hooks](hooks/hass-hooks)" in index_content
+    assert "# 🪝 Hass Hooks" in child_content
+    assert "React to Home Assistant webhooks." in child_content
+    assert "## What arrives" in child_content
+    assert "## Step 1" in child_content
+
+
+def test_process_page_bundle_skills_renders_without_llm(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    skills_dir = bundle_root / "skills"
+    skills_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["skills/home-music.json"]}),
+        encoding="utf-8",
+    )
+    (skills_dir / "home-music.json").write_text(
+        json.dumps(
+            {
+                "name": "home-music",
+                "description": "Control music around the house.",
+                "content": "# Home Music Skill\n\nControl music.\n\n## Rules\n\n- Be careful.\n",
+                "agent": "main",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "skills-overview",
+        "output_path": "docs/skills.md",
+        "template": "overview",
+        "strategy": "bundle-skills",
+        "chunk_source": "skills/*.json",
+        "chunk_output_dir": "docs/skills",
+        "front_matter": {
+            "layout": "default",
+            "title": "Skills",
+            "nav_order": 4,
+            "has_children": True,
+        },
+        "sources": [
+            {"path": "skills.json"},
+            {"path": "skills/*.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/skills.md"
+    index_content = (repo_root / "docs/skills.md").read_text(encoding="utf-8")
+    child_content = (repo_root / "docs/skills/home-music.md").read_text(encoding="utf-8")
+    assert "# Skills" in index_content
+    assert "[Home Music](skills/home-music)" in index_content
+    assert "`main`" in index_content
+    assert "# 🎵 Home Music" in child_content
+    assert "## Rules" in child_content
 
 
 def test_all_current_page_specs_use_bundle_strategies():
