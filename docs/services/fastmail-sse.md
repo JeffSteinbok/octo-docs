@@ -31,7 +31,7 @@ flowchart TD
         stream["Watch SSE state changes"]
         fetch["Fetch new message bodies + metadata"]
         env["Normalize to MailEnvelope"]
-        match["Evaluate ordered mail_rules"]
+        match["Phase 1: evaluate ordered mail_rules"]
         dispatch["Dispatch ActionResult(s)"]
     end
 
@@ -42,8 +42,8 @@ flowchart TD
     end
 
     subgraph mailagent["mail agent workspace"]
-        vision["Vision analysis of USPS scan images"]
-        rules["USPS rules/config/state/cache"]
+        vision["Phase 2A: USPS vision analysis"]
+        rules["Phase 2B: USPS rules/config/state/cache"]
         uspsnotify["Direct USPS notification routing"]
     end
 
@@ -76,6 +76,11 @@ flowchart TD
 - `mail` agent: owns USPS vision work plus USPS-specific rules/config/state
 - `main` agent: owns durable memory and any non-notification follow-up after USPS analysis
 - normal `notify_email` and `detect_tracking` actions run entirely inside the FastMail SSE service process
+
+The USPS path has two rule layers:
+
+1. **FastMail `mail_rules`** decide whether an email should invoke `process_usps_digest`
+2. **USPS `rules.json`** classifies each analyzed mailpiece after vision
 
 ## Configuration
 
@@ -121,7 +126,7 @@ This service registers the following actions for use in `mail_rules`:
 
 ### FastMail-specific USPS example
 
-For the USPS internals, agent boundaries, and companion plugin/runtime architecture, see [`services/shared_mail_runtime/usps/README.md`](../shared_mail_runtime/usps/README.md).
+For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [`services/shared_mail_runtime/usps/README.md`](../shared_mail_runtime/usps/README.md).
 
 Use a second rule if you want to re-process an older USPS digest by forwarding it to yourself. Forwarded mail usually changes the sender away from `usps.com`, so it needs its own `sender_email`/`body_contains` match.
 
