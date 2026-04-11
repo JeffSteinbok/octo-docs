@@ -164,7 +164,7 @@ jobs:
       needs.prepare.outputs.run_deploy == 'true' &&
       (
         needs.prepare.outputs.run_generate != 'true' ||
-        (needs.generate-docs.result == 'success' && needs.generate-docs.outputs.has_changes == 'true')
+        needs.generate-docs.result == 'success'
       )
     uses: ./.github/workflows/jekyll-gh-pages.yml
     with:
