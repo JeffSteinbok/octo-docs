@@ -10,9 +10,8 @@ $body-heading-color: #0f172a;
 $base-button-color: #e0f2fe;
 $feedback-color: #0e7490;
 
-// Dark code blocks
-$code-background-color: #1e293b;
-$code-linenumber-color: #64748b;
+// NOTE: Do NOT set $code-background-color here — it controls inline code too.
+// Dark backgrounds are applied only to block-level code via explicit selectors below.
 
 .side-bar {
   border-right: 1px solid #e2e8f0;
@@ -66,21 +65,26 @@ h4 {
   }
 }
 
-// ── Dark code blocks with light text ──────────────────
+// ── Dark code BLOCKS only (not inline code) ───────────
+// Target the wrapper divs that Jekyll generates for fenced code
 div.highlighter-rouge,
 figure.highlight {
-  background: $code-background-color;
+  background: #1e293b;
   border-radius: .5rem;
+
+  pre.highlight {
+    background: #1e293b;
+    color: #e2e8f0;
+  }
+
+  code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
 }
 
-// Fenced / highlighted code
-pre.highlight,
-pre {
-  background: $code-background-color;
-  color: #e2e8f0;
-}
-
-// Copy button — bright on dark background
+// Copy button — visible on dark background
 .copy-code-button {
   color: #e2e8f0 !important;
   background: #334155 !important;
@@ -93,17 +97,7 @@ pre {
   }
 }
 
-// Inline code — keep default theme styling (don't override)
-// (just-the-docs handles inline code styling already)
-
-// But code inside a pre block should inherit the dark style
-pre code {
-  background: transparent;
-  color: inherit;
-  padding: 0;
-}
-
-// ── Rouge syntax tokens (dark theme) ──────────────────
+// ── Rouge syntax tokens (dark theme — scoped to .highlight) ──
 .highlight {
   .c, .c1, .cm, .cs   { color: #94a3b8; font-style: italic; } // comments
   .k, .kd, .kn, .kp,
