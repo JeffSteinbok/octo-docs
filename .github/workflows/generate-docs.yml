@@ -44,16 +44,19 @@ on:
         required: false
         type: string
         default: "false"
+    outputs:
+      has_changes:
+        description: "Whether docs generation committed changes to main"
+        value: ${{ jobs.generate-docs.outputs.has_changes }}
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-  actions: write
 
 jobs:
   generate-docs:
     runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.commit.outputs.has_changes }}
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -134,8 +137,6 @@ jobs:
 
       # Always attempt to commit, even if generation had partial failures,
       # so that successfully generated pages are not lost.
-      # NOTE: Commits pushed with GITHUB_TOKEN do NOT trigger other workflows'
-      # push events, so we explicitly dispatch the deploy workflow below.
       - name: Commit to main
         if: always() && steps.inputs.conclusion == 'success'
         id: commit
@@ -152,9 +153,3 @@ jobs:
             git push origin main
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Trigger deploy
-        if: always() && steps.commit.outputs.has_changes == 'true'
-        run: gh workflow run jekyll-gh-pages.yml --ref main || echo "Deploy trigger failed; deploy manually if needed."
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,9 +1,6 @@
 name: Tests
 
 on:
-  pull_request:
-    paths:
-      - "tools/docs/**"
   workflow_dispatch:
   workflow_call:
 

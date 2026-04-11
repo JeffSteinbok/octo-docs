@@ -5,10 +5,25 @@ on:
     branches: [main]
     paths:
       - "tools/docs/**"
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - "tools/docs/**"
+      - ".github/workflows/**"
   repository_dispatch:
     types: [bundle-ready]
   workflow_dispatch:
     inputs:
+      phase:
+        description: "Which part of the docs pipeline to run"
+        required: false
+        default: "full"
+        type: choice
+        options:
+          - "full"
+          - "validate"
+          - "generate"
+          - "deploy"
       artifact_name:
         description: "Bundle artifact name to download (leave blank to use bundle_path)"
         required: false
@@ -45,6 +60,10 @@ jobs:
       artifact_run_id: ${{ steps.resolve.outputs.artifact_run_id }}
       bundle_path: ${{ steps.resolve.outputs.bundle_path }}
       regenerate_all: ${{ steps.resolve.outputs.regenerate_all }}
+      deploy_ref: ${{ steps.resolve.outputs.deploy_ref }}
+      run_validation: ${{ steps.resolve.outputs.run_validation }}
+      run_generate: ${{ steps.resolve.outputs.run_generate }}
+      run_deploy: ${{ steps.resolve.outputs.run_deploy }}
     steps:
       - name: Resolve inputs
         id: resolve
@@ -54,25 +73,67 @@ jobs:
             echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=true" >> "$GITHUB_OUTPUT"
+            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
+            echo "run_validation=true" >> "$GITHUB_OUTPUT"
+            echo "run_generate=true" >> "$GITHUB_OUTPUT"
+            echo "run_deploy=true" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
+            echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
+            echo "regenerate_all=false" >> "$GITHUB_OUTPUT"
+            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
+            echo "run_validation=true" >> "$GITHUB_OUTPUT"
+            echo "run_generate=false" >> "$GITHUB_OUTPUT"
+            echo "run_deploy=false" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
             echo "artifact_name=${{ github.event.client_payload.artifact_name || 'docs-bundle' }}" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=${{ github.event.client_payload.run_id || '' }}" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
+            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
+            echo "run_validation=true" >> "$GITHUB_OUTPUT"
+            echo "run_generate=true" >> "$GITHUB_OUTPUT"
+            echo "run_deploy=true" >> "$GITHUB_OUTPUT"
           else
             echo "artifact_name=${{ inputs.artifact_name }}" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=${{ inputs.artifact_run_id }}" >> "$GITHUB_OUTPUT"
             echo "bundle_path=${{ inputs.bundle_path }}" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=${{ inputs.regenerate_all }}" >> "$GITHUB_OUTPUT"
+            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
+            case "${{ inputs.phase }}" in
+              full)
+                echo "run_validation=true" >> "$GITHUB_OUTPUT"
+                echo "run_generate=true" >> "$GITHUB_OUTPUT"
+                echo "run_deploy=true" >> "$GITHUB_OUTPUT"
+                ;;
+              validate)
+                echo "run_validation=true" >> "$GITHUB_OUTPUT"
+                echo "run_generate=false" >> "$GITHUB_OUTPUT"
+                echo "run_deploy=false" >> "$GITHUB_OUTPUT"
+                ;;
+              generate)
+                echo "run_validation=false" >> "$GITHUB_OUTPUT"
+                echo "run_generate=true" >> "$GITHUB_OUTPUT"
+                echo "run_deploy=false" >> "$GITHUB_OUTPUT"
+                ;;
+              deploy)
+                echo "run_validation=false" >> "$GITHUB_OUTPUT"
+                echo "run_generate=false" >> "$GITHUB_OUTPUT"
+                echo "run_deploy=true" >> "$GITHUB_OUTPUT"
+                ;;
+            esac
           fi
 
   tests:
     needs: prepare
+    if: needs.prepare.outputs.run_validation == 'true'
     uses: ./.github/workflows/tests.yml
     secrets: inherit
 
   secret-scan:
     needs: prepare
+    if: needs.prepare.outputs.run_validation == 'true'
     uses: ./.github/workflows/secret-scan.yml
     secrets: inherit
 
@@ -81,10 +142,31 @@ jobs:
       - prepare
       - tests
       - secret-scan
+    if: |
+      needs.prepare.outputs.run_generate == 'true' &&
+      (
+        needs.prepare.outputs.run_validation != 'true' ||
+        (needs.tests.result == 'success' && needs.secret-scan.result == 'success')
+      )
     uses: ./.github/workflows/generate-docs.yml
     with:
       artifact_name: ${{ needs.prepare.outputs.artifact_name }}
       artifact_run_id: ${{ needs.prepare.outputs.artifact_run_id }}
       bundle_path: ${{ needs.prepare.outputs.bundle_path }}
       regenerate_all: ${{ needs.prepare.outputs.regenerate_all }}
+    secrets: inherit
+
+  deploy:
+    needs:
+      - prepare
+      - generate-docs
+    if: |
+      needs.prepare.outputs.run_deploy == 'true' &&
+      (
+        needs.prepare.outputs.run_generate != 'true' ||
+        (needs.generate-docs.result == 'success' && needs.generate-docs.outputs.has_changes == 'true')
+      )
+    uses: ./.github/workflows/jekyll-gh-pages.yml
+    with:
+      ref: ${{ needs.prepare.outputs.deploy_ref }}
     secrets: inherit

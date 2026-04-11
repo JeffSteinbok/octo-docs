@@ -4,9 +4,20 @@ name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 on:
   # Called by the Generate Public Docs workflow after committing generated docs.
   workflow_call:
+    inputs:
+      ref:
+        description: "Git ref to deploy"
+        required: false
+        type: string
+        default: "main"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy"
+        required: false
+        default: "main"
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -27,6 +38,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'main' }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
