@@ -1,0 +1,18 @@
+id: shared-mail-runtime-usps
+
+output_path: docs/services/shared-mail-runtime-usps.md
+
+front_matter:
+  layout: default
+  title: USPS Mail Runtime
+  parent: Shared Mail Runtime
+  nav_order: 1
+
+sources:
+  - path: services/shared_mail_runtime-usps.json
+
+template: overview
+strategy: bundle-service-detail
+
+instructions:
+  audience: external developers and self-hosters

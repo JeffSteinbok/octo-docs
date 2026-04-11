@@ -7,6 +7,7 @@ front_matter:
   title: Shared Mail Runtime
   parent: Services
   nav_order: 2
+  has_children: true
 
 sources:
   - path: services/shared_mail_runtime.json

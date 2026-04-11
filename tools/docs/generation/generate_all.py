@@ -729,7 +729,21 @@ def _process_service_detail_page(
     for section_title, body in (service.get("sections") or {}).items():
         lines.extend(["", *_render_markdown_section(section_title, body)])
 
+    if source_path == "services/shared_mail_runtime.json" and bundle.exists("services/shared_mail_runtime-usps.json"):
+        lines.extend([
+            "",
+            "## Related Runtime Docs",
+            "",
+            "- [USPS Mail Runtime](shared-mail-runtime-usps)",
+        ])
+
     content = format_markdown("\n".join(lines))
+    content = content.replace("[`usps/README.md`](./usps/README.md)", "[USPS Mail Runtime](shared-mail-runtime-usps)")
+    content = content.replace(
+        "[`services/shared_mail_runtime/usps/README.md`](../shared_mail_runtime/usps/README.md)",
+        "[USPS Mail Runtime](shared-mail-runtime-usps)",
+    )
+    content = content.replace("`services/shared_mail_runtime/README.md`", "[Shared Mail Runtime](shared_mail_runtime)")
     if dry_run:
         logger.info("[dry-run] Would generate page: %s", page_spec["id"])
         return page_spec["output_path"]
@@ -852,6 +866,14 @@ def _format_release_change(change: object) -> str:
     return _markdown_cell(change)
 
 
+def _append_release_section(lines: list[str], title: str, items: object) -> None:
+    """Append a release-notes subsection when items are present."""
+    if not isinstance(items, list) or not items:
+        return
+    lines.extend(["", f"### {title}", ""])
+    lines.extend(f"- {_format_release_change(item)}" for item in items)
+
+
 def _process_release_notes_page(
     page_spec: dict,
     bundle: BundleLoader,
@@ -861,19 +883,29 @@ def _process_release_notes_page(
     output_path = REPO_ROOT / page_spec["output_path"]
     release = bundle.load_json("release/changes.json")
     changes = release.get("changes", [])
-    from_version = release.get("from_version") or ""
-    to_version = release.get("to_version") or ""
 
     lines = ["# Release Notes", ""]
-    if from_version or to_version:
-        lines.append(
-            f"Bundle diff: `{from_version or 'unknown'}` → `{to_version or 'unknown'}`"
-        )
-        lines.append("")
 
     if changes:
-        lines.extend(["## Changes", ""])
-        lines.extend(f"- {_format_release_change(change)}" for change in changes)
+        for change in changes:
+            if isinstance(change, dict):
+                version = change.get("version") or "Unknown release"
+                date = change.get("date") or ""
+                heading = f"## {version}"
+                if date:
+                    heading += f" ({date})"
+                lines.extend([heading, ""])
+                sections = change.get("sections")
+                if isinstance(sections, dict) and sections:
+                    for section_name, items in sections.items():
+                        _append_release_section(lines, str(section_name), items)
+                else:
+                    summary = _format_release_change(change)
+                    if summary:
+                        lines.append(f"- {summary}")
+                lines.append("")
+            else:
+                lines.append(f"- {_format_release_change(change)}")
     else:
         lines.append("No bundled changes were recorded for this release.")
 

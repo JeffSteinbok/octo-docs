@@ -86,4 +86,45 @@
     line-height: 1.2;
     font-size: 0.85rem;
   }
+
+  /* ── Mermaid diagrams ─────────────────────────────── */
+  .mermaid {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
 </style>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: "loose",
+    theme: "default",
+  });
+
+  async function renderMermaidDiagrams() {
+    const blocks = document.querySelectorAll(".language-mermaid");
+    for (const block of blocks) {
+      if (block.dataset.mermaidRendered === "true") continue;
+      const source = (block.textContent || "").trim();
+      if (!source) continue;
+
+      const container = document.createElement("div");
+      container.className = "mermaid";
+      container.textContent = source;
+      block.dataset.mermaidRendered = "true";
+      block.replaceWith(container);
+    }
+
+    await mermaid.run({ querySelector: ".mermaid" });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      renderMermaidDiagrams();
+    });
+  } else {
+    renderMermaidDiagrams();
+  }
+</script>

@@ -230,6 +230,78 @@ def test_process_page_bundle_service_detail_renders_without_llm(tmp_path, monkey
     assert "Use deterministic bundle data." in content
 
 
+def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    services_dir = bundle_root / "services"
+    services_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["services/shared_mail_runtime.json", "services/shared_mail_runtime-usps.json"]}),
+        encoding="utf-8",
+    )
+    (services_dir / "shared_mail_runtime.json").write_text(
+        json.dumps(
+            {
+                "service": "shared_mail_runtime",
+                "name": "Shared Mail Runtime",
+                "summary": "Provider-agnostic mail runtime.",
+                "sections": {
+                    "Features": "- One",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (services_dir / "shared_mail_runtime-usps.json").write_text(
+        json.dumps(
+            {
+                "id": "shared-mail-runtime-usps",
+                "name": "USPS Mail Runtime",
+                "summary": "USPS-specific runtime docs.",
+                "sections": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "shared-mail-runtime",
+        "output_path": "docs/services/shared_mail_runtime.md",
+        "template": "overview",
+        "strategy": "bundle-service-detail",
+        "front_matter": {
+            "layout": "default",
+            "title": "Shared Mail Runtime",
+            "parent": "Services",
+            "nav_order": 2,
+            "has_children": True,
+        },
+        "sources": [
+            {"path": "services/shared_mail_runtime.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/services/shared_mail_runtime.md"
+    content = (repo_root / "docs/services/shared_mail_runtime.md").read_text(encoding="utf-8")
+    assert "## Related Runtime Docs" in content
+    assert "[USPS Mail Runtime](shared-mail-runtime-usps)" in content
+
+
 def test_process_page_bundle_hooks_renders_without_llm(tmp_path, monkeypatch):
     bundle_root = tmp_path / "bundle"
     agents_dir = bundle_root / "agents"
@@ -360,6 +432,73 @@ def test_process_page_bundle_skills_renders_without_llm(tmp_path, monkeypatch):
     assert "`main`" in index_content
     assert "# 🎵 Home Music" in child_content
     assert "## Rules" in child_content
+
+
+def test_process_page_bundle_release_renders_sections_without_bundle_diff(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    release_dir = bundle_root / "release"
+    release_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["release/changes.json"]}),
+        encoding="utf-8",
+    )
+    (release_dir / "changes.json").write_text(
+        json.dumps(
+            {
+                "from_version": "2026-03-05",
+                "to_version": "2026-04-10",
+                "changes": [
+                    {
+                        "version": "2026-04-10",
+                        "sections": {
+                            "Added": ["Added shared mail runtime docs."],
+                            "Fixed": ["Fixed changelog formatting."],
+                        },
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "release-latest",
+        "output_path": "docs/releases/latest.md",
+        "template": "release_notes",
+        "strategy": "bundle-release",
+        "front_matter": {
+            "layout": "default",
+            "title": "Release Notes",
+            "nav_order": 7,
+        },
+        "sources": [
+            {"path": "release/changes.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/releases/latest.md"
+    content = (repo_root / "docs/releases/latest.md").read_text(encoding="utf-8")
+    assert "Bundle diff:" not in content
+    assert "## 2026-04-10" in content
+    assert "### Added" in content
+    assert "### Fixed" in content
+    assert "- Added shared mail runtime docs." in content
 
 
 def test_all_current_page_specs_use_bundle_strategies():

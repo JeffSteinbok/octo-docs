@@ -117,7 +117,7 @@ Create `~/.openclaw/services/fastmail-sse-config.json` (see `config.example.json
 
 **Label**: Human-readable label for the account (displayed in multi-account notifications)
 
-Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in `services/shared_mail_runtime/README.md`.
+Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in [Shared Mail Runtime](shared_mail_runtime).
 
 ### FastMail-exposed actions
 
@@ -131,7 +131,7 @@ This service registers the following actions for use in `mail_rules`:
 
 ### FastMail-specific USPS example
 
-For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [`services/shared_mail_runtime/usps/README.md`](../shared_mail_runtime/usps/README.md).
+For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [USPS Mail Runtime](shared-mail-runtime-usps).
 
 Use a second rule if you want to re-process an older USPS digest by forwarding it to yourself. Forwarded mail usually changes the sender away from `usps.com`, so it needs its own `sender_email`/`body_contains` match.
 
