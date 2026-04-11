@@ -79,25 +79,21 @@ pre.highlight {
   color: #e2e8f0;
 }
 
-// Copy button — light on dark
+// Copy button — bright on dark background
 .copy-code-button {
-  color: #94a3b8 !important;
-  background: transparent !important;
-  border: 1px solid #475569 !important;
+  color: #e2e8f0 !important;
+  background: #334155 !important;
+  border: 1px solid #64748b !important;
   border-radius: .25rem;
   &:hover {
-    color: #f1f5f9 !important;
+    color: #ffffff !important;
+    background: #475569 !important;
     border-color: #94a3b8 !important;
   }
 }
 
-// Inline code — keep light bg (don't darken inline snippets)
-code {
-  background: #f1f5f9;
-  color: #0f172a;
-  border-radius: .25rem;
-  padding: 0.1em 0.3em;
-}
+// Inline code — keep default theme styling (don't override)
+// (just-the-docs handles inline code styling already)
 
 // But code inside a pre block should inherit the dark style
 pre code {
@@ -108,23 +104,24 @@ pre code {
 
 // ── Rouge syntax tokens (dark theme) ──────────────────
 .highlight {
-  .c, .c1, .cm, .cs   { color: #64748b; font-style: italic; } // comments
+  .c, .c1, .cm, .cs   { color: #94a3b8; font-style: italic; } // comments
   .k, .kd, .kn, .kp,
-  .kr, .kt, .kc        { color: #c084fc; }                     // keywords
+  .kr, .kt, .kc        { color: #c4b5fd; }                     // keywords
   .s, .s1, .s2, .sb,
   .sc, .sh, .sx         { color: #86efac; }                     // strings
   .si                   { color: #67e8f9; }                     // interpolation
-  .na                   { color: #67e8f9; }                     // attributes
+  .na                   { color: #93c5fd; }                     // attributes / JSON keys
   .nb                   { color: #7dd3fc; }                     // builtins
-  .nc, .nn              { color: #fbbf24; }                     // class/namespace
+  .nc, .nn              { color: #fde68a; }                     // class/namespace
   .nf, .ni              { color: #7dd3fc; }                     // functions
-  .no                   { color: #fb923c; }                     // constants
-  .nt                   { color: #f472b6; }                     // tags
+  .no                   { color: #fdba74; }                     // constants
+  .nt                   { color: #f9a8d4; }                     // tags
   .nv, .vi, .vg         { color: #e2e8f0; }                     // variables
-  .o, .ow               { color: #94a3b8; }                     // operators
+  .o, .ow               { color: #cbd5e1; }                     // operators
   .m, .mf, .mh,
-  .mi, .mo, .il         { color: #fb923c; }                     // numbers
-  .p                    { color: #e2e8f0; }                     // punctuation
-  .err                  { color: #fca5a5; }                     // errors
+  .mi, .mo, .il         { color: #fdba74; }                     // numbers
+  .p                    { color: #cbd5e1; }                     // punctuation
+  .err                  { color: #fecaca; background: none; }   // errors
   .w                    { color: #e2e8f0; }                     // whitespace
+  .dl                   { color: #86efac; }                     // string delimiters
 }
