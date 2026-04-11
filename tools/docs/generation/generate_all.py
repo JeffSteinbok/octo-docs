@@ -158,6 +158,25 @@ def _count_tools(plugin_json: dict) -> int:
     return 0
 
 
+def _ensure_h1(content: str, emoji: str, name: str) -> str:
+    """Ensure content starts with a proper H1 heading.
+
+    If the first non-blank line is already an H1 (starts with ``# ``), return
+    as-is.  Otherwise replace the first line (which is typically just the emoji
+    + name as plain text) with a proper ``# emoji name`` heading.
+    """
+    lines = content.split("\n")
+    for i, line in enumerate(lines):
+        if line.strip():
+            if line.strip().startswith("# "):
+                return content  # already has H1
+            # Replace plain-text title line with proper H1
+            heading = f"# {emoji} {name}" if emoji else f"# {name}"
+            lines[i] = heading
+            return "\n".join(lines)
+    return content
+
+
 def _build_index_table(entries: list, link_prefix: str = "plugins",
                        title: str = "Plugins") -> str:
     """Build a markdown index page with title, intro text and summary table."""
@@ -265,6 +284,9 @@ def _process_chunked_page(
         # Prefer LLM-generated description over JSON metadata
         llm_desc = _extract_first_paragraph(content)
         formatted = format_markdown(content)
+
+        # Ensure the content starts with a proper H1 heading (LLM sometimes omits #)
+        formatted = _ensure_h1(formatted, emoji, plugin_name)
 
         # Write individual child page
         if chunk_output_dir:

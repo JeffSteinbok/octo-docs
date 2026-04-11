@@ -63,19 +63,6 @@ Create `~/.openclaw/services/fastmail-sse-config.json`. Example:
         {"name": "process_usps_digest", "params": {"agent": "main", "workspace_agent": "mail", "memory_agent": "main", "vision_agent": "mail"}}
       ],
       "continue": true
-    },
-    {
-      "id": "forwarded-usps-informed-delivery",
-      "accounts": ["<account-id-2>"],
-      "match": {
-        "sender_email": "you@example.com",
-        "subject_contains": ["Informed Delivery", "Daily Digest"],
-        "body_contains": ["USPS", "Informed Delivery"]
-      },
-      "actions": [
-        {"name": "process_usps_digest", "params": {"agent": "main", "workspace_agent": "mail", "memory_agent": "main", "vision_agent": "mail"}}
-      ],
-      "continue": true
     }
   ]
 }
@@ -183,7 +170,7 @@ Built-in actions:
 {
   "accounts": {
     "<account-id>": {
-      "label": "jeff@steinbok.net",
+      "label": "Personal",
       "rules": ["notify_all"]
     }
   },
@@ -208,29 +195,9 @@ Built-in actions:
         }
       ],
       "continue": true
-    },
-    {
-      "id": "forwarded-usps-informed-delivery",
-      "accounts": ["<account-id>"],
-      "match": {
-        "sender_email": "jeff@steinbok.net",
-        "subject_contains": ["Informed Delivery", "Daily Digest"],
-        "body_contains": ["USPS", "Informed Delivery"]
-      },
-      "actions": [
-        {
-          "name": "process_usps_digest",
-          "params": {
-            "agent": "main",
-            "workspace_agent": "mail",
-            "memory_agent": "main",
-            "vision_agent": "mail",
-            "vision_backend": "auto"
-          }
-        }
-      ],
-      "continue": true
     }
+  ]
+}
   ]
 }
 ```
