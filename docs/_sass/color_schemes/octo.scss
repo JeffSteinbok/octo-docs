@@ -74,7 +74,8 @@ figure.highlight {
 }
 
 // Fenced / highlighted code
-pre.highlight {
+pre.highlight,
+pre {
   background: $code-background-color;
   color: #e2e8f0;
 }
