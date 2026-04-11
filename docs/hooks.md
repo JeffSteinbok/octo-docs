@@ -13,4 +13,4 @@ Octo currently publishes **1 hook** in the public bundle.
 
 | | Hook | Description | Sections |
 |---|------|-------------|:--------:|
-| 🪝 | [Hass Hooks](hooks/hass-hooks) | Handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens on any camera, pull all outdoor cameras, do a full situational analysis, and send a concise Discord summary with the most relevant image. | 7 |
+| 🪝 | [Hass Hooks](hooks/hass-hooks) | Handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens, snap all outdoor cameras into a collage, analyze it together, and send Jeff a casual one-line summary with the image. | 7 |

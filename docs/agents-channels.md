@@ -24,7 +24,7 @@ Private execution permissions, tool allowlists, and detailed channel-to-agent bi
 | 📬 mail-agent | `mail` | High-level role exported; private security details are omitted from the bundle. |
 | 🔑 Root | `root` | High-level role exported; private security details are omitted from the bundle. |
 | 👨‍👩‍👧‍👦 Family | `family` | High-level role exported; private security details are omitted from the bundle. |
-| 📷 HA Hooks | `hass-hooks` | handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens on any camera, pull all outdoor cameras, do a full situational analysis, and send a concise Discord summary with the most relevant image. |
+| 📷 HA Hooks | `hass-hooks` | handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens, snap all outdoor cameras into a collage, analyze it together, and send Jeff a casual one-line summary with the image. |
 
 ## 🐙 Octo
 
@@ -32,7 +32,7 @@ Private execution permissions, tool allowlists, and detailed channel-to-agent bi
 - **Public summary:** Not explicitly exported in the public bundle.
 - **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
 - **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
-- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Discord Messaging Style`, `Safety`, `Web Fetching & Browsing`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Alarm Reminder Logic`, `Package Tracking`, `Security Guardrails`, `Theater Seating Charts`, `Make It Yours`
+- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Discord Messaging Style`, `Safety`, `Web Fetching & Browsing`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Alarm Reminder Logic`, `Mail Notifications`, `Package Tracking`, `Security Guardrails`, `Theater Seating Charts`, `Make It Yours`
 
 ## 📬 mail-agent
 
@@ -60,10 +60,10 @@ Private execution permissions, tool allowlists, and detailed channel-to-agent bi
 ## 📷 HA Hooks
 
 - **Agent ID:** `hass-hooks`
-- **Public summary:** handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens on any camera, pull all outdoor cameras, do a full situational analysis, and send a concise Discord summary with the most relevant image.
+- **Public summary:** handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens, snap all outdoor cameras into a collage, analyze it together, and send Jeff a casual one-line summary with the image.
 - **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
 - **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
-- **Published instruction sections:** `What arrives`, `Step 1: Decide if it's interesting`, `Step 2: Check presence`, `Step 3: Pull all outdoor + garage cameras`, `Camera entity → name mapping`, `Step 4: Send to Discord`, `Tool allowlist`
+- **Published instruction sections:** `What arrives`, `Step 1: Decide if it's interesting`, `Step 2: Check presence (optional)`, `Step 3: Get outdoor collage`, `Step 4: Analyze the collage`, `Step 5: Send to Jeff`, `Tool allowlist`
 
 ## Channels
 
