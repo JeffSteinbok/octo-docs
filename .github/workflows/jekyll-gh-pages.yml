@@ -2,13 +2,7 @@
 name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
-  # Deploy when docs change on main (e.g. after a generated-docs PR is merged)
-  push:
-    branches: ["main"]
-    paths:
-      - "docs/**"
-
-  # Called by the Generate Public Docs workflow after committing to main
+  # Called by the Generate Public Docs workflow after committing generated docs.
   workflow_call:
 
   # Allows you to run this workflow manually from the Actions tab

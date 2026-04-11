@@ -1,0 +1,83 @@
+name: Docs Main Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/docs/**"
+  workflow_dispatch:
+    inputs:
+      artifact_name:
+        description: "Bundle artifact name to download (leave blank to use bundle_path)"
+        required: false
+        default: "docs-bundle"
+      artifact_run_id:
+        description: "OpenClaw workflow run ID that uploaded the artifact"
+        required: false
+        default: ""
+      bundle_path:
+        description: "Path to an existing bundle on disk when artifact_name is blank"
+        required: false
+        default: "./bundle"
+      regenerate_all:
+        description: "Regenerate all pages instead of using changed_pages.json"
+        required: false
+        default: "true"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  actions: write
+  issues: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.resolve.outputs.artifact_name }}
+      artifact_run_id: ${{ steps.resolve.outputs.artifact_run_id }}
+      bundle_path: ${{ steps.resolve.outputs.bundle_path }}
+      regenerate_all: ${{ steps.resolve.outputs.regenerate_all }}
+    steps:
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
+            echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
+            echo "regenerate_all=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "artifact_name=${{ inputs.artifact_name }}" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=${{ inputs.artifact_run_id }}" >> "$GITHUB_OUTPUT"
+            echo "bundle_path=${{ inputs.bundle_path }}" >> "$GITHUB_OUTPUT"
+            echo "regenerate_all=${{ inputs.regenerate_all }}" >> "$GITHUB_OUTPUT"
+          fi
+
+  tests:
+    needs: prepare
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+
+  secret-scan:
+    needs: prepare
+    uses: ./.github/workflows/secret-scan.yml
+    secrets: inherit
+
+  generate-docs:
+    needs:
+      - prepare
+      - tests
+      - secret-scan
+    uses: ./.github/workflows/generate-docs.yml
+    with:
+      artifact_name: ${{ needs.prepare.outputs.artifact_name }}
+      artifact_run_id: ${{ needs.prepare.outputs.artifact_run_id }}
+      bundle_path: ${{ needs.prepare.outputs.bundle_path }}
+      regenerate_all: ${{ needs.prepare.outputs.regenerate_all }}
+    secrets: inherit
