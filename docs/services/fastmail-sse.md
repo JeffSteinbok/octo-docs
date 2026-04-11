@@ -25,31 +25,31 @@ Real-time email ingestion daemon. Connects to FastMail's JMAP EventSource, norma
 
 ```mermaid
 flowchart TD
-    fm["FastMail JMAP EventSource"]
+    fm["FastMail SSE"]
 
     subgraph sse["fastmail-sse service"]
-        stream["Watch SSE state changes"]
-        fetch["Fetch new message bodies + metadata"]
-        env["Normalize to MailEnvelope"]
-        match["Phase 1: evaluate ordered mail_rules"]
-        dispatch["Dispatch ActionResult(s)"]
+        stream["Watch events"]
+        fetch["Fetch mail"]
+        env["Build envelope"]
+        match["Phase 1:<br/>mail_rules"]
+        dispatch["Dispatch results"]
     end
 
-    subgraph actions["Built-in mail actions"]
-        notify["notify_email<br/>format + send message"]
-        track["detect_tracking<br/>scan body, add/remove package tracking"]
-        usps["process_usps_digest<br/>download images/body.html"]
+    subgraph actions["Actions"]
+        notify["notify_email"]
+        track["detect_tracking"]
+        usps["process_usps_digest<br/>download digest"]
     end
 
-    subgraph mailagent["mail agent workspace"]
-        vision["Phase 2A: USPS vision analysis"]
-        rules["Phase 2B: USPS rules/config/state/cache"]
-        uspsnotify["Direct USPS notification routing"]
+    subgraph mailagent["mail agent"]
+        vision["Phase 2A:<br/>vision"]
+        rules["Phase 2B:<br/>USPS rules"]
+        uspsnotify["USPS notify"]
     end
 
-    subgraph mainagent["main agent workspace"]
-        memory["Durable mail memory"]
-        followup["Structured follow-up / handoff target"]
+    subgraph mainagent["main agent"]
+        memory["Mail memory"]
+        followup["Follow-up"]
     end
 
     fm --> stream --> fetch --> env --> match
