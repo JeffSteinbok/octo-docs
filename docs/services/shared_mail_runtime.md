@@ -83,6 +83,8 @@ The `usps/` subpackage implements the full USPS Informed Delivery digest pipelin
 | `notify.py` | Notification routing and delivery via `openclaw message send` |
 | `paths.py` | Central path helpers for workspace, memory, and config files |
 
+See [`usps/README.md`](./usps/README.md) for the USPS-specific flow diagram, agent-boundary details, and how the FastMail action layer and `usps-mail` plugin both call into the shared implementation.
+
 ## Key Types
 
 | Type | Description |

@@ -121,6 +121,8 @@ This service registers the following actions for use in `mail_rules`:
 
 ### FastMail-specific USPS example
 
+For the USPS internals, agent boundaries, and companion plugin/runtime architecture, see [`services/shared_mail_runtime/usps/README.md`](../shared_mail_runtime/usps/README.md).
+
 Use a second rule if you want to re-process an older USPS digest by forwarding it to yourself. Forwarded mail usually changes the sender away from `usps.com`, so it needs its own `sender_email`/`body_contains` match.
 
 ```json
