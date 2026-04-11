@@ -5,6 +5,9 @@ baseurl: /octo-docs
 
 color_scheme: octo
 
+# Code block copy button
+enable_copy_code_button: true
+
 plugins:
   - jekyll-remote-theme
 
