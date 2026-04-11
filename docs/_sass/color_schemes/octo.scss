@@ -69,18 +69,27 @@ h4 {
 // Target the wrapper divs that Jekyll generates for fenced code
 div.highlighter-rouge,
 figure.highlight {
-  background: #1e293b;
+  background: #1e293b !important;
   border-radius: .5rem;
+  border: none !important;
+  box-shadow: none !important;
 
   pre.highlight {
-    background: #1e293b;
+    background: #1e293b !important;
     color: #e2e8f0;
+    border: none !important;
+    margin: 0;
+  }
+
+  .highlight {
+    background: #1e293b !important;
   }
 
   code {
-    background: transparent;
+    background: transparent !important;
     color: inherit;
     padding: 0;
+    border: none !important;
   }
 }
 
@@ -116,7 +125,7 @@ figure.highlight {
   .m, .mf, .mh,
   .mi, .mo, .il         { color: #fdba74; }                     // numbers
   .p                    { color: #cbd5e1; }                     // punctuation
-  .err                  { color: #fecaca; background: none; }   // errors
+  .err                  { color: #fdba74; background: none !important; border: none !important; } // errors/unrecognized (e.g. angle brackets)
   .w                    { color: #e2e8f0; }                     // whitespace
   .dl                   { color: #86efac; }                     // string delimiters
 }
