@@ -83,21 +83,6 @@ SERVICE_EMOJIS = {
 SKILL_EMOJIS = {
     "home-music": "🎵",
 }
-JOB_EMOJIS = {
-    "calendar-fetch-hourly": "🗓️",
-    "config-backup": "💾",
-    "evening-briefing": "📰",
-    "portfolio-closing-briefing": "📈",
-    "evening-alarm-reminder": "⏰",
-    "Daily package delivery check": "📦",
-    "daily-health-check": "🩺",
-    "Remind Jeff to reach out to Zack Ali for dinner": "🍽️",
-    "WW Daily Points Check-in": "🏅",
-    "late-early-conflict-morning-check": "⚠️",
-    "Lobster changelog weekly scan": "🦞",
-    "calendar-fetch-midnight": "🌙",
-    "ww-diet-sync": "🥗",
-}
 
 
 def load_page_spec(spec_path: Path) -> dict:
@@ -393,42 +378,13 @@ def _render_markdown_section(title: str, body: str, level: int = 2) -> list[str]
     return [f"{heading} {title}", "", body.strip()]
 
 
-def _humanize_every_ms(every_ms: int) -> str:
-    """Convert an interval in milliseconds to a compact human-readable string."""
-    seconds = max(every_ms // 1000, 0)
-    if seconds % 86400 == 0:
-        days = seconds // 86400
-        return f"Every {days} day{'s' if days != 1 else ''}"
-    if seconds % 3600 == 0:
-        hours = seconds // 3600
-        return f"Every {hours} hour{'s' if hours != 1 else ''}"
-    if seconds % 60 == 0:
-        minutes = seconds // 60
-        return f"Every {minutes} minute{'s' if minutes != 1 else ''}"
-    return f"Every {seconds} second{'s' if seconds != 1 else ''}"
-
-
-def _format_schedule(schedule: dict) -> str:
-    """Render a job schedule deterministically from the bundle schema."""
-    if not isinstance(schedule, dict):
-        return "Not specified"
-
-    kind = schedule.get("kind")
-    if kind == "cron":
-        expr = schedule.get("expr", "")
-        tz = schedule.get("tz")
-        if expr and tz:
-            return f"`{expr}` ({tz})"
-        if expr:
-            return f"`{expr}`"
-    elif kind == "every":
-        every_ms = schedule.get("everyMs")
-        if isinstance(every_ms, int):
-            return _humanize_every_ms(every_ms)
-    elif kind == "at":
-        return "One-time"
-
-    return _markdown_cell(schedule)
+def _sentence_case_lead(text: str) -> str:
+    """Capitalize a leading lowercase summary without rewriting the rest."""
+    if not isinstance(text, str) or not text:
+        return ""
+    if text[0].islower():
+        return text[0].upper() + text[1:]
+    return text
 
 
 def _extract_skill_topics(content: str) -> list[str]:
@@ -565,42 +521,27 @@ def _process_agents_channels_page(
     return page_spec["output_path"]
 
 
-def _process_jobs_page(
+def _process_hooks_page(
     page_spec: dict,
     bundle: BundleLoader,
     dry_run: bool = False,
 ) -> str:
-    """Render the scheduled jobs page from jobs.json."""
+    """Render the Home Assistant hooks page from the hass-hooks bundle artifact."""
     output_path = REPO_ROOT / page_spec["output_path"]
-    jobs = bundle.load_json("jobs.json").get("jobs", [])
+    hooks = bundle.load_json("agents/hass-hooks.json")
+    summary = _sentence_case_lead(hooks.get("summary", ""))
+    sections = hooks.get("sections", {})
 
     lines = [
-        "# Scheduled Jobs",
+        "# Hooks",
         "",
-        "These scheduled jobs automate recurring maintenance, reminders, calendar refreshes, and health checks.",
+        "Hooks are event-driven entry points that react to real-world signals instead of running on a timer.",
         "",
-        "## Job Summary",
-        "",
-        "| Job | Enabled | Schedule | Description |",
-        "|-----|---------|----------|-------------|",
+        summary,
     ]
-    for job in jobs:
-        lines.append(
-            f"| {JOB_EMOJIS.get(job.get('name', ''), '⏱️')} {job.get('name', '')} | "
-            f"{_format_required(bool(job.get('enabled')))} | "
-            f"{_markdown_cell(_format_schedule(job.get('schedule', {})))} | "
-            f"{_markdown_cell(job.get('description', '') or '—')} |"
-        )
 
-    for job in jobs:
-        lines.extend([
-            "",
-            f"## {JOB_EMOJIS.get(job.get('name', ''), '⏱️')} {job.get('name', '')}",
-            "",
-            f"- **Enabled:** {_format_required(bool(job.get('enabled')))}",
-            f"- **Schedule:** {_format_schedule(job.get('schedule', {}))}",
-            f"- **Description:** {job.get('description') or 'No description exported.'}",
-        ])
+    for title, body in sections.items():
+        lines.extend(["", *_render_markdown_section(title, body)])
 
     content = format_markdown("\n".join(lines))
     if dry_run:
@@ -1028,8 +969,8 @@ def process_page(
     strategy = page_spec.get("strategy")
     if strategy == "bundle-agents-channels":
         return _process_agents_channels_page(page_spec, bundle, dry_run)
-    if strategy == "bundle-jobs":
-        return _process_jobs_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-hooks":
+        return _process_hooks_page(page_spec, bundle, dry_run)
     if strategy == "bundle-services":
         return _process_services_overview_page(page_spec, bundle, dry_run)
     if strategy == "bundle-service-detail":

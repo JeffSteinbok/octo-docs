@@ -230,6 +230,67 @@ def test_process_page_bundle_service_detail_renders_without_llm(tmp_path, monkey
     assert "Use deterministic bundle data." in content
 
 
+def test_process_page_bundle_hooks_renders_without_llm(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    agents_dir = bundle_root / "agents"
+    agents_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["agents/hass-hooks.json"]}),
+        encoding="utf-8",
+    )
+    (agents_dir / "hass-hooks.json").write_text(
+        json.dumps(
+            {
+                "agent": "hass-hooks",
+                "summary": "React to Home Assistant webhooks.",
+                "sections": {
+                    "What arrives": "Webhook payload fields.",
+                    "Step 1": "Decide if the event matters.",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "hooks-overview",
+        "output_path": "docs/hooks.md",
+        "template": "overview",
+        "strategy": "bundle-hooks",
+        "front_matter": {
+            "layout": "default",
+            "title": "Hooks",
+            "nav_order": 6,
+        },
+        "sources": [
+            {"path": "agents/hass-hooks.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/hooks.md"
+    content = (repo_root / "docs/hooks.md").read_text(encoding="utf-8")
+    assert "# Hooks" in content
+    assert "React to Home Assistant webhooks." in content
+    assert "## What arrives" in content
+    assert "## Step 1" in content
+
+
 def test_all_current_page_specs_use_bundle_strategies():
     import docs.generation.generate_all as ga
 

@@ -35,10 +35,10 @@ nav_order: 1
     <div class="card-title">Services</div>
     <div class="card-desc">Background daemons that watch for events</div>
   </a>
-  <a class="card" href="{{ site.baseurl }}/jobs">
-    <div class="card-icon">⏰</div>
-    <div class="card-title">Scheduled Jobs</div>
-    <div class="card-desc">Automated tasks on a timer</div>
+  <a class="card" href="{{ site.baseurl }}/hooks">
+    <div class="card-icon">🪝</div>
+    <div class="card-title">Hooks</div>
+    <div class="card-desc">Event-driven automations triggered by real-world activity</div>
   </a>
 </div>
 
@@ -108,5 +108,5 @@ guide an agent's behavior. Think of plugins as _tools_ and skills as _knowledge_
 ⚙️ **Services** are long-running background daemons that watch for events (like
 incoming email) and route notifications through the system.
 
-⏰ **Scheduled Jobs** run automatically on a timer — fetching calendars,
-backing up config, and other recurring tasks without user intervention.
+🪝 **Hooks** are event-driven entry points — camera webhooks and other
+signals that kick off targeted automations the moment something happens.
