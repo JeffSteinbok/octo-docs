@@ -40,6 +40,64 @@ _DOCS_ROOT = _TOOLS_ROOT / "docs"
 PAGE_SPECS_DIR = _DOCS_ROOT / "page_specs"
 REPO_ROOT = _TOOLS_ROOT.parent
 LAST_REF_PATH = REPO_ROOT / ".last_bundle_ref"
+PLUGIN_DISPLAY_NAMES = {
+    "config-backup": "Config Backup",
+    "fastmail": "Fastmail",
+    "github": "GitHub",
+    "homeassistant": "Home Assistant",
+    "ics-calendar": "ICS Calendar",
+    "llmvision": "LLMVision",
+    "opentable": "OpenTable",
+    "opentable-heartbeat": "OpenTable Heartbeat",
+    "outlook-calendar": "Outlook Calendar",
+    "outlook-mail": "Outlook Mail",
+    "outlook-work-calendar": "Outlook Work Calendar",
+    "package-tracking": "Package Tracking",
+    "spotify": "Spotify",
+    "stock-quotes": "Stock Quotes",
+    "usps-mail": "USPS Mail",
+    "weightwatchers": "WeightWatchers",
+}
+PLUGIN_EMOJIS = {
+    "config-backup": "🗄️",
+    "fastmail": "📧",
+    "github": "🐙",
+    "homeassistant": "🏠",
+    "ics-calendar": "🗓️",
+    "llmvision": "🖼️",
+    "opentable": "🍽️",
+    "opentable-heartbeat": "🩺",
+    "outlook-calendar": "📅",
+    "outlook-mail": "📧",
+    "outlook-work-calendar": "📅",
+    "package-tracking": "📦",
+    "spotify": "🎵",
+    "stock-quotes": "📈",
+    "usps-mail": "📬",
+    "weightwatchers": "🍽️",
+}
+SERVICE_EMOJIS = {
+    "fastmail-sse": "📡",
+    "shared_mail_runtime": "🔄",
+}
+SKILL_EMOJIS = {
+    "home-music": "🎵",
+}
+JOB_EMOJIS = {
+    "calendar-fetch-hourly": "🗓️",
+    "config-backup": "💾",
+    "evening-briefing": "📰",
+    "portfolio-closing-briefing": "📈",
+    "evening-alarm-reminder": "⏰",
+    "Daily package delivery check": "📦",
+    "daily-health-check": "🩺",
+    "Remind Jeff to reach out to Zack Ali for dinner": "🍽️",
+    "WW Daily Points Check-in": "🏅",
+    "late-early-conflict-morning-check": "⚠️",
+    "Lobster changelog weekly scan": "🦞",
+    "calendar-fetch-midnight": "🌙",
+    "ww-diet-sync": "🥗",
+}
 
 
 def load_page_spec(spec_path: Path) -> dict:
@@ -158,6 +216,597 @@ def _count_tools(plugin_json: dict) -> int:
     return 0
 
 
+def _plugin_id(plugin_json: dict, chunk_path: str) -> str:
+    """Return the stable plugin identifier from bundle data or path."""
+    plugin_id = plugin_json.get("plugin")
+    if isinstance(plugin_id, str) and plugin_id.strip():
+        return plugin_id.strip()
+    return Path(chunk_path).stem
+
+
+def _plugin_name(plugin_json: dict, chunk_path: str) -> str:
+    """Return a human-friendly plugin name for public docs."""
+    plugin_id = _plugin_id(plugin_json, chunk_path)
+    explicit_name = plugin_json.get("name") or plugin_json.get("plugin_name")
+    if isinstance(explicit_name, str) and explicit_name.strip():
+        return explicit_name.strip()
+    if plugin_id in PLUGIN_DISPLAY_NAMES:
+        return PLUGIN_DISPLAY_NAMES[plugin_id]
+    return plugin_id.replace("-", " ").title()
+
+
+def _plugin_emoji(plugin_id: str) -> str:
+    """Return a stable emoji for well-known plugins."""
+    return PLUGIN_EMOJIS.get(plugin_id, "")
+
+
+def _stringify_param_type(param_type: object) -> str:
+    """Render a schema type value as human-readable text."""
+    if isinstance(param_type, list):
+        return " | ".join(str(item) for item in param_type)
+    if isinstance(param_type, str) and param_type:
+        return param_type
+    return "string"
+
+
+def _markdown_cell(value: object) -> str:
+    """Escape content for a markdown table cell."""
+    text = "" if value is None else str(value)
+    return " ".join(text.replace("|", "\\|").split())
+
+
+def _parameter_description(meta: dict) -> str:
+    """Build a concise parameter description from bundle metadata."""
+    parts = []
+    description = meta.get("description")
+    if isinstance(description, str) and description.strip():
+        base = description.strip()
+        if base[-1] not in ".!?:":
+            base += "."
+        parts.append(base)
+    enum_values = meta.get("enum")
+    if isinstance(enum_values, list) and enum_values:
+        allowed = ", ".join(f"`{value}`" for value in enum_values)
+        parts.append(f"Allowed: {allowed}.")
+    if "default" in meta:
+        parts.append(f"Default: `{meta['default']}`.")
+    return _markdown_cell(" ".join(parts))
+
+
+def _extract_parameters(tool: dict) -> dict[str, dict]:
+    """Return ordered tool parameters from bundle metadata or legacy schema."""
+    params = tool.get("parameters")
+    if isinstance(params, dict):
+        return params
+
+    schema = tool.get("input_schema") or tool.get("inputSchema")
+    if not isinstance(schema, dict):
+        return {}
+
+    properties = schema.get("properties", {})
+    if not isinstance(properties, dict):
+        return {}
+
+    required_names = schema.get("required", [])
+    required = set(required_names if isinstance(required_names, list) else [])
+    ordered_names = [name for name in properties if name in required]
+    ordered_names.extend(name for name in properties if name not in required)
+
+    extracted = {}
+    for name in ordered_names:
+        raw_meta = properties.get(name, {})
+        meta = raw_meta if isinstance(raw_meta, dict) else {}
+        extracted[name] = {
+            "type": meta.get("type", "string"),
+            "required": name in required,
+            "description": meta.get("description", ""),
+        }
+        if "enum" in meta:
+            extracted[name]["enum"] = meta["enum"]
+        if "default" in meta:
+            extracted[name]["default"] = meta["default"]
+    return extracted
+
+
+def _render_parameter_table(parameters: dict[str, dict]) -> list[str]:
+    """Render a markdown table for tool parameters."""
+    lines = [
+        "| Name | Type | Required | Description |",
+        "|------|------|----------|-------------|",
+    ]
+    for name, meta in parameters.items():
+        required = "Required" if meta.get("required") else "Optional"
+        lines.append(
+            "| "
+            f"`{_markdown_cell(name)}` | "
+            f"{_markdown_cell(_stringify_param_type(meta.get('type')))} | "
+            f"{required} | "
+            f"{_parameter_description(meta)} |"
+        )
+    return lines
+
+
+def _render_plugin_page_content(plugin_json: dict, chunk_path: str) -> tuple[str, dict]:
+    """Render a plugin child page deterministically from bundle JSON."""
+    plugin_id = _plugin_id(plugin_json, chunk_path)
+    plugin_name = _plugin_name(plugin_json, chunk_path)
+    emoji = _plugin_emoji(plugin_id)
+    summary = plugin_json.get("summary", "")
+    summary = summary.strip() if isinstance(summary, str) else ""
+
+    lines = [f"# {emoji} {plugin_name}" if emoji else f"# {plugin_name}"]
+    if summary:
+        lines.extend(["", summary])
+
+    for tool in plugin_json.get("tools", []):
+        tool_name = tool.get("name", "")
+        if not isinstance(tool_name, str) or not tool_name.strip():
+            continue
+
+        description = tool.get("description", "")
+        description = description.strip() if isinstance(description, str) else ""
+        parameters = _extract_parameters(tool)
+
+        lines.extend(["", f"### `{tool_name.strip()}`"])
+        if description:
+            lines.extend(["", description])
+        if parameters:
+            lines.extend(["", *_render_parameter_table(parameters)])
+
+    return "\n".join(lines).strip() + "\n", {
+        "id": plugin_id,
+        "slug": plugin_id,
+        "name": plugin_name,
+        "emoji": emoji,
+        "description": summary,
+        "tool_count": _count_tools(plugin_json),
+    }
+
+
+def _format_required(required: bool) -> str:
+    """Render a boolean required flag for tables."""
+    return "Yes" if required else "No"
+
+
+def _render_env_var_table(env_vars: list[dict]) -> list[str]:
+    """Render environment variables as a markdown table."""
+    if not env_vars:
+        return ["_No environment variables required._"]
+
+    lines = [
+        "| Variable | Required | Description |",
+        "|----------|----------|-------------|",
+    ]
+    for env_var in env_vars:
+        lines.append(
+            "| "
+            f"`{_markdown_cell(env_var.get('name', ''))}` | "
+            f"{_format_required(bool(env_var.get('required')))} | "
+            f"{_markdown_cell(env_var.get('description', ''))} |"
+        )
+    return lines
+
+
+def _render_markdown_section(title: str, body: str, level: int = 2) -> list[str]:
+    """Render a markdown section using prebuilt markdown body text."""
+    heading = "#" * level
+    return [f"{heading} {title}", "", body.strip()]
+
+
+def _humanize_every_ms(every_ms: int) -> str:
+    """Convert an interval in milliseconds to a compact human-readable string."""
+    seconds = max(every_ms // 1000, 0)
+    if seconds % 86400 == 0:
+        days = seconds // 86400
+        return f"Every {days} day{'s' if days != 1 else ''}"
+    if seconds % 3600 == 0:
+        hours = seconds // 3600
+        return f"Every {hours} hour{'s' if hours != 1 else ''}"
+    if seconds % 60 == 0:
+        minutes = seconds // 60
+        return f"Every {minutes} minute{'s' if minutes != 1 else ''}"
+    return f"Every {seconds} second{'s' if seconds != 1 else ''}"
+
+
+def _format_schedule(schedule: dict) -> str:
+    """Render a job schedule deterministically from the bundle schema."""
+    if not isinstance(schedule, dict):
+        return "Not specified"
+
+    kind = schedule.get("kind")
+    if kind == "cron":
+        expr = schedule.get("expr", "")
+        tz = schedule.get("tz")
+        if expr and tz:
+            return f"`{expr}` ({tz})"
+        if expr:
+            return f"`{expr}`"
+    elif kind == "every":
+        every_ms = schedule.get("everyMs")
+        if isinstance(every_ms, int):
+            return _humanize_every_ms(every_ms)
+    elif kind == "at":
+        return "One-time"
+
+    return _markdown_cell(schedule)
+
+
+def _extract_skill_topics(content: str) -> list[str]:
+    """Extract top-level section headings from a markdown skill body."""
+    if not isinstance(content, str):
+        return []
+
+    topics = []
+    for line in content.splitlines():
+        if line.startswith("## "):
+            heading = line[3:].strip()
+            if heading:
+                topics.append(heading)
+    return topics
+
+
+def _load_json_if_present(bundle: BundleLoader, relative_path: str) -> dict | None:
+    """Load a JSON artifact if it exists in the bundle."""
+    if not bundle.exists(relative_path):
+        return None
+    return bundle.load_json(relative_path)
+
+
+def _process_agents_channels_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render the Agents & Channels page directly from config bundle data."""
+    output_path = REPO_ROOT / page_spec["output_path"]
+    config = bundle.load_json("config.json")
+    config_agents = config.get("agents", [])
+    agent_summaries = {
+        agent.get("id", ""): agent
+        for agent in bundle.load_json("agents.json").get("agents", [])
+        if isinstance(agent, dict)
+    }
+
+    lines = [
+        "# Agents & Channels",
+        "",
+        "This page lists the agent identities, model configuration, channel policies, and session settings exported in the public bundle.",
+        "",
+        "Private execution permissions, tool allowlists, and detailed channel-to-agent bindings are intentionally not included in the public bundle, so this page documents only the configuration that is published.",
+        "",
+        "## Models",
+        "",
+        f"- **Primary model:** `{config.get('models', {}).get('primary', 'unknown')}`",
+    ]
+
+    fallbacks = config.get("models", {}).get("fallbacks", [])
+    if fallbacks:
+        lines.append(
+            f"- **Fallback models:** {', '.join(f'`{model}`' for model in fallbacks)}"
+        )
+    image_model = config.get("models", {}).get("imageModel", {})
+    if isinstance(image_model, dict) and image_model.get("primary"):
+        lines.append(f"- **Primary image model:** `{image_model['primary']}`")
+
+    lines.extend(["", "## Agents", ""])
+    lines.extend([
+        "| Agent | ID | Public Summary |",
+        "|-------|----|----------------|",
+    ])
+    for agent in config_agents:
+        agent_id = agent.get("id", "")
+        exported = agent_summaries.get(agent_id, {})
+        detail = _load_json_if_present(bundle, f"agents/{agent_id}.json") or {}
+        summary = exported.get("description") or detail.get("summary") or ""
+        if summary in {"This folder is home. Treat it that way.", "On session start:"}:
+            summary = ""
+        lines.append(
+            f"| {agent.get('emoji', '')} {agent.get('name', agent_id)} | "
+            f"`{agent_id}` | "
+            f"{_markdown_cell(summary or 'High-level role exported; private security details are omitted from the bundle.')} |"
+        )
+
+    for agent in config_agents:
+        agent_id = agent.get("id", "")
+        exported = agent_summaries.get(agent_id, {})
+        detail = _load_json_if_present(bundle, f"agents/{agent_id}.json") or {}
+        summary = exported.get("description") or detail.get("summary") or ""
+        if summary in {"This folder is home. Treat it that way.", "On session start:"}:
+            summary = ""
+        section_names = list((detail.get("sections") or {}).keys())
+
+        lines.extend([
+            "",
+            f"## {agent.get('emoji', '')} {agent.get('name', agent_id)}".strip(),
+            "",
+            f"- **Agent ID:** `{agent_id}`",
+            f"- **Public summary:** {summary or 'Not explicitly exported in the public bundle.'}",
+            "- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.",
+            "- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.",
+        ])
+        if section_names:
+            lines.append(
+                f"- **Published instruction sections:** {', '.join(f'`{name}`' for name in section_names)}"
+            )
+
+    lines.extend(["", "## Channels", ""])
+    lines.extend([
+        "| Channel | Enabled | DM Policy | Group Policy | Streaming |",
+        "|---------|---------|-----------|--------------|-----------|",
+    ])
+    for channel in config.get("channels", []):
+        lines.append(
+            f"| `{channel.get('type', '')}` | "
+            f"{_format_required(bool(channel.get('enabled')))} | "
+            f"{_markdown_cell(channel.get('dmPolicy', ''))} | "
+            f"{_markdown_cell(channel.get('groupPolicy', ''))} | "
+            f"{_markdown_cell((channel.get('streaming') or {}).get('mode', ''))} |"
+        )
+
+    session = config.get("session", {})
+    reset = session.get("reset", {}) if isinstance(session, dict) else {}
+    lines.extend([
+        "",
+        "## Session Settings",
+        "",
+        "| Setting | Value |",
+        "|---------|-------|",
+        f"| Scope | `{_markdown_cell(session.get('scope', 'unknown'))}` |",
+        f"| Reset mode | `{_markdown_cell(reset.get('mode', 'unknown'))}` |",
+        f"| Reset hour | `{_markdown_cell(reset.get('atHour', 'unknown'))}` |",
+    ])
+
+    content = format_markdown("\n".join(lines))
+    if dry_run:
+        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
+        return page_spec["output_path"]
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written: %s", output_path)
+    return page_spec["output_path"]
+
+
+def _process_jobs_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render the scheduled jobs page from jobs.json."""
+    output_path = REPO_ROOT / page_spec["output_path"]
+    jobs = bundle.load_json("jobs.json").get("jobs", [])
+
+    lines = [
+        "# Scheduled Jobs",
+        "",
+        "These scheduled jobs automate recurring maintenance, reminders, calendar refreshes, and health checks.",
+        "",
+        "## Job Summary",
+        "",
+        "| Job | Enabled | Schedule | Description |",
+        "|-----|---------|----------|-------------|",
+    ]
+    for job in jobs:
+        lines.append(
+            f"| {JOB_EMOJIS.get(job.get('name', ''), '⏱️')} {job.get('name', '')} | "
+            f"{_format_required(bool(job.get('enabled')))} | "
+            f"{_markdown_cell(_format_schedule(job.get('schedule', {})))} | "
+            f"{_markdown_cell(job.get('description', '') or '—')} |"
+        )
+
+    for job in jobs:
+        lines.extend([
+            "",
+            f"## {JOB_EMOJIS.get(job.get('name', ''), '⏱️')} {job.get('name', '')}",
+            "",
+            f"- **Enabled:** {_format_required(bool(job.get('enabled')))}",
+            f"- **Schedule:** {_format_schedule(job.get('schedule', {}))}",
+            f"- **Description:** {job.get('description') or 'No description exported.'}",
+        ])
+
+    content = format_markdown("\n".join(lines))
+    if dry_run:
+        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
+        return page_spec["output_path"]
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written: %s", output_path)
+    return page_spec["output_path"]
+
+
+def _process_services_overview_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render the services overview page from service bundle artifacts."""
+    output_path = REPO_ROOT / page_spec["output_path"]
+    services = bundle.load_json("services.json").get("services", [])
+
+    lines = [
+        "# Services",
+        "",
+        "OpenClaw services are background processes that keep long-running automations and shared runtimes available between conversations.",
+        "",
+        "## Service Summary",
+        "",
+        "| Service | Description | Docs |",
+        "|---------|-------------|------|",
+    ]
+
+    for service in services:
+        service_id = service.get("id", "")
+        link = f"[Read more →](services/{service_id})" if bundle.exists(f"services/{service_id}.json") else "—"
+        lines.append(
+            f"| {SERVICE_EMOJIS.get(service_id, '⚙️')} {service.get('name', service_id)} | "
+            f"{_markdown_cell(service.get('description', ''))} | "
+            f"{link} |"
+        )
+
+    for service in services:
+        service_id = service.get("id", "")
+        detail = _load_json_if_present(bundle, f"services/{service_id}.json") or {}
+        features = detail.get("features", [])
+        env_vars = detail.get("env_vars", [])
+        lines.extend([
+            "",
+            f"## {SERVICE_EMOJIS.get(service_id, '⚙️')} {service.get('name', service_id)}",
+            "",
+            detail.get("summary") or service.get("description", ""),
+        ])
+        if features:
+            lines.extend(["", "### Key Features", ""])
+            lines.extend(f"- {feature}" for feature in features)
+        lines.extend(["", "### Environment Variables", ""])
+        lines.extend(_render_env_var_table(env_vars))
+        if bundle.exists(f"services/{service_id}.json"):
+            lines.extend(["", f"[Read more →](services/{service_id})"])
+
+    content = format_markdown("\n".join(lines))
+    if dry_run:
+        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
+        return page_spec["output_path"]
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written: %s", output_path)
+    return page_spec["output_path"]
+
+
+def _process_service_detail_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render a service detail page from a single service JSON artifact."""
+    output_path = REPO_ROOT / page_spec["output_path"]
+    source_path = page_spec["sources"][0]["path"]
+    service = bundle.load_json(source_path)
+
+    lines = [
+        f"# {service.get('name', page_spec.get('front_matter', {}).get('title', 'Service'))}",
+        "",
+        service.get("summary", ""),
+    ]
+    for section_title, body in (service.get("sections") or {}).items():
+        lines.extend(["", *_render_markdown_section(section_title, body)])
+
+    content = format_markdown("\n".join(lines))
+    if dry_run:
+        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
+        return page_spec["output_path"]
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written: %s", output_path)
+    return page_spec["output_path"]
+
+
+def _process_skills_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render the skills overview page from skills.json."""
+    output_path = REPO_ROOT / page_spec["output_path"]
+    skills = bundle.load_json("skills.json").get("skills", [])
+
+    lines = [
+        "# Skills",
+        "",
+        "Skills are markdown-defined guidance modules that agents load for domain-specific rules, workflows, and operating context.",
+        "",
+        "Unlike plugins, skills do not execute code. They give agents shared instructions for how to use tools and interpret a problem domain.",
+        "",
+        "## Skill Summary",
+        "",
+        "| Skill | Used by | Description |",
+        "|-------|---------|-------------|",
+    ]
+    for skill in skills:
+        lines.append(
+            f"| {SKILL_EMOJIS.get(skill.get('name', ''), '🧠')} {skill.get('name', '')} | "
+            f"`{_markdown_cell(skill.get('agent', 'unknown'))}` | "
+            f"{_markdown_cell(skill.get('description', ''))} |"
+        )
+
+    for skill in skills:
+        topics = _extract_skill_topics(skill.get("content", ""))
+        lines.extend([
+            "",
+            f"## {SKILL_EMOJIS.get(skill.get('name', ''), '🧠')} {skill.get('name', '')}",
+            "",
+            skill.get("description", ""),
+            "",
+            f"- **Used by agent:** `{skill.get('agent', 'unknown')}`",
+        ])
+        if topics:
+            lines.append(f"- **Published sections:** {', '.join(f'`{topic}`' for topic in topics)}")
+
+    lines.extend([
+        "",
+        "## How Skills Differ from Plugins",
+        "",
+        "- **Skills** are bundled markdown knowledge for agents to read and follow.",
+        "- **Plugins** are executable integrations that expose callable tools and APIs.",
+        "- Skills can reference plugins, but they do not execute on their own.",
+    ])
+
+    content = format_markdown("\n".join(lines))
+    if dry_run:
+        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
+        return page_spec["output_path"]
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written: %s", output_path)
+    return page_spec["output_path"]
+
+
+def _format_release_change(change: object) -> str:
+    """Render a release change entry from structured or string data."""
+    if isinstance(change, str):
+        return change
+    if isinstance(change, dict):
+        title = (
+            change.get("title")
+            or change.get("summary")
+            or change.get("description")
+            or change.get("change")
+        )
+        category = change.get("category") or change.get("type")
+        if title and category:
+            return f"**{category}:** {title}"
+        if title:
+            return str(title)
+    return _markdown_cell(change)
+
+
+def _process_release_notes_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render release notes deterministically from release/changes.json."""
+    output_path = REPO_ROOT / page_spec["output_path"]
+    release = bundle.load_json("release/changes.json")
+    changes = release.get("changes", [])
+    from_version = release.get("from_version") or ""
+    to_version = release.get("to_version") or ""
+
+    lines = ["# Release Notes", ""]
+    if from_version or to_version:
+        lines.append(
+            f"Bundle diff: `{from_version or 'unknown'}` → `{to_version or 'unknown'}`"
+        )
+        lines.append("")
+
+    if changes:
+        lines.extend(["## Changes", ""])
+        lines.extend(f"- {_format_release_change(change)}" for change in changes)
+    else:
+        lines.append("No bundled changes were recorded for this release.")
+
+    content = format_markdown("\n".join(lines))
+    if dry_run:
+        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
+        return page_spec["output_path"]
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written: %s", output_path)
+    return page_spec["output_path"]
+
+
 def _ensure_h1(content: str, emoji: str, name: str) -> str:
     """Ensure content starts with a proper H1 heading.
 
@@ -206,6 +855,57 @@ def _build_index_table(entries: list, link_prefix: str = "plugins",
         count = e.get("tool_count", 0)
         table_lines.append(f"| {emoji} | {link} | {desc} | {count} |")
     return intro + "\n" + "\n".join(table_lines)
+
+
+def _process_plugin_bundle_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render plugin overview and child pages directly from structured bundle data."""
+    page_id = page_spec["id"]
+    output_path = REPO_ROOT / page_spec["output_path"]
+    chunk_pattern = page_spec["chunk_source"]
+    chunk_output_dir = page_spec.get("chunk_output_dir")
+    parent_title = page_spec.get("front_matter", {}).get("title", "")
+
+    logger.info("Processing bundle-rendered plugin page: %s -> %s", page_id, page_spec["output_path"])
+
+    chunk_paths = sorted(bundle.glob(chunk_pattern))
+    logger.info("Found %d plugin chunks for pattern: %s", len(chunk_paths), chunk_pattern)
+
+    if dry_run:
+        logger.info("[dry-run] Would generate bundle-rendered page: %s (%d chunks)", page_id, len(chunk_paths))
+        return page_spec["output_path"]
+
+    child_dir = None
+    if chunk_output_dir:
+        child_dir = REPO_ROOT / chunk_output_dir
+        child_dir.mkdir(parents=True, exist_ok=True)
+
+    plugin_entries = []
+    for nav_index, chunk_path in enumerate(chunk_paths, start=1):
+        plugin_json = bundle.load_json(chunk_path)
+        page_content, metadata = _render_plugin_page_content(plugin_json, chunk_path)
+        plugin_entries.append(metadata)
+
+        if child_dir:
+            child_front_matter = {
+                "layout": "default",
+                "title": metadata["name"],
+                "parent": parent_title,
+                "nav_order": nav_index,
+            }
+            child_path = child_dir / f"{metadata['id']}.md"
+            write_page(child_path, format_markdown(page_content), front_matter=child_front_matter)
+            logger.info("Written plugin child page: %s", child_path)
+
+    link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "plugins"
+    index_content = _build_index_table(plugin_entries, link_prefix, title=parent_title)
+    write_page(output_path, format_markdown(index_content), front_matter=page_spec.get("front_matter"))
+
+    logger.info("Written plugin index page: %s (%d plugins)", output_path, len(plugin_entries))
+    return page_spec["output_path"]
 
 
 def _process_chunked_page(
@@ -325,6 +1025,21 @@ def process_page(
     dry_run: bool = False,
 ) -> str:
     """Process a single page: select sources, build prompt, call LLM, write."""
+    strategy = page_spec.get("strategy")
+    if strategy == "bundle-agents-channels":
+        return _process_agents_channels_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-jobs":
+        return _process_jobs_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-services":
+        return _process_services_overview_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-service-detail":
+        return _process_service_detail_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-skills":
+        return _process_skills_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-release":
+        return _process_release_notes_page(page_spec, bundle, dry_run)
+    if page_spec.get("strategy") == "bundle-plugins":
+        return _process_plugin_bundle_page(page_spec, bundle, dry_run)
     if page_spec.get("strategy") == "chunked":
         return _process_chunked_page(page_spec, bundle, dry_run)
     page_id = page_spec["id"]

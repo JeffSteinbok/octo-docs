@@ -11,6 +11,7 @@ sources:
   - path: skills.json
 
 template: overview
+strategy: bundle-skills
 
 instructions:
   audience: external developers

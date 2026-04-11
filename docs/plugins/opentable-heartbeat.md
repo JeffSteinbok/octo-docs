@@ -1,14 +1,14 @@
 ---
 layout: default
-title: Opentable Heartbeat
+title: OpenTable Heartbeat
 parent: Plugins
 nav_order: 7
 ---
 
-# 🩺 Opentable Heartbeat
+# 🩺 OpenTable Heartbeat
 
-Health-check for the OpenTable skill. Alerts on failure via configured notification channel.
+Check whether the OpenTable integration is working and alert on failure
 
-### opentable_heartbeat_check
+### `opentable_heartbeat_check`
 
-Run OpenTable health check. Returns status (ok or error) and a message.
+Check whether the OpenTable integration is healthy.

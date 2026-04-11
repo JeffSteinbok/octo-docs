@@ -4,113 +4,102 @@ title: Scheduled Jobs
 nav_order: 6
 ---
 
-# Jobs
+# Scheduled Jobs
 
-## Overview
+These scheduled jobs automate recurring maintenance, reminders, calendar refreshes, and health checks.
 
-This page provides an overview of scheduled jobs that automate various tasks such as calendar fetching, health checks, reminders, and data backups. These jobs help streamline daily operations by running at specified times and intervals, ensuring timely notifications and maintenance.
+## Job Summary
 
-## Key Concepts
-
-- **Scheduled Jobs**: Automated tasks configured to run at specific times or intervals.
-- **Cron Scheduling**: Many jobs use cron expressions to define their execution schedule.
-- **Time Zone Awareness**: Schedules are set in the America/Los_Angeles time zone unless otherwise specified.
-- **Job Enablement**: Only enabled jobs are active and will execute as scheduled.
-
-## How It Works
-
-1. Each job is defined with a name, description, and schedule.
-2. Jobs are scheduled using either cron expressions or interval-based triggers.
-3. Enabled jobs execute automatically according to their defined schedule.
-4. Some jobs provide notifications or perform checks, while others fetch data or back up configurations.
-
----
+| Job | Enabled | Schedule | Description |
+|-----|---------|----------|-------------|
+| 🗓️ calendar-fetch-hourly | Yes | `0 7-17 * * *` (America/Los_Angeles) | Fetch calendars hourly 7am-5pm PST |
+| 💾 config-backup | Yes | Every 1 day | Backup openclaw.json to Git daily (only commits if changed) |
+| 📰 evening-briefing | Yes | `0 22 * * 0-4` (America/Los_Angeles) | Weekday 9 PM briefing: what's on tap tomorrow morning |
+| 📈 portfolio-closing-briefing | Yes | `0 21 * * 1-5` (America/Los_Angeles) | — |
+| ⏰ evening-alarm-reminder | Yes | `30 22 * * *` (America/Los_Angeles) | Nightly 10:30 PM: remind Jeff to check alarm if early morning work meeting |
+| 📦 Daily package delivery check | Yes | `0 8 * * *` (America/Los_Angeles) | — |
+| 🩺 daily-health-check | Yes | `0 9 * * *` (America/Los_Angeles) | Daily health check — verifies email sending works; DMs Jeff if anything fails |
+| 🍽️ Remind Jeff to reach out to Zack Ali for dinner | No | One-time | One-shot reminder to schedule another dinner with Zack Ali |
+| 🏅 WW Daily Points Check-in | Yes | `30 17 * * *` (America/Los_Angeles) | — |
+| ⚠️ late-early-conflict-morning-check | Yes | `0 10 * * *` (America/Los_Angeles) | 10 AM daily: flag if today has late meeting (after 6 PM) and tomorrow has early meeting (before 9 AM) |
+| 🦞 Lobster changelog weekly scan | Yes | `0 9 * * 1` (America/Los_Angeles) | Weekly Monday scan of lobster.shahine.com/changelog for new ideas |
+| 🌙 calendar-fetch-midnight | Yes | `0 0 * * *` (America/Los_Angeles) | Fetch calendars at midnight PST |
+| 🥗 ww-diet-sync | Yes | `0 4 * * *` (America/Los_Angeles) | — |
 
 ## 🗓️ calendar-fetch-hourly
 
-**Description:** Fetch calendars hourly 7am-5pm PST  
-**Schedule:** Every hour at the top of the hour, from 7:00 AM to 5:00 PM (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 7-17 * * *` (America/Los_Angeles)
+- **Description:** Fetch calendars hourly 7am-5pm PST
 
 ## 💾 config-backup
 
-**Description:** Backup openclaw.json to Git daily (only commits if changed)  
-**Schedule:** Every 24 hours
-
----
+- **Enabled:** Yes
+- **Schedule:** Every 1 day
+- **Description:** Backup openclaw.json to Git daily (only commits if changed)
 
 ## 📰 evening-briefing
 
-**Description:** Weekday 9 PM briefing: what's on tap tomorrow morning  
-**Schedule:** 9:00 PM, Monday to Friday (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 22 * * 0-4` (America/Los_Angeles)
+- **Description:** Weekday 9 PM briefing: what's on tap tomorrow morning
 
 ## 📈 portfolio-closing-briefing
 
-**Description:**  
-**Schedule:** 9:00 PM, Monday to Friday (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 21 * * 1-5` (America/Los_Angeles)
+- **Description:** No description exported.
 
 ## ⏰ evening-alarm-reminder
 
-**Description:** Nightly 10:30 PM: remind Jeff to check alarm if early morning work meeting  
-**Schedule:** 10:30 PM daily (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `30 22 * * *` (America/Los_Angeles)
+- **Description:** Nightly 10:30 PM: remind Jeff to check alarm if early morning work meeting
 
 ## 📦 Daily package delivery check
 
-**Description:**  
-**Schedule:** 8:00 AM daily (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 8 * * *` (America/Los_Angeles)
+- **Description:** No description exported.
 
 ## 🩺 daily-health-check
 
-**Description:** Daily health check — verifies email sending works; DMs Jeff if anything fails  
-**Schedule:** 9:00 AM daily (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 9 * * *` (America/Los_Angeles)
+- **Description:** Daily health check — verifies email sending works; DMs Jeff if anything fails
 
 ## 🍽️ Remind Jeff to reach out to Zack Ali for dinner
 
-**Description:** One-shot reminder to schedule another dinner with Zack Ali  
-**Schedule:** One-time (disabled)
-
----
+- **Enabled:** No
+- **Schedule:** One-time
+- **Description:** One-shot reminder to schedule another dinner with Zack Ali
 
 ## 🏅 WW Daily Points Check-in
 
-**Description:**  
-**Schedule:** 5:30 PM daily (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `30 17 * * *` (America/Los_Angeles)
+- **Description:** No description exported.
 
 ## ⚠️ late-early-conflict-morning-check
 
-**Description:** 10 AM daily: flag if today has late meeting (after 6 PM) and tomorrow has early meeting (before 9 AM)  
-**Schedule:** 10:00 AM daily (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 10 * * *` (America/Los_Angeles)
+- **Description:** 10 AM daily: flag if today has late meeting (after 6 PM) and tomorrow has early meeting (before 9 AM)
 
 ## 🦞 Lobster changelog weekly scan
 
-**Description:** Weekly Monday scan of lobster.shahine.com/changelog for new ideas  
-**Schedule:** 9:00 AM every Monday (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 9 * * 1` (America/Los_Angeles)
+- **Description:** Weekly Monday scan of lobster.shahine.com/changelog for new ideas
 
 ## 🌙 calendar-fetch-midnight
 
-**Description:** Fetch calendars at midnight PST  
-**Schedule:** 12:00 AM daily (America/Los_Angeles)
-
----
+- **Enabled:** Yes
+- **Schedule:** `0 0 * * *` (America/Los_Angeles)
+- **Description:** Fetch calendars at midnight PST
 
 ## 🥗 ww-diet-sync
 
-**Description:**  
-**Schedule:** 4:00 AM daily (America/Los_Angeles)
+- **Enabled:** Yes
+- **Schedule:** `0 4 * * *` (America/Los_Angeles)
+- **Description:** No description exported.

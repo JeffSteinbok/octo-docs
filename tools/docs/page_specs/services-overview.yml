@@ -13,6 +13,7 @@ sources:
   - path: services/*.json
 
 template: overview
+strategy: bundle-services
 
 instructions:
   audience: external developers and self-hosters

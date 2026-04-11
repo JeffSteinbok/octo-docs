@@ -1,29 +1,29 @@
 ---
 layout: default
-title: Opentable
+title: OpenTable
 parent: Plugins
 nav_order: 8
 ---
 
-# 🍽️ Opentable
+# 🍽️ OpenTable
 
-Check restaurant availability on OpenTable.
+Check restaurant availability on OpenTable
 
-### opentable_lookup
+### `opentable_lookup`
 
 Look up an OpenTable restaurant by its URL slug (e.g. 'carbone-new-york' from opentable.com/r/carbone-new-york) to get its numeric restaurant ID.
 
-| Name  | Type   | Description                                      |
-|-------|--------|--------------------------------------------------|
-| slug  | string | Restaurant URL slug from opentable.com/r/&lt;slug&gt; |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `slug` | string | Required | Restaurant URL slug from opentable.com/r/<slug>. |
 
-### opentable_availability
+### `opentable_availability`
 
 Check real-time availability for a restaurant on OpenTable. Returns available time slots with booking URLs.
 
-| Name          | Type    | Description                                 |
-|---------------|---------|---------------------------------------------|
-| restaurant_id | integer | Numeric restaurant ID (from opentable_lookup) |
-| date          | string  | Date in YYYY-MM-DD format                   |
-| party_size    | integer | Number of guests (default: 2)               |
-| time          | string  | Preferred time in HH:MM format (default: 19:00) |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `restaurant_id` | integer | Required | Numeric restaurant ID (from opentable_lookup). |
+| `date` | string | Required | Date in YYYY-MM-DD format. |
+| `party_size` | integer | Optional | Number of guests (default: 2). Default: `2`. |
+| `time` | string | Optional | Preferred time in HH:MM format (default: 19:00). Default: `19:00`. |

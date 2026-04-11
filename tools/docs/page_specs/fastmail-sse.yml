@@ -12,6 +12,7 @@ sources:
   - path: services/fastmail-sse.json
 
 template: overview
+strategy: bundle-service-detail
 
 instructions:
   audience: external developers and self-hosters

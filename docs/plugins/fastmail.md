@@ -7,99 +7,99 @@ nav_order: 2
 
 # 📧 Fastmail
 
-Send email, search and read inbox, and manage calendar events via JMAP and CalDAV.
+Send email and manage calendar events in Fastmail
 
-### fastmail_send
+### `fastmail_send`
 
 Send a plain-text email via Fastmail JMAP, with optional file attachments.
 
-| Name       | Type   | Description                        |
-|------------|--------|------------------------------------|
-| to         | string | Recipient email address(es)        |
-| cc         | array  | CC recipient email address(es)     |
-| subject    | string | Email subject line                 |
-| body       | string | Plain-text email body              |
-| signature  | string | Signature block appended after body|
-| attachment | array  | File path(s) to attach             |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `to` | string | Required | Recipient email address(es). |
+| `subject` | string | Required | Email subject line. |
+| `body` | string | Required | Plain-text email body. |
+| `cc` | array | Optional | CC recipient email address(es). |
+| `signature` | string | Optional | Signature block appended after body. |
+| `attachment` | array | Optional | File path(s) to attach. |
 
-### fastmail_search
+### `fastmail_search`
 
 Search emails in Fastmail inbox by keyword, sender, subject, or date range via JMAP.
 
-| Name      | Type    | Description                                      |
-|-----------|---------|--------------------------------------------------|
-| account_id| string  | JMAP account ID (defaults to FASTMAIL_ACCOUNT_ID env) |
-| query     | string  | Full-text search query                           |
-| from      | string  | Filter by sender email or domain                 |
-| to        | string  | Filter by recipient                              |
-| subject   | string  | Filter by subject text                           |
-| since     | string  | Emails after this date (YYYY-MM-DD)              |
-| before    | string  | Emails before this date (YYYY-MM-DD)             |
-| limit     | integer | Max results (default 20)                         |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `account_id` | string | Optional | JMAP account ID (defaults to FASTMAIL_ACCOUNT_ID env). |
+| `query` | string | Optional | Full-text search query. |
+| `from` | string | Optional | Filter by sender email or domain. |
+| `to` | string | Optional | Filter by recipient. |
+| `subject` | string | Optional | Filter by subject text. |
+| `since` | string | Optional | Emails after this date (YYYY-MM-DD). |
+| `before` | string | Optional | Emails before this date (YYYY-MM-DD). |
+| `limit` | integer | Optional | Max results (default 20). |
 
-### fastmail_read
+### `fastmail_read`
 
 Read a specific email by its JMAP email ID, returning full headers and body text.
 
-| Name      | Type   | Description                                      |
-|-----------|--------|--------------------------------------------------|
-| account_id| string | JMAP account ID (defaults to FASTMAIL_ACCOUNT_ID env) |
-| id        | string | JMAP email ID to read                            |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | string | Required | JMAP email ID to read. |
+| `account_id` | string | Optional | JMAP account ID (defaults to FASTMAIL_ACCOUNT_ID env). |
 
-### fastmail_inbox
+### `fastmail_inbox`
 
 Show recent emails from the Fastmail inbox, optionally filtered to unread only.
 
-| Name      | Type    | Description                                      |
-|-----------|---------|--------------------------------------------------|
-| account_id| string  | JMAP account ID (defaults to FASTMAIL_ACCOUNT_ID env) |
-| limit     | integer | Max emails to show (default 10)                  |
-| unread    | boolean | Only show unread emails                          |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `account_id` | string | Optional | JMAP account ID (defaults to FASTMAIL_ACCOUNT_ID env). |
+| `limit` | integer | Optional | Max emails to show (default 10). |
+| `unread` | boolean | Optional | Only show unread emails. |
 
-### fastmail_meeting
+### `fastmail_meeting`
 
 Create a calendar meeting invite via CalDAV and send iMIP invitations to attendees.
 
-| Name       | Type   | Description                                      |
-|------------|--------|--------------------------------------------------|
-| to         | string | Attendee email address(es)                       |
-| cc         | array  | CC recipient email address(es)                   |
-| subject    | string | Meeting title                                    |
-| start      | string | Start datetime in ISO format (e.g. 2026-03-15T14:00) |
-| duration   | string | Duration: '1h', '30m', '1.5h' (default: 1h)     |
-| location   | string | Meeting location                                 |
-| description| string | Meeting description / agenda                     |
-| timezone   | string | IANA timezone (default: America/Los_Angeles)     |
-| signature  | string | Signature block for the invite email             |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `to` | string | Required | Attendee email address(es). |
+| `subject` | string | Required | Meeting title. |
+| `start` | string | Required | Start datetime in ISO format (e.g. 2026-03-15T14:00). |
+| `cc` | array | Optional | CC recipient email address(es). |
+| `duration` | string | Optional | Duration: '1h', '30m', '1.5h' (default: 1h). |
+| `location` | string | Optional | Meeting location. |
+| `description` | string | Optional | Meeting description / agenda. |
+| `timezone` | string | Optional | IANA timezone (default: America/Los_Angeles). |
+| `signature` | string | Optional | Signature block for the invite email. |
 
-### fastmail_update_event
+### `fastmail_update_event`
 
 Find a calendar event by UID or text search and update its title, time, location, attendees, or status.
 
-| Name           | Type    | Description                                      |
-|----------------|---------|--------------------------------------------------|
-| uid            | string  | Exact event UID to target                        |
-| find           | string  | Free-text search across event title/description  |
-| new_title      | string  | Replace the event title                          |
-| new_start      | string  | New start time (ISO format)                      |
-| new_duration   | string  | New duration (e.g. '1h', '30m')                  |
-| new_location   | string  | Replace location                                 |
-| new_description| string  | Replace description/notes                        |
-| timezone       | string  | Timezone for --new-start (default: America/Los_Angeles) |
-| status         | string  | Update event status (confirmed, tentative, cancelled) |
-| add_attendee   | array   | Email(s) to add as attendees                     |
-| remove_attendee| array   | Email(s) to remove from attendees                |
-| no_notify      | boolean | Skip iMIP update notifications                   |
-| force          | boolean | Update all matching events when multiple found   |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `uid` | string | Optional | Exact event UID to target. |
+| `find` | string | Optional | Free-text search across event title/description. |
+| `new_title` | string | Optional | Replace the event title. |
+| `new_start` | string | Optional | New start time (ISO format). |
+| `new_duration` | string | Optional | New duration (e.g. '1h', '30m'). |
+| `new_location` | string | Optional | Replace location. |
+| `new_description` | string | Optional | Replace description/notes. |
+| `timezone` | string | Optional | Timezone for --new-start (default: America/Los_Angeles). |
+| `status` | string | Optional | Update event status. Allowed: `confirmed`, `tentative`, `cancelled`. |
+| `add_attendee` | array | Optional | Email(s) to add as attendees. |
+| `remove_attendee` | array | Optional | Email(s) to remove from attendees. |
+| `no_notify` | boolean | Optional | Skip iMIP update notifications. |
+| `force` | boolean | Optional | Update all matching events when multiple found. |
 
-### fastmail_query_events
+### `fastmail_query_events`
 
 Query calendar events by date range, text, attendee email, or UID. Shows attendee RSVP status.
 
-| Name    | Type   | Description                                            |
-|---------|--------|--------------------------------------------------------|
-| after   | string | Only events starting at or after this date (ISO, e.g. 2026-03-01) |
-| before  | string | Only events starting before this date (ISO, e.g. 2026-04-01)      |
-| text    | string | Filter by text match on title/description              |
-| attendee| string | Filter to events including this attendee email         |
-| uid     | string | Return the single event with this exact UID            |
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `after` | string | Optional | Only events starting at or after this date (ISO, e.g. 2026-03-01). |
+| `before` | string | Optional | Only events starting before this date (ISO, e.g. 2026-04-01). |
+| `text` | string | Optional | Filter by text match on title/description. |
+| `attendee` | string | Optional | Filter to events including this attendee email. |
+| `uid` | string | Optional | Return the single event with this exact UID. |

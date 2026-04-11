@@ -43,8 +43,8 @@
     },
     "strategy": {
       "type": "string",
-      "description": "Generation strategy: default sends all sources in one prompt; chunked splits glob sources into individual LLM calls",
-      "enum": ["default", "chunked"]
+      "description": "Generation strategy: default sends all sources in one prompt; chunked splits glob sources into individual LLM calls; bundle-* strategies render pages directly from structured bundle data without LLM calls",
+      "enum": ["default", "chunked", "bundle-agents-channels", "bundle-jobs", "bundle-services", "bundle-service-detail", "bundle-skills", "bundle-release", "bundle-plugins"]
     },
     "chunk_source": {
       "type": "string",

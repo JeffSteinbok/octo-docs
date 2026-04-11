@@ -4,84 +4,78 @@ title: Agents & Channels
 nav_order: 2
 ---
 
-# Agents and Channels
+# Agents & Channels
 
-## Overview
+This page lists the agent identities, model configuration, channel policies, and session settings exported in the public bundle.
 
-This system is configured with multiple agents and channels to facilitate communication between users and automated agents. Agents are specialized entities with distinct roles and permissions, while channels serve as the interface connecting users to these agents. The configuration defines how agents are set up, their security models, and how channels bind users to agents.
+Private execution permissions, tool allowlists, and detailed channel-to-agent bindings are intentionally not included in the public bundle, so this page documents only the configuration that is published.
 
-## Key Concepts
+## Models
 
-- **Agents**: Automated entities with specific roles, permissions, and access to tools or plugins.
-- **Channels**: Communication interfaces (such as Discord or Telegram) that connect users to agents.
-- **Bindings**: Associations between channels and agents, determining which agents are accessible via each channel.
-- **Security Model**: Each agent has defined permissions, exec settings, and access to tools/plugins.
-- **Channel Policies**: Channels enforce policies for direct messages and group interactions.
+- **Primary model:** `github-copilot/claude-sonnet-4.6`
+- **Fallback models:** `github-copilot/gpt-5.4`
+- **Primary image model:** `github-copilot/claude-sonnet-4.6`
 
-## How It Works
+## Agents
 
-1. **Agent Configuration**: Each agent is defined with a unique identifier, name, emoji, and security settings including permissions and exec capabilities.
-2. **Channel Setup**: Channels are configured with type, enabled status, and policies for direct messages and group access.
-3. **Binding Agents to Channels**: Channels are bound to agents, allowing users to interact with specific agents through the channel interface.
-4. **User Interaction**: Users connect to agents via channels, subject to channel policies and agent permissions.
-
----
+| Agent | ID | Public Summary |
+|-------|----|----------------|
+| 🐙 Octo | `main` | High-level role exported; private security details are omitted from the bundle. |
+| 📬 mail-agent | `mail` | High-level role exported; private security details are omitted from the bundle. |
+| 🔑 Root | `root` | High-level role exported; private security details are omitted from the bundle. |
+| 👨‍👩‍👧‍👦 Family | `family` | High-level role exported; private security details are omitted from the bundle. |
+| 📷 HA Hooks | `hass-hooks` | handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens on any camera, pull all outdoor cameras, do a full situational analysis, and send a concise Discord summary with the most relevant image. |
 
 ## 🐙 Octo
 
-- **Agent ID**: main
-- **Security Model**:
-  - Exec: Not specified
-  - Permissions: Not specified
-  - Tools/Plugins: Not specified
+- **Agent ID:** `main`
+- **Public summary:** Not explicitly exported in the public bundle.
+- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
+- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
+- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Discord Messaging Style`, `Safety`, `Web Fetching & Browsing`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Alarm Reminder Logic`, `Package Tracking`, `Security Guardrails`, `Theater Seating Charts`, `Make It Yours`
 
-## 📧 mail-agent
+## 📬 mail-agent
 
-- **Agent ID**: mail
-- **Security Model**:
-  - Exec: Not specified
-  - Permissions: Not specified
-  - Tools/Plugins: Not specified
-- **Note**: This agent is currently unused.
+- **Agent ID:** `mail`
+- **Public summary:** Not explicitly exported in the public bundle.
+- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
+- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
+- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Safety`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Make It Yours`
 
 ## 🔑 Root
 
-- **Agent ID**: root
-- **Security Model**:
-  - Exec: Not specified
-  - Permissions: Not specified
-  - Tools/Plugins: Not specified
+- **Agent ID:** `root`
+- **Public summary:** Not explicitly exported in the public bundle.
+- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
+- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
+- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Safety`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Make It Yours`
 
 ## 👨‍👩‍👧‍👦 Family
 
-- **Agent ID**: family
-- **Security Model**:
-  - Exec: Not specified
-  - Permissions: Not specified
-  - Tools/Plugins: Not specified
+- **Agent ID:** `family`
+- **Public summary:** Not explicitly exported in the public bundle.
+- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
+- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
 
 ## 📷 HA Hooks
 
-- **Agent ID**: hass-hooks
-- **Security Model**:
-  - Exec: Not specified
-  - Permissions: Not specified
-  - Tools/Plugins: Not specified
-
----
+- **Agent ID:** `hass-hooks`
+- **Public summary:** handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens on any camera, pull all outdoor cameras, do a full situational analysis, and send a concise Discord summary with the most relevant image.
+- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
+- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
+- **Published instruction sections:** `What arrives`, `Step 1: Decide if it's interesting`, `Step 2: Check presence`, `Step 3: Pull all outdoor + garage cameras`, `Camera entity → name mapping`, `Step 4: Send to Discord`, `Tool allowlist`
 
 ## Channels
 
-| Channel Type | Enabled | DM Policy | Group Policy | Streaming Mode | Bound Agents |
-|--------------|---------|-----------|--------------|---------------|--------------|
-| Discord      | true    | pairing   | allowlist    | off           | All agents   |
-| Telegram     | false   | pairing   | allowlist    | off           | All agents   |
+| Channel | Enabled | DM Policy | Group Policy | Streaming |
+|---------|---------|-----------|--------------|-----------|
+| `discord` | Yes | pairing | allowlist | off |
+| `telegram` | No | pairing | allowlist | off |
 
-- **Discord**: Enabled and connects users to all configured agents. Direct messages require pairing, and group access is managed via an allowlist. Streaming is disabled.
-- **Telegram**: Currently disabled. When enabled, it would connect users to all agents with similar policies as Discord.
+## Session Settings
 
----
-
-## How Channels Connect Users to Agents
-
-Channels serve as the entry point for users to interact with agents. Each channel enforces policies for direct messages and group interactions, ensuring secure and controlled access to agents. When a user connects via a channel, they are routed to the appropriate agent based on channel bindings and policies.
+| Setting | Value |
+|---------|-------|
+| Scope | `per-channel-peer` |
+| Reset mode | `idle` |
+| Reset hour | `4` |

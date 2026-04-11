@@ -11,6 +11,7 @@ sources:
   - path: release/changes.json
 
 template: release_notes
+strategy: bundle-release
 
 instructions:
   audience: existing users

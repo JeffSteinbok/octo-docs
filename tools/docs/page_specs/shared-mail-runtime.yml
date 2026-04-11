@@ -1,0 +1,18 @@
+id: shared-mail-runtime
+
+output_path: docs/services/shared_mail_runtime.md
+
+front_matter:
+  layout: default
+  title: Shared Mail Runtime
+  parent: Services
+  nav_order: 2
+
+sources:
+  - path: services/shared_mail_runtime.json
+
+template: overview
+strategy: bundle-service-detail
+
+instructions:
+  audience: external developers and self-hosters

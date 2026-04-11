@@ -1,5 +1,6 @@
 """Tests for page generation (LLM client and orchestration), with mocked LLM."""
 
+import json
 import sys
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -79,3 +80,163 @@ def test_generate_page_calls_openai():
             reload(gp)
             result = gp.generate_page("test prompt")
             assert "Generated" in result
+
+
+def test_process_page_bundle_plugins_renders_without_llm(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    plugins_dir = bundle_root / "plugins"
+    plugins_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["plugins/github.json"]}),
+        encoding="utf-8",
+    )
+    (plugins_dir / "github.json").write_text(
+        json.dumps(
+            {
+                "plugin": "github",
+                "summary": "Manage GitHub issues.",
+                "tools": [
+                    {
+                        "name": "github_list_issues",
+                        "description": "List issues in a repository.",
+                        "parameters": {
+                            "owner": {
+                                "type": "string",
+                                "required": True,
+                                "description": "Repository owner",
+                            },
+                            "state": {
+                                "type": "string",
+                                "required": False,
+                                "description": "Issue state",
+                                "enum": ["open", "closed"],
+                                "default": "open",
+                            },
+                        },
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "plugins-overview",
+        "output_path": "docs/plugins.md",
+        "template": "overview",
+        "strategy": "bundle-plugins",
+        "chunk_source": "plugins/*.json",
+        "chunk_output_dir": "docs/plugins",
+        "front_matter": {
+            "layout": "default",
+            "title": "Plugins",
+            "nav_order": 3,
+            "has_children": True,
+        },
+        "sources": [
+            {"path": "plugins/*.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/plugins.md"
+    index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
+    child_content = (repo_root / "docs/plugins/github.md").read_text(encoding="utf-8")
+
+    assert "[GitHub](plugins/github)" in index_content
+    assert "# 🐙 GitHub" in child_content
+    assert "### `github_list_issues`" in child_content
+    assert "| Name | Type | Required | Description |" in child_content
+    assert "| `owner` | string | Required | Repository owner. |" in child_content
+    assert "Allowed: `open`, `closed`." in child_content
+    assert "Default: `open`." in child_content
+
+
+def test_process_page_bundle_service_detail_renders_without_llm(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    services_dir = bundle_root / "services"
+    services_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["services/demo.json"]}),
+        encoding="utf-8",
+    )
+    (services_dir / "demo.json").write_text(
+        json.dumps(
+            {
+                "service": "demo",
+                "name": "Demo Service",
+                "summary": "Structured demo service summary.",
+                "sections": {
+                    "Features": "- One\n- Two",
+                    "Configuration": "Use deterministic bundle data.",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "demo-service",
+        "output_path": "docs/services/demo.md",
+        "template": "overview",
+        "strategy": "bundle-service-detail",
+        "front_matter": {
+            "layout": "default",
+            "title": "Demo Service",
+            "parent": "Services",
+            "nav_order": 1,
+        },
+        "sources": [
+            {"path": "services/demo.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/services/demo.md"
+    content = (repo_root / "docs/services/demo.md").read_text(encoding="utf-8")
+    assert "# Demo Service" in content
+    assert "Structured demo service summary." in content
+    assert "## Features" in content
+    assert "Use deterministic bundle data." in content
+
+
+def test_all_current_page_specs_use_bundle_strategies():
+    import docs.generation.generate_all as ga
+
+    specs = ga.get_all_page_specs()
+    assert specs, "Expected page specs to be present"
+    for page_id, spec in specs.items():
+        strategy = spec.get("strategy")
+        assert strategy and strategy.startswith("bundle-"), (
+            f"Expected {page_id} to use a deterministic bundle strategy, got {strategy!r}"
+        )
