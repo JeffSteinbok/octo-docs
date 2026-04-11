@@ -82,6 +82,11 @@ The USPS path has two rule layers:
 1. **FastMail `mail_rules`** decide whether an email should invoke `process_usps_digest`
 2. **USPS `rules.json`** classifies each analyzed mailpiece after vision
 
+**USPS sub-phases**
+
+- **Vision analysis (Phase 2A):** USPS scan images are staged to the configured `vision_agent`, which returns structured mailpiece data
+- **Post-processing (Phase 2B):** the mail workspace applies USPS rules/config, updates state/history, sends USPS notifications, and prepares any handoff or memory output
+
 ## Configuration
 
 ### FastMail Config File
