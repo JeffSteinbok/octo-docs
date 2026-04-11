@@ -11,12 +11,13 @@ Search and read messages from Outlook inboxes
 
 ### `outlook_inbox`
 
-List recent messages from the Outlook inbox.
+List recent messages from the Outlook inbox, or any other mail folder.
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `limit` | integer | Optional | Maximum number of messages to return (default 10). |
-| `unread` | boolean | Optional | If true, return only unread messages. |
+| `unread` | boolean | Optional | Only show unread messages. |
+| `folder` | string | Optional | Mail folder to read (default: inbox). Well-known folder names: inbox, junkemail, deleteditems, sentitems, drafts, outbox, archive, clutter, conflicts, conversationhistory, localfailures, recoverableitemsdeletions, scheduled, searchfolders, serverfailures, syncissues. |
 
 ### `outlook_search`
 
