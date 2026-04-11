@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "tools/docs/**"
+  repository_dispatch:
+    types: [bundle-ready]
   workflow_dispatch:
     inputs:
       artifact_name:
@@ -52,6 +54,11 @@ jobs:
             echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=true" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "artifact_name=${{ github.event.client_payload.artifact_name || 'docs-bundle' }}" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=${{ github.event.client_payload.run_id || '' }}" >> "$GITHUB_OUTPUT"
+            echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
+            echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
           else
             echo "artifact_name=${{ inputs.artifact_name }}" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=${{ inputs.artifact_run_id }}" >> "$GITHUB_OUTPUT"

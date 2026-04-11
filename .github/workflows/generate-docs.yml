@@ -1,14 +1,6 @@
 name: Generate Public Docs
 
 on:
-  # Triggered automatically when the private repo dispatches a `bundle-ready` event.
-  # Expected client_payload fields:
-  #   artifact_name  - name of the uploaded artifact containing the bundle
-  #   run_id         - run ID of the workflow that uploaded the artifact
-  #   regenerate_all - "true" to force a full rebuild (optional, default "false")
-  repository_dispatch:
-    types: [bundle-ready]
-
   # Manual trigger — either supply an artifact_name to download from a previous
   # workflow run, or provide a bundle_path that already exists in the workspace.
   workflow_dispatch:
@@ -82,13 +74,7 @@ jobs:
       - name: Resolve inputs
         id: inputs
         run: |
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            echo "use_artifact=true"                                                 >> "$GITHUB_OUTPUT"
-            echo "artifact_name=${{ github.event.client_payload.artifact_name }}"   >> "$GITHUB_OUTPUT"
-            echo "run_id=${{ github.event.client_payload.run_id }}"                 >> "$GITHUB_OUTPUT"
-            echo "bundle_path=./bundle"                                              >> "$GITHUB_OUTPUT"
-            echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "workflow_call" ]; then
+          if [ "${{ github.event_name }}" = "workflow_call" ]; then
             ARTIFACT_NAME="${{ inputs.artifact_name }}"
             if [ -n "$ARTIFACT_NAME" ]; then
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
