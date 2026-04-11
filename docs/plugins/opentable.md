@@ -5,7 +5,7 @@ parent: Plugins
 nav_order: 8
 ---
 
-🍽️ Opentable
+# 🍽️ Opentable
 
 Check restaurant availability on OpenTable.
 
@@ -21,9 +21,9 @@ Look up an OpenTable restaurant by its URL slug (e.g. 'carbone-new-york' from op
 
 Check real-time availability for a restaurant on OpenTable. Returns available time slots with booking URLs.
 
-| Name          | Type    | Description                                  |
-|---------------|---------|----------------------------------------------|
-| restaurant_id | integer | Numeric restaurant ID (from opentable_lookup)|
-| date          | string  | Date in YYYY-MM-DD format                    |
-| party_size    | integer | Number of guests (default: 2)                |
+| Name          | Type    | Description                                 |
+|---------------|---------|---------------------------------------------|
+| restaurant_id | integer | Numeric restaurant ID (from opentable_lookup) |
+| date          | string  | Date in YYYY-MM-DD format                   |
+| party_size    | integer | Number of guests (default: 2)               |
 | time          | string  | Preferred time in HH:MM format (default: 19:00) |

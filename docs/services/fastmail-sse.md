@@ -9,35 +9,37 @@ nav_order: 1
 
 ## Overview
 
-The FastMail SSE Service is a real-time email ingestion daemon that connects to FastMail's JMAP EventSource. It normalizes each new message into a provider-agnostic mail envelope, applies deterministic rules, and executes Python actions. The service enables real-time notifications, package tracking, and meeting response alerts, supporting multiple mailboxes and accounts. Its rule/action runtime is designed for extensibility to other email sources in the future.
+The FastMail SSE Service is a real-time email ingestion daemon that connects to FastMail's JMAP EventSource. It normalizes each new message into a provider-agnostic mail envelope, applies deterministic rules, and executes Python actions. Designed for extensibility, its rule/action runtime can be shared with future email sources. The service enables real-time notifications, package tracking, and meeting update alerts, supporting both personal and shared mailboxes.
 
 ## Key Concepts
 
-- Real-time email ingestion via FastMail JMAP SSE endpoint
-- Shared mail pipeline: `source -> envelope -> rules -> Python actions`
-- Per-account rules system with legacy and deterministic rule types
-- Multi-mailbox monitoring for personal and shared mailboxes
-- Package tracking detection and automatic management
+- Real-time email monitoring via FastMail JMAP SSE endpoint
+- Shared mail pipeline: source → envelope → rules → Python actions
+- Per-account legacy rules: `notify_all`, `notify_meeting_updates`, `detect_tracking`
+- Deterministic mail rules for explicit matching and actions
+- Multi-mailbox monitoring (personal and shared)
+- Automatic package tracking and management
 - Meeting response notifications
-- Structured notification formatting for various scenarios
+- USPS digest processing with scan vision and structured follow-up
+- Notification delivery via `openclaw message send`
 
 ## Features
 
 - **Shared mail pipeline**: Processes emails through a unified flow—source, envelope, rules, and Python actions.
 - **Per-account legacy rules**: Supports `notify_all`, `notify_meeting_updates`, and `detect_tracking` for backward compatibility.
-- **Deterministic mail rules**: Allows explicit matching and action attachment for source/account/sender/subject.
+- **Deterministic mail rules**: Allows explicit matching on source, account, sender, and subject for custom actions.
 - **Multi-mailbox monitoring**: Monitors multiple inboxes, including personal and shared mailboxes.
-- **Package tracking detection**: Automatically detects and registers tracking numbers from incoming emails.
+- **Package tracking detection**: Automatically detects and registers tracking numbers from emails.
 - **Meeting updates**: Notifies on calendar accept, decline, or tentative responses.
-- **USPS digest processing**: Downloads images and HTML, performs scan vision, sends direct alerts, and forwards structured results.
-- **Spam/noreply sender filtering**: Skips notifications for spam and noreply senders.
-- **Notification delivery**: Sends notifications via `openclaw message send --channel <NOTIFY_CHANNEL> --target <NOTIFY_TARGET>`.
+- **USPS digest processing**: Downloads images and HTML, performs scan vision, sends USPS alerts, and forwards structured results.
+- **Spam/noreply filtering**: Skips notifications for spam and noreply senders.
+- **Notification delivery**: Sends notifications via `openclaw message send` with configurable channel and target.
 
 ## Configuration
 
 ### Account Rules Config File
 
-Create `~/.openclaw/services/fastmail-sse-config.json`. Example:
+Create `~/.openclaw/services/fastmail-sse-config.json` (see `config.example.json` for reference):
 
 ```json
 {
@@ -63,69 +65,67 @@ Create `~/.openclaw/services/fastmail-sse-config.json`. Example:
         {"name": "process_usps_digest", "params": {"agent": "main", "workspace_agent": "mail", "memory_agent": "main", "vision_agent": "mail"}}
       ],
       "continue": true
+    },
+    {
+      "id": "forwarded-usps-informed-delivery",
+      "accounts": ["<account-id-2>"],
+      "match": {
+        "sender_email": "you@example.com",
+        "subject_contains": ["Informed Delivery", "Daily Digest"],
+        "body_contains": ["USPS", "Informed Delivery"]
+      },
+      "actions": [
+        {"name": "process_usps_digest", "params": {"agent": "main", "workspace_agent": "mail", "memory_agent": "main", "vision_agent": "mail"}}
+      ],
+      "continue": true
     }
   ]
 }
 ```
 
-#### Account ID
+**Account ID**: FastMail JMAP account ID (find via JMAP session endpoint or FastMail API docs)
 
-Your FastMail JMAP account ID.
-
-#### Label
-
-Human-readable label for the account, displayed in multi-account notifications.
+**Label**: Human-readable label for the account (displayed in multi-account notifications)
 
 #### Legacy `accounts.*.rules`
 
-| Rule                  | Description                                                         |
-|-----------------------|---------------------------------------------------------------------|
-| `notify_all`          | Notify on all incoming mail (minus spam/unsubscribe filter)         |
-| `notify_meeting_updates` | Notify only on calendar accept/decline/tentative responses        |
-| `detect_tracking`     | Scan email body for tracking numbers and register via package tracking |
+| Rule                | Description                                                        |
+|---------------------|--------------------------------------------------------------------|
+| `notify_all`        | Notify on all incoming mail (minus spam/unsubscribe filter)        |
+| `notify_meeting_updates` | Notify only on calendar accept/decline/tentative responses     |
+| `detect_tracking`   | Scan email body for tracking numbers and register via package tracking |
 
+**Behavior:**
 - `notify_all`: All emails trigger notifications (subject to spam filtering)
 - `notify_meeting_updates`: Only calendar responses trigger notifications
-- `detect_tracking`: Email bodies are scanned for tracking numbers and automatically added to package tracking
-- Multiple rules can be combined
+- `detect_tracking`: Email bodies scanned for tracking numbers; packages auto-added
+- Multiple rules can be combined per account
 
 ### Deterministic `mail_rules`
 
-Attach explicit Python actions to deterministic matches. Rules are evaluated in order; set `"continue": true` to evaluate later rules.
+Top-level `mail_rules` attach explicit Python actions to deterministic matches. Rules are evaluated in order; set `"continue": true` to evaluate later rules.
 
-Supported match fields:
+**Supported match fields:**
 
-| Field                | Meaning                                      |
-|----------------------|----------------------------------------------|
-| `sender_email`       | Exact sender address match                   |
-| `sender_domain`      | Sender domain or subdomain match             |
-| `sender_name_contains` | Case-insensitive sender-name substring      |
-| `subject`            | Exact subject match                          |
-| `subject_contains`   | Case-insensitive subject substring           |
-| `subject_prefix`     | Case-insensitive subject prefix              |
-| `subject_regex`      | Case-insensitive regex                       |
-| `body_contains`      | Case-insensitive substring across text + HTML|
-| `has_attachments`    | Boolean attachment hint                      |
+| Field                | Meaning                                         |
+|----------------------|-------------------------------------------------|
+| `sender_email`       | Exact sender address match                      |
+| `sender_domain`      | Sender domain or subdomain match                |
+| `sender_name_contains` | Case-insensitive sender-name substring        |
+| `subject`            | Exact subject match                             |
+| `subject_contains`   | Case-insensitive subject substring              |
+| `subject_prefix`     | Case-insensitive subject prefix                 |
+| `subject_regex`      | Case-insensitive regex                          |
+| `body_contains`      | Case-insensitive substring across text + HTML   |
+| `has_attachments`    | Boolean attachment hint                         |
 
-Built-in actions:
+**Built-in actions:**
 
-| Action               | Behavior                                     |
-|----------------------|----------------------------------------------|
-| `notify_email`       | Formats and sends the email notification      |
-| `detect_tracking`    | Runs the package-tracking extractor/add-remove flow |
-| `process_usps_digest`| Downloads image attachments and HTML, stages scan vision, sends USPS notifications, and forwards structured output |
-
-### Environment Variables
-
-| Variable                | Required | Description                                              |
-|-------------------------|----------|----------------------------------------------------------|
-| `FASTMAIL_JMAP_TOKEN`   | Yes      | JMAP authentication token (or put in `~/.fastmail_token`)|
-| `FASTMAIL_INBOX_IDS`    | Yes*     | Comma-separated mailbox IDs to monitor                   |
-| `FASTMAIL_INBOX_ID`     | Yes*     | Single mailbox ID (legacy, use INBOX_IDS for multiple)   |
-| `NOTIFY_CHANNEL`        | No       | Notification channel (default: `discord`)                |
-| `NOTIFY_TARGET`         | Yes      | Target ID for the notification channel                   |
-
-*Either `FASTMAIL_INBOX_IDS` or `FASTMAIL_INBOX_ID` is required.
+| Action               | Behavior                                        |
+|----------------------|-------------------------------------------------|
+| `notify_email`       | Formats and sends the email notification         |
+| `detect_tracking`    | Runs package-tracking extractor/add-remove flow  |
+| `process_usps_digest`| Downloads image attachments + HTML, stages scan vision, sends USPS notifications, and forwards structured output |
 
 ### Configuration Examples
 
@@ -146,8 +146,8 @@ Built-in actions:
 }
 ```
 
-- Personal account: Get notified for all emails + auto-track packages
-- Work account: Only get notified for meeting responses
+- Personal: Notified for all emails + auto-track packages
+- Work: Notified only for meeting responses
 
 #### Example 2: Package Tracking Only
 
@@ -162,7 +162,7 @@ Built-in actions:
 }
 ```
 
-- No notifications, but all tracking numbers are automatically registered
+- No notifications, but all tracking numbers are registered
 
 #### Example 3: USPS Informed Delivery via action pipeline
 
@@ -170,7 +170,7 @@ Built-in actions:
 {
   "accounts": {
     "<account-id>": {
-      "label": "Personal",
+      "label": "jeff@steinbok.net",
       "rules": ["notify_all"]
     }
   },
@@ -195,14 +195,34 @@ Built-in actions:
         }
       ],
       "continue": true
+    },
+    {
+      "id": "forwarded-usps-informed-delivery",
+      "accounts": ["<account-id>"],
+      "match": {
+        "sender_email": "jeff@steinbok.net",
+        "subject_contains": ["Informed Delivery", "Daily Digest"],
+        "body_contains": ["USPS", "Informed Delivery"]
+      },
+      "actions": [
+        {
+          "name": "process_usps_digest",
+          "params": {
+            "agent": "main",
+            "workspace_agent": "mail",
+            "memory_agent": "main",
+            "vision_agent": "mail",
+            "vision_backend": "auto"
+          }
+        }
+      ],
+      "continue": true
     }
-  ]
-}
   ]
 }
 ```
 
-- Downloads digest assets, performs scan vision, sends USPS notifications, and forwards structured summary
+- Downloads digest assets, performs scan vision, sends urgent USPS notifications, and hands structured summary to follow-up agent
 
 #### Example 4: Multiple Mailboxes (Personal + Shared)
 
@@ -217,55 +237,61 @@ Built-in actions:
 }
 ```
 
-Environment variables:
+Set environment variable:
 
 ```bash
 FASTMAIL_INBOX_IDS=personal_inbox_id,shared_team_inbox_id
 ```
 
-Notifications include the mailbox name:
+Notifications include mailbox name:
 
 ```
 [Inbox] 📧 John Doe: Meeting tomorrow
 [Shared Team] 📧 Jane Smith: Project update
 ```
 
+### Environment Variables
+
+| Variable                | Required | Description                                               |
+|-------------------------|----------|-----------------------------------------------------------|
+| `FASTMAIL_JMAP_TOKEN`   | Yes      | JMAP authentication token (or put in `~/.fastmail_token`) |
+| `FASTMAIL_INBOX_IDS`    | Yes*     | Comma-separated mailbox IDs to monitor                    |
+| `FASTMAIL_INBOX_ID`     | Yes*     | Single mailbox ID (legacy, use INBOX_IDS for multiple)    |
+| `NOTIFY_CHANNEL`        | No       | Notification channel (default: `discord`)                 |
+| `NOTIFY_TARGET`         | Yes      | Target ID for the notification channel                    |
+
+*Either `FASTMAIL_INBOX_IDS` or `FASTMAIL_INBOX_ID` is required.
+
 ## Package Tracking
 
-When the `detect_tracking` rule is active, the daemon uses a rules-based extraction pipeline for package tracking.
+When the `detect_tracking` rule is active, the daemon applies a rules-based extraction pipeline (no LLM inference per email):
 
 ### Extraction Pipeline
 
-1. **Sender allowlist check**: Only emails from known carriers and retailers are scanned. Known senders include:
-   - `ups.com`
-   - `fedex.com`
-   - `usps.com`
-   - `dhl.com`
-   - `amazon.com`
-   - `narvar.com`
-   - `aftership.com`
-   - `shipbob.com`
-   - `shipstation.com`
-   - `easypost.com`
-   - `noreply@nespresso.com`
+1. **Sender allowlist check**  
+   Only emails from known shipping carriers and retailers are scanned:
+   - `ups.com`, `fedex.com`, `usps.com`, `dhl.com`, `amazon.com`, `narvar.com`, `aftership.com`, `shipbob.com`, `shipstation.com`, `easypost.com`, `noreply@nespresso.com`
 
-2. **Inline regex scan**: Scans email text for carrier tracking number patterns:
-   - UPS: `1Z[A-Z0-9]{16}`
-   - FedEx: 12, 15, or 20-digit numbers
-   - USPS: 20-22 digit numbers (often starts with 94, 92, 93, or 95)
-   - Amazon: `TBA[0-9]{12}US`
+2. **Inline regex scan**  
+   Scans email text for carrier tracking number patterns:
+   - **UPS**: `1Z[A-Z0-9]{16}`
+   - **FedEx**: 12, 15, or 20-digit numbers
+   - **USPS**: 20–22 digit numbers (often starts with 94, 92, 93, or 95)
+   - **Amazon**: `TBA[0-9]{12}US`
 
-3. **URL parameter extraction**: Extracts tracking numbers from URLs in the email body.
+3. **URL parameter extraction**  
+   Extracts tracking numbers from shipping/tracking URLs in email bodies:
 
-   | URL pattern                | Example tracking param           |
-   |---------------------------|----------------------------------|
-   | `narvar.com/...`          | `?tracking_numbers=1Z...`        |
-   | `ups.com/track...`        | `?tracknum=1Z...`                |
-   | `fedex.com/...track...`   | `?trknbr=...`                    |
-   | `usps.com/...`            | `?qtc_tLabels1=...`              |
-   | `amazon.com/...track...`  | `?tracking-id=TBA...`            |
+   | URL pattern                  | Example tracking param         |
+   |------------------------------|-------------------------------|
+   | `narvar.com/...`             | `?tracking_numbers=1Z...`     |
+   | `ups.com/track...`           | `?tracknum=1Z...`             |
+   | `fedex.com/...track...`      | `?trknbr=...`                 |
+   | `usps.com/...`               | `?qtc_tLabels1=...`           |
+   | `amazon.com/...track...`     | `?tracking-id=TBA...`         |
 
-4. **Narvar link following**: If a `narvar.com` URL is found but the tracking number is not in the URL, the daemon fetches the page and parses the tracking number from the HTML.
+4. **Narvar link following**  
+   If a `narvar.com` URL is found but lacks a tracking number, the daemon fetches the page and parses the tracking number from HTML (JSON-LD, JavaScript, or data attributes).
 
 ### Automatic Package Management
 
@@ -274,7 +300,7 @@ When the `detect_tracking` rule is active, the daemon uses a rules-based extract
   Personal: Amazon - Order Shipped - Your package is on the way
   ```
 - Delivery confirmation emails automatically remove the package from tracking.
-- Logs each added package:
+- Each added package is logged:
   ```
   📦 added package: 1Z999AA10123456784 (UPS) — Personal: ...
   ```
@@ -285,9 +311,7 @@ When the `detect_tracking` rule is active, the daemon uses a rules-based extract
 
 ## Multi-Mailbox Monitoring
 
-Supports monitoring multiple mailboxes. Notifications include the mailbox prefix for clarity.
-
-Example notification formats:
+Monitor multiple mailboxes by setting `FASTMAIL_INBOX_IDS`. Notifications include the mailbox prefix for clarity:
 
 ```
 [Inbox] 📧 John Doe: Meeting tomorrow
@@ -297,26 +321,22 @@ Example notification formats:
 ## Notification Format Examples
 
 **General email** (with `notify_all`):
-
 ```
 📧 John Doe: Project update for Q1
 ```
 
 **Meeting response** (with `notify_meeting_updates`):
-
 ```
 👤 Jane Smith accepted 👍: Team standup meeting
 ```
 
 **Multi-account** (2+ accounts configured):
-
 ```
 [Personal] 📧 Amazon: Your order has shipped
 [Work] 👤 Bob declined 👎: All-hands meeting
 ```
 
 **Package detected** (with `detect_tracking`):
-
 ```
 [fastmail-sse] 📦 added package: 1Z999AA10123456784 (UPS) — Personal: Amazon - Order Shipped
 ```
@@ -324,19 +344,16 @@ Example notification formats:
 ## Systemd Service Setup
 
 Enable and start the service:
-
-```bash
+```
 systemctl --user enable fastmail-sse && systemctl --user start fastmail-sse
 ```
 
-Check service status:
-
-```bash
+Check status:
+```
 systemctl --user status fastmail-sse
 ```
 
 View logs:
-
-```bash
+```
 journalctl --user -u fastmail-sse -f
 ```

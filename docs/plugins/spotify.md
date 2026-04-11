@@ -5,7 +5,7 @@ parent: Plugins
 nav_order: 13
 ---
 
-🎵 Spotify
+# 🎵 Spotify
 
 Control Spotify playback, search music, and manage playlists.
 
@@ -53,7 +53,7 @@ Search Spotify for tracks, albums, artists, or playlists. Returns names, URIs, a
 | Name   | Type    | Description                                                                                  |
 |--------|---------|----------------------------------------------------------------------------------------------|
 | query  | string  | Search query (e.g. 'Daft Punk Digital Love', 'chill jazz playlist').                         |
-| type   | string  | Type of result to search for (default: track). Possible values: track, album, artist, playlist. |
+| type   | string  | Type of result to search for (default: track). One of: track, album, artist, playlist.       |
 | limit  | integer | Max number of results to return (default: 10, max: 50).                                      |
 
 ### spotify_add_to_playlist
@@ -69,8 +69,8 @@ Add a track to a Spotify playlist by playlist ID and track URI.
 
 List the current user's Spotify playlists with IDs and track counts.
 
-| Name   | Type    | Description                                           |
-|--------|---------|-------------------------------------------------------|
+| Name   | Type    | Description                                         |
+|--------|---------|-----------------------------------------------------|
 | limit  | integer | Max number of playlists to return (default: 20, max: 50). |
 
 ### spotify_get_devices

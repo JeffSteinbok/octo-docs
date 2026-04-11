@@ -5,7 +5,7 @@ parent: Plugins
 nav_order: 7
 ---
 
-🩺 Opentable Heartbeat
+# 🩺 Opentable Heartbeat
 
 Health-check for the OpenTable skill. Alerts on failure via configured notification channel.
 

@@ -5,7 +5,7 @@ parent: Plugins
 nav_order: 9
 ---
 
-📅 Outlook Calendar
+# 📅 Outlook Calendar
 
 Fetch personal and family calendars via Microsoft Graph API.
 

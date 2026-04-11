@@ -8,25 +8,22 @@ nav_order: 4
 
 ## Overview
 
-Skills are markdown-defined knowledge modules that enable agents to perform specific tasks or answer questions in specialized domains. Unlike plugins, which are executable code, skills provide structured information and operational rules that guide agent behavior. Skills help agents interact with external systems, follow best practices, and deliver accurate responses by leveraging domain-specific knowledge.
-
-Agents use skills to understand how to interact with various services or devices, ensuring consistent and reliable actions. Skills are not executable; instead, they serve as reference guides for agents, outlining procedures, available entities, and operational rules.
+Skills are markdown-defined knowledge modules that provide agents with structured information and guidance for specific tasks. Unlike plugins, which are executable code, skills supply agents with domain-specific instructions, rules, and context to help them interact with external systems or perform actions. Skills solve the problem of giving agents reliable, reusable knowledge without requiring code execution.
 
 ## Key Concepts
 
-- **Skills**: Markdown-defined knowledge modules used by agents to perform domain-specific tasks.
-- **Agents**: Entities that utilize skills to guide their actions and responses.
-- **Plugins vs. Skills**: Plugins are executable code; skills are structured knowledge, not code.
-- **Entities**: Devices or services referenced within skills (e.g., media players).
-- **Zones**: Logical groupings of entities (e.g., rooms or areas in a home).
+- **Skills**: Markdown-defined knowledge modules used by agents for task-specific guidance.
+- **Agents**: Entities that utilize skills to perform actions or answer questions.
+- **Plugins vs. Skills**: Plugins are executable code; skills are static, markdown-based knowledge.
+- **Entity Mapping**: Skills often include mappings between logical concepts (like rooms) and system entities.
+- **Rules and Operations**: Skills define rules, common operations, and procedures for agents to follow.
 
 ## How It Works
 
-1. **Skill Definition**: Each skill is defined in markdown, specifying its purpose, entities, operational rules, and procedures.
-2. **Agent Usage**: Agents reference skills to determine how to interact with external systems, which entities to use, and what steps to follow.
-3. **Operational Guidance**: Skills provide step-by-step instructions, rules, and entity mappings, ensuring agents perform tasks correctly.
-4. **Zone Handling**: Skills may define zones (e.g., "downstairs", "upstairs") to help agents apply actions across multiple entities.
-5. **Discovery**: If an agent is unsure which entity to use, skills may provide discovery procedures.
+1. Agents access skills to obtain structured knowledge about a domain or task.
+2. Skills provide instructions, rules, and mappings that guide agents in interacting with external systems.
+3. Agents use the information from skills to determine which actions to take, which entities to target, and how to report results.
+4. Skills are not executable; agents interpret the markdown content and apply it as guidance.
 
 ---
 
@@ -34,47 +31,28 @@ Agents use skills to understand how to interact with various services or devices
 
 ### 🎵 Home Music
 
-Control music and speakers at home via Home Assistant. Use this skill for:
-
-- Adjusting volume on any speaker or room
-- Checking what's playing
-- Pausing, resuming, or skipping music
-- Muting speakers
-- Controlling Alexa, Sonos, and other media players
-
 **Purpose**:  
-Enables agents to manage home audio systems, including volume control, playback operations, and reporting current status across various rooms and zones.
+Control music and speakers at home via Home Assistant. This skill is used for adjusting volume, checking what's playing, pausing/resuming/skipping music, muting, and controlling Alexa, Sonos, and other media players across various rooms.
+
+**Usage by Agents**:  
+Agents use this skill to:
+- Map user requests to specific Home Assistant media player entities.
+- Follow rules for volume adjustment (always check current volume before changing).
+- Query and report speaker status, including volume and currently playing track/artist.
+- Apply commands to zones (e.g., "downstairs", "upstairs", "outside") or all speakers.
+- Discover available entities and their states.
 
 **Key Features**:
-
-- Covers living room, kitchen, bedroom, bonus room, family room, hallway, and other Home Assistant media players.
-- Provides entity mappings for each room and zone.
-- Specifies operational rules (e.g., always check current volume before changing).
-- Supports zone-based commands (e.g., "downstairs", "upstairs", "outside", "all speakers").
-- Includes discovery instructions for identifying active media players.
-
----
-
-## How Skills Are Used by Agents
-
-Agents reference skills to:
-
-- Identify which entities to interact with based on user commands.
-- Follow operational rules (e.g., check current volume before setting a new value).
-- Apply actions across zones or individual rooms.
-- Report status and perform actions only on active devices.
-- Use discovery procedures when entity mapping is unclear.
+- Room and zone mapping to entity IDs.
+- Volume control rules and reporting.
+- Common operations: get state, set volume, mute/unmute, pause/play/skip, play specific media.
+- Guidance for reporting only active speakers.
+- Discovery instructions for available media player entities.
 
 ---
 
 ## How Skills Differ from Plugins
 
-- **Skills**: Provide markdown-defined knowledge, operational rules, and entity mappings. They are not executable code.
-- **Plugins**: Are executable code modules that perform actions or retrieve data.
-- Skills guide agent behavior; plugins execute tasks.
-
----
-
-## Example Usage
-
-_No examples are present in the source material._
+- **Skills** are markdown-defined knowledge, providing structured information and instructions.
+- **Plugins** are executable code used for performing actions or retrieving data.
+- Skills do not execute code; they guide agents in how to use plugins or interact with systems.
