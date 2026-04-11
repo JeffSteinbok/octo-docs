@@ -9,6 +9,14 @@ nav_order: 6
 
 Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events.
 
+### `llmvision_get_image`
+
+Download a keyframe image from HA LLM Vision media storage. Pass a key_frame path from a timeline event (e.g. /media/llmvision/snapshots/xxx.jpg). Returns the local file path for use with the image or message tools.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `key_frame` | string | Required | The key_frame path from a timeline event (e.g. /media/llmvision/snapshots/abc123-camera0.jpg). |
+
 ### `llmvision_timeline_get`
 
 Get events from the LLM Vision timeline (calendar.llm_vision_timeline). Returns a list of AI-generated observation events with timestamps, summaries, and descriptions. Useful for reviewing what the cameras have seen recently.

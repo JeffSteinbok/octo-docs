@@ -11,7 +11,7 @@ Plugins are self-contained capabilities that Octo's agents can invoke — sendin
 
 Unlike [skills](skills), which provide knowledge through markdown prompts, plugins execute real code and interact with external APIs. Think of plugins as _tools_ and skills as _knowledge_.
 
-Octo currently has **16 plugins** providing **66 tools** in total.
+Octo currently has **16 plugins** providing **67 tools** in total.
 
 | | Plugin | Description | Tools |
 |---|--------|-------------|:-----:|
@@ -20,7 +20,7 @@ Octo currently has **16 plugins** providing **66 tools** in total.
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | 6 |
 | 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | 10 |
 | 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | 1 |
-| 🖼️ | [LLMVision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | 3 |
+| 🖼️ | [LLMVision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | 4 |
 | 🩺 | [OpenTable Heartbeat](plugins/opentable-heartbeat) | Check whether the OpenTable integration is working and alert on failure | 1 |
 | 🍽️ | [OpenTable](plugins/opentable) | Check restaurant availability on OpenTable | 2 |
 | 📅 | [Outlook Calendar](plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | 1 |
