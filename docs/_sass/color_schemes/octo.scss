@@ -120,18 +120,21 @@ figure.highlight {
   .c, .c1, .cm, .cs   { color: #94a3b8; font-style: italic; } // comments
   .k, .kd, .kn, .kp,
   .kr, .kt, .kc        { color: #c4b5fd; }                     // keywords
+  .l                    { color: #fdba74; }                     // generic literals
   .s, .s1, .s2, .sb,
-  .sc, .sh, .sx         { color: #86efac; }                     // strings
+  .sc, .sh, .sx, .ld    { color: #86efac; }                     // strings / string-like data
   .si                   { color: #67e8f9; }                     // interpolation
   .na                   { color: #93c5fd; }                     // attributes / JSON keys
-  .nb                   { color: #7dd3fc; }                     // builtins
+  .nb, .bp              { color: #7dd3fc; }                     // builtins / builtin pseudo
   .nc, .nn              { color: #fde68a; }                     // class/namespace
-  .nf, .ni              { color: #7dd3fc; }                     // functions
+  .nf, .ni, .nl         { color: #7dd3fc; }                     // functions / labels
+  .nd                   { color: #c4b5fd; }                     // decorators / annotations
   .no                   { color: #fed7aa; }                     // constants
   .nt                   { color: #7dd3fc; }                     // tags / JSON keys
-  .nv, .vi, .vg         { color: #e2e8f0; }                     // variables
+  .nv, .vc, .vi, .vg,
+  .vm                   { color: #e2e8f0; }                     // variables
   .o, .ow               { color: #cbd5e1; }                     // operators
-  .m, .mf, .mh,
+  .m, .mb, .mf, .mh,
   .mi, .mo, .il         { color: #fdba74; }                     // numbers
   .p                    { color: #cbd5e1; }                     // punctuation
   .err                  { color: #fda4af; background: none !important; border: none !important; } // errors/unrecognized (e.g. angle brackets)
