@@ -35,6 +35,11 @@ nav_order: 1
     <div class="card-title">Services</div>
     <div class="card-desc">Background daemons that watch for events</div>
   </a>
+  <a class="card" href="{{ site.baseurl }}/scheduled-tasks">
+    <div class="card-icon">⏰</div>
+    <div class="card-title">Scheduled Tasks</div>
+    <div class="card-desc">Background jobs that sync data, send reminders, and keep Octo healthy</div>
+  </a>
   <a class="card" href="{{ site.baseurl }}/hooks">
     <div class="card-icon">🪝</div>
     <div class="card-title">Hooks</div>

@@ -42,6 +42,7 @@ bundle/
     billing.json
   concepts/
     architecture.md
+  jobs.json
   release/
     changes.json
   manifest.json

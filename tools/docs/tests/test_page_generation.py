@@ -302,6 +302,85 @@ def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypat
     assert "[USPS Mail Runtime](shared-mail-runtime-usps)" in content
 
 
+def test_process_page_bundle_scheduled_tasks_renders_without_llm(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    bundle_root.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["jobs.json"]}),
+        encoding="utf-8",
+    )
+    (bundle_root / "jobs.json").write_text(
+        json.dumps(
+            {
+                "jobs": [
+                    {
+                        "name": "daily-health-check",
+                        "category": "infrastructure",
+                        "public": True,
+                        "summary": "Checks outbound email health.",
+                        "schedule": {"kind": "cron", "expr": "0 9 * * *", "tz": "America/Los_Angeles"},
+                    },
+                    {
+                        "name": "calendar-fetch-hourly",
+                        "category": "feature",
+                        "public": True,
+                        "summary": "Refreshes calendar memory snapshots.",
+                        "schedule": {"kind": "cron", "expr": "0 7-17 * * *", "tz": "America/Los_Angeles"},
+                    },
+                    {
+                        "name": "test-reminder",
+                        "category": "feature",
+                        "public": False,
+                        "summary": "Should be hidden.",
+                        "schedule": {"kind": "at", "at": "2026-04-11T06:20:00.000Z"},
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "scheduled-tasks",
+        "output_path": "docs/scheduled-tasks.md",
+        "template": "overview",
+        "strategy": "bundle-scheduled-tasks",
+        "front_matter": {
+            "layout": "default",
+            "title": "Scheduled Tasks",
+            "nav_order": 6,
+        },
+        "sources": [
+            {"path": "jobs.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/scheduled-tasks.md"
+    content = (repo_root / "docs/scheduled-tasks.md").read_text(encoding="utf-8")
+    assert "## Infrastructure Tasks" in content
+    assert "## Feature Tasks" in content
+    assert "`daily-health-check`" in content
+    assert "`calendar-fetch-hourly`" in content
+    assert "Checks outbound email health." in content
+    assert "test-reminder" not in content
+
+
 def test_process_page_bundle_hooks_renders_without_llm(tmp_path, monkeypatch):
     bundle_root = tmp_path / "bundle"
     agents_dir = bundle_root / "agents"

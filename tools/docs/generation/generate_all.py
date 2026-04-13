@@ -874,6 +874,79 @@ def _append_release_section(lines: list[str], title: str, items: object) -> None
     lines.extend(f"- {_format_release_change(item)}" for item in items)
 
 
+def _format_job_schedule(schedule: dict) -> str:
+    """Render a compact public schedule label from job bundle data."""
+    kind = schedule.get("kind", "unknown")
+    if kind == "cron":
+        expr = schedule.get("expr", "unknown")
+        tz = schedule.get("tz")
+        return f"`{expr}`" + (f" ({tz})" if tz else "")
+    if kind == "every":
+        every_ms = schedule.get("everyMs")
+        if isinstance(every_ms, int):
+            hours = every_ms // 3_600_000
+            if hours and every_ms % 3_600_000 == 0:
+                unit = "hour" if hours == 1 else "hours"
+                return f"Every {hours} {unit}"
+            days = every_ms // 86_400_000
+            if days and every_ms % 86_400_000 == 0:
+                unit = "day" if days == 1 else "days"
+                return f"Every {days} {unit}"
+        return "Repeating interval"
+    if kind == "at":
+        return f"One-shot at `{schedule.get('at', schedule.get('atMs', 'unknown'))}`"
+    return kind.title()
+
+
+def _process_scheduled_tasks_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render the scheduled tasks overview page from jobs.json."""
+    output_path = REPO_ROOT / page_spec["output_path"]
+    jobs = bundle.load_json("jobs.json").get("jobs", [])
+    published_jobs = [job for job in jobs if job.get("public")]
+    infra_jobs = [job for job in published_jobs if job.get("category") == "infrastructure"]
+    feature_jobs = [job for job in published_jobs if job.get("category") != "infrastructure"]
+
+    lines = [
+        "# Scheduled Tasks",
+        "",
+        "Scheduled tasks are background jobs that run without direct user input. Some keep the system healthy; others produce user-facing reminders, syncs, and briefings.",
+        "",
+        "The public docs only include the recurring jobs that are part of the stable setup. One-shot reminders and temporary test jobs are intentionally omitted.",
+        "",
+        f"Octo currently publishes **{len(published_jobs)} scheduled task{'s' if len(published_jobs) != 1 else ''}**.",
+        "",
+    ]
+
+    for title, section_jobs in (
+        ("Infrastructure Tasks", infra_jobs),
+        ("Feature Tasks", feature_jobs),
+    ):
+        lines.extend([
+            f"## {title}",
+            "",
+            "| Task | Schedule | What it does |",
+            "|------|----------|--------------|",
+        ])
+        for job in section_jobs:
+            lines.append(
+                f"| `{job.get('name', '')}` | {_format_job_schedule(job.get('schedule', {}))} | "
+                f"{_markdown_cell(job.get('summary') or job.get('description', ''))} |"
+            )
+        lines.append("")
+
+    content = format_markdown("\n".join(lines))
+    if dry_run:
+        logger.info("[dry-run] Would generate page: %s", page_spec["id"])
+        return page_spec["output_path"]
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written: %s", output_path)
+    return page_spec["output_path"]
+
+
 def _process_release_notes_page(
     page_spec: dict,
     bundle: BundleLoader,
@@ -1162,6 +1235,8 @@ def process_page(
         return _process_services_overview_page(page_spec, bundle, dry_run)
     if strategy == "bundle-service-detail":
         return _process_service_detail_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-scheduled-tasks":
+        return _process_scheduled_tasks_page(page_spec, bundle, dry_run)
     if strategy == "bundle-skills":
         return _process_skills_page(page_spec, bundle, dry_run)
     if strategy == "bundle-release":
