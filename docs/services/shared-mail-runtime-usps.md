@@ -5,7 +5,7 @@ parent: Shared Mail Runtime
 nav_order: 1
 ---
 
-# USPS Mail Runtime
+# USPS Mail Action Module
 
 Shared USPS Informed Delivery processing used by both the FastMail mail pipeline and the `usps-mail` plugin.
 
@@ -61,12 +61,12 @@ The important split is:
 
 There are two normal ways into this package:
 
-1. **Automatic mail pipeline:** `services/fastmail-sse/usps_integration.py` downloads the digest artifacts, calls `process_digest(...)`, then hands a structured summary to another agent for any follow-up that still matters.
+1. **Automatic mail pipeline:** `mail_action_usps/register.py` registers `process_usps_digest`, which downloads digest artifacts, calls `process_digest(...)`, then hands a structured summary to another agent for any follow-up that still matters.
 2. **Interactive/manual tooling:** `plugins/usps-mail/src/tools.py` exposes the same shared runtime functions as OpenClaw tools like `usps_process_digest`, `usps_lookup`, and `usps_rules`.
 
 That split is intentional:
 
-- `services/shared_mail_runtime/usps/` owns the USPS workflow itself
+- `libs/python/mail_action_usps/` owns the USPS workflow itself
 - `fastmail-sse` owns FastMail-specific email ingestion and action dispatch
 - `plugins/usps-mail` owns the human/operator-facing tool surface
 
@@ -282,7 +282,7 @@ When USPS processing runs from the FastMail mail pipeline, the call path is:
 `fastmail-sse` email event
 → shared mail runtime rule match
 → `process_usps_digest_action(...)`
-→ `shared_mail_runtime.usps.process_digest(...)`
+→ `mail_action_usps.process_digest(...)`
 
 After that shared USPS work finishes, `services/fastmail-sse/usps_integration.py` creates an `agent_handoff` result with a structured JSON payload. That handoff tells the downstream agent:
 
@@ -302,7 +302,7 @@ The `usps-mail` plugin does **not** implement a separate USPS system anymore. It
 - listing/testing/updating rules
 - viewing workflow status and summary stats
 
-That keeps one USPS implementation in the shared runtime while still making it available as an interactive tool surface.
+That keeps one USPS implementation in the shared action module while still making it available as an interactive tool surface.
 
 ## Rule and notification ownership
 
@@ -322,4 +322,4 @@ This package sits below both the service and plugin layers because USPS processi
 - agent-aware for vision and memory
 - separate from provider-specific mail ingestion
 
-That makes `services/shared_mail_runtime/usps/` the right place for the core workflow, while FastMail and the plugin stay thin adapters around it.
+That makes `libs/python/mail_action_usps/` the right place for the core workflow, while FastMail and the plugin stay thin adapters around it.

@@ -6,9 +6,9 @@ nav_order: 2
 has_children: true
 ---
 
-# Shared Mail Runtime
+# Mail Runtime Core
 
-Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Provides a normalized envelope model, rule matching engine, action registry, and dispatch loop that any mail source (Fastmail SSE, Outlook, etc.) can plug into.
+Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Lives in `libs/python/mail_runtime_core/` so services and plugins can share the same core package without treating it as a service.
 
 ## Features
 
@@ -16,6 +16,8 @@ Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Prov
 - **Rule engine** — Declarative JSON rules with match conditions (sender, subject, domain, regex, attachments, body)
 - **Action registry** — Named action handlers with automatic body fetching and attachment downloading
 - **Provider protocol** — `MailProviderClient` interface that sources implement to plug into the pipeline
+- **Built-in actions** — Shared helpers for `notify_email` and `detect_tracking`
+- **Result dispatch helper** — Shared routing of `ActionResult` values into adapter-owned side effects
 
 ## How provider-agnostic mail works
 
@@ -65,26 +67,16 @@ A mail source stays provider-specific only at the edges:
 | Detect new mail | Poll, stream, or receive provider events |
 | Normalize message | Map raw provider fields into `MailEnvelope` |
 | Provide lazy access | Implement `MailProviderClient` for body/attachment fetches |
-| Register actions | Expose actions like `notify_email`, `detect_tracking`, `process_usps_digest` |
-| Dispatch results | Decide how `ActionResult` values become side effects |
+| Register actions | Wire core actions like `notify_email` and `detect_tracking`, plus domain modules like `mail_action_usps`, into the adapter |
+| Dispatch results | Decide how `ActionResult` values become service/provider side effects |
 
-In practice, the adapter owns transport and provider APIs; the shared runtime owns matching and action orchestration.
+In practice, the adapter owns transport, provider APIs, and final side effects; the shared runtime owns matching and reusable action orchestration.
 
-## USPS Subpackage
+## Related action modules
 
-The `usps/` subpackage implements the full USPS Informed Delivery digest pipeline:
+`mail_runtime_core` stays provider-agnostic. Domain workflows such as USPS should live in separate action modules that register against this runtime.
 
-| Module | Purpose |
-|--------|---------|
-| `parse_digest.py` | Parse Informed Delivery HTML into structured mailpiece data |
-| `analyze.py` | Orchestrate digest processing: parse → vision → rules → notify |
-| `vision.py` | AI-powered scan image analysis via agent backends |
-| `rules.py` | Importance classification rule engine (CRUD + evaluation) |
-| `memory.py` | Persistence layer: analysis state, monthly memory files, lookups |
-| `notify.py` | Notification routing and delivery via `openclaw message send` |
-| `paths.py` | Central path helpers for workspace, memory, and config files |
-
-See [USPS Mail Runtime](shared-mail-runtime-usps) for the USPS-specific flow diagram, agent-boundary details, and how the FastMail action layer and `usps-mail` plugin both call into the shared implementation.
+- [`mail_action_usps`](../mail_action_usps/README.md) — USPS Informed Delivery action module and shared tooling
 
 ## Key Types
 
@@ -95,6 +87,15 @@ See [USPS Mail Runtime](shared-mail-runtime-usps) for the USPS-specific flow dia
 | `ActionResult` | Structured side effect emitted by an action |
 | `MailProviderClient` | Protocol that mail sources implement (fetch body, list/download attachments) |
 | `ActionRegistry` | Registry and executor for named mail actions |
+
+## Shared helper modules
+
+| Module | Purpose |
+|--------|---------|
+| `runtime.py` | Core envelope, rules, registry, and `execute_rules(...)` loop |
+| `builtin_actions.py` | Shared registration/helpers for `notify_email` and `detect_tracking` |
+| `package_tracking.py` | Mail-envelope adapter over `package_tracking_core` for add/remove flow |
+| `result_dispatch.py` | Shared dispatcher fed by adapter-owned side-effect handlers |
 
 ### `MailEnvelope`
 
@@ -197,7 +198,7 @@ Actions can be declared as either a bare name or a `{name, params}` object:
 }
 ```
 
-The shared runtime does not define which action names exist. Each source adapter registers the actions it supports.
+The shared runtime ships reusable action helpers, but each source adapter still decides which actions it exposes and how result kinds like `message` or `agent_handoff` become real side effects.
 
 ## Common rule examples
 
@@ -276,7 +277,7 @@ This pattern is useful when one provider exposes richer metadata or special acti
 3. lazily fetches bodies and/or downloads attachments if the action declared those needs
 4. returns collected `ActionResult` values to the source adapter
 
-The runtime itself does not send notifications, call agents, or mutate provider state directly. Those side effects are represented as `ActionResult` values and interpreted by the integrating service.
+The runtime itself does not send notifications, call agents, or mutate provider state directly. Those side effects are represented as `ActionResult` values and interpreted by the integrating adapter, typically via `result_dispatch.py` plus service-owned handlers.
 
 ## Why this split exists
 

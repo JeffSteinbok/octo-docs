@@ -9,7 +9,7 @@ front_matter:
   nav_order: 1
 
 sources:
-  - path: services/shared_mail_runtime-usps.json
+  - path: libs/mail_action_usps-action.json
 
 template: overview
 strategy: bundle-service-detail

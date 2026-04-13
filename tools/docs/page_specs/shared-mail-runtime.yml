@@ -10,7 +10,7 @@ front_matter:
   has_children: true
 
 sources:
-  - path: services/shared_mail_runtime.json
+  - path: libs/mail_runtime_core.json
 
 template: overview
 strategy: bundle-service-detail

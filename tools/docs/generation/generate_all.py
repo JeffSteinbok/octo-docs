@@ -729,7 +729,7 @@ def _process_service_detail_page(
     for section_title, body in (service.get("sections") or {}).items():
         lines.extend(["", *_render_markdown_section(section_title, body)])
 
-    if source_path == "services/shared_mail_runtime.json" and bundle.exists("services/shared_mail_runtime-usps.json"):
+    if source_path in {"services/shared_mail_runtime.json", "libs/mail_runtime_core.json"} and bundle.exists("libs/mail_action_usps-action.json"):
         lines.extend([
             "",
             "## Related Runtime Docs",

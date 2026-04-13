@@ -232,17 +232,17 @@ def test_process_page_bundle_service_detail_renders_without_llm(tmp_path, monkey
 
 def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypatch):
     bundle_root = tmp_path / "bundle"
-    services_dir = bundle_root / "services"
-    services_dir.mkdir(parents=True)
+    libs_dir = bundle_root / "libs"
+    libs_dir.mkdir(parents=True)
 
     (bundle_root / "manifest.json").write_text(
-        json.dumps({"artifacts": ["services/shared_mail_runtime.json", "services/shared_mail_runtime-usps.json"]}),
+        json.dumps({"artifacts": ["libs/mail_runtime_core.json", "libs/mail_action_usps-action.json"]}),
         encoding="utf-8",
     )
-    (services_dir / "shared_mail_runtime.json").write_text(
+    (libs_dir / "mail_runtime_core.json").write_text(
         json.dumps(
             {
-                "service": "shared_mail_runtime",
+                "library": "mail_runtime_core",
                 "name": "Shared Mail Runtime",
                 "summary": "Provider-agnostic mail runtime.",
                 "sections": {
@@ -252,10 +252,10 @@ def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypat
         ),
         encoding="utf-8",
     )
-    (services_dir / "shared_mail_runtime-usps.json").write_text(
+    (libs_dir / "mail_action_usps-action.json").write_text(
         json.dumps(
             {
-                "id": "shared-mail-runtime-usps",
+                "id": "mail-action-usps",
                 "name": "USPS Mail Runtime",
                 "summary": "USPS-specific runtime docs.",
                 "sections": {},
@@ -290,7 +290,7 @@ def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypat
             "has_children": True,
         },
         "sources": [
-            {"path": "services/shared_mail_runtime.json"},
+            {"path": "libs/mail_runtime_core.json"},
         ],
     }
 
