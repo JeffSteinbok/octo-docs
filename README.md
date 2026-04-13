@@ -1,24 +1,28 @@
 # 🐙 Octo Docs
 
-Public documentation site for the [OpenClaw](https://github.com/JeffSteinbok/openclaw-hub) system — a modular AI assistant framework that connects language models to real-world services.
+Public documentation site for the OpenClaw system — a modular AI assistant framework that connects language models to real-world services.
+
+## Live Site
+
+👉 [jeffsteinbok.github.io/octo-docs](https://jeffsteinbok.github.io/octo-docs/)
 
 ## What's Here
 
 - **Jekyll site** — Markdown pages published via GitHub Pages (`docs/`)
-- **Docs generation system** — bundle-driven pipeline (`tools/docs/`) that turns sanitized facts from the private OpenClaw repo into public pages
+- **Docs generation system** — bundle-driven pipeline (`tools/docs/`) that turns sanitized facts from a private source repo into public pages
 
 ## Documentation System Overview
 
 The docs site is built in **two repos**:
 
-1. **`openclaw` (private repo)** extracts a **sanitized docs bundle**
+1. **A private source repo** extracts a **sanitized docs bundle**
 2. **`octo-docs` (this repo)** consumes that bundle and turns it into published Markdown pages
 
 The public docs generator never reads the private source repo directly. It only sees the bundle artifact.
 
 ```mermaid
 flowchart LR
-    subgraph private["Private repo: openclaw"]
+    subgraph private["Private source repo"]
         source["Source of truth<br/>plugins, agents, services,<br/>config, jobs, notes"]
         extract["Bundle extractors<br/>tools/docs/extract/*"]
         sanitize["Sanitize + validate<br/>public-safe JSON bundle"]
@@ -45,7 +49,7 @@ flowchart LR
 
 ### 1. Private repo builds the bundle
 
-When [openclaw](https://github.com/JeffSteinbok/openclaw) changes, its docs pipeline:
+When the source repo changes, its docs pipeline:
 
 - extracts structured facts from source files
 - removes or rejects private/sensitive data
@@ -122,7 +126,7 @@ That means the live site is always derived from:
 
 This architecture keeps the public docs useful **without exposing the private repo**.
 
-- `openclaw` stays the source of truth
+- the source repo stays the source of truth
 - `octo-docs` only sees public-safe extracted data
 - generation logic can evolve independently from the private runtime code
 - docs can mix deterministic pages with LLM-generated narrative while staying anchored to structured facts
@@ -136,7 +140,3 @@ This architecture keeps the public docs useful **without exposing the private re
 | `tools/docs/page_specs/` | Page definitions: sources, output paths, strategies |
 | `.github/workflows/docs-main-pipeline.yml` | Top-level orchestrator for validate/generate/deploy |
 | `.github/workflows/generate-docs.yml` | Bundle download + page generation workflow |
-
-## Live Site
-
-👉 [jeffsteinbok.github.io/octo-docs](https://jeffsteinbok.github.io/octo-docs/)
