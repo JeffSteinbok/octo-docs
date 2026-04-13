@@ -41,6 +41,14 @@ h4 {
   }
 }
 
+// Inline code on light backgrounds should stay warm but not muddy/dark.
+code {
+  color: #ea580c;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 0.25rem;
+}
+
 // Clean nav links — no background noise, just subtle left-border on active
 .nav-list-link {
   color: #334155 !important;
@@ -118,14 +126,14 @@ figure.highlight {
   .nb                   { color: #7dd3fc; }                     // builtins
   .nc, .nn              { color: #fde68a; }                     // class/namespace
   .nf, .ni              { color: #7dd3fc; }                     // functions
-  .no                   { color: #fdba74; }                     // constants
+  .no                   { color: #fed7aa; }                     // constants
   .nt                   { color: #7dd3fc; }                     // tags / JSON keys
   .nv, .vi, .vg         { color: #e2e8f0; }                     // variables
   .o, .ow               { color: #cbd5e1; }                     // operators
   .m, .mf, .mh,
   .mi, .mo, .il         { color: #fdba74; }                     // numbers
   .p                    { color: #cbd5e1; }                     // punctuation
-  .err                  { color: #fdba74; background: none !important; border: none !important; } // errors/unrecognized (e.g. angle brackets)
+  .err                  { color: #fda4af; background: none !important; border: none !important; } // errors/unrecognized (e.g. angle brackets)
   .w                    { color: #e2e8f0; }                     // whitespace
   .dl                   { color: #86efac; }                     // string delimiters
 }

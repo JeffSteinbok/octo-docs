@@ -2,7 +2,7 @@
 layout: default
 title: USPS Mail
 parent: Plugins
-nav_order: 15
+nav_order: 13
 ---
 
 # 📬 USPS Mail

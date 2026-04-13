@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Shared Mail Runtime
-parent: Services
+parent: Email Handling
 nav_order: 2
 has_children: true
 ---

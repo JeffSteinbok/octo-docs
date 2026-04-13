@@ -1,7 +1,7 @@
 ---
 layout: default
 title: FastMail SSE Service
-parent: Services
+parent: Email Handling
 nav_order: 1
 ---
 
