@@ -7,7 +7,7 @@ nav_order: 1
 
 # USPS Mail Action Module
 
-Shared USPS Informed Delivery processing used by both the FastMail mail pipeline and the `usps-mail` plugin.
+Shared USPS Informed Delivery processing used by both the shared mail runtime and the `usps-mail` plugin.
 
 ## What lives here
 
@@ -25,12 +25,12 @@ Shared USPS Informed Delivery processing used by both the FastMail mail pipeline
 
 ```mermaid
 flowchart TD
-    fastmail["FastMail action<br/>process_usps_digest"]
+    rule["mail_rules match"]
+    action["Named action<br/>process_usps_digest"]
     plugin["Plugin tool<br/>usps_process_digest"]
     folder["Digest folder"]
     pipeline["process_digest(...)"]
 
-    match["Phase 1:<br/>mail_rules"]
     parse["Parse HTML"]
     vision["Phase 2A:<br/>vision"]
     rules["Phase 2B:<br/>USPS rules"]
@@ -39,7 +39,7 @@ flowchart TD
     memory["Write memory"]
     handoff["Main follow-up"]
 
-    fastmail --> match --> folder
+    rule --> action --> folder
     plugin --> folder
     folder --> pipeline
     pipeline --> parse --> vision --> rules --> history --> notify --> memory
@@ -61,13 +61,13 @@ The important split is:
 
 There are two normal ways into this package:
 
-1. **Automatic mail pipeline:** `mail_action_usps/register.py` registers `process_usps_digest`, which downloads digest artifacts, calls `process_digest(...)`, then hands a structured summary to another agent for any follow-up that still matters.
+1. **Automatic mail pipeline:** `mail_action_usps/register.py` registers `process_usps_digest` with the shared mail runtime, which downloads digest artifacts, calls `process_digest(...)`, then hands a structured summary to another agent for any follow-up that still matters.
 2. **Interactive/manual tooling:** `plugins/usps-mail/src/tools.py` exposes the same shared runtime functions as OpenClaw tools like `usps_process_digest`, `usps_lookup`, and `usps_rules`.
 
 That split is intentional:
 
 - `libs/python/mail_action_usps/` owns the USPS workflow itself
-- `fastmail-sse` owns FastMail-specific email ingestion and action dispatch
+- the shared mail runtime owns action dispatch, while integrating services own provider-specific ingestion
 - `plugins/usps-mail` owns the human/operator-facing tool surface
 
 ## Agent boundaries

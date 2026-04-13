@@ -17,6 +17,7 @@ Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Live
 - **Action registry** — Named action handlers with automatic body fetching and attachment downloading
 - **Provider protocol** — `MailProviderClient` interface that sources implement to plug into the pipeline
 - **Built-in actions** — Shared helpers for `notify_email` and `detect_tracking`
+- **Adapter-registered actions** — Services can register domain actions such as USPS handling via `process_usps_digest`
 - **Result dispatch helper** — Shared routing of `ActionResult` values into adapter-owned side effects
 
 ## How provider-agnostic mail works
@@ -43,7 +44,10 @@ flowchart LR
     adapter["Provider adapter"]
     envelope["MailEnvelope<br/>normalized message"]
     rules["Shared rule matcher<br/>providers/accounts/mailboxes/match"]
-    actions["Shared action execution"]
+    actions["Action registry"]
+    notify["Built-in action<br/>notify_email"]
+    track["Built-in action<br/>detect_tracking"]
+    usps["Adapter action<br/>process_usps_digest"]
     results["ActionResult(s)"]
 
     subgraph provider["Provider-specific surface"]
@@ -52,10 +56,13 @@ flowchart LR
         download["download_attachments(...)"]
     end
 
-    raw --> adapter --> envelope --> rules --> actions --> results
-    actions -. lazy provider access .-> fetch
-    actions -. attachment access .-> list
-    actions -. artifact download .-> download
+    raw --> adapter --> envelope --> rules --> actions
+    actions --> notify --> results
+    actions --> track --> results
+    actions --> usps --> results
+    notify -. lazy provider access .-> fetch
+    track -. attachment access .-> list
+    usps -. artifact download .-> download
 ```
 
 ## Source adapter contract
@@ -67,7 +74,7 @@ A mail source stays provider-specific only at the edges:
 | Detect new mail | Poll, stream, or receive provider events |
 | Normalize message | Map raw provider fields into `MailEnvelope` |
 | Provide lazy access | Implement `MailProviderClient` for body/attachment fetches |
-| Register actions | Wire core actions like `notify_email` and `detect_tracking`, plus domain modules like `mail_action_usps`, into the adapter |
+| Register actions | Wire core actions like `notify_email` and `detect_tracking`, plus named adapter actions like `process_usps_digest` from `mail_action_usps`, into the adapter |
 | Dispatch results | Decide how `ActionResult` values become service/provider side effects |
 
 In practice, the adapter owns transport, provider APIs, and final side effects; the shared runtime owns matching and reusable action orchestration.
@@ -76,7 +83,7 @@ In practice, the adapter owns transport, provider APIs, and final side effects; 
 
 `mail_runtime_core` stays provider-agnostic. Domain workflows such as USPS should live in separate action modules that register against this runtime.
 
-- [`mail_action_usps`](../mail_action_usps/README.md) — USPS Informed Delivery action module and shared tooling
+- [`mail_action_usps`](../mail_action_usps/README.md) — USPS Informed Delivery action module that registers the named action `process_usps_digest`
 
 ## Key Types
 
@@ -198,7 +205,7 @@ Actions can be declared as either a bare name or a `{name, params}` object:
 }
 ```
 
-The shared runtime ships reusable action helpers, but each source adapter still decides which actions it exposes and how result kinds like `message` or `agent_handoff` become real side effects.
+The shared runtime ships reusable action helpers, but each source adapter still decides which actions it exposes and how result kinds like `message` or `agent_handoff` become real side effects. In practice that means built-in actions such as `notify_email` and `detect_tracking` can sit beside adapter-registered actions such as `process_usps_digest`.
 
 ## Common rule examples
 
@@ -225,6 +232,30 @@ These examples show the **generic rule structure**. Actual action availability d
 ```
 
 Put the more specific rule first and set `"continue": true` if both behaviors should run for the same message.
+
+### USPS digest action
+
+`process_usps_digest` is not a built-in runtime action. It is a **named action registered by the integrating mail source** through `mail_action_usps`.
+
+```json
+{
+  "mail_rules": [
+    {
+      "id": "usps-digest",
+      "providers": ["fastmail"],
+      "match": {
+        "sender_domain": "usps.com",
+        "subject_contains": ["Informed Delivery"]
+      },
+      "actions": [
+        {"name": "process_usps_digest"}
+      ]
+    }
+  ]
+}
+```
+
+That action downloads the digest artifacts, runs the USPS workflow, and emits structured results back through the mail adapter.
 
 ### Meeting-response notifications only
 
