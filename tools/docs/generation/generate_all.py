@@ -903,40 +903,34 @@ def _process_scheduled_tasks_page(
     bundle: BundleLoader,
     dry_run: bool = False,
 ) -> str:
-    """Render the scheduled tasks overview page from jobs.json."""
+    """Render the scheduled infrastructure tasks page from jobs.json."""
     output_path = REPO_ROOT / page_spec["output_path"]
-    jobs = bundle.load_json("jobs.json").get("jobs", [])
-    published_jobs = [job for job in jobs if job.get("public")]
-    infra_jobs = [job for job in published_jobs if job.get("category") == "infrastructure"]
-    feature_jobs = [job for job in published_jobs if job.get("category") != "infrastructure"]
+    jobs = [
+        job
+        for job in bundle.load_json("jobs.json").get("jobs", [])
+        if job.get("public", True) and job.get("category") == "infrastructure"
+    ]
 
     lines = [
         "# Scheduled Tasks",
         "",
-        "Scheduled tasks are background jobs that run without direct user input. Some keep the system healthy; others produce user-facing reminders, syncs, and briefings.",
+        "Scheduled tasks are background jobs that run without direct user input. The public bundle only includes infrastructure jobs that keep Octo healthy or maintained.",
         "",
-        "The public docs only include the recurring jobs that are part of the stable setup. One-shot reminders and temporary test jobs are intentionally omitted.",
+        "Feature-specific reminders, briefs, personal nudges, and other user-facing automations are intentionally excluded from the public bundle and from this page.",
         "",
-        f"Octo currently publishes **{len(published_jobs)} scheduled task{'s' if len(published_jobs) != 1 else ''}**.",
+        f"Octo currently publishes **{len(jobs)} infrastructure task{'s' if len(jobs) != 1 else ''}**.",
         "",
+        "## Infrastructure Tasks",
+        "",
+        "| Task | Schedule | What it does |",
+        "|------|----------|--------------|",
     ]
-
-    for title, section_jobs in (
-        ("Infrastructure Tasks", infra_jobs),
-        ("Feature Tasks", feature_jobs),
-    ):
-        lines.extend([
-            f"## {title}",
-            "",
-            "| Task | Schedule | What it does |",
-            "|------|----------|--------------|",
-        ])
-        for job in section_jobs:
-            lines.append(
-                f"| `{job.get('name', '')}` | {_format_job_schedule(job.get('schedule', {}))} | "
-                f"{_markdown_cell(job.get('summary') or job.get('description', ''))} |"
-            )
-        lines.append("")
+    for job in jobs:
+        lines.append(
+            f"| `{job.get('name', '')}` | {_format_job_schedule(job.get('schedule', {}))} | "
+            f"{_markdown_cell(job.get('summary') or job.get('description', ''))} |"
+        )
+    lines.append("")
 
     content = format_markdown("\n".join(lines))
     if dry_run:

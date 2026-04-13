@@ -324,7 +324,7 @@ def test_process_page_bundle_scheduled_tasks_renders_without_llm(tmp_path, monke
                     {
                         "name": "calendar-fetch-hourly",
                         "category": "feature",
-                        "public": True,
+                        "public": False,
                         "summary": "Refreshes calendar memory snapshots.",
                         "schedule": {"kind": "cron", "expr": "0 7-17 * * *", "tz": "America/Los_Angeles"},
                     },
@@ -374,10 +374,9 @@ def test_process_page_bundle_scheduled_tasks_renders_without_llm(tmp_path, monke
     assert output == "docs/scheduled-tasks.md"
     content = (repo_root / "docs/scheduled-tasks.md").read_text(encoding="utf-8")
     assert "## Infrastructure Tasks" in content
-    assert "## Feature Tasks" in content
     assert "`daily-health-check`" in content
-    assert "`calendar-fetch-hourly`" in content
     assert "Checks outbound email health." in content
+    assert "calendar-fetch-hourly" not in content
     assert "test-reminder" not in content
 
 

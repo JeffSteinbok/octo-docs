@@ -5,12 +5,137 @@ Public documentation site for the [OpenClaw](https://github.com/JeffSteinbok/ope
 ## What's Here
 
 - **Jekyll site** — Markdown pages published via GitHub Pages (`docs/`)
-- **Doc generation pipeline** — LLM-powered page generator (`tools/docs/`) triggered automatically when the private OpenClaw repo is updated
+- **Docs generation system** — bundle-driven pipeline (`tools/docs/`) that turns sanitized facts from the private OpenClaw repo into public pages
 
-## How It Works
+## Documentation System Overview
 
-1. A push to [openclaw](https://github.com/JeffSteinbok/openclaw) builds a docs bundle and dispatches a `bundle-ready` event
-2. The `generate-docs.yml` workflow downloads the bundle, generates pages via GitHub Models (gpt-4o), and opens a PR
+The docs site is built in **two repos**:
+
+1. **`openclaw` (private repo)** extracts a **sanitized docs bundle**
+2. **`octo-docs` (this repo)** consumes that bundle and turns it into published Markdown pages
+
+The public docs generator never reads the private source repo directly. It only sees the bundle artifact.
+
+```mermaid
+flowchart LR
+    subgraph private["Private repo: openclaw"]
+        source["Source of truth<br/>plugins, agents, services,<br/>config, jobs, notes"]
+        extract["Bundle extractors<br/>tools/docs/extract/*"]
+        sanitize["Sanitize + validate<br/>public-safe JSON bundle"]
+        artifact["GitHub artifact<br/>docs-bundle"]
+        dispatch["repository_dispatch<br/>bundle-ready"]
+        source --> extract --> sanitize --> artifact --> dispatch
+    end
+
+    subgraph public["Public repo: octo-docs"]
+        pipeline["Docs Main Pipeline<br/>docs-main-pipeline.yml"]
+        validate["Validate public repo<br/>tests + secret scan"]
+        download["Download docs-bundle artifact"]
+        generate["Generate/update docs pages<br/>generate-docs.yml"]
+        commit["Commit generated Markdown<br/>to octo-docs/main"]
+        deploy["Deploy Jekyll site<br/>GitHub Pages"]
+        pipeline --> validate --> download --> generate --> commit --> deploy
+    end
+
+    dispatch --> pipeline
+    artifact -. manual/local input .-> download
+```
+
+## End-to-End Flow
+
+### 1. Private repo builds the bundle
+
+When [openclaw](https://github.com/JeffSteinbok/openclaw) changes, its docs pipeline:
+
+- extracts structured facts from source files
+- removes or rejects private/sensitive data
+- writes a sanitized bundle under `out/docs-bundle/`
+- uploads that bundle as a GitHub Actions artifact named `docs-bundle`
+
+Typical bundle contents include things like:
+
+- `plugins/*.json`
+- `agents/*.json`
+- `services.json`
+- `libs/*.json`
+- `jobs.json`
+- `config.json`
+- `release/changes.json`
+- `manifest.json`
+- `changed_pages.json`
+
+### 2. `octo-docs` receives the update signal
+
+The private repo sends a `repository_dispatch` event (`bundle-ready`) to this repo.
+
+That triggers `.github/workflows/docs-main-pipeline.yml`, which orchestrates three phases:
+
+1. **validate** — run tests and secret scanning in `octo-docs`
+2. **generate** — download the bundle and regenerate affected pages
+3. **deploy** — publish the resulting site through GitHub Pages
+
+### 3. The generator turns bundle facts into pages
+
+The generator lives under `tools/docs/` and uses **page specs** from `tools/docs/page_specs/*.yml`.
+
+Each page spec tells the system:
+
+- which bundle files to read
+- where to write the resulting page
+- whether the page is rendered deterministically or via an LLM prompt
+
+There are two broad rendering modes:
+
+- **Deterministic bundle renderers** for structured pages like plugins, hooks, skills, scheduled tasks, and service indexes
+- **LLM-assisted generation** for pages that still benefit from prose synthesis, using GitHub Models via `GITHUB_TOKEN`
+
+```mermaid
+flowchart TD
+    bundle["Sanitized bundle"]
+    specs["Page specs<br/>tools/docs/page_specs/*.yml"]
+    selectors["Bundle selectors"]
+    strategy{"Rendering strategy"}
+    deterministic["Deterministic renderer<br/>stable Markdown from JSON"]
+    llm["Prompt builder + GitHub Models<br/>for prose-heavy pages"]
+    writer["Write docs/*.md"]
+
+    bundle --> selectors
+    specs --> selectors
+    selectors --> strategy
+    strategy --> deterministic --> writer
+    strategy --> llm --> writer
+```
+
+### 4. Generated docs are committed and deployed
+
+Once generation succeeds:
+
+- updated Markdown is committed back to `octo-docs`
+- the Jekyll site is rebuilt
+- GitHub Pages serves the new version of the site
+
+That means the live site is always derived from:
+
+**private source repo → sanitized bundle → generated public docs**
+
+## Why the split exists
+
+This architecture keeps the public docs useful **without exposing the private repo**.
+
+- `openclaw` stays the source of truth
+- `octo-docs` only sees public-safe extracted data
+- generation logic can evolve independently from the private runtime code
+- docs can mix deterministic pages with LLM-generated narrative while staying anchored to structured facts
+
+## Repo Pointers
+
+| Path | Purpose |
+|------|---------|
+| `docs/` | Published Jekyll site content |
+| `tools/docs/generation/` | Main page-generation logic |
+| `tools/docs/page_specs/` | Page definitions: sources, output paths, strategies |
+| `.github/workflows/docs-main-pipeline.yml` | Top-level orchestrator for validate/generate/deploy |
+| `.github/workflows/generate-docs.yml` | Bundle download + page generation workflow |
 
 ## Live Site
 
