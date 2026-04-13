@@ -6,9 +6,9 @@ nav_order: 2
 
 # Agents & Channels
 
-This page lists the agent identities, model configuration, channel policies, and session settings exported in the public bundle.
+This page explains each published agent's permission profile and why it is isolated that way.
 
-Private execution permissions, tool allowlists, and detailed channel-to-agent bindings are intentionally not included in the public bundle, so this page documents only the configuration that is published.
+The public bundle includes agent identity and a simplified permission/config posture. Exact peer bindings, raw filesystem paths, and detailed private allowlists are still omitted.
 
 ## Models
 
@@ -16,54 +16,72 @@ Private execution permissions, tool allowlists, and detailed channel-to-agent bi
 - **Fallback models:** `github-copilot/gpt-5.4`
 - **Primary image model:** `github-copilot/claude-sonnet-4.6`
 
+## Agent Architecture
+
+Each published agent has its own permission boundary. Interactive helpers stay separated from delegated workers and webhook-driven automations.
+
+| Agent | Used for | Permissions | Why it is set up this way |
+|-------|----------|-------------|---------------------------|
+| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`. | Keeps the everyday assistant capable without giving the default chat direct shell/process control. |
+| `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. | Treats mail as untrusted input and isolates mail processing from broader tools. |
+| `root` | Explicit owner escalations for admin/debugging work | `inherited-default` tools; broad inherited access posture; exec `inherited`. | Concentrates privileged admin/debug access in a separate escalation path. |
+| `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. |
+| `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
+
 ## Agents
 
-| Agent | ID | Public Summary |
-|-------|----|----------------|
-| 🐙 Octo | `main` | High-level role exported; private security details are omitted from the bundle. |
-| 📬 mail-agent | `mail` | High-level role exported; private security details are omitted from the bundle. |
-| 🔑 Root | `root` | High-level role exported; private security details are omitted from the bundle. |
-| 👨‍👩‍👧‍👦 Family | `family` | High-level role exported; private security details are omitted from the bundle. |
-| 📷 HA Hooks | `hass-hooks` | handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens, snap all outdoor cameras into a collage, analyze it together, and send Jeff a casual one-line summary with the image. |
+| Agent | Used for | Permissions |
+|-------|----------|-------------|
+| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`. |
+| `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. |
+| `root` | Explicit owner escalations for admin/debugging work | `inherited-default` tools; broad inherited access posture; exec `inherited`. |
+| `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. |
+| `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. |
 
-## 🐙 Octo
+## `main`
 
-- **Agent ID:** `main`
-- **Public summary:** Not explicitly exported in the public bundle.
-- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
-- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
-- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Discord Messaging Style`, `Safety`, `Web Fetching & Browsing`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Alarm Reminder Logic`, `Mail Notifications`, `Package Tracking`, `Security Guardrails`, `Theater Seating Charts`, `Make It Yours`
+- **Used for:** Jeff's primary direct chats and proactive assistant flows
+- **Permissions:** `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`.
+- **Why:** Keeps the everyday assistant capable without giving the default chat direct shell/process control.
+- **Tool mode:** `customized`
+- **Sub-agent access:** `root`, `family`
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
-## 📬 mail-agent
+## `mail`
 
-- **Agent ID:** `mail`
-- **Public summary:** Not explicitly exported in the public bundle.
-- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
-- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
-- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Safety`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Make It Yours`
+- **Used for:** Internal delegated mail-processing workflows
+- **Permissions:** `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`.
+- **Why:** Treats mail as untrusted input and isolates mail processing from broader tools.
+- **Tool mode:** `profile:minimal`
+- **Sub-agent access:** None published.
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
-## 🔑 Root
+## `root`
 
-- **Agent ID:** `root`
-- **Public summary:** Not explicitly exported in the public bundle.
-- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
-- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
-- **Published instruction sections:** `First Run`, `Every Session`, `Memory`, `Safety`, `External vs Internal`, `Group Chats`, `Tools`, `💓 Heartbeats - Be Proactive!`, `Make It Yours`
+- **Used for:** Explicit owner escalations for admin/debugging work
+- **Permissions:** `inherited-default` tools; broad inherited access posture; exec `inherited`.
+- **Why:** Concentrates privileged admin/debug access in a separate escalation path.
+- **Tool mode:** `inherited-default`
+- **Sub-agent access:** None published.
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
-## 👨‍👩‍👧‍👦 Family
+## `family`
 
-- **Agent ID:** `family`
-- **Public summary:** Not explicitly exported in the public bundle.
-- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
-- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
+- **Used for:** Family-facing direct chats
+- **Permissions:** `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none.
+- **Why:** Limits family-facing conversations to a narrow, safer tool surface.
+- **Tool mode:** `profile:messaging`
+- **Sub-agent access:** None published.
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
-## 📷 HA Hooks
+## `hass-hooks`
 
-- **Agent ID:** `hass-hooks`
-- **Public summary:** handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens, snap all outdoor cameras into a collage, analyze it together, and send Jeff a casual one-line summary with the image.
-- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.
-- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.
-- **Published instruction sections:** `What arrives`, `Step 1: Decide if it's interesting`, `Step 2: Check presence (optional)`, `Step 3: Get outdoor collage`, `Step 4: Analyze the collage`, `Step 5: Send to Jeff`, `Tool allowlist`
+- **Used for:** Home Assistant webhook events
+- **Permissions:** `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only.
+- **Why:** Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow.
+- **Tool mode:** `custom-allowlist`
+- **Sub-agent access:** None published.
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
 ## Channels
 

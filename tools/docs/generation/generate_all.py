@@ -495,22 +495,79 @@ def _process_agents_channels_page(
     output_path = REPO_ROOT / page_spec["output_path"]
     config = bundle.load_json("config.json")
     config_agents = config.get("agents", [])
-    agent_summaries = {
-        agent.get("id", ""): agent
-        for agent in bundle.load_json("agents.json").get("agents", [])
-        if isinstance(agent, dict)
-    }
+    primary_model = config.get("models", {}).get("primary", "unknown")
+    fallback_models = config.get("models", {}).get("fallbacks", [])
+
+    def _agent_surface(agent_id: str) -> str:
+        if agent_id == "main":
+            return "Jeff's primary direct chats and proactive assistant flows"
+        if agent_id == "mail":
+            return "Internal delegated mail-processing workflows"
+        if agent_id == "root":
+            return "Explicit owner escalations for admin/debugging work"
+        if agent_id == "family":
+            return "Family-facing direct chats"
+        if agent_id == "hass-hooks":
+            return "Home Assistant webhook events"
+        return "Published agent surface"
+
+    def _agent_permissions_summary(agent_id: str, profile: dict) -> str:
+        capabilities = profile.get("capabilities", {}) if isinstance(profile, dict) else {}
+        tool_mode = profile.get("toolMode", "unknown")
+        allowed_subagents = profile.get("allowedSubagents", []) if isinstance(profile, dict) else []
+        subagents = ", ".join(f"`{name}`" for name in allowed_subagents) if allowed_subagents else "none"
+
+        if agent_id == "main":
+            return (
+                f"`{tool_mode}` tools; exec `{capabilities.get('exec', 'unknown')}`; "
+                f"browser `{capabilities.get('browser', 'unknown')}`; "
+                f"writes `{capabilities.get('write', 'unknown')}`; sub-agents {subagents}."
+            )
+        if agent_id == "mail":
+            return (
+                f"`{tool_mode}` tools; read `{capabilities.get('read', 'unknown')}`; "
+                f"writes `{capabilities.get('write', 'unknown')}`; "
+                f"browser `{capabilities.get('browser', 'unknown')}`; "
+                f"exec `{capabilities.get('exec', 'unknown')}`."
+            )
+        if agent_id == "root":
+            return (
+                f"`{tool_mode}` tools; broad inherited access posture; "
+                f"exec `{capabilities.get('exec', 'unknown')}`."
+            )
+        if agent_id == "family":
+            return (
+                f"`{tool_mode}` tools; writes `{capabilities.get('write', 'unknown')}`; "
+                f"browser `{capabilities.get('browser', 'unknown')}`; "
+                f"exec `{capabilities.get('exec', 'unknown')}`; sub-agents {subagents}."
+            )
+        if agent_id == "hass-hooks":
+            return f"`{tool_mode}` tools; tightly scoped allowlist for camera, image, and message handling only."
+        return f"`{tool_mode}` tools."
+
+    def _agent_why(agent_id: str) -> str:
+        if agent_id == "main":
+            return "Keeps the everyday assistant capable without giving the default chat direct shell/process control."
+        if agent_id == "mail":
+            return "Treats mail as untrusted input and isolates mail processing from broader tools."
+        if agent_id == "root":
+            return "Concentrates privileged admin/debug access in a separate escalation path."
+        if agent_id == "family":
+            return "Limits family-facing conversations to a narrow, safer tool surface."
+        if agent_id == "hass-hooks":
+            return "Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow."
+        return "Separates this agent from the rest of the system."
 
     lines = [
         "# Agents & Channels",
         "",
-        "This page lists the agent identities, model configuration, channel policies, and session settings exported in the public bundle.",
+        "This page explains each published agent's permission profile and why it is isolated that way.",
         "",
-        "Private execution permissions, tool allowlists, and detailed channel-to-agent bindings are intentionally not included in the public bundle, so this page documents only the configuration that is published.",
+        "The public bundle includes agent identity and a simplified permission/config posture. Exact peer bindings, raw filesystem paths, and detailed private allowlists are still omitted.",
         "",
         "## Models",
         "",
-        f"- **Primary model:** `{config.get('models', {}).get('primary', 'unknown')}`",
+        f"- **Primary model:** `{primary_model}`",
     ]
 
     fallbacks = config.get("models", {}).get("fallbacks", [])
@@ -522,46 +579,56 @@ def _process_agents_channels_page(
     if isinstance(image_model, dict) and image_model.get("primary"):
         lines.append(f"- **Primary image model:** `{image_model['primary']}`")
 
-    lines.extend(["", "## Agents", ""])
     lines.extend([
-        "| Agent | ID | Public Summary |",
-        "|-------|----|----------------|",
+        "",
+        "## Agent Architecture",
+        "",
+        "Each published agent has its own permission boundary. Interactive helpers stay separated from delegated workers and webhook-driven automations.",
+        "",
+        "| Agent | Used for | Permissions | Why it is set up this way |",
+        "|-------|----------|-------------|---------------------------|",
     ])
     for agent in config_agents:
         agent_id = agent.get("id", "")
-        exported = agent_summaries.get(agent_id, {})
-        detail = _load_json_if_present(bundle, f"agents/{agent_id}.json") or {}
-        summary = exported.get("description") or detail.get("summary") or ""
-        if summary in {"This folder is home. Treat it that way.", "On session start:"}:
-            summary = ""
+        profile = agent.get("configProfile") or {}
         lines.append(
-            f"| {agent.get('emoji', '')} {agent.get('name', agent_id)} | "
-            f"`{agent_id}` | "
-            f"{_markdown_cell(summary or 'High-level role exported; private security details are omitted from the bundle.')} |"
+            f"| `{agent_id}` | "
+            f"{_markdown_cell(_agent_surface(agent_id))} | "
+            f"{_markdown_cell(_agent_permissions_summary(agent_id, profile))} | "
+            f"{_markdown_cell(_agent_why(agent_id))} |"
+        )
+
+    lines.extend(["", "## Agents", ""])
+    lines.extend([
+        "| Agent | Used for | Permissions |",
+        "|-------|----------|-------------|",
+    ])
+    for agent in config_agents:
+        agent_id = agent.get("id", "")
+        profile = agent.get("configProfile") or {}
+        lines.append(
+            f"| `{agent_id}` | "
+            f"{_markdown_cell(_agent_surface(agent_id))} | "
+            f"{_markdown_cell(_agent_permissions_summary(agent_id, profile))} |"
         )
 
     for agent in config_agents:
         agent_id = agent.get("id", "")
-        exported = agent_summaries.get(agent_id, {})
-        detail = _load_json_if_present(bundle, f"agents/{agent_id}.json") or {}
-        summary = exported.get("description") or detail.get("summary") or ""
-        if summary in {"This folder is home. Treat it that way.", "On session start:"}:
-            summary = ""
-        section_names = list((detail.get("sections") or {}).keys())
+        profile = agent.get("configProfile") or {}
+        tool_mode = profile.get("toolMode", "unknown")
+        allowed_subagents = profile.get("allowedSubagents", []) if isinstance(profile, dict) else []
 
         lines.extend([
             "",
-            f"## {agent.get('emoji', '')} {agent.get('name', agent_id)}".strip(),
+            f"## `{agent_id}`",
             "",
-            f"- **Agent ID:** `{agent_id}`",
-            f"- **Public summary:** {summary or 'Not explicitly exported in the public bundle.'}",
-            "- **Security model:** Exec settings, permissions, and tool/plugin allowlists are not exported in the public bundle.",
-            "- **Bindings:** Channel-to-agent binding details are not exported in the public bundle.",
+            f"- **Used for:** {_agent_surface(agent_id)}",
+            f"- **Permissions:** {_agent_permissions_summary(agent_id, profile)}",
+            f"- **Why:** {_agent_why(agent_id)}",
+            f"- **Tool mode:** `{tool_mode}`",
+            f"- **Sub-agent access:** {', '.join(f'`{name}`' for name in allowed_subagents) if allowed_subagents else 'None published.'}",
+            "- **Private details still omitted:** exact peer bindings and detailed tool allowlists.",
         ])
-        if section_names:
-            lines.append(
-                f"- **Published instruction sections:** {', '.join(f'`{name}`' for name in section_names)}"
-            )
 
     lines.extend(["", "## Channels", ""])
     lines.extend([
