@@ -14,7 +14,6 @@ OpenClaw services are background processes that keep long-running automations an
 | Service | Description | Docs |
 |---------|-------------|------|
 | 📡 FastMail SSE Service | Real-time email ingestion daemon. Connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and runs Python actions. The current source is FastMail SSE, but the rule/action runtime is designed to be shared with future Outlook poll/webhook sources. | [Read more →](services/fastmail-sse) |
-| 🔄 Shared Mail Runtime | Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Provides a normalized envelope model, rule matching engine, action registry, and dispatch loop that any mail source (Fastmail SSE, Outlook, etc.) can plug into. | [Read more →](services/shared_mail_runtime) |
 
 ## 📡 FastMail SSE Service
 
@@ -43,20 +42,3 @@ Real-time email ingestion daemon. Connects to FastMail's JMAP EventSource, norma
 | `NOTIFY_TARGET` | Yes | Target ID for the notification channel |
 
 [Read more →](services/fastmail-sse)
-
-## 🔄 Shared Mail Runtime
-
-Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Provides a normalized envelope model, rule matching engine, action registry, and dispatch loop that any mail source (Fastmail SSE, Outlook, etc.) can plug into.
-
-### Key Features
-
-- MailEnvelope — Normalized message shape consumed by rules and actions
-- Rule engine — Declarative JSON rules with match conditions (sender, subject, domain, regex, attachments, body)
-- Action registry — Named action handlers with automatic body fetching and attachment downloading
-- Provider protocol — `MailProviderClient` interface that sources implement to plug into the pipeline
-
-### Environment Variables
-
-_No environment variables required._
-
-[Read more →](services/shared_mail_runtime)

@@ -89,7 +89,6 @@ Find a calendar event by UID or text search and update its title, time, location
 | `status` | string | Optional | Update event status. Allowed: `confirmed`, `tentative`, `cancelled`. |
 | `add_attendee` | array | Optional | Email(s) to add as attendees. |
 | `remove_attendee` | array | Optional | Email(s) to remove from attendees. |
-| `no_notify` | boolean | Optional | Skip iMIP update notifications. |
 | `force` | boolean | Optional | Update all matching events when multiple found. |
 
 ### `fastmail_query_events`

@@ -31,11 +31,12 @@ flowchart TD
         stream["Watch events"]
         fetch["Fetch mail"]
         env["Build envelope"]
-        match["Phase 1:<br/>mail_rules"]
-        dispatch["Dispatch results"]
+        match["Phase 1:<br/>shared mail_rules"]
+        dispatch["Dispatch results<br/>(message / handoff)"]
     end
 
-    subgraph actions["Actions"]
+    subgraph actions["mail_runtime_core"]
+        builtins["Built-in actions"]
         notify["notify_email"]
         track["detect_tracking"]
         usps["process_usps_digest<br/>download digest"]
@@ -53,9 +54,10 @@ flowchart TD
     end
 
     fm --> stream --> fetch --> env --> match
-    match --> notify
-    match --> track
-    match --> usps
+    match --> builtins
+    builtins --> notify
+    builtins --> track
+    builtins --> usps
 
     notify --> dispatch
     track --> dispatch
@@ -75,7 +77,7 @@ flowchart TD
 
 - `mail` agent: owns USPS vision work plus USPS-specific rules/config/state
 - `main` agent: owns durable memory and any non-notification follow-up after USPS analysis
-- normal `notify_email` and `detect_tracking` actions run entirely inside the FastMail SSE service process
+- `notify_email` and `detect_tracking` are shared built-in mail actions; FastMail SSE just wires their side effects into the local environment
 
 The USPS path has two rule layers:
 
@@ -117,11 +119,11 @@ Create `~/.openclaw/services/fastmail-sse-config.json` (see `config.example.json
 
 **Label**: Human-readable label for the account (displayed in multi-account notifications)
 
-Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in [Shared Mail Runtime](shared_mail_runtime).
+Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in `libs/python/mail_runtime_core/README.md`.
 
 ### FastMail-exposed actions
 
-This service registers the following actions for use in `mail_rules`:
+This service registers the following shared/domain actions for use in `mail_rules`:
 
 | Action | Behavior |
 |------|---------|
@@ -131,7 +133,7 @@ This service registers the following actions for use in `mail_rules`:
 
 ### FastMail-specific USPS example
 
-For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [USPS Mail Runtime](shared-mail-runtime-usps).
+For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [`libs/python/mail_action_usps/README.md`](../../libs/python/mail_action_usps/README.md).
 
 Use a second rule if you want to re-process an older USPS digest by forwarding it to yourself. Forwarded mail usually changes the sender away from `usps.com`, so it needs its own `sender_email`/`body_contains` match.
 

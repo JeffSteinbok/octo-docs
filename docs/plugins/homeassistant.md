@@ -94,3 +94,12 @@ Get Home Assistant logbook entries with optional filters.
 | `end_time` | string | Optional | End of the time range as an ISO 8601 string. Defaults to now. |
 | `keyword` | string | Optional | Optional keyword to filter entries by name, message, entity_id, or state. |
 | `limit` | integer | Optional | Maximum number of entries to return (default: 100, max: 500). |
+
+### `hass_camera_collage`
+
+Snapshot multiple cameras simultaneously and compose them into a grid collage image. Defaults to all outdoor + garage cameras. Returns a single local file path to the collage image.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `camera_names` | array | Optional | List of camera names to include. Defaults to all outdoor + garage cameras: front-doorbell, front-doorbell-package, driveway, backyard-left, backyard-right, garage. Available: living-room, front-doorbell, front-doorbell-package, backyard-right, backyard-left, driveway, family-room, garage. |
+| `label` | boolean | Optional | Draw camera name labels on each cell (default: true). |

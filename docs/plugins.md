@@ -11,14 +11,14 @@ Plugins are self-contained capabilities that Octo's agents can invoke — sendin
 
 Unlike [skills](skills), which provide knowledge through markdown prompts, plugins execute real code and interact with external APIs. Think of plugins as _tools_ and skills as _knowledge_.
 
-Octo currently has **16 plugins** providing **67 tools** in total.
+Octo currently has **16 plugins** providing **68 tools** in total.
 
 | | Plugin | Description | Tools |
 |---|--------|-------------|:-----:|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | 1 |
 | 📧 | [Fastmail](plugins/fastmail) | Send email and manage calendar events in Fastmail | 7 |
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | 6 |
-| 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | 10 |
+| 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | 11 |
 | 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | 1 |
 | 🖼️ | [LLMVision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | 4 |
 | 🩺 | [OpenTable Heartbeat](plugins/opentable-heartbeat) | Check whether the OpenTable integration is working and alert on failure | 1 |
