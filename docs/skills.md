@@ -13,8 +13,7 @@ Unlike plugins, skills do not execute code. They give agents shared instructions
 
 Octo currently publishes **0 skills** in the public bundle.
 
-| | Skill | Used by | Description |
-|---|-------|---------|-------------|
+No public skills are currently published.
 
 ## How Skills Differ from Plugins
 

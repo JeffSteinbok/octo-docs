@@ -193,6 +193,17 @@ def _extract_first_paragraph(markdown: str) -> str:
     return " ".join(para)
 
 
+def _cleanup_stale_child_pages(child_dir: Path | None, expected_names: set[str]) -> None:
+    """Remove generated child markdown pages that no longer have bundle backing."""
+    if child_dir is None or not child_dir.exists():
+        return
+
+    for path in child_dir.glob("*.md"):
+        if path.name not in expected_names:
+            path.unlink()
+            logger.info("Removed stale child page: %s", path)
+
+
 def _count_tools(plugin_json: dict) -> int:
     """Count tools defined in a plugin JSON structure."""
     tools = plugin_json.get("tools")
@@ -615,6 +626,7 @@ def _process_hooks_page(
         child_dir.mkdir(parents=True, exist_ok=True)
 
     hook_entries = []
+    expected_child_pages: set[str] = set()
     for nav_index, chunk_path in enumerate(chunk_paths, start=1):
         hook_json = bundle.load_json(chunk_path)
         page_content, metadata = _render_hook_page_content(hook_json, chunk_path)
@@ -630,6 +642,9 @@ def _process_hooks_page(
             child_path = child_dir / f"{metadata['id']}.md"
             write_page(child_path, format_markdown(page_content), front_matter=child_front_matter)
             logger.info("Written hook child page: %s", child_path)
+            expected_child_pages.add(child_path.name)
+
+    _cleanup_stale_child_pages(child_dir, expected_child_pages)
 
     lines = [
         "# Hooks",
@@ -779,6 +794,7 @@ def _process_skills_page(
         child_dir.mkdir(parents=True, exist_ok=True)
 
     skill_entries = []
+    expected_child_pages: set[str] = set()
     for nav_index, chunk_path in enumerate(chunk_paths, start=1):
         skill_json = bundle.load_json(chunk_path)
         skill_id = _skill_id(skill_json, chunk_path)
@@ -802,6 +818,7 @@ def _process_skills_page(
             child_path = child_dir / f"{skill_id}.md"
             write_page(child_path, formatted, front_matter=child_front_matter)
             logger.info("Written skill child page: %s", child_path)
+            expected_child_pages.add(child_path.name)
 
         skill_entries.append({
             "id": skill_id,
@@ -813,6 +830,8 @@ def _process_skills_page(
             "topics": topics,
         })
 
+    _cleanup_stale_child_pages(child_dir, expected_child_pages)
+
     lines = [
         "# Skills",
         "",
@@ -822,15 +841,22 @@ def _process_skills_page(
         "",
         f"Octo currently publishes **{len(skill_entries)} skill{'s' if len(skill_entries) != 1 else ''}** in the public bundle.",
         "",
-        "| | Skill | Used by | Description |",
-        "|---|-------|---------|-------------|",
     ]
-    link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "skills"
-    for entry in skill_entries:
-        link = f"[{entry['name']}]({link_prefix}/{entry['slug']})"
-        lines.append(
-            f"| {entry.get('emoji') or '🧠'} | {link} | `{_markdown_cell(entry.get('agent', 'unknown'))}` | {entry.get('description') or ''} |"
-        )
+    if skill_entries:
+        lines.extend([
+            "| | Skill | Used by | Description |",
+            "|---|-------|---------|-------------|",
+        ])
+        link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "skills"
+        for entry in skill_entries:
+            link = f"[{entry['name']}]({link_prefix}/{entry['slug']})"
+            lines.append(
+                f"| {entry.get('emoji') or '🧠'} | {link} | `{_markdown_cell(entry.get('agent', 'unknown'))}` | {entry.get('description') or ''} |"
+            )
+    else:
+        lines.extend([
+            "No public skills are currently published.",
+        ])
 
     lines.extend([
         "",
@@ -1079,6 +1105,7 @@ def _process_plugin_bundle_page(
         child_dir.mkdir(parents=True, exist_ok=True)
 
     plugin_entries = []
+    expected_child_pages: set[str] = set()
     for nav_index, chunk_path in enumerate(chunk_paths, start=1):
         plugin_json = bundle.load_json(chunk_path)
         page_content, metadata = _render_plugin_page_content(plugin_json, chunk_path)
@@ -1094,7 +1121,9 @@ def _process_plugin_bundle_page(
             child_path = child_dir / f"{metadata['id']}.md"
             write_page(child_path, format_markdown(page_content), front_matter=child_front_matter)
             logger.info("Written plugin child page: %s", child_path)
+            expected_child_pages.add(child_path.name)
 
+    _cleanup_stale_child_pages(child_dir, expected_child_pages)
     link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "plugins"
     index_content = _build_index_table(plugin_entries, link_prefix, title=parent_title)
     write_page(output_path, format_markdown(index_content), front_matter=page_spec.get("front_matter"))
@@ -1136,6 +1165,7 @@ def _process_chunked_page(
 
     # Generate each chunk as a separate page
     plugin_entries = []
+    expected_child_pages: set[str] = set()
     for nav_index, chunk_path in enumerate(chunk_paths, start=1):
         # Extract metadata from plugin JSON
         try:
@@ -1194,6 +1224,7 @@ def _process_chunked_page(
             child_path = child_dir / f"{slug}.md"
             write_page(child_path, formatted, front_matter=child_front_matter)
             logger.info("Written child page: %s", child_path)
+            expected_child_pages.add(child_path.name)
 
         plugin_entries.append({
             "name": plugin_name,
@@ -1203,6 +1234,8 @@ def _process_chunked_page(
             "tool_count": tool_count,
         })
         logger.info("Generated chunk: %s (%s)", chunk_path, plugin_name)
+
+    _cleanup_stale_child_pages(child_dir if chunk_output_dir else None, expected_child_pages)
 
     # Build and write the index page with summary table
     link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "plugins"

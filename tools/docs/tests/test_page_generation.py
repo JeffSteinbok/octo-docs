@@ -512,6 +512,60 @@ def test_process_page_bundle_skills_renders_without_llm(tmp_path, monkeypatch):
     assert "## Rules" in child_content
 
 
+def test_process_page_bundle_skills_omits_empty_table_when_no_skills(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    skills_dir = bundle_root / "skills"
+    skills_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["skills.json"]}),
+        encoding="utf-8",
+    )
+    (bundle_root / "skills.json").write_text(
+        json.dumps({"skills": []}),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "skills-overview",
+        "output_path": "docs/skills.md",
+        "template": "overview",
+        "strategy": "bundle-skills",
+        "chunk_source": "skills/*.json",
+        "chunk_output_dir": "docs/skills",
+        "front_matter": {
+            "layout": "default",
+            "title": "Skills",
+            "nav_order": 4,
+            "has_children": True,
+        },
+        "sources": [
+            {"path": "skills.json"},
+            {"path": "skills/*.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/skills.md"
+    index_content = (repo_root / "docs/skills.md").read_text(encoding="utf-8")
+    assert "No public skills are currently published." in index_content
+    assert "| | Skill | Used by | Description |" not in index_content
+
+
 def test_process_page_bundle_release_renders_sections_without_bundle_diff(tmp_path, monkeypatch):
     bundle_root = tmp_path / "bundle"
     release_dir = bundle_root / "release"
