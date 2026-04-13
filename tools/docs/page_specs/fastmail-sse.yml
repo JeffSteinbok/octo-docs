@@ -5,7 +5,7 @@ output_path: docs/services/fastmail-sse.md
 front_matter:
   layout: default
   title: FastMail SSE Service
-  parent: Email Handling
+  parent: Services
   nav_order: 1
 
 sources:

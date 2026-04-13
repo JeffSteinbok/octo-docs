@@ -1,15 +1,15 @@
-id: shared-mail-runtime-usps
+id: package-tracking-runtime
 
-output_path: docs/mail-runtime/usps.md
+output_path: docs/mail-runtime/package-tracking.md
 
 front_matter:
   layout: default
-  title: USPS Mail Runtime
+  title: Package Tracking Core
   parent: Shared Mail Runtime
-  nav_order: 1
+  nav_order: 2
 
 sources:
-  - path: libs/mail_action_usps-action.json
+  - path: libs/package_tracking_core.json
 
 template: overview
 strategy: bundle-service-detail

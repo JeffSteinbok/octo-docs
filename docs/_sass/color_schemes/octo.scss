@@ -42,9 +42,10 @@ h4 {
 }
 
 // Inline code on light backgrounds should stay warm but not muddy/dark.
-code {
-  color: #ea580c;
-  background: #fff7ed;
+.main-content code,
+.label code {
+  color: #ea580c !important;
+  background: #fff7ed !important;
   border: 1px solid #fed7aa;
   border-radius: 0.25rem;
 }
@@ -95,7 +96,7 @@ figure.highlight {
 
   code {
     background: transparent !important;
-    color: inherit;
+    color: inherit !important;
     padding: 0;
     border: none !important;
   }

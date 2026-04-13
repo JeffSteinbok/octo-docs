@@ -7,17 +7,19 @@ has_children: true
 
 # Services
 
-OpenClaw services are background processes that keep long-running automations and shared runtimes available between conversations.
+OpenClaw services are background processes that keep long-running automations available between conversations.
+
+Shared runtime subsystems such as the mail runtime are documented separately under [Mail Runtime](mail-runtime).
 
 ## Service Summary
 
 | Service | Description | Docs |
 |---------|-------------|------|
-| 📡 FastMail SSE Service | Real-time email ingestion daemon. Connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and runs Python actions. The current source is FastMail SSE, but the rule/action runtime is designed to be shared with future Outlook poll/webhook sources. | [Read more →](services/fastmail-sse) |
+| 📡 FastMail SSE Service | Real-time email ingestion daemon that acts as the FastMail-specific adapter over the shared mail runtime. It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources. | [Read more →](services/fastmail-sse) |
 
 ## 📡 FastMail SSE Service
 
-Real-time email ingestion daemon. Connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and runs Python actions. The current source is FastMail SSE, but the rule/action runtime is designed to be shared with future Outlook poll/webhook sources.
+Real-time email ingestion daemon that acts as the FastMail-specific adapter over the shared mail runtime. It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources.
 
 ### Key Features
 

@@ -1,12 +1,12 @@
 id: shared-mail-runtime
 
-output_path: docs/services/shared_mail_runtime.md
+output_path: docs/mail-runtime/shared_mail_runtime.md
 
 front_matter:
   layout: default
   title: Shared Mail Runtime
-  parent: Email Handling
-  nav_order: 2
+  parent: Mail Runtime
+  nav_order: 1
   has_children: true
 
 sources:

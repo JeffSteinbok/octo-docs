@@ -681,7 +681,9 @@ def _process_services_overview_page(
     lines = [
         "# Services",
         "",
-        "OpenClaw services are background processes that keep long-running automations and shared runtimes available between conversations.",
+        "OpenClaw services are background processes that keep long-running automations available between conversations.",
+        "",
+        "Shared runtime subsystems such as the mail runtime are documented separately under [Mail Runtime](mail-runtime).",
         "",
         "## Service Summary",
         "",
@@ -744,19 +746,25 @@ def _process_service_detail_page(
     for section_title, body in (service.get("sections") or {}).items():
         lines.extend(["", *_render_markdown_section(section_title, body)])
 
-    if source_path in {"services/shared_mail_runtime.json", "libs/mail_runtime_core.json"} and bundle.exists("libs/mail_action_usps-action.json"):
-        lines.extend([
-            "",
-            "## Related Runtime Docs",
-            "",
-            "- [USPS Mail Runtime](shared-mail-runtime-usps)",
-        ])
+    if source_path in {"services/shared_mail_runtime.json", "libs/mail_runtime_core.json"}:
+        related_links = []
+        if bundle.exists("libs/package_tracking_core.json"):
+            related_links.append("- [Package Tracking Core](package-tracking)")
+        if bundle.exists("libs/mail_action_usps-action.json"):
+            related_links.append("- [USPS Mail Runtime](usps)")
+        if related_links:
+            lines.extend([
+                "",
+                "## Related Runtime Docs",
+                "",
+                *related_links,
+            ])
 
     content = format_markdown("\n".join(lines))
-    content = content.replace("[`usps/README.md`](./usps/README.md)", "[USPS Mail Runtime](shared-mail-runtime-usps)")
+    content = content.replace("[`usps/README.md`](./usps/README.md)", "[USPS Mail Runtime](usps)")
     content = content.replace(
         "[`services/shared_mail_runtime/usps/README.md`](../shared_mail_runtime/usps/README.md)",
-        "[USPS Mail Runtime](shared-mail-runtime-usps)",
+        "[USPS Mail Runtime](usps)",
     )
     content = content.replace("`services/shared_mail_runtime/README.md`", "[Shared Mail Runtime](shared_mail_runtime)")
     if dry_run:

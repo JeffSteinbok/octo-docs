@@ -279,14 +279,14 @@ def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypat
 
     page_spec = {
         "id": "shared-mail-runtime",
-        "output_path": "docs/services/shared_mail_runtime.md",
+        "output_path": "docs/mail-runtime/shared_mail_runtime.md",
         "template": "overview",
         "strategy": "bundle-service-detail",
         "front_matter": {
             "layout": "default",
             "title": "Shared Mail Runtime",
-            "parent": "Services",
-            "nav_order": 2,
+            "parent": "Mail Runtime",
+            "nav_order": 1,
             "has_children": True,
         },
         "sources": [
@@ -296,10 +296,10 @@ def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypat
 
     output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
 
-    assert output == "docs/services/shared_mail_runtime.md"
-    content = (repo_root / "docs/services/shared_mail_runtime.md").read_text(encoding="utf-8")
+    assert output == "docs/mail-runtime/shared_mail_runtime.md"
+    content = (repo_root / "docs/mail-runtime/shared_mail_runtime.md").read_text(encoding="utf-8")
     assert "## Related Runtime Docs" in content
-    assert "[USPS Mail Runtime](shared-mail-runtime-usps)" in content
+    assert "[USPS Mail Runtime](usps)" in content
 
 
 def test_process_page_bundle_scheduled_tasks_renders_without_llm(tmp_path, monkeypatch):

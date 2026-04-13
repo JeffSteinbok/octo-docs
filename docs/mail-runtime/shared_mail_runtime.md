@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Shared Mail Runtime
-parent: Email Handling
-nav_order: 2
+parent: Mail Runtime
+nav_order: 1
 has_children: true
 ---
 
@@ -83,7 +83,17 @@ In practice, the adapter owns transport, provider APIs, and final side effects; 
 
 `mail_runtime_core` stays provider-agnostic. Domain workflows such as USPS should live in separate action modules that register against this runtime.
 
+- `detect_tracking` — built-in mail action that uses `mail_runtime_core/package_tracking.py` plus [`package_tracking_core`](../package_tracking_core/README.md)
 - [`mail_action_usps`](../mail_action_usps/README.md) — USPS Informed Delivery action module that registers the named action `process_usps_digest`
+
+## Rule actions to know
+
+Two actions are especially important when reading `mail_rules`:
+
+| Action | Kind | What it does |
+|--------|------|---------------|
+| `detect_tracking` | Built-in action | Scans mail for tracking numbers/URLs and routes package-tracking work into `package_tracking_core` |
+| `process_usps_digest` | Adapter-registered action | Hands a USPS digest email off to `mail_action_usps` for the full USPS workflow |
 
 ## Key Types
 
@@ -324,4 +334,5 @@ The provider-agnostic layer keeps that logic in one place, so adding a new sourc
 
 ## Related Runtime Docs
 
-- [USPS Mail Runtime](shared-mail-runtime-usps)
+- [Package Tracking Core](package-tracking)
+- [USPS Mail Runtime](usps)
