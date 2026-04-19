@@ -13,10 +13,12 @@ nav_order: 7
 
 - Added an artifact export pipeline that can build self-contained plugin and service bundles with vendored shared Python libs.
 - Added script-level tests covering plugin/service export and shared-lib dependency closure.
+- Added missing README coverage for `llmvision` and the shared `repo_paths` bootstrap package.
 
 ### Changed
 
 - Updated the packaging docs to describe how publishable artifacts are exported from the monorepo layout.
+- Clarified that `octo` is the canonical private source repo while `openclaw-hub` holds mirrored public source for selected plugins, services, and shared libs.
 
 ## 2026-04-10
 
