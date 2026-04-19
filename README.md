@@ -15,10 +15,12 @@ Public documentation site for the OpenClaw system — a modular AI assistant fra
 
 The docs site is built in **two repos**:
 
-1. **A private source repo** extracts a **sanitized docs bundle**
+1. **The private `octo` repo** extracts a **sanitized docs bundle**
 2. **`octo-docs` (this repo)** consumes that bundle and turns it into published Markdown pages
 
 The public docs generator never reads the private source repo directly. It only sees the bundle artifact.
+
+Selected public plugins, services, and shared Python libraries are also mirrored into [`openclaw-hub`](https://github.com/JeffSteinbok/openclaw-hub), which acts as the public source repo for those surfaces.
 
 ```mermaid
 flowchart LR
@@ -126,7 +128,8 @@ That means the live site is always derived from:
 
 This architecture keeps the public docs useful **without exposing the private repo**.
 
-- the source repo stays the source of truth
+- the private `octo` repo stays the source of truth for the running system
+- selected public plugins, services, and shared libs are mirrored to `openclaw-hub` for direct source browsing
 - `octo-docs` only sees public-safe extracted data
 - generation logic can evolve independently from the private runtime code
 - docs can mix deterministic pages with LLM-generated narrative while staying anchored to structured facts

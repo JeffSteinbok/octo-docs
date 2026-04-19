@@ -52,6 +52,9 @@ nav_order: 1
 This is the documentation for **Octo** 🐙 — [Jeff Steinbok](https://github.com/JeffSteinbok)'s personal instance of
 [OpenClaw](https://openclaw.ai), a modular AI assistant framework.
 
+Selected public plugins, services, and shared Python libraries documented here are also mirrored in
+[`openclaw-hub`](https://github.com/JeffSteinbok/openclaw-hub), which acts as the public source repo for those surfaces.
+
 Much of this setup is inspired by [Omar Shahine](https://github.com/omarshahine)'s
 work on 🦞 [Lobster](https://lobster.shahine.com) — his docs inspired me to publish
 my own.
