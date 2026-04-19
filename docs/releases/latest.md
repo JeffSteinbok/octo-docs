@@ -6,6 +6,18 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-04-19
+
+
+### Added
+
+- Added an artifact export pipeline that can build self-contained plugin and service bundles with vendored shared Python libs.
+- Added script-level tests covering plugin/service export and shared-lib dependency closure.
+
+### Changed
+
+- Updated the packaging docs to describe how publishable artifacts are exported from the monorepo layout.
+
 ## 2026-04-10
 
 
