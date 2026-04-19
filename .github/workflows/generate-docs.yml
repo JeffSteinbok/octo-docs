@@ -99,7 +99,7 @@ jobs:
               echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             else
-              # No artifact specified — download the latest docs-bundle from openclaw
+              # No artifact specified — download the latest docs-bundle from octo
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
               echo "artifact_name=docs-bundle"                          >> "$GITHUB_OUTPUT"
               echo "run_id="                                            >> "$GITHUB_OUTPUT"
@@ -110,19 +110,19 @@ jobs:
 
       # Download the artifact when one is provided; use `gh run download` so that
       # the run-id argument is only passed when it is actually set.
-      # The artifact lives in the private openclaw repo, so we need OPENCLAW_TOKEN.
+      # The artifact lives in the private octo repo, so we need OCTO_DOCS_BUNDLE_READ_TOKEN.
       - name: Download bundle artifact
         if: steps.inputs.outputs.use_artifact == 'true'
         run: |
           ARTIFACT_NAME="${{ steps.inputs.outputs.artifact_name }}"
           RUN_ID="${{ steps.inputs.outputs.run_id }}"
           if [ -n "$RUN_ID" ]; then
-            gh run download "$RUN_ID" --repo JeffSteinbok/openclaw --name "$ARTIFACT_NAME" --dir ./bundle
+            gh run download "$RUN_ID" --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./bundle
           else
-            gh run download --repo JeffSteinbok/openclaw --name "$ARTIFACT_NAME" --dir ./bundle
+            gh run download --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./bundle
           fi
         env:
-          GH_TOKEN: ${{ secrets.OPENCLAW_TOKEN }}
+          GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
 
       - name: Generate docs
         id: generate

@@ -29,7 +29,7 @@ on:
         required: false
         default: "docs-bundle"
       artifact_run_id:
-        description: "OpenClaw workflow run ID that uploaded the artifact"
+        description: "Octo workflow run ID that uploaded the artifact"
         required: false
         default: ""
       bundle_path:
