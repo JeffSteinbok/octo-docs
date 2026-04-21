@@ -158,7 +158,10 @@ jobs:
           if [ -n "$RUN_ID" ]; then
             gh run download "$RUN_ID" --repo JeffSteinbok/openclaw-hub --name "$ARTIFACT_NAME" --dir ./hub-bundle
           else
-            gh run download --repo JeffSteinbok/openclaw-hub --name "$ARTIFACT_NAME" --dir ./hub-bundle
+            if ! gh run download --repo JeffSteinbok/openclaw-hub --name "$ARTIFACT_NAME" --dir ./hub-bundle; then
+              echo "No openclaw-hub satellite artifact available; continuing without hub overlay."
+              rm -rf ./hub-bundle
+            fi
           fi
         env:
           GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
