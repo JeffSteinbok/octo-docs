@@ -9,11 +9,12 @@ front_matter:
   has_children: true
 
 sources:
-  - path: api-index.json
+  - path: runtime-plugins.json
   - path: plugins/*.json
 
 template: overview
 strategy: bundle-plugins
+overview_source: runtime-plugins.json
 chunk_source: "plugins/*.json"
 chunk_output_dir: docs/plugins
 

@@ -39,6 +39,7 @@ The generator expects a bundle directory with this structure:
 ```
 bundle/
   api-index.json
+  runtime-plugins.json
   modules/
     auth.json
     billing.json
@@ -82,6 +83,13 @@ Each spec includes:
 - `sources` — which bundle files to include, and which fields to select
 - `template` — which prompt template to use (`overview`, `api_reference`, `release_notes`)
 - `instructions` — audience, include/exclude guidance for the LLM
+
+For the plugin inventory specifically:
+
+- `plugins/*.json` still powers local plugin child pages
+- `runtime-plugins.json` tells `octo-docs` which plugins are used by the live instance overall
+- entries marked local are rendered as normal local docs pages
+- entries marked external stay in the overview page but link out to another docs site
 
 ### Example
 

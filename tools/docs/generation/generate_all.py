@@ -1153,6 +1153,93 @@ def _build_index_table(entries: list, link_prefix: str = "plugins",
     return intro + "\n" + "\n".join(table_lines)
 
 
+def _plugin_origin_label(origin: object) -> str:
+    labels = {
+        "octo": "Octo",
+        "openclaw-hub": "OpenClaw Hub",
+        "external": "External",
+        "builtin": "Built-in",
+    }
+    if isinstance(origin, str) and origin in labels:
+        return labels[origin]
+    return "Unknown"
+
+
+def _plugin_inventory_link(entry: dict, link_prefix: str) -> str | None:
+    docs_url = entry.get("docs_url")
+    if isinstance(docs_url, str) and docs_url.strip():
+        if docs_url.startswith("/"):
+            return docs_url.lstrip("/")
+        return docs_url
+
+    slug = entry.get("slug") or entry.get("id")
+    if isinstance(slug, str) and slug.strip():
+        return f"{link_prefix}/{slug.strip()}"
+    return None
+
+
+def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugins",
+                                  title: str = "Plugins") -> str:
+    local_entries = [entry for entry in entries if entry.get("docs_mode", "local") == "local"]
+    external_entries = [entry for entry in entries if entry.get("docs_mode", "local") != "local"]
+
+    lines = [
+        f"# {title}",
+        "",
+        "This page lists the plugins used by Octo today.",
+        "",
+        f"- **Documented here:** {len(local_entries)}",
+        f"- **External docs:** {len(external_entries)}",
+    ]
+
+    if local_entries:
+        lines.extend([
+            "",
+            "## Plugins documented here",
+            "",
+            "These plugins have docs-safe source in the bundle, so Octo Docs renders full local pages for them.",
+            "",
+            "| | Plugin | Description | Tools | Source |",
+            "|---|--------|-------------|:-----:|--------|",
+        ])
+        for entry in local_entries:
+            emoji = entry.get("emoji") or ""
+            link_target = _plugin_inventory_link(entry, link_prefix)
+            name = entry.get("name") or entry.get("id") or "Unknown"
+            plugin_link = f"[{name}]({link_target})" if link_target else str(name)
+            description = entry.get("summary") or entry.get("description") or ""
+            tool_count = entry.get("tool_count")
+            tool_text = str(tool_count) if isinstance(tool_count, int) else "—"
+            source_url = entry.get("source_url")
+            origin_label = _plugin_origin_label(entry.get("origin"))
+            source_text = f"[{origin_label}]({source_url})" if isinstance(source_url, str) and source_url else origin_label
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {source_text} |")
+
+    if external_entries:
+        lines.extend([
+            "",
+            "## External plugins in use",
+            "",
+            "These plugins are part of the live runtime, but their detailed docs live elsewhere.",
+            "",
+            "| | Plugin | Description | Docs | Source |",
+            "|---|--------|-------------|------|--------|",
+        ])
+        for entry in external_entries:
+            emoji = entry.get("emoji") or ""
+            docs_url = _plugin_inventory_link(entry, link_prefix)
+            name = entry.get("name") or entry.get("id") or "Unknown"
+            plugin_link = f"[{name}]({docs_url})" if docs_url else str(name)
+            description = entry.get("summary") or entry.get("description") or ""
+            docs_text = f"[External docs]({docs_url})" if docs_url else "—"
+            source_url = entry.get("source_url")
+            origin_label = _plugin_origin_label(entry.get("origin"))
+            source_text = f"[{origin_label}]({source_url})" if isinstance(source_url, str) and source_url else origin_label
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {docs_text} | {source_text} |")
+
+    return "\n".join(lines) + "\n"
+
+
 def _process_plugin_bundle_page(
     page_spec: dict,
     bundle: BundleLoader,
@@ -1163,6 +1250,7 @@ def _process_plugin_bundle_page(
     output_path = REPO_ROOT / page_spec["output_path"]
     chunk_pattern = page_spec["chunk_source"]
     chunk_output_dir = page_spec.get("chunk_output_dir")
+    overview_source = page_spec.get("overview_source")
     parent_title = page_spec.get("front_matter", {}).get("title", "")
 
     logger.info("Processing bundle-rendered plugin page: %s -> %s", page_id, page_spec["output_path"])
@@ -1200,7 +1288,15 @@ def _process_plugin_bundle_page(
 
     _cleanup_stale_child_pages(child_dir, expected_child_pages)
     link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "plugins"
-    index_content = _build_index_table(plugin_entries, link_prefix, title=parent_title)
+
+    inventory_entries = plugin_entries
+    if isinstance(overview_source, str) and overview_source and bundle.exists(overview_source):
+        overview_payload = bundle.load_json(overview_source)
+        loaded_entries = overview_payload.get("plugins")
+        if isinstance(loaded_entries, list):
+            inventory_entries = loaded_entries
+
+    index_content = _build_plugin_inventory_index(inventory_entries, link_prefix, title=parent_title)
     write_page(output_path, format_markdown(index_content), front_matter=page_spec.get("front_matter"))
 
     logger.info("Written plugin index page: %s (%d plugins)", output_path, len(plugin_entries))

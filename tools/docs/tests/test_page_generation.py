@@ -167,6 +167,164 @@ def test_process_page_bundle_plugins_renders_without_llm(tmp_path, monkeypatch):
     assert "Default: `open`." in child_content
 
 
+def test_process_page_bundle_plugins_mixes_local_and_external_inventory(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    plugins_dir = bundle_root / "plugins"
+    plugins_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["plugins/fastmail.json", "runtime-plugins.json"]}),
+        encoding="utf-8",
+    )
+    (plugins_dir / "fastmail.json").write_text(
+        json.dumps(
+            {
+                "plugin": "fastmail",
+                "name": "FastMail tools",
+                "summary": "Send mail and manage calendar events.",
+                "tools": [{"name": "fastmail_send", "description": "Send email."}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (bundle_root / "runtime-plugins.json").write_text(
+        json.dumps(
+            {
+                "plugins": [
+                    {
+                        "id": "fastmail",
+                        "name": "FastMail tools",
+                        "summary": "Send mail and manage calendar events.",
+                        "emoji": "📧",
+                        "origin": "openclaw-hub",
+                        "docs_mode": "local",
+                        "docs_url": "/plugins/fastmail",
+                        "source_url": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail",
+                        "tool_count": 1,
+                    },
+                    {
+                        "id": "telegram",
+                        "name": "Telegram",
+                        "summary": "Chat channel plugin used by the live assistant.",
+                        "emoji": "💬",
+                        "origin": "external",
+                        "docs_mode": "external",
+                        "docs_url": "https://core.telegram.org/bots",
+                        "source_url": "https://core.telegram.org/bots",
+                        "tool_count": None,
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "plugins-overview",
+        "output_path": "docs/plugins.md",
+        "template": "overview",
+        "strategy": "bundle-plugins",
+        "overview_source": "runtime-plugins.json",
+        "chunk_source": "plugins/*.json",
+        "chunk_output_dir": "docs/plugins",
+        "front_matter": {
+            "layout": "default",
+            "title": "Plugins",
+            "nav_order": 3,
+            "has_children": True,
+        },
+        "sources": [
+            {"path": "runtime-plugins.json"},
+            {"path": "plugins/*.json"},
+        ],
+    }
+
+    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    assert output == "docs/plugins.md"
+    index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
+    child_content = (repo_root / "docs/plugins/fastmail.md").read_text(encoding="utf-8")
+
+    assert "## Plugins documented here" in index_content
+    assert "## External plugins in use" in index_content
+    assert "[FastMail tools](plugins/fastmail)" in index_content
+    assert "[Telegram](https://core.telegram.org/bots)" in index_content
+    assert "[External docs](https://core.telegram.org/bots)" in index_content
+    assert "# 📧 FastMail tools" in child_content
+
+
+def test_process_page_bundle_plugins_without_inventory_keeps_local_overview(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "bundle"
+    plugins_dir = bundle_root / "plugins"
+    plugins_dir.mkdir(parents=True)
+
+    (bundle_root / "manifest.json").write_text(
+        json.dumps({"artifacts": ["plugins/github.json"]}),
+        encoding="utf-8",
+    )
+    (plugins_dir / "github.json").write_text(
+        json.dumps(
+            {
+                "plugin": "github",
+                "name": "GitHub",
+                "summary": "Manage GitHub issues.",
+                "tools": [{"name": "github_list_issues", "description": "List issues."}],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    from docs.bundle.load_bundle import BundleLoader
+    import docs.generation.generate_all as ga
+
+    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(
+        ga,
+        "generate_page",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
+    )
+
+    page_spec = {
+        "id": "plugins-overview",
+        "output_path": "docs/plugins.md",
+        "template": "overview",
+        "strategy": "bundle-plugins",
+        "chunk_source": "plugins/*.json",
+        "chunk_output_dir": "docs/plugins",
+        "front_matter": {
+            "layout": "default",
+            "title": "Plugins",
+            "nav_order": 3,
+            "has_children": True,
+        },
+        "sources": [{"path": "plugins/*.json"}],
+    }
+
+    ga.process_page(page_spec, BundleLoader(str(bundle_root)))
+
+    index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
+
+    assert "## Plugins documented here" in index_content
+    assert "## External plugins in use" not in index_content
+    assert "[GitHub](plugins/github)" in index_content
+
+
 def test_process_page_bundle_service_detail_renders_without_llm(tmp_path, monkeypatch):
     bundle_root = tmp_path / "bundle"
     services_dir = bundle_root / "services"
