@@ -1168,56 +1168,43 @@ def _plugin_inventory_link(entry: dict, link_prefix: str) -> str | None:
 
 def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugins",
                                   title: str = "Plugins") -> str:
-    local_entries = [entry for entry in entries if entry.get("docs_mode", "local") == "local"]
-    external_entries = [entry for entry in entries if entry.get("docs_mode", "local") != "local"]
+    sorted_entries = sorted(
+        entries,
+        key=lambda entry: str(entry.get("name") or entry.get("id") or "").casefold(),
+    )
 
     lines = [
         f"# {title}",
         "",
-        "This page lists the plugins Octo uses today and links to the right docs for each one.",
+        "This page catalogs the plugins available in Octo today and links to the right documentation for each one.",
         "",
-        f"- **Full pages in Octo Docs:** {len(local_entries)}",
-        f"- **Linked to external docs:** {len(external_entries)}",
+        f"Octo currently exposes **{len(sorted_entries)} plugin{'s' if len(sorted_entries) != 1 else ''}** through its runtime.",
     ]
 
-    if local_entries:
+    if sorted_entries:
         lines.extend([
             "",
-            "## Plugins with full pages here",
+            "## Plugin Catalog",
             "",
-            "These plugins have full documentation in Octo Docs.",
-            "",
-            "| | Plugin | Description | Tools |",
-            "|---|--------|-------------|:-----:|",
+            "| | Plugin | Description | Tools | Docs |",
+            "|---|--------|-------------|:-----:|------|",
         ])
-        for entry in local_entries:
-            emoji = entry.get("emoji") or ""
+        for entry in sorted_entries:
+            plugin_id = entry.get("id")
+            emoji = entry.get("emoji") or (_plugin_emoji(plugin_id) if isinstance(plugin_id, str) else "")
             link_target = _plugin_inventory_link(entry, link_prefix)
             name = entry.get("name") or entry.get("id") or "Unknown"
             plugin_link = f"[{name}]({link_target})" if link_target else str(name)
             description = entry.get("summary") or entry.get("description") or ""
             tool_count = entry.get("tool_count")
             tool_text = str(tool_count) if isinstance(tool_count, int) else "—"
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} |")
-
-    if external_entries:
-        lines.extend([
-            "",
-            "## Plugins documented elsewhere",
-            "",
-            "These plugins are part of the live runtime, but their detailed docs live elsewhere.",
-            "",
-            "| | Plugin | Description | Docs |",
-            "|---|--------|-------------|------|",
-        ])
-        for entry in external_entries:
-            emoji = entry.get("emoji") or ""
             docs_url = _plugin_inventory_link(entry, link_prefix)
-            name = entry.get("name") or entry.get("id") or "Unknown"
-            plugin_link = f"[{name}]({docs_url})" if docs_url else str(name)
-            description = entry.get("summary") or entry.get("description") or ""
-            docs_text = f"[External docs]({docs_url})" if docs_url else "—"
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {docs_text} |")
+            docs_mode = entry.get("docs_mode", "local")
+            if docs_mode == "local":
+                docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
+            else:
+                docs_text = f"[External docs]({docs_url})" if docs_url else "—"
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {docs_text} |")
 
     return "\n".join(lines) + "\n"
 

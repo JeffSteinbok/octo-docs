@@ -258,10 +258,11 @@ def test_process_page_bundle_plugins_mixes_local_and_external_inventory(tmp_path
     index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
     child_content = (repo_root / "docs/plugins/fastmail.md").read_text(encoding="utf-8")
 
-    assert "## Plugins with full pages here" in index_content
-    assert "## Plugins documented elsewhere" in index_content
+    assert "## Plugin Catalog" in index_content
+    assert "Octo currently exposes **2 plugins** through its runtime." in index_content
     assert "[FastMail tools](plugins/fastmail)" in index_content
     assert "[Telegram](https://core.telegram.org/bots)" in index_content
+    assert "| 📧 | [FastMail tools](plugins/fastmail) | Send mail and manage calendar events. | 1 | [Read docs](plugins/fastmail) |" in index_content
     assert "[External docs](https://core.telegram.org/bots)" in index_content
     assert "**Source:**" not in child_content
     assert "# 📧 FastMail tools" in child_content
@@ -321,9 +322,10 @@ def test_process_page_bundle_plugins_without_inventory_keeps_local_overview(tmp_
 
     index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
 
-    assert "## Plugins with full pages here" in index_content
-    assert "## Plugins documented elsewhere" not in index_content
+    assert "## Plugin Catalog" in index_content
+    assert "Octo currently exposes **1 plugin** through its runtime." in index_content
     assert "[GitHub](plugins/github)" in index_content
+    assert "| 🐙 | [GitHub](plugins/github) | Manage GitHub issues. | 1 | [Read docs](plugins/github) |" in index_content
 
 
 def test_process_page_bundle_service_detail_renders_without_llm(tmp_path, monkeypatch):
