@@ -13,12 +13,13 @@ Public documentation site for the OpenClaw system — a modular AI assistant fra
 
 ## Documentation System Overview
 
-The docs site is built in **two repos**:
+The docs site is built in **three repos**:
 
 1. **The private `octo` repo** extracts a **sanitized docs bundle**
-2. **`octo-docs` (this repo)** consumes that bundle and turns it into published Markdown pages
+2. **`openclaw-hub`** publishes a public plugin-detail satellite bundle for mirrored plugins
+3. **`octo-docs` (this repo)** merges those bundles and turns them into published Markdown pages
 
-The public docs generator never reads the private source repo directly. It only sees the bundle artifact.
+The public docs generator never reads the private source repo directly. It only sees bundle artifacts.
 
 Selected public plugins, services, and shared Python libraries are also mirrored into [`openclaw-hub`](https://github.com/JeffSteinbok/openclaw-hub), which acts as the public source repo for those surfaces.
 
@@ -33,10 +34,17 @@ flowchart LR
         source --> extract --> sanitize --> artifact --> dispatch
     end
 
+    subgraph hub["Public source repo: openclaw-hub"]
+        hubextract["Build docs-satellite bundle<br/>public plugin detail JSON"]
+        hubartifact["GitHub artifact<br/>docs-satellite-bundle"]
+        hubdispatch["repository_dispatch<br/>bundle-ready"]
+        hubextract --> hubartifact --> hubdispatch
+    end
+
     subgraph public["Public repo: octo-docs"]
         pipeline["Docs Main Pipeline<br/>docs-main-pipeline.yml"]
         validate["Validate public repo<br/>tests + secret scan"]
-        download["Download docs-bundle artifact"]
+        download["Download runtime + satellite bundles"]
         generate["Generate/update docs pages<br/>generate-docs.yml"]
         commit["Commit generated Markdown<br/>to octo-docs/main"]
         deploy["Deploy Jekyll site<br/>GitHub Pages"]
@@ -44,7 +52,9 @@ flowchart LR
     end
 
     dispatch --> pipeline
+    hubdispatch --> pipeline
     artifact -. manual/local input .-> download
+    hubartifact -. manual/local input .-> download
 ```
 
 ## End-to-End Flow
@@ -55,7 +65,7 @@ When the source repo changes, its docs pipeline:
 
 - extracts structured facts from source files
 - removes or rejects private/sensitive data
-- writes a sanitized bundle under `out/docs-bundle/`
+- writes a sanitized runtime bundle under `out/docs-bundle/`
 - uploads that bundle as a GitHub Actions artifact named `docs-bundle`
 
 Typical bundle contents include things like:
@@ -70,9 +80,13 @@ Typical bundle contents include things like:
 - `manifest.json`
 - `changed_pages.json`
 
-### 2. `octo-docs` receives the update signal
+### 2. `openclaw-hub` publishes mirrored plugin detail
 
-The private repo sends a `repository_dispatch` event (`bundle-ready`) to this repo.
+When mirrored public plugins change, `openclaw-hub` builds a docs-satellite bundle containing deterministic plugin detail chunks such as `plugins/stock-quotes.json`.
+
+### 3. `octo-docs` receives the update signal
+
+`octo` and `openclaw-hub` both send a `repository_dispatch` event (`bundle-ready`) to this repo.
 
 That triggers `.github/workflows/docs-main-pipeline.yml`, which orchestrates three phases:
 
@@ -80,7 +94,7 @@ That triggers `.github/workflows/docs-main-pipeline.yml`, which orchestrates thr
 2. **generate** — download the bundle and regenerate affected pages
 3. **deploy** — publish the resulting site through GitHub Pages
 
-### 3. The generator turns bundle facts into pages
+### 4. The generator turns bundle facts into pages
 
 The generator lives under `tools/docs/` and uses **page specs** from `tools/docs/page_specs/*.yml`.
 
@@ -112,7 +126,7 @@ flowchart TD
     strategy --> llm --> writer
 ```
 
-### 4. Generated docs are committed and deployed
+### 5. Generated docs are committed and deployed
 
 Once generation succeeds:
 

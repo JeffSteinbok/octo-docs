@@ -364,7 +364,7 @@ def _render_parameter_table(parameters: dict[str, dict]) -> list[str]:
     return lines
 
 
-def _render_plugin_page_content(plugin_json: dict, chunk_path: str) -> tuple[str, dict]:
+def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_meta: dict | None = None) -> tuple[str, dict]:
     """Render a plugin child page deterministically from bundle JSON."""
     plugin_id = _plugin_id(plugin_json, chunk_path)
     plugin_name = _plugin_name(plugin_json, chunk_path)
@@ -1153,18 +1153,6 @@ def _build_index_table(entries: list, link_prefix: str = "plugins",
     return intro + "\n" + "\n".join(table_lines)
 
 
-def _plugin_origin_label(origin: object) -> str:
-    labels = {
-        "octo": "Octo",
-        "openclaw-hub": "OpenClaw Hub",
-        "external": "External",
-        "builtin": "Built-in",
-    }
-    if isinstance(origin, str) and origin in labels:
-        return labels[origin]
-    return "Unknown"
-
-
 def _plugin_inventory_link(entry: dict, link_prefix: str) -> str | None:
     docs_url = entry.get("docs_url")
     if isinstance(docs_url, str) and docs_url.strip():
@@ -1186,21 +1174,21 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
     lines = [
         f"# {title}",
         "",
-        "This page lists the plugins used by Octo today.",
+        "This page lists the plugins Octo uses today and links to the right docs for each one.",
         "",
-        f"- **Documented here:** {len(local_entries)}",
-        f"- **External docs:** {len(external_entries)}",
+        f"- **Full pages in Octo Docs:** {len(local_entries)}",
+        f"- **Linked to external docs:** {len(external_entries)}",
     ]
 
     if local_entries:
         lines.extend([
             "",
-            "## Plugins documented here",
+            "## Plugins with full pages here",
             "",
-            "These plugins have docs-safe source in the bundle, so Octo Docs renders full local pages for them.",
+            "These plugins have full documentation in Octo Docs.",
             "",
-            "| | Plugin | Description | Tools | Source |",
-            "|---|--------|-------------|:-----:|--------|",
+            "| | Plugin | Description | Tools |",
+            "|---|--------|-------------|:-----:|",
         ])
         for entry in local_entries:
             emoji = entry.get("emoji") or ""
@@ -1210,20 +1198,17 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
             description = entry.get("summary") or entry.get("description") or ""
             tool_count = entry.get("tool_count")
             tool_text = str(tool_count) if isinstance(tool_count, int) else "—"
-            source_url = entry.get("source_url")
-            origin_label = _plugin_origin_label(entry.get("origin"))
-            source_text = f"[{origin_label}]({source_url})" if isinstance(source_url, str) and source_url else origin_label
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {source_text} |")
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} |")
 
     if external_entries:
         lines.extend([
             "",
-            "## External plugins in use",
+            "## Plugins documented elsewhere",
             "",
             "These plugins are part of the live runtime, but their detailed docs live elsewhere.",
             "",
-            "| | Plugin | Description | Docs | Source |",
-            "|---|--------|-------------|------|--------|",
+            "| | Plugin | Description | Docs |",
+            "|---|--------|-------------|------|",
         ])
         for entry in external_entries:
             emoji = entry.get("emoji") or ""
@@ -1232,10 +1217,7 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
             plugin_link = f"[{name}]({docs_url})" if docs_url else str(name)
             description = entry.get("summary") or entry.get("description") or ""
             docs_text = f"[External docs]({docs_url})" if docs_url else "—"
-            source_url = entry.get("source_url")
-            origin_label = _plugin_origin_label(entry.get("origin"))
-            source_text = f"[{origin_label}]({source_url})" if isinstance(source_url, str) and source_url else origin_label
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {docs_text} | {source_text} |")
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {docs_text} |")
 
     return "\n".join(lines) + "\n"
 
@@ -1267,11 +1249,25 @@ def _process_plugin_bundle_page(
         child_dir = REPO_ROOT / chunk_output_dir
         child_dir.mkdir(parents=True, exist_ok=True)
 
+    inventory_entries: list[dict] = []
+    inventory_by_id: dict[str, dict] = {}
+    if isinstance(overview_source, str) and overview_source and bundle.exists(overview_source):
+        overview_payload = bundle.load_json(overview_source)
+        loaded_entries = overview_payload.get("plugins")
+        if isinstance(loaded_entries, list):
+            inventory_entries = loaded_entries
+            inventory_by_id = {
+                entry.get("id"): entry
+                for entry in loaded_entries
+                if isinstance(entry, dict) and isinstance(entry.get("id"), str)
+            }
+
     plugin_entries = []
     expected_child_pages: set[str] = set()
     for nav_index, chunk_path in enumerate(chunk_paths, start=1):
         plugin_json = bundle.load_json(chunk_path)
-        page_content, metadata = _render_plugin_page_content(plugin_json, chunk_path)
+        plugin_id = _plugin_id(plugin_json, chunk_path)
+        page_content, metadata = _render_plugin_page_content(plugin_json, chunk_path, inventory_by_id.get(plugin_id))
         plugin_entries.append(metadata)
 
         if child_dir:
@@ -1289,12 +1285,8 @@ def _process_plugin_bundle_page(
     _cleanup_stale_child_pages(child_dir, expected_child_pages)
     link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "plugins"
 
-    inventory_entries = plugin_entries
-    if isinstance(overview_source, str) and overview_source and bundle.exists(overview_source):
-        overview_payload = bundle.load_json(overview_source)
-        loaded_entries = overview_payload.get("plugins")
-        if isinstance(loaded_entries, list):
-            inventory_entries = loaded_entries
+    if not inventory_by_id:
+        inventory_entries = plugin_entries
 
     index_content = _build_plugin_inventory_index(inventory_entries, link_prefix, title=parent_title)
     write_page(output_path, format_markdown(index_content), front_matter=page_spec.get("front_matter"))

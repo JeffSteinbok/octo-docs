@@ -6,11 +6,19 @@ on:
   workflow_dispatch:
     inputs:
       artifact_name:
-        description: "Name of the workflow artifact containing the bundle (leave blank to use bundle_path)"
+        description: "Name of the octo workflow artifact containing the runtime bundle (leave blank to use bundle_path)"
         required: false
         default: ""
       artifact_run_id:
-        description: "Run ID that uploaded the artifact (required when artifact_name is set)"
+        description: "Octo run ID that uploaded the runtime bundle artifact"
+        required: false
+        default: ""
+      hub_artifact_name:
+        description: "Name of the openclaw-hub workflow artifact containing plugin detail (leave blank to skip)"
+        required: false
+        default: "docs-satellite-bundle"
+      hub_artifact_run_id:
+        description: "openclaw-hub run ID that uploaded the satellite bundle artifact"
         required: false
         default: ""
       bundle_path:
@@ -33,6 +41,14 @@ on:
         type: string
         default: "docs-bundle"
       artifact_run_id:
+        required: false
+        type: string
+        default: ""
+      hub_artifact_name:
+        required: false
+        type: string
+        default: "docs-satellite-bundle"
+      hub_artifact_run_id:
         required: false
         type: string
         default: ""
@@ -83,11 +99,15 @@ jobs:
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
               echo "artifact_name=$ARTIFACT_NAME"                       >> "$GITHUB_OUTPUT"
               echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
+              echo "hub_artifact_name=${{ inputs.hub_artifact_name }}"   >> "$GITHUB_OUTPUT"
+              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             else
               echo "use_artifact=false"                                 >> "$GITHUB_OUTPUT"
               echo "artifact_name="                                     >> "$GITHUB_OUTPUT"
               echo "run_id="                                            >> "$GITHUB_OUTPUT"
+              echo "hub_artifact_name=${{ inputs.hub_artifact_name }}"   >> "$GITHUB_OUTPUT"
+              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=${{ inputs.bundle_path }}"              >> "$GITHUB_OUTPUT"
             fi
             echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
@@ -97,12 +117,16 @@ jobs:
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
               echo "artifact_name=$ARTIFACT_NAME"                       >> "$GITHUB_OUTPUT"
               echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
+              echo "hub_artifact_name=${{ inputs.hub_artifact_name }}"   >> "$GITHUB_OUTPUT"
+              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             else
               # No artifact specified — download the latest docs-bundle from octo
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
               echo "artifact_name=docs-bundle"                          >> "$GITHUB_OUTPUT"
               echo "run_id="                                            >> "$GITHUB_OUTPUT"
+              echo "hub_artifact_name=${{ inputs.hub_artifact_name || 'docs-satellite-bundle' }}" >> "$GITHUB_OUTPUT"
+              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             fi
             echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
@@ -123,6 +147,31 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
+
+      - name: Download openclaw-hub satellite bundle
+        run: |
+          ARTIFACT_NAME="${{ steps.inputs.outputs.hub_artifact_name }}"
+          RUN_ID="${{ steps.inputs.outputs.hub_run_id }}"
+          if [ -z "$ARTIFACT_NAME" ]; then
+            exit 0
+          fi
+          if [ -n "$RUN_ID" ]; then
+            gh run download "$RUN_ID" --repo JeffSteinbok/openclaw-hub --name "$ARTIFACT_NAME" --dir ./hub-bundle
+          else
+            gh run download --repo JeffSteinbok/openclaw-hub --name "$ARTIFACT_NAME" --dir ./hub-bundle
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
+
+      - name: Merge openclaw-hub plugin detail
+        run: |
+          if [ -d ./hub-bundle ]; then
+            python - <<'PY'
+from docs.bundle.merge_satellite_bundle import merge_openclaw_hub_plugins
+merged = merge_openclaw_hub_plugins("./bundle", "./hub-bundle")
+print(f"Merged {len(merged)} openclaw-hub plugin chunk(s): {', '.join(merged) if merged else 'none'}")
+PY
+          fi
 
       - name: Generate docs
         id: generate

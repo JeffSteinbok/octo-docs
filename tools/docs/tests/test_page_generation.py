@@ -258,11 +258,12 @@ def test_process_page_bundle_plugins_mixes_local_and_external_inventory(tmp_path
     index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
     child_content = (repo_root / "docs/plugins/fastmail.md").read_text(encoding="utf-8")
 
-    assert "## Plugins documented here" in index_content
-    assert "## External plugins in use" in index_content
+    assert "## Plugins with full pages here" in index_content
+    assert "## Plugins documented elsewhere" in index_content
     assert "[FastMail tools](plugins/fastmail)" in index_content
     assert "[Telegram](https://core.telegram.org/bots)" in index_content
     assert "[External docs](https://core.telegram.org/bots)" in index_content
+    assert "**Source:**" not in child_content
     assert "# 📧 FastMail tools" in child_content
 
 
@@ -320,8 +321,8 @@ def test_process_page_bundle_plugins_without_inventory_keeps_local_overview(tmp_
 
     index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
 
-    assert "## Plugins documented here" in index_content
-    assert "## External plugins in use" not in index_content
+    assert "## Plugins with full pages here" in index_content
+    assert "## Plugins documented elsewhere" not in index_content
     assert "[GitHub](plugins/github)" in index_content
 
 

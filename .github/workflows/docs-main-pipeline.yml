@@ -32,6 +32,14 @@ on:
         description: "Octo workflow run ID that uploaded the artifact"
         required: false
         default: ""
+      hub_artifact_name:
+        description: "openclaw-hub satellite bundle artifact name"
+        required: false
+        default: "docs-satellite-bundle"
+      hub_artifact_run_id:
+        description: "openclaw-hub workflow run ID that uploaded the satellite bundle"
+        required: false
+        default: ""
       bundle_path:
         description: "Path to an existing bundle on disk when artifact_name is blank"
         required: false
@@ -58,6 +66,8 @@ jobs:
     outputs:
       artifact_name: ${{ steps.resolve.outputs.artifact_name }}
       artifact_run_id: ${{ steps.resolve.outputs.artifact_run_id }}
+      hub_artifact_name: ${{ steps.resolve.outputs.hub_artifact_name }}
+      hub_artifact_run_id: ${{ steps.resolve.outputs.hub_artifact_run_id }}
       bundle_path: ${{ steps.resolve.outputs.bundle_path }}
       regenerate_all: ${{ steps.resolve.outputs.regenerate_all }}
       deploy_ref: ${{ steps.resolve.outputs.deploy_ref }}
@@ -71,6 +81,8 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_name=docs-satellite-bundle" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_run_id=" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=true" >> "$GITHUB_OUTPUT"
             echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
@@ -80,6 +92,8 @@ jobs:
           elif [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_name=docs-satellite-bundle" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_run_id=" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=false" >> "$GITHUB_OUTPUT"
             echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
@@ -87,8 +101,10 @@ jobs:
             echo "run_generate=false" >> "$GITHUB_OUTPUT"
             echo "run_deploy=false" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            echo "artifact_name=${{ github.event.client_payload.artifact_name || 'docs-bundle' }}" >> "$GITHUB_OUTPUT"
-            echo "artifact_run_id=${{ github.event.client_payload.run_id || '' }}" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=${{ github.event.client_payload.octo_artifact_name || github.event.client_payload.artifact_name || 'docs-bundle' }}" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=${{ github.event.client_payload.octo_run_id || github.event.client_payload.run_id || '' }}" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_name=${{ github.event.client_payload.hub_artifact_name || 'docs-satellite-bundle' }}" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_run_id=${{ github.event.client_payload.hub_run_id || '' }}" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
             echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
@@ -98,6 +114,8 @@ jobs:
           else
             echo "artifact_name=${{ inputs.artifact_name }}" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=${{ inputs.artifact_run_id }}" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_name=${{ inputs.hub_artifact_name }}" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_run_id=${{ inputs.hub_artifact_run_id }}" >> "$GITHUB_OUTPUT"
             echo "bundle_path=${{ inputs.bundle_path }}" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=${{ inputs.regenerate_all }}" >> "$GITHUB_OUTPUT"
             echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
@@ -152,6 +170,8 @@ jobs:
     with:
       artifact_name: ${{ needs.prepare.outputs.artifact_name }}
       artifact_run_id: ${{ needs.prepare.outputs.artifact_run_id }}
+      hub_artifact_name: ${{ needs.prepare.outputs.hub_artifact_name }}
+      hub_artifact_run_id: ${{ needs.prepare.outputs.hub_artifact_run_id }}
       bundle_path: ${{ needs.prepare.outputs.bundle_path }}
       regenerate_all: ${{ needs.prepare.outputs.regenerate_all }}
     secrets: inherit
