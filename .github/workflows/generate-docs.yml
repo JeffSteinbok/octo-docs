@@ -169,11 +169,7 @@ jobs:
       - name: Merge openclaw-hub plugin detail
         run: |
           if [ -d ./hub-bundle ]; then
-            PYTHONPATH=tools python - <<'PY'
-            from docs.bundle.merge_satellite_bundle import merge_openclaw_hub_plugins
-            merged = merge_openclaw_hub_plugins("./bundle", "./hub-bundle")
-            print(f"Merged {len(merged)} openclaw-hub plugin chunk(s): {', '.join(merged) if merged else 'none'}")
-            PY
+            PYTHONPATH=tools python -c 'from docs.bundle.merge_satellite_bundle import merge_openclaw_hub_plugins; merged = merge_openclaw_hub_plugins("./bundle", "./hub-bundle"); print(f"Merged {len(merged)} openclaw-hub plugin chunk(s): {'"'"', '"'"'.join(merged) if merged else '"'"'none'"'"'}")'
           fi
 
       - name: Generate docs
