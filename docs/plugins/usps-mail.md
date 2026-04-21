@@ -1,11 +1,11 @@
 ---
 layout: default
-title: USPS Mail
+title: USPS Mail Analyzer
 parent: Plugins
 nav_order: 13
 ---
 
-# 📬 USPS Mail
+# 📬 USPS Mail Analyzer
 
 Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications
 

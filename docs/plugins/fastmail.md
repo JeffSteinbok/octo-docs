@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Fastmail
+title: FastMail tools
 parent: Plugins
 nav_order: 2
 ---
 
-# 📧 Fastmail
+# 📧 FastMail tools
 
 Send email and manage calendar events in Fastmail
 

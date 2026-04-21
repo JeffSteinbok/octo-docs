@@ -7,24 +7,30 @@ has_children: true
 
 # Plugins
 
-Plugins are self-contained capabilities that Octo's agents can invoke — sending email, checking restaurant availability, controlling smart home devices, tracking packages, and more. Each plugin is independently developed and declares its own tools, parameters, and dependencies.
+This page lists the plugins used by Octo today.
 
-Unlike [skills](skills), which provide knowledge through markdown prompts, plugins execute real code and interact with external APIs. Think of plugins as _tools_ and skills as _knowledge_.
+- **Documented here:** 5
+- **External docs:** 4
 
-Octo currently has **13 plugins** providing **58 tools** in total.
+## Plugins documented here
 
-| | Plugin | Description | Tools |
-|---|--------|-------------|:-----:|
-| 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | 1 |
-| 📧 | [Fastmail](plugins/fastmail) | Send email and manage calendar events in Fastmail | 7 |
-| 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | 6 |
-| 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | 11 |
-| 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | 1 |
-| 🖼️ | [LLMVision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | 4 |
-| 📅 | [Outlook Calendar](plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | 1 |
-| 📧 | [Outlook Mail](plugins/outlook-mail) | Search and read messages from Outlook inboxes | 4 |
-| 📅 | [Outlook Work Calendar](plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | 1 |
-| 📦 | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | 5 |
-| 🎵 | [Spotify](plugins/spotify) | Control Spotify playback, search music, and manage playlists | 9 |
-| 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | 2 |
-| 📬 | [USPS Mail](plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | 6 |
+These plugins have docs-safe source in the bundle, so Octo Docs renders full local pages for them.
+
+| | Plugin | Description | Tools | Source |
+|---|--------|-------------|:-----:|--------|
+|  | [FastMail tools](plugins/fastmail) | Send email and manage calendar events in Fastmail | 7 | [OpenClaw Hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
+|  | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | 11 | [OpenClaw Hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
+|  | [Home Assistant – LLM Vision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | 4 | [OpenClaw Hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
+|  | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | 5 | [OpenClaw Hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking) |
+|  | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | 2 | [OpenClaw Hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes) |
+
+## External plugins in use
+
+These plugins are part of the live runtime, but their detailed docs live elsewhere.
+
+| | Plugin | Description | Docs | Source |
+|---|--------|-------------|------|--------|
+| 🌐 | [Browser](https://playwright.dev/docs/intro) | Browser automation capability used when the assistant needs to inspect or act on live web pages. | [External docs](https://playwright.dev/docs/intro) | [Built-in](https://playwright.dev/docs/intro) |
+| 🤖 | [GitHub Copilot](https://docs.github.com/en/copilot) | Provider integration that lets the instance use GitHub Copilot-hosted models. | [External docs](https://docs.github.com/en/copilot) | [Built-in](https://docs.github.com/en/copilot) |
+| 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | [External docs](https://ai.google.dev/gemini-api/docs) | [Built-in](https://ai.google.dev/gemini-api/docs) |
+| 💬 | [Telegram](https://core.telegram.org/bots) | Chat channel plugin used to talk to the live assistant over Telegram. | [External docs](https://core.telegram.org/bots) | [External](https://core.telegram.org/bots) |

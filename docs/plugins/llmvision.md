@@ -1,11 +1,11 @@
 ---
 layout: default
-title: LLMVision
+title: "Home Assistant \u2013 LLM Vision"
 parent: Plugins
 nav_order: 6
 ---
 
-# 🖼️ LLMVision
+# 🖼️ Home Assistant – LLM Vision
 
 Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events.
 
