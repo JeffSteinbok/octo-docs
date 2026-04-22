@@ -13,6 +13,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from docs.gitops.exceptions import GitCommandError
+
 
 def get_bundle_info(bundle_root: str) -> dict:
     """Load manifest info from the bundle if available."""
@@ -21,7 +23,7 @@ def get_bundle_info(bundle_root: str) -> dict:
         try:
             with open(manifest_path, encoding="utf-8") as f:
                 return json.load(f)
-        except Exception:
+        except (json.JSONDecodeError, OSError):
             pass
     return {}
 
@@ -31,10 +33,11 @@ def create_branch(bundle_root: str = "./bundle") -> str:
     Create a new git branch for the docs update.
 
     Returns the branch name.
+    Raises GitCommandError if the git checkout fails.
     """
     manifest = get_bundle_info(bundle_root)
     commit_sha = manifest.get("commit", "")[:7] if manifest.get("commit") else ""
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
 
     if commit_sha:
         branch_name = f"docs/from-bundle-{commit_sha}-{timestamp}"
@@ -47,8 +50,7 @@ def create_branch(bundle_root: str = "./bundle") -> str:
         text=True,
     )
     if result.returncode != 0:
-        print(f"Error creating branch: {result.stderr}", file=sys.stderr)
-        sys.exit(1)
+        raise GitCommandError("git checkout -b", result.stderr)
 
     print(f"Created branch: {branch_name}")
     return branch_name
@@ -58,7 +60,11 @@ def main():
     parser = argparse.ArgumentParser(description="Create a docs update branch.")
     parser.add_argument("--bundle-root", default="./bundle", help="Path to bundle directory")
     args = parser.parse_args()
-    create_branch(args.bundle_root)
+    try:
+        create_branch(args.bundle_root)
+    except GitCommandError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
