@@ -1191,8 +1191,8 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
             "",
             "## Plugin Catalog",
             "",
-            "| | Plugin | Description | Tools | Source | Docs |",
-            "|---|--------|-------------|:-----:|--------|------|",
+            "| | Plugin | Description | Tools | Docs |",
+            "|---|--------|-------------|:-----:|------|",
         ])
         for entry in sorted_entries:
             plugin_id = entry.get("id")
@@ -1205,19 +1205,15 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
             tool_text = str(tool_count) if isinstance(tool_count, int) else "—"
             docs_url = _plugin_inventory_link(entry, link_prefix)
             docs_mode = entry.get("docs_mode", "local")
-            if docs_mode == "local":
-                docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
-            else:
-                docs_text = f"[External docs]({docs_url})" if docs_url else "—"
             origin = entry.get("origin", "")
             source_url = entry.get("source_url", "")
-            if origin == "openclaw-hub":
-                source_text = f"[openclaw-hub]({source_url})" if source_url else "openclaw-hub"
-            elif origin == "external":
-                source_text = "external"
+            if docs_mode == "local":
+                docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
+                if origin == "openclaw-hub" and source_url:
+                    docs_text += f" · [Source ↗]({source_url})"
             else:
-                source_text = "octo"
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {source_text} | {docs_text} |")
+                docs_text = f"[External docs]({docs_url})" if docs_url else "—"
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {docs_text} |")
 
     return "\n".join(lines) + "\n"
 
