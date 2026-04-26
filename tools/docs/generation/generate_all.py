@@ -376,6 +376,11 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
     if summary:
         lines.extend(["", summary])
 
+    # Add source attribution for hub-sourced plugins
+    if isinstance(inventory_meta, dict) and inventory_meta.get("origin") == "openclaw-hub":
+        hub_url = f"https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/{plugin_id}"
+        lines.extend(["", f'> **Source:** [openclaw-hub]({hub_url})'])
+
     for tool in plugin_json.get("tools", []):
         tool_name = tool.get("name", "")
         if not isinstance(tool_name, str) or not tool_name.strip():
