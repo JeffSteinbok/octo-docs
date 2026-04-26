@@ -9,6 +9,8 @@ nav_order: 2
 
 Send email and manage calendar events in Fastmail
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail)
+
 ### `fastmail_send`
 
 Send a plain-text email via Fastmail JMAP, with optional file attachments.

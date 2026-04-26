@@ -9,6 +9,8 @@ nav_order: 7
 
 Fetch current stock, ETF, and mutual fund quotes
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes)
+
 ### `stock_quote`
 
 Get the latest quote for a stock, ETF, or mutual fund symbol.

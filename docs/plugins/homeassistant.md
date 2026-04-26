@@ -9,6 +9,8 @@ nav_order: 4
 
 Control devices, query state, and inspect activity in Home Assistant
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant)
+
 ### `hass_state_get`
 
 Get the current state of a Home Assistant entity.

@@ -9,6 +9,8 @@ nav_order: 5
 
 Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events.
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision)
+
 ### `llmvision_get_image`
 
 Download a keyframe image from HA LLM Vision media storage. Pass a key_frame path from a timeline event (e.g. /media/llmvision/snapshots/xxx.jpg). Returns the local file path for use with the image or message tools.
