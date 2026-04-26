@@ -21,6 +21,6 @@ Octo currently exposes **9 plugins** through its runtime.
 | 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | — | [External docs](https://ai.google.dev/gemini-api/docs) |
 | 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | 11 | [Read docs](plugins/homeassistant) |
 | 🖼️ | [Home Assistant – LLM Vision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | 4 | [Read docs](plugins/llmvision) |
-| 📦 | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | 5 | [Read docs](plugins/package-tracking) |
+| 📦 | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon using direct carrier URLs | 6 | [Read docs](plugins/package-tracking) |
 | 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | 2 | [Read docs](plugins/stock-quotes) |
 | 💬 | [Telegram](https://core.telegram.org/bots) | Chat channel plugin used to talk to the live assistant over Telegram. | — | [External docs](https://core.telegram.org/bots) |

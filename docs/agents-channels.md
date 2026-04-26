@@ -22,29 +22,31 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 
 | Agent | Used for | Permissions | Why it is set up this way |
 |-------|----------|-------------|---------------------------|
-| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`. | Keeps the everyday assistant capable without giving the default chat direct shell/process control. |
+| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`. | Keeps the everyday assistant capable without giving the default chat direct shell/process control. |
 | `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. | Treats mail as untrusted input and isolates mail processing from broader tools. |
 | `root` | Explicit owner escalations for admin/debugging work | `inherited-default` tools; broad inherited access posture; exec `inherited`. | Concentrates privileged admin/debug access in a separate escalation path. |
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. |
+| `finance` | Published agent surface | `profile:minimal` tools. | Separates this agent from the rest of the system. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
 
 ## Agents
 
 | Agent | Used for | Permissions |
 |-------|----------|-------------|
-| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`. |
+| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`. |
 | `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. |
 | `root` | Explicit owner escalations for admin/debugging work | `inherited-default` tools; broad inherited access posture; exec `inherited`. |
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. |
+| `finance` | Published agent surface | `profile:minimal` tools. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. |
 
 ## `main`
 
 - **Used for:** Jeff's primary direct chats and proactive assistant flows
-- **Permissions:** `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`.
+- **Permissions:** `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`.
 - **Why:** Keeps the everyday assistant capable without giving the default chat direct shell/process control.
 - **Tool mode:** `customized`
-- **Sub-agent access:** `root`, `family`
+- **Sub-agent access:** `root`, `family`, `finance`
 - **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
 ## `mail`
@@ -71,6 +73,15 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 - **Permissions:** `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none.
 - **Why:** Limits family-facing conversations to a narrow, safer tool surface.
 - **Tool mode:** `profile:messaging`
+- **Sub-agent access:** None published.
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
+
+## `finance`
+
+- **Used for:** Published agent surface
+- **Permissions:** `profile:minimal` tools.
+- **Why:** Separates this agent from the rest of the system.
+- **Tool mode:** `profile:minimal`
 - **Sub-agent access:** None published.
 - **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
