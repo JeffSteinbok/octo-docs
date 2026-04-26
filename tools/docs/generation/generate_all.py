@@ -1191,8 +1191,8 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
             "",
             "## Plugin Catalog",
             "",
-            "| | Plugin | Description | Tools | Docs |",
-            "|---|--------|-------------|:-----:|------|",
+            "| | Plugin | Description | Tools | Source | Docs |",
+            "|---|--------|-------------|:-----:|--------|------|",
         ])
         for entry in sorted_entries:
             plugin_id = entry.get("id")
@@ -1209,7 +1209,15 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
                 docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
             else:
                 docs_text = f"[External docs]({docs_url})" if docs_url else "—"
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {docs_text} |")
+            origin = entry.get("origin", "")
+            source_url = entry.get("source_url", "")
+            if origin == "openclaw-hub":
+                source_text = f"[openclaw-hub]({source_url})" if source_url else "openclaw-hub"
+            elif origin == "external":
+                source_text = "external"
+            else:
+                source_text = "octo"
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {source_text} | {docs_text} |")
 
     return "\n".join(lines) + "\n"
 
