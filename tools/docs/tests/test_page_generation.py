@@ -264,7 +264,8 @@ def test_process_page_bundle_plugins_mixes_local_and_external_inventory(tmp_path
     assert "[Telegram](https://core.telegram.org/bots)" in index_content
     assert "| 📧 | [FastMail tools](plugins/fastmail) | Send mail and manage calendar events. | 1 | [Read docs](plugins/fastmail) |" in index_content
     assert "[External docs](https://core.telegram.org/bots)" in index_content
-    assert "**Source:**" not in child_content
+    assert "**Source:**" in child_content
+    assert "openclaw-hub" in child_content
     assert "# 📧 FastMail tools" in child_content
 
 
