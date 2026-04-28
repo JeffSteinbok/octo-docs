@@ -7,7 +7,7 @@ has_children: true
 
 # Plugins
 
-This page catalogs the plugins available in Octo today and links to the right documentation for each one.
+This page catalogs the plugins used by Octo today with links to docs and code. This list includes others' plugins, ones that I have created and published in my [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub) repo, as well as non-published ones (which just get docs, no code).
 
 Octo currently exposes **13 plugins** through its runtime.
 
