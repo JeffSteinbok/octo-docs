@@ -29,17 +29,6 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `finance` | Published agent surface | `profile:minimal` tools. | Separates this agent from the rest of the system. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
 
-## Agents
-
-| Agent | Used for | Permissions |
-|-------|----------|-------------|
-| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`. |
-| `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. |
-| `root` | Explicit owner escalations for admin/debugging work | `inherited-default` tools; broad inherited access posture; exec `inherited`. |
-| `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. |
-| `finance` | Published agent surface | `profile:minimal` tools. |
-| `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. |
-
 ## `main`
 
 - **Used for:** Jeff's primary direct chats and proactive assistant flows
