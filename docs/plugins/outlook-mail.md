@@ -2,7 +2,7 @@
 layout: default
 title: Outlook Mail
 parent: Plugins
-nav_order: 8
+nav_order: 9
 ---
 
 # 📧 Outlook Mail

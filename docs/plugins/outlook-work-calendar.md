@@ -2,7 +2,7 @@
 layout: default
 title: Outlook Work Calendar
 parent: Plugins
-nav_order: 9
+nav_order: 10
 ---
 
 # 📅 Outlook Work Calendar
