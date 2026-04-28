@@ -1,7 +1,7 @@
 title: Octo Docs
 description: Documentation for the OpenClaw system
 remote_theme: just-the-docs/just-the-docs
-baseurl: /octo-docs
+baseurl: ""
 
 color_scheme: octo
 
@@ -12,7 +12,7 @@ plugins:
   - jekyll-remote-theme
 
 # Footer content
-footer_content: "<img src='/octo-docs/assets/images/octo-icon-32.png' alt='Octo' style='height:1em;vertical-align:middle;margin-right:.25em;'> Octo Docs &mdash; Built on <a href=\"https://openclaw.ai\">OpenClaw</a> &mdash; &copy; <a href=\"https://github.com/JeffSteinbok\">Jeff Steinbok</a>"
+footer_content: "<img src='/assets/images/octo-icon-32.png' alt='Octo' style='height:1em;vertical-align:middle;margin-right:.25em;'> Octo Docs &mdash; Built on <a href=\"https://openclaw.ai\">OpenClaw</a> &mdash; &copy; <a href=\"https://github.com/JeffSteinbok\">Jeff Steinbok</a>"
 
 # Favicon
 favicon_ico: /assets/images/octo-icon-32.png
