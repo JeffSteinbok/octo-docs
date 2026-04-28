@@ -9,7 +9,7 @@ has_children: true
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **13 plugins** through its runtime.
+Octo currently exposes **19 plugins** through its runtime.
 
 ## Plugin Catalog
 
@@ -23,8 +23,14 @@ Octo currently exposes **13 plugins** through its runtime.
 | 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | — | [External docs](https://ai.google.dev/gemini-api/docs) |
 | 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | 11 | [Read docs](plugins/homeassistant) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
 | 🖼️ | [Home Assistant – LLM Vision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | 4 | [Read docs](plugins/llmvision) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
+| 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | 1 | [Read docs](plugins/ics-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
 | 🍽️ | [OpenTable](plugins/opentable) | Check restaurant availability on OpenTable | 2 | [Read docs](plugins/opentable) |
 | 🩺 | [OpenTable Heartbeat](plugins/opentable-heartbeat) | Check whether the OpenTable integration is working and alert on failure | 1 | [Read docs](plugins/opentable-heartbeat) |
+| 📅 | [Outlook Calendar](plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | 1 | [Read docs](plugins/outlook-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar) |
+| 📧 | [Outlook Mail](plugins/outlook-mail) | Search and read messages from Outlook inboxes | 4 | [Read docs](plugins/outlook-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) |
+| 📅 | [Outlook Work Calendar](plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | 1 | [Read docs](plugins/outlook-work-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
 | 📦 | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | 5 | [Read docs](plugins/package-tracking) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking) |
+| 🎵 | [Spotify](plugins/spotify) | Control Spotify playback, search music, and manage playlists | 9 | [Read docs](plugins/spotify) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) |
 | 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | 2 | [Read docs](plugins/stock-quotes) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes) |
+| 📬 | [USPS Mail Analyzer](plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | 6 | [Read docs](plugins/usps-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
 | 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | 7 | [Read docs](plugins/weightwatchers) |
