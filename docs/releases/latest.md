@@ -6,6 +6,24 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-04-27
+
+
+### Added
+
+- Added [runtime plugin inventory pipeline](https://github.com/JeffSteinbok/octo/blob/main/tools/docs/extract/runtime_plugin_inventory.py) that auto-discovers all enabled plugins and emits structured docs metadata.
+- Added all five repo-local plugins to the [docs inventory](https://octo.steinbok.net/plugins.html): **[Config Backup](https://octo.steinbok.net/plugins/config-backup.html)**, **[GitHub](https://octo.steinbok.net/plugins/github.html)**, **[OpenTable](https://octo.steinbok.net/plugins/opentable.html)**, **[OpenTable Heartbeat](https://octo.steinbok.net/plugins/opentable-heartbeat.html)**, and **[WeightWatchers](https://octo.steinbok.net/plugins/weightwatchers.html)**.
+- Added test suites for all shared Python libraries, plugins, services, and scripts in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub).
+- Added [satellite docs bundle pipeline](https://github.com/JeffSteinbok/openclaw-hub) in openclaw-hub for hub-sourced plugin documentation.
+
+### Changed
+
+- Moved hub-sourced plugins (fastmail, homeassistant, llmvision, etc.) to [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub) only — the octo repo no longer duplicates their source.
+- Sourced stock-quotes plugin from openclaw-hub instead of maintaining a local copy.
+- Bumped dependencies across both repos: TypeScript 6, @types/node 25, Actions checkout v6, setup-python v6, setup-node v6, upload-artifact v7, github-script v9.
+- Simplified [plugin catalog](https://octo.steinbok.net/plugins.html) layout on the docs site.
+- Hardened [octo-docs](https://github.com/JeffSteinbok/octo-docs) gitops scripts with comprehensive tests.
+
 ## 2026-04-19
 
 
