@@ -2,7 +2,7 @@
 layout: default
 title: Package Tracking
 parent: Plugins
-nav_order: 6
+nav_order: 10
 ---
 
 # 📦 Package Tracking

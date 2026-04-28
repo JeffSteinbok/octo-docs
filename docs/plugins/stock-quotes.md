@@ -2,7 +2,7 @@
 layout: default
 title: Stock Quotes
 parent: Plugins
-nav_order: 7
+nav_order: 12
 ---
 
 # 📈 Stock Quotes

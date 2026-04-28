@@ -9,7 +9,7 @@ has_children: true
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **14 plugins** through its runtime.
+Octo currently exposes **13 plugins** through its runtime.
 
 ## Plugin Catalog
 
@@ -27,5 +27,4 @@ Octo currently exposes **14 plugins** through its runtime.
 | 🩺 | [OpenTable Heartbeat](plugins/opentable-heartbeat) | Check whether the OpenTable integration is working and alert on failure | 1 | [Read docs](plugins/opentable-heartbeat) |
 | 📦 | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | 5 | [Read docs](plugins/package-tracking) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking) |
 | 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | 2 | [Read docs](plugins/stock-quotes) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes) |
-| 💬 | [Telegram](https://core.telegram.org/bots) | Chat channel plugin used to talk to the live assistant over Telegram. | — | [External docs](https://core.telegram.org/bots) |
 | 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | 7 | [Read docs](plugins/weightwatchers) |
