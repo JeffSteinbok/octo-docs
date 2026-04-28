@@ -98,7 +98,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 
 | Channel | Enabled | DM Policy | Group Policy | Streaming |
 |---------|---------|-----------|--------------|-----------|
-| `discord` | Yes | pairing | allowlist | partial |
+| `discord` | Yes | pairing | allowlist | off |
 | `telegram` | No | pairing | allowlist | off |
 
 ## Session Settings
