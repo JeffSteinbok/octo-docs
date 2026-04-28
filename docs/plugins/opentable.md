@@ -2,7 +2,7 @@
 layout: default
 title: OpenTable
 parent: Plugins
-nav_order: 7
+nav_order: 8
 ---
 
 # 🍽️ OpenTable

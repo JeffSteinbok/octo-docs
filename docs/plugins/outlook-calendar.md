@@ -2,7 +2,7 @@
 layout: default
 title: Outlook Calendar
 parent: Plugins
-nav_order: 8
+nav_order: 9
 ---
 
 # 📅 Outlook Calendar
