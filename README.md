@@ -1,5 +1,7 @@
 # 🐙 Octo Docs
 
+[![Docs Main Pipeline](https://github.com/JeffSteinbok/octo-docs/actions/workflows/docs-main-pipeline.yml/badge.svg)](https://github.com/JeffSteinbok/octo-docs/actions/workflows/docs-main-pipeline.yml)
+
 Public documentation site for the OpenClaw system — a modular AI assistant framework that connects language models to real-world services.
 
 ## Live Site
