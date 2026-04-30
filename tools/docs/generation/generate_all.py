@@ -1130,7 +1130,6 @@ def _replace_h1(content: str, emoji: str, name: str) -> str:
 def _build_index_table(entries: list, link_prefix: str = "plugins",
                        title: str = "Plugins") -> str:
     """Build a markdown index page with title, intro text and summary table."""
-    total_tools = sum(e.get("tool_count", 0) for e in entries)
     intro = (
         f"# {title}\n"
         "\n"
@@ -1143,18 +1142,17 @@ def _build_index_table(entries: list, link_prefix: str = "plugins",
         "plugins execute real code and interact with external APIs. Think of plugins "
         "as _tools_ and skills as _knowledge_.\n"
         "\n"
-        f"Octo currently has **{len(entries)} plugins** providing **{total_tools} tools** in total.\n"
+        f"Octo currently has **{len(entries)} plugins** in total.\n"
     )
     table_lines = [
-        "| | Plugin | Description | Tools |",
-        "|---|--------|-------------|:-----:|",
+        "| | Plugin | Description |",
+        "|---|--------|-------------|",
     ]
     for e in entries:
         emoji = e.get("emoji") or ""
         link = f"[{e['name']}]({link_prefix}/{e['slug']})"
         desc = e.get("description") or ""
-        count = e.get("tool_count", 0)
-        table_lines.append(f"| {emoji} | {link} | {desc} | {count} |")
+        table_lines.append(f"| {emoji} | {link} | {desc} |")
     return intro + "\n" + "\n".join(table_lines)
 
 
@@ -1191,8 +1189,8 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
             "",
             "## Plugin Catalog",
             "",
-            "| | Plugin | Description | Tools | Docs |",
-            "|---|--------|-------------|:-----:|------|",
+            "| | Plugin | Description | Docs |",
+            "|---|--------|-------------|------|",
         ])
         for entry in sorted_entries:
             plugin_id = entry.get("id")
@@ -1201,8 +1199,6 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
             name = entry.get("name") or entry.get("id") or "Unknown"
             plugin_link = f"[{name}]({link_target})" if link_target else str(name)
             description = entry.get("summary") or entry.get("description") or ""
-            tool_count = entry.get("tool_count")
-            tool_text = str(tool_count) if isinstance(tool_count, int) else "—"
             docs_url = _plugin_inventory_link(entry, link_prefix)
             docs_mode = entry.get("docs_mode", "local")
             origin = entry.get("origin", "")
@@ -1213,7 +1209,7 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
                     docs_text += f" · [Source ↗]({source_url})"
             else:
                 docs_text = f"[External docs]({docs_url})" if docs_url else "—"
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {tool_text} | {docs_text} |")
+            lines.append(f"| {emoji} | {plugin_link} | {description} | {docs_text} |")
 
     return "\n".join(lines) + "\n"
 
