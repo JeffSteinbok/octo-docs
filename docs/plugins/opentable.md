@@ -2,12 +2,14 @@
 layout: default
 title: OpenTable
 parent: Plugins
-nav_order: 8
+nav_order: 7
 ---
 
 # 🍽️ OpenTable
 
-Check restaurant availability on OpenTable
+Look up restaurants, check availability, and monitor health on OpenTable
+
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/opentable)
 
 ### `opentable_lookup`
 
@@ -27,3 +29,7 @@ Check real-time availability for a restaurant on OpenTable. Returns available ti
 | `date` | string | Required | Date in YYYY-MM-DD format. |
 | `party_size` | integer | Optional | Number of guests (default: 2). Default: `2`. |
 | `time` | string | Optional | Preferred time in HH:MM format (default: 19:00). Default: `19:00`. |
+
+### `opentable_heartbeat_check`
+
+Check whether the OpenTable integration is healthy. Verifies both restaurant lookup and availability queries.

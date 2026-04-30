@@ -2,7 +2,7 @@
 layout: default
 title: Spotify
 parent: Plugins
-nav_order: 13
+nav_order: 12
 ---
 
 # 🎵 Spotify
