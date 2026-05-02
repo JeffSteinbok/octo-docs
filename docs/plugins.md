@@ -9,7 +9,7 @@ has_children: true
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **18 plugins** through its runtime.
+Octo currently exposes **20 plugins** through its runtime.
 
 ## Plugin Catalog
 
@@ -20,6 +20,7 @@ Octo currently exposes **18 plugins** through its runtime.
 | 📧 | [FastMail tools](plugins/fastmail) | Send email and manage calendar events in Fastmail | [Read docs](plugins/fastmail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [Read docs](plugins/github) |
 | 🤖 | [GitHub Copilot](https://docs.github.com/en/copilot) | Provider integration that lets the instance use GitHub Copilot-hosted models. | [External docs](https://docs.github.com/en/copilot) |
+|  | [Glances](plugins/glances) | Read CPU, memory, disk, and summary metrics from a Glances server | [Read docs](plugins/glances) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) |
 | 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | [External docs](https://ai.google.dev/gemini-api/docs) |
 | 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [Read docs](plugins/homeassistant) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
 | 🖼️ | [Home Assistant – LLM Vision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | [Read docs](plugins/llmvision) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
@@ -33,3 +34,4 @@ Octo currently exposes **18 plugins** through its runtime.
 | 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [Read docs](plugins/stock-quotes) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes) |
 | 📬 | [USPS Mail Analyzer](plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [Read docs](plugins/usps-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
 | 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) |
+|  | [Withings](plugins/withings) | Fetch health data from Withings devices (weight, body composition, heart rate, sleep, activity) | [Read docs](plugins/withings) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) |

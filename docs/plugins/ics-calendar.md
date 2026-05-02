@@ -2,7 +2,7 @@
 layout: default
 title: ICS Calendar
 parent: Plugins
-nav_order: 5
+nav_order: 6
 ---
 
 # 🗓️ ICS Calendar

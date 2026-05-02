@@ -2,7 +2,7 @@
 layout: default
 title: "Home Assistant \u2013 LLM Vision"
 parent: Plugins
-nav_order: 6
+nav_order: 7
 ---
 
 # 🖼️ Home Assistant – LLM Vision
