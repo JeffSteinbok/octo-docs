@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import html
 import hashlib
 import logging
 import re
@@ -428,18 +429,26 @@ def _render_config_schema_table(config_schema: dict) -> list[str]:
         return ["_No plugin config schema documented._"]
 
     lines = [
-        "| Field | Type | Required | Description |",
-        "|-------|------|----------|-------------|",
+        '<table class="config-schema-table">',
+        "  <thead>",
+        "    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>",
+        "  </thead>",
+        "  <tbody>",
     ]
     for field in fields:
         required = "Required" if field.get("required") else "Optional"
+        field_name = html.escape(str(field.get("name", "")))
+        field_type = html.escape(str(field.get("type", "string")))
+        description = html.escape(_parameter_description(field))
         lines.append(
-            "| "
-            f"`{_markdown_cell(field.get('name', ''))}` | "
-            f"{_markdown_cell(field.get('type', 'string'))} | "
-            f"{required} | "
-            f"{_parameter_description(field)} |"
+            "    <tr>"
+            f"<td><code>{field_name}</code></td>"
+            f"<td>{field_type}</td>"
+            f"<td>{required}</td>"
+            f"<td>{description}</td>"
+            "</tr>"
         )
+    lines.extend(["  </tbody>", "</table>"])
     return lines
 
 
@@ -468,12 +477,12 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
         hub_url = f"https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/{plugin_id}"
         lines.extend(["", f'> **Source:** [openclaw-hub]({hub_url})'])
 
-    if configuration:
-        lines.extend(["", "## Example config", "", configuration])
-
     if config_schema:
         lines.extend(["", "## Configuration Schema", ""])
         lines.extend(_render_config_schema_table(config_schema))
+
+    if configuration:
+        lines.extend(["", "## Example config", "", configuration])
 
     if env_vars:
         lines.extend(["", "## Environment Variables", ""])

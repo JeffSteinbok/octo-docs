@@ -195,11 +195,14 @@ def test_process_page_bundle_plugins_renders_without_llm(tmp_path, monkeypatch):
 
     assert "[GitHub](plugins/github)" in index_content
     assert "# 🐙 GitHub" in child_content
-    assert "## Example config" in child_content
-    assert '"enabled": true' in child_content
     assert "## Configuration Schema" in child_content
-    assert "| `token` | string | Optional | GitHub token. |" in child_content
-    assert "| `repos[].owner` | string | Required | Repository owner. |" in child_content
+    assert "## Example config" in child_content
+    assert child_content.index("## Configuration Schema") < child_content.index("## Example config")
+    assert '"enabled": true' in child_content
+    assert '<table class="config-schema-table">' in child_content
+    assert "<th>Description</th>" in child_content
+    assert "<td><code>token</code></td><td>string</td><td>Optional</td><td>GitHub token.</td>" in child_content
+    assert "<td><code>repos[].owner</code></td><td>string</td><td>Required</td><td>Repository owner.</td>" in child_content
     assert "## Environment Variables" in child_content
     assert "| `GITHUB_TOKEN` | Yes | GitHub access token |" in child_content
     assert "## Tools" in child_content

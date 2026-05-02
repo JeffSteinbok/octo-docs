@@ -115,6 +115,33 @@ figure.highlight {
   }
 }
 
+.main-content table.config-schema-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.main-content table.config-schema-table th:nth-child(1),
+.main-content table.config-schema-table td:nth-child(1) {
+  width: 24%;
+  overflow-wrap: anywhere;
+}
+
+.main-content table.config-schema-table th:nth-child(2),
+.main-content table.config-schema-table td:nth-child(2) {
+  width: 14%;
+}
+
+.main-content table.config-schema-table th:nth-child(3),
+.main-content table.config-schema-table td:nth-child(3) {
+  width: 12%;
+  white-space: nowrap;
+}
+
+.main-content table.config-schema-table th:nth-child(4),
+.main-content table.config-schema-table td:nth-child(4) {
+  width: auto;
+}
+
 // ── Rouge syntax tokens (dark theme — scoped to .highlight) ──
 .highlight {
   .c, .c1, .cm, .cs   { color: #94a3b8; font-style: italic; } // comments
