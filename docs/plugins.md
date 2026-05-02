@@ -9,7 +9,7 @@ has_children: true
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **19 plugins** through its runtime.
+Octo currently exposes **20 plugins** through its runtime.
 
 ## Plugin Catalog
 
@@ -29,6 +29,7 @@ Octo currently exposes **19 plugins** through its runtime.
 | 📧 | [Outlook Mail](plugins/outlook-mail) | Search and read messages from Outlook inboxes | [Read docs](plugins/outlook-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) |
 | 📅 | [Outlook Work Calendar](plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [Read docs](plugins/outlook-work-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
 | 📦 | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | [Read docs](plugins/package-tracking) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking) |
+|  | [Restaurant](plugins/restaurant-cli) | Pluggable reservation booking via Resy, OpenTable, Tock, and other providers | [Read docs](plugins/restaurant-cli) |
 | 🎵 | [Spotify](plugins/spotify) | Control Spotify playback, search music, and manage playlists | [Read docs](plugins/spotify) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) |
 | 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [Read docs](plugins/stock-quotes) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes) |
 | 📬 | [USPS Mail Analyzer](plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [Read docs](plugins/usps-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
