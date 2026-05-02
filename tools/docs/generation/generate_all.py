@@ -364,6 +364,85 @@ def _render_parameter_table(parameters: dict[str, dict]) -> list[str]:
     return lines
 
 
+def _schema_field_type(schema: dict) -> str:
+    """Render a concise type label for a JSON schema node."""
+    schema_type = schema.get("type")
+    if isinstance(schema_type, list):
+        return " | ".join(str(item) for item in schema_type)
+    if schema_type == "array":
+        items = schema.get("items")
+        if isinstance(items, dict):
+            return f"array<{_schema_field_type(items)}>"
+        return "array"
+    if isinstance(schema_type, str) and schema_type:
+        return schema_type
+    if isinstance(schema.get("properties"), dict):
+        return "object"
+    return "string"
+
+
+def _collect_config_fields(schema: dict, prefix: str = "") -> list[dict]:
+    """Flatten a config schema into table rows."""
+    if not isinstance(schema, dict):
+        return []
+
+    properties = schema.get("properties")
+    if not isinstance(properties, dict):
+        return []
+
+    required_names = schema.get("required", [])
+    required = set(required_names if isinstance(required_names, list) else [])
+
+    fields: list[dict] = []
+    for name, raw_meta in properties.items():
+        meta = raw_meta if isinstance(raw_meta, dict) else {}
+        field_name = f"{prefix}.{name}" if prefix else name
+        field = {
+            "name": field_name,
+            "type": _schema_field_type(meta),
+            "required": name in required,
+            "description": meta.get("description", ""),
+        }
+        if "enum" in meta:
+            field["enum"] = meta["enum"]
+        if "default" in meta:
+            field["default"] = meta["default"]
+        fields.append(field)
+
+        child_properties = meta.get("properties")
+        if isinstance(child_properties, dict):
+            fields.extend(_collect_config_fields(meta, field_name))
+            continue
+
+        items = meta.get("items")
+        if isinstance(items, dict) and isinstance(items.get("properties"), dict):
+            fields.extend(_collect_config_fields(items, f"{field_name}[]"))
+
+    return fields
+
+
+def _render_config_schema_table(config_schema: dict) -> list[str]:
+    """Render a markdown table for plugin config schema fields."""
+    fields = _collect_config_fields(config_schema)
+    if not fields:
+        return ["_No plugin config schema documented._"]
+
+    lines = [
+        "| Field | Type | Required | Description |",
+        "|-------|------|----------|-------------|",
+    ]
+    for field in fields:
+        required = "Required" if field.get("required") else "Optional"
+        lines.append(
+            "| "
+            f"`{_markdown_cell(field.get('name', ''))}` | "
+            f"{_markdown_cell(field.get('type', 'string'))} | "
+            f"{required} | "
+            f"{_parameter_description(field)} |"
+        )
+    return lines
+
+
 def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_meta: dict | None = None) -> tuple[str, dict]:
     """Render a plugin child page deterministically from bundle JSON."""
     plugin_id = _plugin_id(plugin_json, chunk_path)
@@ -373,6 +452,8 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
     summary = summary.strip() if isinstance(summary, str) else ""
     configuration = plugin_json.get("configuration", "")
     configuration = configuration.strip() if isinstance(configuration, str) else ""
+    config_schema = plugin_json.get("config_schema", {})
+    config_schema = config_schema if isinstance(config_schema, dict) else {}
     env_vars = plugin_json.get("env_vars", [])
     env_vars = env_vars if isinstance(env_vars, list) else []
     tools = plugin_json.get("tools", [])
@@ -388,7 +469,11 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
         lines.extend(["", f'> **Source:** [openclaw-hub]({hub_url})'])
 
     if configuration:
-        lines.extend(["", "## Configuration", "", configuration])
+        lines.extend(["", "## Example config", "", configuration])
+
+    if config_schema:
+        lines.extend(["", "## Configuration Schema", ""])
+        lines.extend(_render_config_schema_table(config_schema))
 
     if env_vars:
         lines.extend(["", "## Environment Variables", ""])

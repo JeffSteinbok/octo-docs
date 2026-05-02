@@ -97,6 +97,33 @@ def test_process_page_bundle_plugins_renders_without_llm(tmp_path, monkeypatch):
                 "plugin": "github",
                 "summary": "Manage GitHub issues.",
                 "configuration": "```json\n{\n  \"enabled\": true\n}\n```",
+                "config_schema": {
+                    "type": "object",
+                    "properties": {
+                        "token": {
+                            "type": "string",
+                            "description": "GitHub token",
+                        },
+                        "repos": {
+                            "type": "array",
+                            "description": "Configured repositories",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "owner": {
+                                        "type": "string",
+                                        "description": "Repository owner",
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Repository name",
+                                    },
+                                },
+                                "required": ["owner", "name"],
+                            },
+                        },
+                    },
+                },
                 "env_vars": [
                     {
                         "name": "GITHUB_TOKEN",
@@ -168,8 +195,11 @@ def test_process_page_bundle_plugins_renders_without_llm(tmp_path, monkeypatch):
 
     assert "[GitHub](plugins/github)" in index_content
     assert "# 🐙 GitHub" in child_content
-    assert "## Configuration" in child_content
+    assert "## Example config" in child_content
     assert '"enabled": true' in child_content
+    assert "## Configuration Schema" in child_content
+    assert "| `token` | string | Optional | GitHub token. |" in child_content
+    assert "| `repos[].owner` | string | Required | Repository owner. |" in child_content
     assert "## Environment Variables" in child_content
     assert "| `GITHUB_TOKEN` | Yes | GitHub access token |" in child_content
     assert "## Tools" in child_content
