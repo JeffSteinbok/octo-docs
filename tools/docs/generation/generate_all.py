@@ -1327,8 +1327,14 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
                 docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
                 if origin == "openclaw-hub" and source_url:
                     docs_text += f" · [Source ↗]({source_url})"
+                elif origin == "external" and source_url:
+                    author = entry.get("author") or entry.get("id") or "External"
+                    docs_text += f" · by {author} [↗]({source_url})"
             else:
                 docs_text = f"[External docs]({docs_url})" if docs_url else "—"
+                if origin == "external" and source_url:
+                    author = entry.get("author") or entry.get("id") or "External"
+                    docs_text += f" · by {author} [↗]({source_url})"
             lines.append(f"| {emoji} | {plugin_link} | {description} | {docs_text} |")
 
     return "\n".join(lines) + "\n"
