@@ -11,6 +11,8 @@ Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-clas
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail)
 
+## Tools
+
 ### `usps_process_digest`
 
 Process a USPS Informed Delivery digest folder and classify each mailpiece.

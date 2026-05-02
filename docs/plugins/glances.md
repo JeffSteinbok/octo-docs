@@ -11,6 +11,8 @@ Read CPU, memory, disk, and summary metrics from a Glances server
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances)
 
+## Tools
+
 ### `glances_summary_get`
 
 Get a compact Glances summary with CPU, memory, uptime, and one filesystem.

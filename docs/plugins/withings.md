@@ -11,6 +11,8 @@ Fetch health data from Withings devices (weight, body composition, heart rate, s
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings)
 
+## Tools
+
 ### `withings_auth_url`
 
 Generate a Withings OAuth2 authorization URL. Open this URL in a browser to link a Withings account. After authorizing, call withings_auth_complete with the code from the redirect URL.

@@ -9,6 +9,8 @@ nav_order: 1
 
 Backs up OpenClaw config to Git with SHA-256 change detection
 
+## Tools
+
 ### `config_backup_run`
 
 Back up OpenClaw config and agent workspace to Git. Copies ~/.openclaw config files into the Git repo, commits, and pushes only when content has changed (SHA-256 detection).

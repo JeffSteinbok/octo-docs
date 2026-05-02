@@ -11,6 +11,8 @@ Control Spotify playback, search music, and manage playlists
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify)
 
+## Tools
+
 ### `spotify_now_playing`
 
 Get the currently playing item on Spotify, including playback details.

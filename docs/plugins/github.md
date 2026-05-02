@@ -9,6 +9,8 @@ nav_order: 3
 
 Manage GitHub issues. Create, read, update, close, comment on, and list issues.
 
+## Tools
+
 ### `github_create_issue`
 
 Create a new issue in a GitHub repository. Acts as the authenticated OpenClaw user (GITHUB_TOKEN). Returns the issue number, URL, and state.

@@ -11,6 +11,8 @@ Fetch upcoming events from Outlook personal and family calendars
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar)
 
+## Tools
+
 ### `outlook_calendar_fetch`
 
 Fetch upcoming events from Outlook personal, family, or combined calendars.

@@ -11,6 +11,8 @@ Fetch upcoming events from a published ICS calendar feed
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar)
 
+## Tools
+
 ### `ics_calendar_fetch`
 
 Fetch upcoming events from a published ICS calendar feed.

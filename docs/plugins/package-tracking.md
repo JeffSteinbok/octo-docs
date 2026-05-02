@@ -11,6 +11,8 @@ Track packages from UPS, FedEx, USPS, and Amazon
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking)
 
+## Tools
+
 ### `package_track`
 
 Look up a package by tracking number and return the carrier and tracking URL.

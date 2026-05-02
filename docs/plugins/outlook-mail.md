@@ -11,6 +11,8 @@ Search and read messages from Outlook inboxes
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail)
 
+## Tools
+
 ### `outlook_inbox`
 
 List recent messages from the Outlook inbox, or any other mail folder.

@@ -9,6 +9,8 @@ nav_order: 16
 
 Search foods, log meals, view diary and points budget via the unofficial WW API
 
+## Tools
+
 ### `ww_daily`
 
 Get daily WW food diary. Returns tracked meals and points summary.

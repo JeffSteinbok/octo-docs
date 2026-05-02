@@ -11,6 +11,8 @@ Look up restaurants, check availability, and monitor health on OpenTable
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/opentable)
 
+## Tools
+
 ### `opentable_lookup`
 
 Look up an OpenTable restaurant by its URL slug (e.g. 'carbone-new-york' from opentable.com/r/carbone-new-york) to get its numeric restaurant ID.
