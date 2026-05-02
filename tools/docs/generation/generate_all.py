@@ -371,6 +371,10 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
     emoji = _plugin_emoji(plugin_id)
     summary = plugin_json.get("summary", "")
     summary = summary.strip() if isinstance(summary, str) else ""
+    env_vars = plugin_json.get("env_vars", [])
+    env_vars = env_vars if isinstance(env_vars, list) else []
+    tools = plugin_json.get("tools", [])
+    tools = tools if isinstance(tools, list) else []
 
     lines = [f"# {emoji} {plugin_name}" if emoji else f"# {plugin_name}"]
     if summary:
@@ -381,7 +385,12 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
         hub_url = f"https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/{plugin_id}"
         lines.extend(["", f'> **Source:** [openclaw-hub]({hub_url})'])
 
-    for tool in plugin_json.get("tools", []):
+    if env_vars:
+        lines.extend(["", "## Environment Variables", ""])
+        lines.extend(_render_env_var_table(env_vars))
+
+    rendered_tools = False
+    for tool in tools:
         tool_name = tool.get("name", "")
         if not isinstance(tool_name, str) or not tool_name.strip():
             continue
@@ -390,6 +399,9 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
         description = description.strip() if isinstance(description, str) else ""
         parameters = _extract_parameters(tool)
 
+        if not rendered_tools:
+            lines.extend(["", "## Tools"])
+            rendered_tools = True
         lines.extend(["", f"### `{tool_name.strip()}`"])
         if description:
             lines.extend(["", description])
