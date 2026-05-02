@@ -41,6 +41,14 @@ Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/Jeff
 | 📬 | [USPS Mail Analyzer](plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [Read docs](plugins/usps-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
 | ❤️ | [Withings](plugins/withings) | Fetch health data from Withings devices (weight, body composition, heart rate, sleep, activity) | [Read docs](plugins/withings) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) |
 
+## 🔌 External
+
+Third-party plugins from outside the openclaw-hub.
+
+| | Plugin | Description | Docs |
+|---|--------|-------------|------|
+| 🍽️ | [restaurant-cli](https://github.com/omarshahine/restaurant-cli) | Pluggable reservation booking via Resy, OpenTable, Tock, and other providers | [External docs](https://github.com/omarshahine/restaurant-cli) · by OmarShahine [↗](https://github.com/omarshahine/restaurant-cli) |
+
 ## 🔒 Private (octo)
 
 Plugins with private source in the octo repo.
