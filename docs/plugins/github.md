@@ -9,6 +9,14 @@ nav_order: 3
 
 Manage GitHub issues. Create, read, update, close, comment on, and list issues.
 
+## Example config
+
+No additional configuration is required in `openclaw.json` beyond adding the plugin to `plugins.load.paths`.
+
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `github_create_issue`

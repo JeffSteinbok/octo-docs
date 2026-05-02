@@ -9,6 +9,38 @@ nav_order: 16
 
 Search foods, log meals, view diary and points budget via the unofficial WW API
 
+## Example config
+
+Set WeightWatchers under `plugins.entries["weightwatchers"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "weightwatchers": {
+        "enabled": true,
+        "config": {
+          "jwt": "${WW_JWT}",
+          "email": "${WW_EMAIL}",
+          "password": "${WW_PASSWORD}"
+        }
+      }
+    }
+  }
+}
+```
+
+`jwt` is preferred. `email` and `password` are only needed when the plugin has to log in and refresh auth automatically. If you need a non-default WW region, set optional config `tld` (for example `"ca"`); otherwise the plugin defaults to `com`.
+
+## Configuration Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `jwt` | string | Optional | WW API JWT token (preferred auth method). |
+| `email` | string | Optional | WW account email used for fallback login. |
+| `password` | string | Optional | WW account password used for fallback login. |
+| `tld` | string | Optional | WW regional TLD (for example `com`). Default: `com`. |
+
 ## Tools
 
 ### `ww_daily`

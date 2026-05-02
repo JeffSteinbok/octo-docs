@@ -11,6 +11,20 @@ Fetch current stock, ETF, and mutual fund quotes
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes)
 
+## Example config
+
+### Default behavior
+
+The plugin works out of the box with no configuration. It can fetch stocks, ETFs, and mutual funds without requiring an API key.
+
+### Optional environment variables
+
+| Variable | Description |
+|----------|-------------|
+| `FINNHUB_API_KEY` | Optional Finnhub API key |
+
+If `FINNHUB_API_KEY` is set, the plugin will try Finnhub first and fall back automatically when needed.
+
 ## Tools
 
 ### `stock_quote`

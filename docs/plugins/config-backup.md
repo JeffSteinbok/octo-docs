@@ -9,6 +9,10 @@ nav_order: 1
 
 Backs up OpenClaw config to Git with SHA-256 change detection
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `config_backup_run`
