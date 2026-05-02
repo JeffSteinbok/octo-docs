@@ -227,6 +227,9 @@ def _plugin_id(plugin_json: dict, chunk_path: str) -> str:
 def _plugin_name(plugin_json: dict, chunk_path: str) -> str:
     """Return a human-friendly plugin name for public docs."""
     plugin_id = _plugin_id(plugin_json, chunk_path)
+    # External plugins: prefer the plugin id as the display name (e.g. restaurant-cli)
+    if plugin_json.get("source") == "external":
+        return plugin_id
     explicit_name = plugin_json.get("name") or plugin_json.get("plugin_name")
     if isinstance(explicit_name, str) and explicit_name.strip():
         return explicit_name.strip()
@@ -235,8 +238,10 @@ def _plugin_name(plugin_json: dict, chunk_path: str) -> str:
     return plugin_id.replace("-", " ").title()
 
 
-def _plugin_emoji(plugin_id: str) -> str:
-    """Return a stable emoji for well-known plugins."""
+def _plugin_emoji(plugin_id: str, plugin_json: dict | None = None) -> str:
+    """Return a stable emoji for a plugin, preferring the bundle manifest value."""
+    if plugin_json and isinstance(plugin_json.get("emoji"), str) and plugin_json["emoji"].strip():
+        return plugin_json["emoji"].strip()
     return PLUGIN_EMOJIS.get(plugin_id, "")
 
 
@@ -456,7 +461,7 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
     """Render a plugin child page deterministically from bundle JSON."""
     plugin_id = _plugin_id(plugin_json, chunk_path)
     plugin_name = _plugin_name(plugin_json, chunk_path)
-    emoji = _plugin_emoji(plugin_id)
+    emoji = _plugin_emoji(plugin_id, plugin_json)
     summary = plugin_json.get("summary", "")
     summary = summary.strip() if isinstance(summary, str) else ""
     configuration = plugin_json.get("configuration", "")
@@ -1305,9 +1310,13 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
         ])
         for entry in sorted_entries:
             plugin_id = entry.get("id")
-            emoji = entry.get("emoji") or (_plugin_emoji(plugin_id) if isinstance(plugin_id, str) else "")
+            emoji = entry.get("emoji") or (_plugin_emoji(plugin_id, entry) if isinstance(plugin_id, str) else "")
             link_target = _plugin_inventory_link(entry, link_prefix)
-            name = entry.get("name") or entry.get("id") or "Unknown"
+            # External plugins: use plugin id as display name
+            if entry.get("source") == "external":
+                name = plugin_id or entry.get("id") or "Unknown"
+            else:
+                name = entry.get("name") or entry.get("id") or "Unknown"
             plugin_link = f"[{name}]({link_target})" if link_target else str(name)
             description = entry.get("summary") or entry.get("description") or ""
             docs_url = _plugin_inventory_link(entry, link_prefix)
