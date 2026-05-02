@@ -24,6 +24,27 @@ Look up restaurants, check availability, and monitor health on OpenTable
   </tbody>
 </table>
 
+## Example config
+
+Set options in `plugins.entries["opentable"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "opentable": {
+        "enabled": true,
+        "config": {
+          "availabilityHash": "b2d05a06...",
+          "notifyChannel": "discord",
+          "notifyTarget": "jeff-dm"
+        }
+      }
+    }
+  }
+}
+```
+
 ## Tools
 
 ### `opentable_lookup`

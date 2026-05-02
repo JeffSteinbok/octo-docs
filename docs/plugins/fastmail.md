@@ -32,6 +32,35 @@ Send email and manage calendar events in Fastmail
   </tbody>
 </table>
 
+## Example config
+
+Set credentials in `plugins.entries["fastmail"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "fastmail": {
+        "enabled": true,
+        "config": {
+          "accountId": "u12345678",
+          "jmapToken": "fmu1-...",
+          "fromEmail": "you@fastmail.com",
+          "fromName": "OpenClaw Assistant",
+          "identityId": "id-...",
+          "draftsId": "mb-...",
+          "sentId": "mb-...",
+          "caldavUrl": "https://caldav.fastmail.com/dav/calendars",
+          "caldavUsername": "you@fastmail.com",
+          "caldavPassword": "app-password",
+          "caldavCalendarPath": "/dav/calendars/user/you@fastmail.com/Default/"
+        }
+      }
+    }
+  }
+}
+```
+
 ## Tools
 
 ### `fastmail_send`

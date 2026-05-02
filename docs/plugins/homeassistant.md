@@ -23,6 +23,26 @@ Control devices, query state, and inspect activity in Home Assistant
   </tbody>
 </table>
 
+## Example config
+
+Set credentials in `plugins.entries["homeassistant"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "homeassistant": {
+        "enabled": true,
+        "config": {
+          "server": "http://192.168.1.76:8123",
+          "token": "your_long_lived_access_token"
+        }
+      }
+    }
+  }
+}
+```
+
 ## Tools
 
 ### `hass_state_get`

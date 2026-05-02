@@ -24,6 +24,27 @@ Control Spotify playback, search music, and manage playlists
   </tbody>
 </table>
 
+## Example config
+
+Set credentials in `plugins.entries["spotify"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "spotify": {
+        "enabled": true,
+        "config": {
+          "clientId": "your_spotify_client_id",
+          "clientSecret": "your_spotify_client_secret",
+          "redirectUri": "http://127.0.0.1:8888/callback"
+        }
+      }
+    }
+  }
+}
+```
+
 ## Tools
 
 ### `spotify_now_playing`

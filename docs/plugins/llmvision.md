@@ -23,6 +23,28 @@ Home Assistant LLM Vision integration: analyze camera images with AI, query the 
   </tbody>
 </table>
 
+## Example config
+
+Set credentials in `plugins.entries["llmvision"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "llmvision": {
+        "enabled": true,
+        "config": {
+          "server": "http://192.168.1.76:8123",
+          "token": "your_long_lived_access_token"
+        }
+      }
+    }
+  }
+}
+```
+
+Uses the same Home Assistant credentials as the homeassistant plugin.
+
 ## Tools
 
 ### `llmvision_get_image`
