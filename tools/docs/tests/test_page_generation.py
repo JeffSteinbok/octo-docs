@@ -96,6 +96,7 @@ def test_process_page_bundle_plugins_renders_without_llm(tmp_path, monkeypatch):
             {
                 "plugin": "github",
                 "summary": "Manage GitHub issues.",
+                "configuration": "```json\n{\n  \"enabled\": true\n}\n```",
                 "env_vars": [
                     {
                         "name": "GITHUB_TOKEN",
@@ -167,6 +168,8 @@ def test_process_page_bundle_plugins_renders_without_llm(tmp_path, monkeypatch):
 
     assert "[GitHub](plugins/github)" in index_content
     assert "# 🐙 GitHub" in child_content
+    assert "## Configuration" in child_content
+    assert '"enabled": true' in child_content
     assert "## Environment Variables" in child_content
     assert "| `GITHUB_TOKEN` | Yes | GitHub access token |" in child_content
     assert "## Tools" in child_content

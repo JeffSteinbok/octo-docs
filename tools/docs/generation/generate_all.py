@@ -371,6 +371,8 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
     emoji = _plugin_emoji(plugin_id)
     summary = plugin_json.get("summary", "")
     summary = summary.strip() if isinstance(summary, str) else ""
+    configuration = plugin_json.get("configuration", "")
+    configuration = configuration.strip() if isinstance(configuration, str) else ""
     env_vars = plugin_json.get("env_vars", [])
     env_vars = env_vars if isinstance(env_vars, list) else []
     tools = plugin_json.get("tools", [])
@@ -384,6 +386,9 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
     if isinstance(inventory_meta, dict) and inventory_meta.get("origin") == "openclaw-hub":
         hub_url = f"https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/{plugin_id}"
         lines.extend(["", f'> **Source:** [openclaw-hub]({hub_url})'])
+
+    if configuration:
+        lines.extend(["", "## Configuration", "", configuration])
 
     if env_vars:
         lines.extend(["", "## Environment Variables", ""])
