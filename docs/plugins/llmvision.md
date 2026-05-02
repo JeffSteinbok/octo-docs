@@ -18,6 +18,10 @@ This plugin reads Home Assistant connection settings from environment variables:
 - `HASS_SERVER` — base URL for the Home Assistant instance
 - `HASS_TOKEN` — bearer token used for Home Assistant API requests
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `llmvision_get_image`

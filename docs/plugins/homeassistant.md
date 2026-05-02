@@ -11,6 +11,10 @@ Control devices, query state, and inspect activity in Home Assistant
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `hass_state_get`

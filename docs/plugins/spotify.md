@@ -11,6 +11,10 @@ Control Spotify playback, search music, and manage playlists
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `spotify_now_playing`

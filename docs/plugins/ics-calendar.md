@@ -11,6 +11,52 @@ Fetch upcoming events from a published ICS calendar feed
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar)
 
+## Example config
+
+Set calendars in `plugins.entries["ics-calendar"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "ics-calendar": {
+        "enabled": true,
+        "config": {
+          "calendars": [
+            {
+              "id": "personal",
+              "label": "Personal",
+              "url": "${CALENDAR_PERSONAL_ICS_URL}"
+            },
+            {
+              "id": "family",
+              "label": "Family",
+              "url": "${CALENDAR_FAMILY_ICS_URL}"
+            },
+            {
+              "id": "travel",
+              "label": "Travel",
+              "url": "${CALENDAR_TRAVEL_ICS_URL}"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+Use `${...}` interpolation if you want the actual feed URLs to come from `.env`.
+
+## Configuration Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `calendars` | array<object> | Optional | Configured ICS feeds available by id. |
+| `calendars[].id` | string | Required | Stable calendar identifier used by tool calls. |
+| `calendars[].label` | string | Optional | Friendly display name used in output. |
+| `calendars[].url` | string | Required | Published ICS feed URL. |
+
 ## Tools
 
 ### `ics_calendar_fetch`

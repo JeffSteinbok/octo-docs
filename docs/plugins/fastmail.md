@@ -11,6 +11,10 @@ Send email and manage calendar events in Fastmail
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `fastmail_send`

@@ -11,6 +11,10 @@ Search and read messages from Outlook inboxes
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `outlook_inbox`

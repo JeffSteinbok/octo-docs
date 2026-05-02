@@ -11,6 +11,35 @@ Fetch health data from Withings devices (weight, body composition, heart rate, s
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings)
 
+## Example config
+
+Set Withings under `plugins.entries["withings"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "withings": {
+        "enabled": true,
+        "config": {
+          "clientId": "${WITHINGS_CLIENT_ID}",
+          "clientSecret": "${WITHINGS_CLIENT_SECRET}",
+          "redirectUri": "${WITHINGS_REDIRECT_URI}"
+        }
+      }
+    }
+  }
+}
+```
+
+## Configuration Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `clientId` | string | Optional | Withings OAuth2 App Client ID. |
+| `clientSecret` | string | Optional | Withings OAuth2 App Client Secret (use env var WITHINGS_CLIENT_SECRET). |
+| `redirectUri` | string | Optional | OAuth redirect URI registered with the Withings developer app. |
+
 ## Environment Variables
 
 | Variable | Required | Description |

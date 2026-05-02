@@ -11,6 +11,10 @@ Fetch upcoming events from a published Outlook work calendar
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `outlook_work_calendar_fetch`

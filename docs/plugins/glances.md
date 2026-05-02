@@ -21,6 +21,12 @@ The plugin uses a configurable Glances base URL:
 
 If omitted, the plugin defaults to `http://127.0.0.1:61208`.
 
+## Configuration Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | string | Optional | Base URL for the Glances web server, e.g. http://127.0.0.1:61208. Default: `http://127.0.0.1:61208`. |
+
 ## Tools
 
 ### `glances_summary_get`

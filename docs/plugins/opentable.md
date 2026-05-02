@@ -11,6 +11,10 @@ Look up restaurants, check availability, and monitor health on OpenTable
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/opentable)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `opentable_lookup`

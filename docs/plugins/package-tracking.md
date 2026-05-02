@@ -11,6 +11,10 @@ Track packages from UPS, FedEx, USPS, and Amazon
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Tools
 
 ### `package_track`
