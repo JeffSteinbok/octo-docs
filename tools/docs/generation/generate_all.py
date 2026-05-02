@@ -65,7 +65,7 @@ PLUGIN_EMOJIS = {
     "github": "🐙",
     "homeassistant": "🏠",
     "ics-calendar": "🗓️",
-    "llmvision": "🖼️",
+    "llmvision": "📷",
     "opentable": "🍽️",
     "opentable-heartbeat": "🩺",
     "outlook-calendar": "📅",
