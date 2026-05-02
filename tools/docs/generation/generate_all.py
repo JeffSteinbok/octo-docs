@@ -1300,42 +1300,63 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
         f"Octo currently exposes **{len(sorted_entries)} plugin{'s' if len(sorted_entries) != 1 else ''}** through its runtime.",
     ]
 
+    SECTIONS = [
+        ("builtin",       "🌐 Built-in",                   "Core capabilities provided by OpenClaw itself."),
+        ("openclaw-hub",  "📦 Open Source (openclaw-hub)",  "Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub)."),
+        ("external",      "🔌 External",                   "Third-party plugins from outside the openclaw-hub."),
+        ("octo",          "🔒 Private (octo)",             "Plugins with private source in the octo repo."),
+    ]
+
+    def _render_entry(entry: dict) -> str:
+        plugin_id = entry.get("id")
+        emoji = entry.get("emoji") or (_plugin_emoji(plugin_id, entry) if isinstance(plugin_id, str) else "")
+        link_target = _plugin_inventory_link(entry, link_prefix)
+        origin = entry.get("origin", "")
+        # External plugins: use plugin id as display name
+        if origin == "external":
+            name = plugin_id or entry.get("id") or "Unknown"
+        else:
+            name = entry.get("name") or entry.get("id") or "Unknown"
+        plugin_link = f"[{name}]({link_target})" if link_target else str(name)
+        description = entry.get("summary") or entry.get("description") or ""
+        docs_url = _plugin_inventory_link(entry, link_prefix)
+        docs_mode = entry.get("docs_mode", "local")
+        source_url = entry.get("source_url", "")
+        if docs_mode == "local":
+            docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
+            if origin == "openclaw-hub" and source_url:
+                docs_text += f" · [Source ↗]({source_url})"
+            elif origin == "external" and source_url:
+                author = entry.get("author") or entry.get("id") or "External"
+                docs_text += f" · by {author} [↗]({source_url})"
+        else:
+            docs_text = f"[External docs]({docs_url})" if docs_url else "—"
+            if origin == "external" and source_url:
+                author = entry.get("author") or entry.get("id") or "External"
+                docs_text += f" · by {author} [↗]({source_url})"
+        return f"| {emoji} | {plugin_link} | {description} | {docs_text} |"
+
+    entries_by_origin: dict[str, list] = {}
+    for entry in sorted_entries:
+        o = entry.get("origin", "octo")
+        entries_by_origin.setdefault(o, []).append(entry)
+
     if sorted_entries:
-        lines.extend([
-            "",
-            "## Plugin Catalog",
-            "",
-            "| | Plugin | Description | Docs |",
-            "|---|--------|-------------|------|",
-        ])
-        for entry in sorted_entries:
-            plugin_id = entry.get("id")
-            emoji = entry.get("emoji") or (_plugin_emoji(plugin_id, entry) if isinstance(plugin_id, str) else "")
-            link_target = _plugin_inventory_link(entry, link_prefix)
-            # External plugins: use plugin id as display name
-            if entry.get("source") == "external":
-                name = plugin_id or entry.get("id") or "Unknown"
-            else:
-                name = entry.get("name") or entry.get("id") or "Unknown"
-            plugin_link = f"[{name}]({link_target})" if link_target else str(name)
-            description = entry.get("summary") or entry.get("description") or ""
-            docs_url = _plugin_inventory_link(entry, link_prefix)
-            docs_mode = entry.get("docs_mode", "local")
-            origin = entry.get("origin", "")
-            source_url = entry.get("source_url", "")
-            if docs_mode == "local":
-                docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
-                if origin == "openclaw-hub" and source_url:
-                    docs_text += f" · [Source ↗]({source_url})"
-                elif origin == "external" and source_url:
-                    author = entry.get("author") or entry.get("id") or "External"
-                    docs_text += f" · by {author} [↗]({source_url})"
-            else:
-                docs_text = f"[External docs]({docs_url})" if docs_url else "—"
-                if origin == "external" and source_url:
-                    author = entry.get("author") or entry.get("id") or "External"
-                    docs_text += f" · by {author} [↗]({source_url})"
-            lines.append(f"| {emoji} | {plugin_link} | {description} | {docs_text} |")
+        for origin_key, section_title, section_desc in SECTIONS:
+            section_entries = entries_by_origin.get(origin_key, [])
+            if not section_entries:
+                continue
+            lines.extend([
+                "",
+                f"## {section_title}",
+                "",
+                section_desc,
+                "",
+                "| | Plugin | Description | Docs |",
+                "|---|--------|-------------|------|",
+            ])
+            for entry in section_entries:
+                lines.append(_render_entry(entry))
 
     return "\n".join(lines) + "\n"
 
