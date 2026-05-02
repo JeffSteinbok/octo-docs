@@ -9,7 +9,7 @@ has_children: true
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **20 plugins** through its runtime.
+Octo currently exposes **19 plugins** through its runtime.
 
 ## Plugin Catalog
 
@@ -25,7 +25,6 @@ Octo currently exposes **20 plugins** through its runtime.
 | 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [Read docs](plugins/homeassistant) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
 | 🖼️ | [Home Assistant – LLM Vision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | [Read docs](plugins/llmvision) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
 | 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | [Read docs](plugins/ics-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
-| 🍽️ | [OpenTable](plugins/opentable) | Look up restaurants, check availability, and monitor health on OpenTable | [Read docs](plugins/opentable) |
 | 📅 | [Outlook Calendar](plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | [Read docs](plugins/outlook-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar) |
 | 📧 | [Outlook Mail](plugins/outlook-mail) | Search and read messages from Outlook inboxes | [Read docs](plugins/outlook-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) |
 | 📅 | [Outlook Work Calendar](plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [Read docs](plugins/outlook-work-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |

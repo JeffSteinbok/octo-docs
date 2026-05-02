@@ -34,7 +34,7 @@ Set credentials in `plugins.entries["homeassistant"].config`:
       "homeassistant": {
         "enabled": true,
         "config": {
-          "server": "http://192.168.1.76:8123",
+          "server": "http://192.168.1.123:8123",
           "token": "your_long_lived_access_token"
         }
       }
