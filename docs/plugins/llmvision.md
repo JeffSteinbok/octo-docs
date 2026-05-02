@@ -11,16 +11,16 @@ Home Assistant LLM Vision integration: analyze camera images with AI, query the 
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision)
 
+## Configuration Schema
+
+_No plugin config schema documented._
+
 ## Example config
 
 This plugin reads Home Assistant connection settings from environment variables:
 
 - `HASS_SERVER` — base URL for the Home Assistant instance
 - `HASS_TOKEN` — bearer token used for Home Assistant API requests
-
-## Configuration Schema
-
-_No plugin config schema documented._
 
 ## Tools
 

@@ -11,6 +11,17 @@ Read CPU, memory, disk, and summary metrics from a Glances server
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances)
 
+## Configuration Schema
+
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>url</code></td><td>string</td><td>Optional</td><td>Base URL for the Glances web server, e.g. http://127.0.0.1:61208. Default: `http://127.0.0.1:61208`.</td></tr>
+  </tbody>
+</table>
+
 ## Example config
 
 The plugin uses a configurable Glances base URL:
@@ -20,12 +31,6 @@ The plugin uses a configurable Glances base URL:
 | `url` | Base URL for the Glances web server, e.g. `http://127.0.0.1:61208` |
 
 If omitted, the plugin defaults to `http://127.0.0.1:61208`.
-
-## Configuration Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `url` | string | Optional | Base URL for the Glances web server, e.g. http://127.0.0.1:61208. Default: `http://127.0.0.1:61208`. |
 
 ## Tools
 

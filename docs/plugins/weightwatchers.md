@@ -9,6 +9,20 @@ nav_order: 16
 
 Search foods, log meals, view diary and points budget via the unofficial WW API
 
+## Configuration Schema
+
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>jwt</code></td><td>string</td><td>Optional</td><td>WW API JWT token (preferred auth method).</td></tr>
+    <tr><td><code>email</code></td><td>string</td><td>Optional</td><td>WW account email used for fallback login.</td></tr>
+    <tr><td><code>password</code></td><td>string</td><td>Optional</td><td>WW account password used for fallback login.</td></tr>
+    <tr><td><code>tld</code></td><td>string</td><td>Optional</td><td>WW regional TLD (for example `com`). Default: `com`.</td></tr>
+  </tbody>
+</table>
+
 ## Example config
 
 Set WeightWatchers under `plugins.entries["weightwatchers"].config`:
@@ -31,15 +45,6 @@ Set WeightWatchers under `plugins.entries["weightwatchers"].config`:
 ```
 
 `jwt` is preferred. `email` and `password` are only needed when the plugin has to log in and refresh auth automatically. If you need a non-default WW region, set optional config `tld` (for example `"ca"`); otherwise the plugin defaults to `com`.
-
-## Configuration Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `jwt` | string | Optional | WW API JWT token (preferred auth method). |
-| `email` | string | Optional | WW account email used for fallback login. |
-| `password` | string | Optional | WW account password used for fallback login. |
-| `tld` | string | Optional | WW regional TLD (for example `com`). Default: `com`. |
 
 ## Tools
 

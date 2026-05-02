@@ -11,6 +11,19 @@ Fetch health data from Withings devices (weight, body composition, heart rate, s
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings)
 
+## Configuration Schema
+
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>clientId</code></td><td>string</td><td>Optional</td><td>Withings OAuth2 App Client ID.</td></tr>
+    <tr><td><code>clientSecret</code></td><td>string</td><td>Optional</td><td>Withings OAuth2 App Client Secret (use env var WITHINGS_CLIENT_SECRET).</td></tr>
+    <tr><td><code>redirectUri</code></td><td>string</td><td>Optional</td><td>OAuth redirect URI registered with the Withings developer app.</td></tr>
+  </tbody>
+</table>
+
 ## Example config
 
 Set Withings under `plugins.entries["withings"].config`:
@@ -31,14 +44,6 @@ Set Withings under `plugins.entries["withings"].config`:
   }
 }
 ```
-
-## Configuration Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `clientId` | string | Optional | Withings OAuth2 App Client ID. |
-| `clientSecret` | string | Optional | Withings OAuth2 App Client Secret (use env var WITHINGS_CLIENT_SECRET). |
-| `redirectUri` | string | Optional | OAuth redirect URI registered with the Withings developer app. |
 
 ## Environment Variables
 
