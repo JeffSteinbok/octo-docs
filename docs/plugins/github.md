@@ -20,6 +20,25 @@ Manage GitHub issues. Create, read, update, close, comment on, and list issues.
   </tbody>
 </table>
 
+## Example config
+
+Set credentials in `plugins.entries["github"].config`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "github": {
+        "enabled": true,
+        "config": {
+          "token": "ghp_your_personal_access_token"
+        }
+      }
+    }
+  }
+}
+```
+
 ## Tools
 
 ### `github_create_issue`
