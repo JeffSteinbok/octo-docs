@@ -13,36 +13,11 @@ Fetch current stock, ETF, and mutual fund quotes
 
 ## Configuration Schema
 
-_No plugin config schema documented._
-
-## Example config
-
-### Default behavior
-
-The plugin works out of the box with no configuration. It can fetch stocks, ETFs, and mutual funds without requiring an API key.
-
-### Optional environment variables
-
-| Variable | Description |
-|----------|-------------|
-| `FINNHUB_API_KEY` | Optional Finnhub API key |
-
-If `FINNHUB_API_KEY` is set, the plugin will try Finnhub first and fall back automatically when needed.
-
-## Tools
-
-### `stock_quote`
-
-Get the latest quote for a stock, ETF, or mutual fund symbol.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `symbol` | string | Required | Stock ticker symbol (e.g., AAPL, GOOGL, QQQ, FXAIX). |
-
-### `stock_quotes`
-
-Get the latest quotes for multiple stock, ETF, or mutual fund symbols.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `symbols` | array | Required | Array of stock ticker symbols (e.g., ['MSFT', 'QQQ', 'FXAIX']). |
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>finnhubApiKey</code></td><td>string</td><td>Optional</td><td>Optional Finnhub API key.</td></tr>
+  </tbody>
+</table>

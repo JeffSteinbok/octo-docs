@@ -13,7 +13,16 @@ Control Spotify playback, search music, and manage playlists
 
 ## Configuration Schema
 
-_No plugin config schema documented._
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>clientId</code></td><td>string</td><td>Optional</td><td>Spotify app client ID.</td></tr>
+    <tr><td><code>clientSecret</code></td><td>string</td><td>Optional</td><td>Spotify app client secret.</td></tr>
+    <tr><td><code>redirectUri</code></td><td>string</td><td>Optional</td><td>Spotify OAuth redirect URI. Default: `http://127.0.0.1:8888/callback`.</td></tr>
+  </tbody>
+</table>
 
 ## Tools
 

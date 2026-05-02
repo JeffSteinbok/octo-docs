@@ -13,14 +13,15 @@ Home Assistant LLM Vision integration: analyze camera images with AI, query the 
 
 ## Configuration Schema
 
-_No plugin config schema documented._
-
-## Example config
-
-This plugin reads Home Assistant connection settings from environment variables:
-
-- `HASS_SERVER` — base URL for the Home Assistant instance
-- `HASS_TOKEN` — bearer token used for Home Assistant API requests
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>server</code></td><td>string</td><td>Optional</td><td>Home Assistant server URL.</td></tr>
+    <tr><td><code>token</code></td><td>string</td><td>Optional</td><td>Home Assistant long-lived access token.</td></tr>
+  </tbody>
+</table>
 
 ## Tools
 

@@ -36,7 +36,8 @@ Set WeightWatchers under `plugins.entries["weightwatchers"].config`:
         "config": {
           "jwt": "${WW_JWT}",
           "email": "${WW_EMAIL}",
-          "password": "${WW_PASSWORD}"
+          "password": "${WW_PASSWORD}",
+          "tld": "${WW_TLD}"
         }
       }
     }
@@ -44,7 +45,16 @@ Set WeightWatchers under `plugins.entries["weightwatchers"].config`:
 }
 ```
 
-`jwt` is preferred. `email` and `password` are only needed when the plugin has to log in and refresh auth automatically. If you need a non-default WW region, set optional config `tld` (for example `"ca"`); otherwise the plugin defaults to `com`.
+`jwt` is preferred. `email` and `password` are only needed when the plugin has to log in and refresh auth automatically. If `tld` is omitted, the plugin defaults to `com`.
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `WW_JWT` | No | Backing value for plugin config `jwt |
+| `WW_EMAIL` | No | Backing value for plugin config `email |
+| `WW_PASSWORD` | No | Backing value for plugin config `password |
+| `WW_TLD` | No | Backing value for plugin config `tld |
 
 ## Tools
 

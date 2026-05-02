@@ -13,7 +13,15 @@ Control devices, query state, and inspect activity in Home Assistant
 
 ## Configuration Schema
 
-_No plugin config schema documented._
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>server</code></td><td>string</td><td>Optional</td><td>Home Assistant server URL.</td></tr>
+    <tr><td><code>token</code></td><td>string</td><td>Optional</td><td>Home Assistant long-lived access token.</td></tr>
+  </tbody>
+</table>
 
 ## Tools
 

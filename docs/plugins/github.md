@@ -11,11 +11,14 @@ Manage GitHub issues. Create, read, update, close, comment on, and list issues.
 
 ## Configuration Schema
 
-_No plugin config schema documented._
-
-## Example config
-
-No additional configuration is required in `openclaw.json` beyond adding the plugin to `plugins.load.paths`.
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>token</code></td><td>string</td><td>Optional</td><td>GitHub personal access token or fine-grained token.</td></tr>
+  </tbody>
+</table>
 
 ## Tools
 

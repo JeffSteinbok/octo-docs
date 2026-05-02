@@ -13,7 +13,16 @@ Look up restaurants, check availability, and monitor health on OpenTable
 
 ## Configuration Schema
 
-_No plugin config schema documented._
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>availabilityHash</code></td><td>string</td><td>Optional</td><td>Persisted-query hash used for OpenTable availability requests.</td></tr>
+    <tr><td><code>notifyChannel</code></td><td>string</td><td>Optional</td><td>Notification channel for heartbeat alerts. Default: `discord`.</td></tr>
+    <tr><td><code>notifyTarget</code></td><td>string</td><td>Optional</td><td>Notification target for heartbeat alerts.</td></tr>
+  </tbody>
+</table>
 
 ## Tools
 
