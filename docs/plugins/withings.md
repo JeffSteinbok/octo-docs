@@ -11,6 +11,14 @@ Fetch health data from Withings devices (weight, body composition, heart rate, s
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings)
 
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `WITHINGS_CLIENT_ID` | Yes | Withings OAuth app client ID |
+| `WITHINGS_CLIENT_SECRET` | Yes | Withings OAuth app client secret |
+| `WITHINGS_REDIRECT_URI` | Yes | OAuth redirect URI registered with the Withings app |
+
 ## Tools
 
 ### `withings_auth_url`
