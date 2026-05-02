@@ -78,11 +78,23 @@ jobs:
       - name: Resolve inputs
         id: resolve
         run: |
+          latest_successful_run_id() {
+            local repo="$1"
+            local workflow="$2"
+            gh run list \
+              --repo "$repo" \
+              --workflow "$workflow" \
+              --status success \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId // ""'
+          }
+
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
-            echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=$(latest_successful_run_id JeffSteinbok/octo 'Build Docs Bundle')" >> "$GITHUB_OUTPUT"
             echo "hub_artifact_name=docs-satellite-bundle" >> "$GITHUB_OUTPUT"
-            echo "hub_artifact_run_id=" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_run_id=$(latest_successful_run_id JeffSteinbok/openclaw-hub 'Build Docs Satellite Bundle')" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=true" >> "$GITHUB_OUTPUT"
             echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
@@ -101,10 +113,18 @@ jobs:
             echo "run_generate=false" >> "$GITHUB_OUTPUT"
             echo "run_deploy=false" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            OCTO_RUN_ID="${{ github.event.client_payload.octo_run_id || github.event.client_payload.run_id || '' }}"
+            HUB_RUN_ID="${{ github.event.client_payload.hub_run_id || '' }}"
+            if [ -z "$OCTO_RUN_ID" ]; then
+              OCTO_RUN_ID="$(latest_successful_run_id JeffSteinbok/octo 'Build Docs Bundle')"
+            fi
+            if [ -z "$HUB_RUN_ID" ]; then
+              HUB_RUN_ID="$(latest_successful_run_id JeffSteinbok/openclaw-hub 'Build Docs Satellite Bundle')"
+            fi
             echo "artifact_name=${{ github.event.client_payload.octo_artifact_name || github.event.client_payload.artifact_name || 'docs-bundle' }}" >> "$GITHUB_OUTPUT"
-            echo "artifact_run_id=${{ github.event.client_payload.octo_run_id || github.event.client_payload.run_id || '' }}" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=$OCTO_RUN_ID" >> "$GITHUB_OUTPUT"
             echo "hub_artifact_name=${{ github.event.client_payload.hub_artifact_name || 'docs-satellite-bundle' }}" >> "$GITHUB_OUTPUT"
-            echo "hub_artifact_run_id=${{ github.event.client_payload.hub_run_id || '' }}" >> "$GITHUB_OUTPUT"
+            echo "hub_artifact_run_id=$HUB_RUN_ID" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
             echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
