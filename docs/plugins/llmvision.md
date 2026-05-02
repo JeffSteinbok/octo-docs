@@ -5,7 +5,7 @@ parent: Plugins
 nav_order: 7
 ---
 
-# 🖼️ Home Assistant – LLM Vision
+# 📷 Home Assistant – LLM Vision
 
 Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events.
 
