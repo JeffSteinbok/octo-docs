@@ -28,6 +28,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. |
 | `finance` | Published agent surface | `profile:minimal` tools. | Separates this agent from the rest of the system. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
+| `coding` | Published agent surface | `inherited-default` tools. | Separates this agent from the rest of the system. |
 
 ## Agents
 
@@ -39,6 +40,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. |
 | `finance` | Published agent surface | `profile:minimal` tools. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. |
+| `coding` | Published agent surface | `inherited-default` tools. |
 
 ## `main`
 
@@ -91,6 +93,15 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 - **Permissions:** `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only.
 - **Why:** Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow.
 - **Tool mode:** `custom-allowlist`
+- **Sub-agent access:** None published.
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
+
+## `coding`
+
+- **Used for:** Published agent surface
+- **Permissions:** `inherited-default` tools.
+- **Why:** Separates this agent from the rest of the system.
+- **Tool mode:** `inherited-default`
 - **Sub-agent access:** None published.
 - **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
