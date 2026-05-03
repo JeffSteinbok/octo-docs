@@ -28,7 +28,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. |
 | `finance` | Published agent surface | `profile:minimal` tools. | Separates this agent from the rest of the system. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
-| `coding` | Coding specialist in #coding on Discord | Full exec/process/browser access; elevated permissions. | Dedicated coding agent for code review, architecture, ACP agent delegation, and infra/DevOps work. Kept separate from main to allow elevated shell access without exposing it to everyday chat. |
+| `coding` | Coding specialist in #coding on Discord | `inherited-default` tools. | Dedicated coding agent for code review, architecture, ACP agent delegation, and infra/DevOps work. Kept separate from main to allow elevated shell access without exposing it to everyday chat. |
 
 ## Channels
 
