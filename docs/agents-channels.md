@@ -28,7 +28,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. |
 | `finance` | Published agent surface | `profile:minimal` tools. | Separates this agent from the rest of the system. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
-| `coding` | Published agent surface | `inherited-default` tools. | Separates this agent from the rest of the system. |
+| `coding` | Coding specialist in #coding on Discord | Full exec/process/browser access; elevated permissions. | Dedicated coding agent for code review, architecture, ACP agent delegation, and infra/DevOps work. Kept separate from main to allow elevated shell access without exposing it to everyday chat. |
 
 ## Agents
 
@@ -40,7 +40,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. |
 | `finance` | Published agent surface | `profile:minimal` tools. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. |
-| `coding` | Published agent surface | `inherited-default` tools. |
+| `coding` | Coding specialist in #coding on Discord | Full exec/process/browser access; elevated permissions. |
 
 ## `main`
 
@@ -87,21 +87,21 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 - **Sub-agent access:** None published.
 - **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
+## `coding`
+
+- **Used for:** Coding specialist — code review, architecture, ACP agent delegation, infra/DevOps. Lives in #coding on Discord.
+- **Permissions:** Full exec/process/browser access; elevated permissions enabled.
+- **Why:** Dedicated coding agent that can run shell commands and delegate to ACP coding agents (Codex, Claude Code), kept separate from main to isolate elevated access.
+- **Tool mode:** Full (elevated)
+- **Sub-agent access:** ACP coding agents (Codex, Claude Code).
+- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
+
 ## `hass-hooks`
 
 - **Used for:** Home Assistant webhook events
 - **Permissions:** `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only.
 - **Why:** Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow.
 - **Tool mode:** `custom-allowlist`
-- **Sub-agent access:** None published.
-- **Private details still omitted:** exact peer bindings and detailed tool allowlists.
-
-## `coding`
-
-- **Used for:** Published agent surface
-- **Permissions:** `inherited-default` tools.
-- **Why:** Separates this agent from the rest of the system.
-- **Tool mode:** `inherited-default`
 - **Sub-agent access:** None published.
 - **Private details still omitted:** exact peer bindings and detailed tool allowlists.
 
