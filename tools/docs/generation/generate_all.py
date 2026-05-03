@@ -630,6 +630,8 @@ def _process_agents_channels_page(
             return "Family-facing direct chats"
         if agent_id == "hass-hooks":
             return "Home Assistant webhook events"
+        if agent_id == "coding":
+            return "Coding specialist in #coding on Discord"
         return "Published agent surface"
 
     def _agent_permissions_summary(agent_id: str, profile: dict) -> str:
@@ -677,6 +679,8 @@ def _process_agents_channels_page(
             return "Limits family-facing conversations to a narrow, safer tool surface."
         if agent_id == "hass-hooks":
             return "Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow."
+        if agent_id == "coding":
+            return "Dedicated coding agent for code review, architecture, ACP agent delegation, and infra/DevOps work. Kept separate from main to allow elevated shell access without exposing it to everyday chat."
         return "Separates this agent from the rest of the system."
 
     lines = [
@@ -718,38 +722,6 @@ def _process_agents_channels_page(
             f"{_markdown_cell(_agent_permissions_summary(agent_id, profile))} | "
             f"{_markdown_cell(_agent_why(agent_id))} |"
         )
-
-    lines.extend(["", "## Agents", ""])
-    lines.extend([
-        "| Agent | Used for | Permissions |",
-        "|-------|----------|-------------|",
-    ])
-    for agent in config_agents:
-        agent_id = agent.get("id", "")
-        profile = agent.get("configProfile") or {}
-        lines.append(
-            f"| `{agent_id}` | "
-            f"{_markdown_cell(_agent_surface(agent_id))} | "
-            f"{_markdown_cell(_agent_permissions_summary(agent_id, profile))} |"
-        )
-
-    for agent in config_agents:
-        agent_id = agent.get("id", "")
-        profile = agent.get("configProfile") or {}
-        tool_mode = profile.get("toolMode", "unknown")
-        allowed_subagents = profile.get("allowedSubagents", []) if isinstance(profile, dict) else []
-
-        lines.extend([
-            "",
-            f"## `{agent_id}`",
-            "",
-            f"- **Used for:** {_agent_surface(agent_id)}",
-            f"- **Permissions:** {_agent_permissions_summary(agent_id, profile)}",
-            f"- **Why:** {_agent_why(agent_id)}",
-            f"- **Tool mode:** `{tool_mode}`",
-            f"- **Sub-agent access:** {', '.join(f'`{name}`' for name in allowed_subagents) if allowed_subagents else 'None published.'}",
-            "- **Private details still omitted:** exact peer bindings and detailed tool allowlists.",
-        ])
 
     lines.extend(["", "## Channels", ""])
     lines.extend([
