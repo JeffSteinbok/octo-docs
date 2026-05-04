@@ -23,7 +23,7 @@ Real-time email ingestion daemon that acts as the FastMail-specific adapter over
 
 ### Key Features
 
-- Shared mail pipeline: `source -> envelope -> rules -> Python actions`
+- Shared mail pipeline: `source -> envelope -> rules -> actions`
 - Deterministic mail rules: Top-level `mail_rules` for source/account/sender/subject matching
 - Multi-mailbox monitoring: Monitor personal inbox + shared mailboxes simultaneously
 - Package tracking detection: Automatically detect and register tracking numbers

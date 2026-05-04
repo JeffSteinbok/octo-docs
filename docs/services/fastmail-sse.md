@@ -11,7 +11,7 @@ Real-time email ingestion daemon that acts as the FastMail-specific adapter over
 
 ## Features
 
-- **Shared mail pipeline**: `source -> envelope -> rules -> Python actions`
+- **Shared mail pipeline**: `source -> envelope -> rules -> actions`
 - **Deterministic mail rules**: Top-level `mail_rules` for source/account/sender/subject matching
 - **Multi-mailbox monitoring**: Monitor personal inbox + shared mailboxes simultaneously
 - **Package tracking detection**: Automatically detect and register tracking numbers
@@ -119,7 +119,7 @@ Create `~/.openclaw/services/fastmail-sse-config.json` (see `config.example.json
 
 **Label**: Human-readable label for the account (displayed in multi-account notifications)
 
-Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in `libs/python/mail_runtime_core/README.md`.
+Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in `libs/ts/mail_runtime_core/`.
 
 ### FastMail-exposed actions
 
@@ -133,7 +133,7 @@ This service registers the following shared/domain actions for use in `mail_rule
 
 ### FastMail-specific USPS example
 
-For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [`libs/python/mail_action_usps/README.md`](../../libs/python/mail_action_usps/README.md).
+For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [`libs/ts/mail_action_usps/`](../../libs/ts/mail_action_usps/).
 
 Use a second rule if you want to re-process an older USPS digest by forwarding it to yourself. Forwarded mail usually changes the sender away from `usps.com`, so it needs its own `sender_email`/`body_contains` match.
 

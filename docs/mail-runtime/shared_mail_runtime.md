@@ -8,7 +8,7 @@ has_children: true
 
 # Mail Runtime Core
 
-Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Lives in `libs/python/mail_runtime_core/` so services and plugins can share the same core package without treating it as a service.
+Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Lives in `libs/ts/mail_runtime_core/` so services and plugins can share the same core package without treating it as a service.
 
 ## Features
 
@@ -83,7 +83,7 @@ In practice, the adapter owns transport, provider APIs, and final side effects; 
 
 `mail_runtime_core` stays provider-agnostic. Domain workflows such as USPS should live in separate action modules that register against this runtime.
 
-- `detect_tracking` — built-in mail action that uses `mail_runtime_core/package_tracking.py` plus [`package_tracking_core`](../package_tracking_core/README.md)
+- `detect_tracking` — built-in mail action that uses `mail_runtime_core/package-tracking.ts` plus [`package_tracking_core`](../package_tracking_core/README.md)
 - [`mail_action_usps`](../mail_action_usps/README.md) — USPS Informed Delivery action module that registers the named action `process_usps_digest`
 
 ## Rule actions to know
@@ -109,10 +109,10 @@ Two actions are especially important when reading `mail_rules`:
 
 | Module | Purpose |
 |--------|---------|
-| `runtime.py` | Core envelope, rules, registry, and `execute_rules(...)` loop |
-| `builtin_actions.py` | Shared registration/helpers for `notify_email` and `detect_tracking` |
-| `package_tracking.py` | Mail-envelope adapter over `package_tracking_core` for add/remove flow |
-| `result_dispatch.py` | Shared dispatcher fed by adapter-owned side-effect handlers |
+| `runtime.ts` | Core envelope, rules, registry, and `execute_rules(...)` loop |
+| `builtin-actions.ts` | Shared registration/helpers for `notify_email` and `detect_tracking` |
+| `package-tracking.ts` | Mail-envelope adapter over `package_tracking_core` for add/remove flow |
+| `result-dispatch.ts` | Shared dispatcher fed by adapter-owned side-effect handlers |
 
 ### `MailEnvelope`
 
@@ -318,7 +318,7 @@ This pattern is useful when one provider exposes richer metadata or special acti
 3. lazily fetches bodies and/or downloads attachments if the action declared those needs
 4. returns collected `ActionResult` values to the source adapter
 
-The runtime itself does not send notifications, call agents, or mutate provider state directly. Those side effects are represented as `ActionResult` values and interpreted by the integrating adapter, typically via `result_dispatch.py` plus service-owned handlers.
+The runtime itself does not send notifications, call agents, or mutate provider state directly. Those side effects are represented as `ActionResult` values and interpreted by the integrating adapter, typically via `result-dispatch.ts` plus service-owned handlers.
 
 ## Why this split exists
 

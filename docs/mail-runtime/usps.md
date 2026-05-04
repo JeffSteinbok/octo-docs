@@ -13,13 +13,13 @@ Shared USPS Informed Delivery processing used by both the shared mail runtime an
 
 | Module | Purpose |
 |--------|---------|
-| `analyze.py` | Main orchestration pipeline for a single digest folder |
-| `parse_digest.py` | Parse the USPS HTML digest into structured mail metadata |
-| `vision.py` | Ask an OpenClaw agent to analyze each mailpiece image |
-| `rules.py` | User-managed importance rules stored in the workspace agent |
-| `notify.py` | Build and deliver recipient-specific notifications |
-| `memory.py` | Persist analysis history, workflow state, and monthly mail memory |
-| `paths.py` | Resolve workspace-owned USPS config/state locations |
+| `analyze.ts` | Main orchestration pipeline for a single digest folder |
+| `parse-digest.ts` | Parse the USPS HTML digest into structured mail metadata |
+| `vision.ts` | Ask an OpenClaw agent to analyze each mailpiece image |
+| `rules.ts` | User-managed importance rules stored in the workspace agent |
+| `notify.ts` | Build and deliver recipient-specific notifications |
+| `memory.ts` | Persist analysis history, workflow state, and monthly mail memory |
+| `paths.ts` | Resolve workspace-owned USPS config/state locations |
 
 ## End-to-end flow
 
@@ -61,12 +61,12 @@ The important split is:
 
 There are two normal ways into this package:
 
-1. **Automatic mail pipeline:** `mail_action_usps/register.py` registers `process_usps_digest` with the shared mail runtime, which downloads digest artifacts, calls `process_digest(...)`, then hands a structured summary to another agent for any follow-up that still matters.
-2. **Interactive/manual tooling:** `plugins/usps-mail/src/tools.py` exposes the same shared runtime functions as OpenClaw tools like `usps_process_digest`, `usps_lookup`, and `usps_rules`.
+1. **Automatic mail pipeline:** `mail_action_usps/register.ts` registers `process_usps_digest` with the shared mail runtime, which downloads digest artifacts, calls `process_digest(...)`, then hands a structured summary to another agent for any follow-up that still matters.
+2. **Interactive/manual tooling:** `plugins/usps-mail/src/tools.ts` exposes the same shared runtime functions as OpenClaw tools like `usps_process_digest`, `usps_lookup`, and `usps_rules`.
 
 That split is intentional:
 
-- `libs/python/mail_action_usps/` owns the USPS workflow itself
+- `libs/ts/mail_action_usps/` owns the USPS workflow itself
 - the shared mail runtime owns action dispatch, while integrating services own provider-specific ingestion
 - `plugins/usps-mail` owns the human/operator-facing tool surface
 
@@ -93,7 +93,7 @@ This is usually the **mail agent** workspace, because the mail pipeline owns ong
 
 ### `vision_agent`
 
-`vision.py` copies each scan image into:
+`vision.ts` copies each scan image into:
 
 `~/.openclaw/agents/<vision_agent>/workspace/camera_captures/`
 
@@ -105,7 +105,7 @@ The vision agent returns structured JSON for each mailpiece, and the staging ima
 
 ### `memory_agent`
 
-`memory.py` writes monthly markdown summaries under:
+`memory.ts` writes monthly markdown summaries under:
 
 `~/.openclaw/agents/<memory_agent>/workspace/memory/mail/`
 
@@ -140,7 +140,7 @@ That means:
 
 ## USPS rules structure
 
-`rules.py` loads a versioned JSON file from the workspace agent:
+`rules.ts` loads a versioned JSON file from the workspace agent:
 
 `~/.openclaw/agents/<workspace_agent>/workspace/usps-mail/rules.json`
 
@@ -243,7 +243,7 @@ Shape:
 }
 ```
 
-Current behavior from `notify.py`:
+Current behavior from `notify.ts`:
 
 - mail addressed to Nicole / Eastside Improv routes to `nicole`
 - joint Jeff + Nicole mail routes to `jeff`
@@ -284,7 +284,7 @@ When USPS processing runs from the FastMail mail pipeline, the call path is:
 → `process_usps_digest_action(...)`
 → `mail_action_usps.process_digest(...)`
 
-After that shared USPS work finishes, `services/fastmail-sse/usps_integration.py` creates an `agent_handoff` result with a structured JSON payload. That handoff tells the downstream agent:
+After that shared USPS work finishes, `services/fastmail-sse/usps_integration.ts` creates an `agent_handoff` result with a structured JSON payload. That handoff tells the downstream agent:
 
 - the mail agent already handled scan-image vision work
 - direct USPS notifications were already routed
@@ -309,7 +309,7 @@ That keeps one USPS implementation in the shared action module while still makin
 USPS rule matching here is **not** the same as top-level mail `mail_rules`.
 
 - `mail_rules` decide **when** the mail pipeline should invoke USPS processing
-- `usps/rules.py` decides **how important** each individual mailpiece is after the digest is parsed and analyzed
+- `usps/rules.ts` decides **how important** each individual mailpiece is after the digest is parsed and analyzed
 
 Likewise, USPS notifications are handled here after classification, using routing rules from the workspace agent config.
 
@@ -322,4 +322,4 @@ This package sits below both the service and plugin layers because USPS processi
 - agent-aware for vision and memory
 - separate from provider-specific mail ingestion
 
-That makes `libs/python/mail_action_usps/` the right place for the core workflow, while FastMail and the plugin stay thin adapters around it.
+That makes `libs/ts/mail_action_usps/` the right place for the core workflow, while FastMail and the plugin stay thin adapters around it.
