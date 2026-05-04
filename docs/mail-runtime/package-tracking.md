@@ -9,6 +9,8 @@ nav_order: 2
 
 Reusable package-tracking logic shared by the mail runtime's built-in `detect_tracking` action and the `package-tracking` plugin. Lives in `libs/ts/package_tracking_core/` so services and plugins can depend on the same implementation without importing plugin source directly.
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/package_tracking_core)
+
 ## Features
 
 - **Carrier detection** for UPS, FedEx, USPS, and Amazon tracking numbers

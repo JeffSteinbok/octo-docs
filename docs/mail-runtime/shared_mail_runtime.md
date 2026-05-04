@@ -10,6 +10,8 @@ has_children: true
 
 Provider-agnostic mail processing runtime used by OpenClaw's mail pipeline. Lives in `libs/ts/mail_runtime_core/` so services and plugins can share the same core package without treating it as a service.
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/mail_runtime_core)
+
 ## Features
 
 - **MailEnvelope** — Normalized message shape consumed by rules and actions

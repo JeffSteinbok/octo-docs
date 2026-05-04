@@ -9,6 +9,8 @@ nav_order: 1
 
 Shared USPS Informed Delivery processing used by both the shared mail runtime and the `usps-mail` plugin.
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/mail_action_usps)
+
 ## What lives here
 
 | Module | Purpose |
