@@ -6,6 +6,16 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-05-03
+
+
+### Added
+
+- Complete Python → TypeScript migration of all shared libs, plugins, and the fastmail-sse service in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub).
+- TypeScript ports of `mail_action_usps`, `mail_runtime_core`, and `package_tracking_core` shared libraries.
+- New plugins: **Withings**, **Glances**, and **restaurant-cli** (replaces opentable).
+- Vitest test suites for all migrated TypeScript plugins and libraries.
+
 ## 2026-04-27
 
 
