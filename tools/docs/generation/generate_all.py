@@ -903,6 +903,13 @@ def _process_service_detail_page(
         "",
         service.get("summary", ""),
     ]
+
+    # Add source attribution
+    source_url = service.get("source_url")
+    if source_url:
+        origin = service.get("origin", "openclaw-hub")
+        lines.extend(["", f'> **Source:** [{origin}]({source_url})'])
+
     for section_title, body in (service.get("sections") or {}).items():
         lines.extend(["", *_render_markdown_section(section_title, body)])
 
