@@ -9,7 +9,7 @@ has_children: true
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **20 plugins** through its runtime.
+Octo currently exposes **21 plugins** through its runtime.
 
 ## 🌐 Built-in
 
@@ -57,4 +57,5 @@ Plugins with private source in the octo repo.
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [Read docs](plugins/github) |
+|  | [Octo Satellite](plugins/satellite) | Interface to Octo Satellite local proxy. List and inspect Amazon orders with tracking info. | [Read docs](plugins/satellite) |
 | 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) |
