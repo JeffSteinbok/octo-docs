@@ -11,9 +11,11 @@ Skills are markdown-defined guidance modules that agents load for domain-specifi
 
 Unlike plugins, skills do not execute code. They give agents shared instructions for how to use tools and interpret a problem domain.
 
-Octo currently publishes **0 skills** in the public bundle.
+Octo currently publishes **1 skill** in the public bundle.
 
-No public skills are currently published.
+| | Skill | Used by | Description |
+|---|-------|---------|-------------|
+| 🧠 | [Ha Smb](skills/ha-smb) | `coding` | Access, read, and write files on the Home Assistant server via SMB. Use when you need to read or modify HA config files (automations.yaml, scripts.yaml, blueprints, configuration.yaml, etc.) directly on the HA server. Credentials are stored in the workspace .env file. |
 
 ## How Skills Differ from Plugins
 
