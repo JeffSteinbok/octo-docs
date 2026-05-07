@@ -2,7 +2,7 @@
 layout: default
 title: USPS Mail Analyzer
 parent: Plugins
-nav_order: 15
+nav_order: 16
 ---
 
 # 📬 USPS Mail Analyzer
