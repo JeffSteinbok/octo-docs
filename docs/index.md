@@ -59,6 +59,32 @@ Much of this setup is inspired by [Omar Shahine](https://github.com/omarshahine)
 work on 🦞 [Lobster](https://lobster.shahine.com) — his docs inspired me to publish
 my own.
 
+---
+
+<div class="info-box info-box--highlight" markdown="0">
+  <h3>📬 Featured: Mail Pipeline</h3>
+  <p>
+    OpenClaw's mail pipeline is a multi-layer, provider-agnostic system that processes
+    incoming email in real-time — matching rules, extracting tracking numbers, downloading
+    USPS scan images, and routing work to agents. It's the most architecturally unique
+    subsystem in the project.
+  </p>
+  <p><strong>Key concepts:</strong></p>
+  <ul>
+    <li><strong>Provider adapters</strong> (e.g. FastMail SSE) normalize raw mail events into a shared <code>MailEnvelope</code></li>
+    <li><strong>Mail rules</strong> — declarative JSON matching on sender, subject, domain, body, attachments</li>
+    <li><strong>Actions</strong> — named handlers registered into a shared <code>ActionRegistry</code>:
+      <code>notify_email</code>, <code>detect_tracking</code>, <code>process_usps_digest</code>,
+      <code>process_amazon_shipment</code>, <code>process_self_email</code>
+    </li>
+    <li><strong>Package tracking</strong> — regex extraction + URL parsing + Narvar fetching + pluggable carrier status providers</li>
+    <li><strong>Config hot-reload</strong> — mail rules update live without a service restart</li>
+  </ul>
+  <p>
+    <a href="{{ site.baseurl }}/mail-runtime">Mail Runtime Docs →</a>
+  </p>
+</div>
+
 ## 💬 Channels
 
 I talk to Octo via [Telegram](https://telegram.org) and [Discord](https://discord.com). I'd prefer to use iMessage or WhatsApp, but until I've decided for sure that this is useful, I'm not going out and buying a Mac Mini or getting a new phone number.

@@ -11,7 +11,7 @@ on:
       - "tools/docs/**"
       - ".github/workflows/**"
   repository_dispatch:
-    types: [bundle-ready]
+    types: ["Bundle ready: openclaw-hub", "Bundle ready: octo", "bundle-ready"]
   workflow_dispatch:
     inputs:
       phase:
@@ -78,7 +78,7 @@ jobs:
       - name: Resolve inputs
         id: resolve
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
         run: |
           latest_successful_run_id() {
             local repo="$1"

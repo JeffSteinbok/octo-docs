@@ -104,3 +104,11 @@ Get financial accounts and balances from Monarch Money, grouped by type (Investm
 ### `monarch_get_net_worth`
 
 Get net worth summary from Monarch Money. Returns total assets, total liabilities, and net worth.
+
+### `monarch_get_spending`
+
+Get spending trends from Monarch Money — income, expenses, and savings broken down by month. Defaults to the last 3 months.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `months` | integer | Optional | Number of months to look back (default: 3). |
