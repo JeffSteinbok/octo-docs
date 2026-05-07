@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Spotify
-parent: Plugins
 nav_order: 14
 nav_exclude: true
 ---

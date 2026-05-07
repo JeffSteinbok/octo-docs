@@ -1,7 +1,6 @@
 ---
 layout: default
 title: "Home Assistant \u2013 LLM Vision"
-parent: Plugins
 nav_order: 8
 nav_exclude: true
 ---

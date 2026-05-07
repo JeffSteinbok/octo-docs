@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Outlook Mail
-parent: Plugins
 nav_order: 11
 nav_exclude: true
 ---

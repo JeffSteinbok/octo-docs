@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Ha Smb
-parent: Skills
 nav_order: 1
 nav_exclude: true
 ---

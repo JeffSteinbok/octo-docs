@@ -1,7 +1,6 @@
 ---
 layout: default
 title: HTML to PDF
-parent: Plugins
 nav_order: 6
 nav_exclude: true
 ---

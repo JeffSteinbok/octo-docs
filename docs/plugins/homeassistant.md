@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Home Assistant
-parent: Plugins
 nav_order: 5
 nav_exclude: true
 ---
