@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Stock Quotes
+parent: Plugins
 nav_order: 15
 nav_exclude: true
 ---

@@ -1,6 +1,7 @@
 ---
 layout: default
 title: FastMail tools
+parent: Plugins
 nav_order: 2
 nav_exclude: true
 ---

@@ -1,6 +1,7 @@
 ---
 layout: default
 title: WeightWatchers
+parent: Plugins
 nav_order: 17
 nav_exclude: true
 ---

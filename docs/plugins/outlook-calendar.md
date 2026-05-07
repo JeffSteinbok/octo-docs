@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Outlook Calendar
+parent: Plugins
 nav_order: 10
 nav_exclude: true
 ---

@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Package Tracking
+parent: Plugins
 nav_order: 13
 nav_exclude: true
 ---

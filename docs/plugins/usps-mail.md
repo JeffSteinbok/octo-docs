@@ -1,6 +1,7 @@
 ---
 layout: default
 title: USPS Mail Analyzer
+parent: Plugins
 nav_order: 16
 nav_exclude: true
 ---
