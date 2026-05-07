@@ -798,6 +798,7 @@ def _process_hooks_page(
                 "title": metadata["name"],
                 "parent": parent_title,
                 "nav_order": nav_index,
+                "nav_exclude": True,
             }
             child_path = child_dir / f"{metadata['id']}.md"
             write_page(child_path, format_markdown(page_content), front_matter=child_front_matter)
@@ -989,6 +990,7 @@ def _process_skills_page(
                 "title": skill_name,
                 "parent": parent_title,
                 "nav_order": nav_index,
+                "nav_exclude": True,
             }
             child_path = child_dir / f"{skill_id}.md"
             write_page(child_path, formatted, front_matter=child_front_matter)
@@ -1394,6 +1396,7 @@ def _process_plugin_bundle_page(
                 "title": metadata["name"],
                 "parent": parent_title,
                 "nav_order": nav_index,
+                "nav_exclude": True,
             }
             child_path = child_dir / f"{metadata['id']}.md"
             write_page(child_path, format_markdown(page_content), front_matter=child_front_matter)
@@ -1501,6 +1504,7 @@ def _process_chunked_page(
                 "title": plugin_name,
                 "parent": parent_title,
                 "nav_order": nav_index,
+                "nav_exclude": True,
             }
             child_path = child_dir / f"{slug}.md"
             write_page(child_path, formatted, front_matter=child_front_matter)
