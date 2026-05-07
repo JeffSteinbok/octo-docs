@@ -1,8 +1,8 @@
 ---
 layout: default
 title: FastMail SSE Service
-nav_order: 1
 nav_exclude: true
+nav_order: 1
 ---
 
 # FastMail SSE Service

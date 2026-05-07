@@ -2,7 +2,6 @@
 layout: default
 title: Hooks
 nav_order: 6
-
 ---
 
 # Hooks
