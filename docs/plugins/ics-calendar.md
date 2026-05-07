@@ -61,3 +61,16 @@ Set calendars in `plugins.entries["ics-calendar"].config`:
 ```
 
 Use `${...}` interpolation if you want the actual feed URLs to come from `.env`.
+
+## Tools
+
+### `ics_calendar_fetch`
+
+Fetch upcoming events from a published ICS calendar feed.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `calendar_id` | string | Optional | Configured calendar id from plugin config. |
+| `url` | string | Optional | Direct ICS URL override for one-off fetches. |
+| `label` | string | Optional | Optional display label when using a direct URL override. |
+| `days` | integer | Optional | Number of days ahead to fetch (default 7). Default: `7`. |
