@@ -61,3 +61,14 @@ The calendar-name arrays are optional overrides. If omitted, the plugin uses its
 | `OUTLOOK_REFRESH_TOKEN` | No | Backing value for plugin config `refreshToken |
 | `OUTLOOK_PERSONAL_CALENDAR_NAMES` | No | Backing value for plugin config `personalCalendarNames` as a comma-separated list |
 | `OUTLOOK_FAMILY_CALENDAR_NAMES` | No | Backing value for plugin config `familyCalendarNames` as a comma-separated list |
+
+## Tools
+
+### `outlook_calendar_fetch`
+
+Fetch upcoming events from Outlook personal, family, or combined calendars.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `calendar` | string | Optional | Which calendar to fetch: personal, family, or all (default: all). |
+| `days` | integer | Optional | Number of days ahead to fetch events for (default: 7). |

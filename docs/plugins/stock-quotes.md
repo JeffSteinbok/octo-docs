@@ -45,3 +45,21 @@ Set options in `plugins.entries["stock-quotes"].config`:
 ### Default behavior
 
 The plugin works out of the box with no configuration. It fetches stocks, ETFs, and mutual funds from Yahoo Finance without requiring an API key. If `finnhubApiKey` is configured, the plugin tries Finnhub first and falls back to Yahoo Finance automatically.
+
+## Tools
+
+### `stock_quote`
+
+Get the latest quote for a stock, ETF, or mutual fund symbol.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `symbol` | string | Required | Stock ticker symbol (e.g., AAPL, GOOGL, QQQ, FXAIX). |
+
+### `stock_quotes`
+
+Get the latest quotes for multiple stock, ETF, or mutual fund symbols.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `symbols` | array | Required | Array of stock ticker symbols (e.g., ['MSFT', 'QQQ', 'FXAIX']). |
