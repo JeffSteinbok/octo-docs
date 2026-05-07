@@ -5,7 +5,6 @@ output_path: docs/mail-runtime/shared_mail_runtime.md
 front_matter:
   layout: default
   title: Shared Mail Runtime
-  parent: Mail Runtime
   nav_exclude: true
   nav_order: 1
 
