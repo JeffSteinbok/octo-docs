@@ -5,9 +5,22 @@ nav_exclude: true
 nav_order: 1
 ---
 
-# FastMail SSE Service
+# ⚡ FastMail SSE Service
 
-Real-time email ingestion daemon that acts as the FastMail-specific adapter over the shared mail runtime. It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources.
+Real-time email ingestion daemon that acts as the FastMail-specific adapter over the [shared mail runtime](../../libs/ts/mail_runtime_core/README.md). It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources.
+
+## 📑 Table of Contents
+
+- [Features](#features)
+- [Mail Pipeline Diagram](#mail-pipeline-diagram)
+- [Configuration](#configuration)
+- [Config Hot-Reload](#config-hot-reload)
+- [Package Tracking](#package-tracking)
+- [Systemd Service](#systemd-service)
+- [Notification Examples](#notification-examples)
+- [Related](#related)
+
+---
 
 ## Features
 
@@ -16,6 +29,7 @@ Real-time email ingestion daemon that acts as the FastMail-specific adapter over
 - **Multi-mailbox monitoring**: Monitor personal inbox + shared mailboxes simultaneously
 - **Package tracking detection**: Automatically detect and register tracking numbers
 - **Meeting updates**: Notify on calendar accept/decline/tentative responses
+- **Config hot-reload**: Watches config file and hot-reloads `mail_rules` without restart
 - **USPS digest processing**: Download images/body HTML, have the mail agent do scan vision, let the USPS runtime send its direct alert, then hand the structured result to main for memory/follow-up
 - Connects to JMAP SSE endpoint for real-time state changes
 - Skips spam/noreply senders
@@ -119,7 +133,7 @@ Create `~/.openclaw/services/fastmail-sse-config.json` (see `config.example.json
 
 **Label**: Human-readable label for the account (displayed in multi-account notifications)
 
-Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in `libs/ts/mail_runtime_core/`.
+Generic `mail_rules` syntax, match fields, ordering, and reusable examples live in [`libs/ts/mail_runtime_core/`](../../libs/ts/mail_runtime_core/README.md#-rule-engine).
 
 ### FastMail-exposed actions
 
@@ -133,7 +147,7 @@ This service registers the following shared/domain actions for use in `mail_rule
 
 ### FastMail-specific USPS example
 
-For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [`libs/ts/mail_action_usps/`](../../libs/ts/mail_action_usps/).
+For the USPS internals, agent boundaries, two-phase processing model, and rule/config schemas, see [`libs/ts/mail_action_usps/`](../../libs/ts/mail_action_usps/README.md).
 
 Use a second rule if you want to re-process an older USPS digest by forwarding it to yourself. Forwarded mail usually changes the sender away from `usps.com`, so it needs its own `sender_email`/`body_contains` match.
 
@@ -208,6 +222,19 @@ Use a second rule if you want to re-process an older USPS digest by forwarding i
 | `NOTIFY_TARGET` | Yes | Target ID for the notification channel |
 
 *Either `FASTMAIL_INBOX_IDS` or `FASTMAIL_INBOX_ID` is required.
+
+### Config Hot-Reload
+
+The service watches `~/.openclaw/services/fastmail-sse-config.json` for changes and automatically hot-reloads `mail_rules` without a restart. Changes are debounced (500ms) to handle rapid edits.
+
+**What hot-reloads:**
+- `mail_rules` — additions, removals, and edits take effect on the next incoming email
+
+**What requires a full restart:**
+- `accounts` — adding or removing monitored accounts
+- `action_plugins` — adding or removing external action plugin modules
+
+If the config file contains invalid JSON or fails validation, the previous rules are kept and an error is logged.
 
 ### FastMail-specific configuration example
 
@@ -316,3 +343,12 @@ Logs: `journalctl --user -u fastmail-sse -f`
 ```
 [fastmail-sse] 📦 added package: 1Z999AA10123456784 (UPS) — Personal: Amazon - Order Shipped
 ```
+
+---
+
+## 🔗 Related
+
+- [`mail_runtime_core`](../../libs/ts/mail_runtime_core/README.md) — Provider-agnostic rule engine and action registry
+- [`mail_action_usps`](../../libs/ts/mail_action_usps/README.md) — USPS Informed Delivery action module
+- [`package_tracking_core`](../../libs/ts/package_tracking_core/README.md) — Carrier detection, URL extraction, package storage
+- [`package-tracking` plugin](../../plugins/package-tracking/README.md) — Operator-facing package tracking tools

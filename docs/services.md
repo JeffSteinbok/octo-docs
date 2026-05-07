@@ -14,12 +14,12 @@ Shared runtime subsystems such as the mail runtime are documented separately und
 
 | Service | Description | Docs |
 |---------|-------------|------|
-| 📡 FastMail SSE Service | Real-time email ingestion daemon that acts as the FastMail-specific adapter over the shared mail runtime. It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources. | [Read more →](services/fastmail-sse) |
+| 📡 ⚡ FastMail SSE Service | Real-time email ingestion daemon that acts as the FastMail-specific adapter over the [shared mail runtime](../../libs/ts/mail_runtime_core/README.md). It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources. | [Read more →](services/fastmail-sse) |
 | ⚙️ @octo/mail-actions | Private mail action plugin for `fastmail-sse`. Implements custom mail processing actions that live outside the public `openclaw-hub` monorepo. | [Read more →](services/mail-actions) |
 
-## 📡 FastMail SSE Service
+## 📡 ⚡ FastMail SSE Service
 
-Real-time email ingestion daemon that acts as the FastMail-specific adapter over the shared mail runtime. It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources.
+Real-time email ingestion daemon that acts as the FastMail-specific adapter over the [shared mail runtime](../../libs/ts/mail_runtime_core/README.md). It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources.
 
 ### Key Features
 
@@ -28,6 +28,7 @@ Real-time email ingestion daemon that acts as the FastMail-specific adapter over
 - Multi-mailbox monitoring: Monitor personal inbox + shared mailboxes simultaneously
 - Package tracking detection: Automatically detect and register tracking numbers
 - Meeting updates: Notify on calendar accept/decline/tentative responses
+- Config hot-reload: Watches config file and hot-reloads `mail_rules` without restart
 - USPS digest processing: Download images/body HTML, have the mail agent do scan vision, let the USPS runtime send its direct alert, then hand the structured result to main for memory/follow-up
 - Connects to JMAP SSE endpoint for real-time state changes
 - Skips spam/noreply senders
