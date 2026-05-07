@@ -6,6 +6,39 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-05-06
+
+
+### Added
+
+- Added [octo-satellite](https://github.com/JeffSteinbok/octo-satellite) plugin with Amazon order tools and Monarch Money tools (`monarch_get_accounts`, `monarch_get_net_worth`, `monarch_get_spending`).
+- Added **mail-actions** service with Amazon shipment email action and self-email capability, wired into the FastMail SSE pipeline.
+- Added **html-to-pdf** plugin to [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub) with release manifest and CI support.
+- Added **package-tracking** plugin with pluggable carrier status providers and README documentation.
+- Added DKIM/SPF/DMARC authentication checks on incoming mail in the FastMail SSE mail runtime.
+- Added USPS custom rules guide with patterns, ordering, and testing tips.
+- Added dynamic action plugin loading and pluggable carrier status providers to the mail pipeline.
+- Added **ha-smb** skill for Home Assistant SMB file operations (ls, read, write).
+- Added `@openclaw/plugin-utils` shared library extracted from duplicated plugin boilerplate in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub).
+- Added Node mock API for extracting tool metadata from TypeScript plugins in the docs bundle pipeline.
+
+### Changed
+
+- Migrated plugin tests across openclaw-hub to mock `@openclaw/plugin-utils` instead of raw `node:http/https`.
+- Removed `dist/` from git tracking in openclaw-hub; plugins now build from source only.
+- Restructured the openclaw-hub README and added DEVELOPMENT.md.
+- Collapsed left-nav entries for plugins, skills, and mail runtime children on the [docs site](https://octo.steinbok.net).
+- Improved runtime plugin inventory script to read manifest IDs and emoji fields.
+
+### Fixed
+
+- Fixed Withings token refresh to use `action=requesttoken`.
+- Fixed llmvision image fetch to use binary-safe buffer collection.
+- Fixed plugin origin detection in docs pipeline to use manifest ID lookup instead of directory name.
+- Fixed satellite plugin ID and description in bundle-visibility config.
+- Fixed health-check job to use `withings_get_measurements` instead of `withings_auth_status`.
+- Fixed nav arrow rendering on docs site by adjusting parent/nav_exclude settings on child pages.
+
 ## 2026-05-03
 
 
