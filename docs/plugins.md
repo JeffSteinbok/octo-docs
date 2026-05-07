@@ -52,7 +52,7 @@ Third-party plugins from outside the openclaw-hub.
 
 ## 🔒 Private (octo)
 
-Plugins with private source in the octo repo.
+Source is private (often under active development), but docs are still available below.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
