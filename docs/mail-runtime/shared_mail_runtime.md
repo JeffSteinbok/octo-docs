@@ -2,8 +2,8 @@
 layout: default
 title: Shared Mail Runtime
 parent: Mail Runtime
+nav_exclude: true
 nav_order: 1
-has_children: true
 ---
 
 # Mail Runtime Core

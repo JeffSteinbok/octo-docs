@@ -3,6 +3,7 @@ layout: default
 title: Hass Hooks
 parent: Hooks
 nav_order: 1
+nav_exclude: true
 ---
 
 # 🪝 Hass Hooks

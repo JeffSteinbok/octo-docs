@@ -3,6 +3,7 @@ layout: default
 title: GitHub
 parent: Plugins
 nav_order: 3
+nav_exclude: true
 ---
 
 # 🐙 GitHub

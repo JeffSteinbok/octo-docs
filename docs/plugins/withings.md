@@ -3,6 +3,7 @@ layout: default
 title: Withings
 parent: Plugins
 nav_order: 18
+nav_exclude: true
 ---
 
 # Withings

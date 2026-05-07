@@ -3,6 +3,7 @@ layout: default
 title: Octo Satellite
 parent: Plugins
 nav_order: 9
+nav_exclude: true
 ---
 
 # 🛰️ Octo Satellite
