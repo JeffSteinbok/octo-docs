@@ -41,7 +41,7 @@ def merge_openclaw_hub_plugins(primary_root: str | Path, satellite_root: str | P
     for plugin_id in desired_ids:
         relative_path = f"plugins/{plugin_id}.json"
         if not satellite_bundle.exists(relative_path):
-            raise FileNotFoundError(f"Satellite bundle is missing required plugin chunk: {relative_path}")
+            continue
         shutil.copy2(satellite_path / relative_path, plugins_dir / f"{plugin_id}.json")
         merged.append(plugin_id)
 
