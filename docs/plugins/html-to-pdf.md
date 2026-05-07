@@ -5,7 +5,7 @@ parent: Plugins
 nav_order: 6
 ---
 
-# HTML to PDF
+# 📄 HTML to PDF
 
 Convert HTML files to PDF using Chromium headless
 
