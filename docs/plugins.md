@@ -58,5 +58,5 @@ Source is private (often under active development), but docs are still available
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [Read docs](plugins/github) |
-|  | [Octo Satellite](plugins/satellite) | Interface to Octo Satellite local proxy. Amazon orders and Monarch Money finances. | [Read docs](plugins/satellite) |
+|  | [Octo Satellite](plugins/satellite) | OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools. | [Read docs](plugins/satellite) |
 | 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) |

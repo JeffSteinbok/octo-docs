@@ -7,7 +7,7 @@ nav_order: 9
 
 # 🛰️ Octo Satellite
 
-Interface to Octo Satellite local proxy. Amazon orders and Monarch Money finances.
+OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools.
 
 ## Configuration Schema
 
