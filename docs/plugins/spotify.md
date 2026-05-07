@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Spotify
-nav_order: 14
+nav_order: 15
 nav_exclude: true
 ---
 

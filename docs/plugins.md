@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **22 plugins** through its runtime.
+Octo currently exposes **23 plugins** through its runtime.
 
 ## 🌐 Built-in
 
@@ -32,6 +32,7 @@ Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/Jeff
 | 📷 | [Home Assistant – LLM Vision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | [Read docs](plugins/llmvision) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
 | 📄 | [HTML to PDF](plugins/html-to-pdf) | Convert HTML files to PDF using Chromium headless | [Read docs](plugins/html-to-pdf) |
 | 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | [Read docs](plugins/ics-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
+| 📝 | [Markdown to HTML](plugins/md-to-html) | Convert styled Markdown reports to HTML using a CSS template | [Read docs](plugins/md-to-html) |
 | 📅 | [Outlook Calendar](plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | [Read docs](plugins/outlook-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar) |
 | 📧 | [Outlook Mail](plugins/outlook-mail) | Search and read messages from Outlook inboxes | [Read docs](plugins/outlook-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) |
 | 📅 | [Outlook Work Calendar](plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [Read docs](plugins/outlook-work-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
