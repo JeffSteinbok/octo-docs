@@ -14,3 +14,9 @@ Track packages from UPS, FedEx, USPS, and Amazon
 ## Configuration Schema
 
 _No plugin config schema documented._
+
+## Example config
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `status_providers` | `string[]` | Paths to external ESM carrier status provider modules |
