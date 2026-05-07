@@ -16,6 +16,7 @@ Shared runtime subsystems such as the mail runtime are documented separately und
 | Service | Description | Docs |
 |---------|-------------|------|
 | 📡 FastMail SSE Service | Real-time email ingestion daemon that acts as the FastMail-specific adapter over the shared mail runtime. It connects to FastMail's JMAP EventSource, normalizes each new message into a provider-agnostic mail envelope, matches deterministic rules, and invokes shared/runtime-registered mail actions. The current source is FastMail SSE, but the underlying mail runtime is designed to be reused by future Outlook poll/webhook sources. | [Read more →](services/fastmail-sse) |
+| ⚙️ @octo/mail-actions | Private mail action plugin for `fastmail-sse`. Implements custom mail processing actions that live outside the public `openclaw-hub` monorepo. | [Read more →](services/mail-actions) |
 
 ## 📡 FastMail SSE Service
 
@@ -44,3 +45,13 @@ Real-time email ingestion daemon that acts as the FastMail-specific adapter over
 | `NOTIFY_TARGET` | Yes | Target ID for the notification channel |
 
 [Read more →](services/fastmail-sse)
+
+## ⚙️ @octo/mail-actions
+
+Private mail action plugin for `fastmail-sse`. Implements custom mail processing actions that live outside the public `openclaw-hub` monorepo.
+
+### Environment Variables
+
+_No environment variables required._
+
+[Read more →](services/mail-actions)
