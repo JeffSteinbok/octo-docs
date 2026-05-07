@@ -6,7 +6,6 @@ front_matter:
   layout: default
   title: Plugins
   nav_order: 4
-  has_children: true
 
 sources:
   - path: runtime-plugins.json
