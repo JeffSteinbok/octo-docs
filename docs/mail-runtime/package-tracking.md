@@ -1,15 +1,15 @@
 ---
 layout: default
 title: Package Tracking Core
-nav_exclude: true
-nav_order: 2
+parent: Mail Runtime
+nav_order: 3
 ---
 
 # 📦 Package Tracking Core
 
-Shared package tracking logic used by the mail runtime's `detect_tracking` action and the `package-tracking` plugin. Handles carrier detection, tracking URL generation, and package storage.
+Turns shipping emails into a live package list. Detects carrier tracking numbers from email bodies and URLs, manages package lifecycle (add on ship, remove on delivery), and provides status lookup via pluggable carrier providers.
 
-> **Source:** [`openclaw-hub/libs/ts/package_tracking_core`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/package_tracking_core)
+Source: [openclaw-hub/libs/ts/package_tracking_core](https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/package_tracking_core)
 
 ---
 
@@ -100,6 +100,6 @@ Packages are stored in `~/.openclaw/package_tracking.json` — a flat JSON file 
 
 ## Related
 
-- [Mail Runtime Core]({{ site.baseurl }}/mail-runtime/shared_mail_runtime) — rule engine that fires `detect_tracking`
-- [USPS Mail Runtime]({{ site.baseurl }}/mail-runtime/usps) — separate USPS-specific processing
-- [FastMail SSE]({{ site.baseurl }}/services/fastmail-sse) — extraction pipeline details
+- [Mail Runtime]({{ site.baseurl }}/mail-runtime/) — rule engine that fires `detect_tracking`
+- [USPS Mail Action]({{ site.baseurl }}/mail-runtime/usps) — separate USPS-specific processing
+- [FastMail SSE]({{ site.baseurl }}/services/fastmail-sse) — the adapter that triggers tracking detection

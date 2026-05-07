@@ -1,15 +1,15 @@
 ---
 layout: default
-title: USPS Mail Runtime
-nav_exclude: true
-nav_order: 3
+title: USPS Mail Action
+parent: Mail Runtime
+nav_order: 2
 ---
 
 # 📮 USPS Mail Action
 
-Shared USPS Informed Delivery processing — parses digests, runs scan-image vision, applies classification rules, routes notifications, and writes mail memory.
+Turns USPS Informed Delivery digests into structured, searchable mail data with per-recipient notifications. Parses digest emails, runs scan-image vision on each mailpiece, classifies importance via rules, and writes to memory.
 
-> **Source:** [`openclaw-hub/libs/ts/mail_action_usps`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/mail_action_usps)
+Source: [openclaw-hub/libs/ts/mail_action_usps](https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/mail_action_usps)
 
 ---
 
@@ -108,6 +108,6 @@ Only higher-priority pieces trigger direct notifications; lower-priority items r
 
 ## Related
 
-- [Mail Runtime Core]({{ site.baseurl }}/mail-runtime/shared_mail_runtime) — the rule engine that dispatches to this action
+- [Mail Runtime]({{ site.baseurl }}/mail-runtime/) — the rule engine that dispatches to this action
 - [FastMail SSE]({{ site.baseurl }}/services/fastmail-sse) — the adapter that triggers USPS processing
 - [Custom rules guide](https://github.com/JeffSteinbok/openclaw-hub/blob/main/libs/ts/mail_action_usps/docs/custom-rules.md) — detailed patterns and testing
