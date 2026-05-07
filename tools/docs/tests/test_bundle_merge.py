@@ -41,7 +41,7 @@ def test_merge_openclaw_hub_plugins_copies_only_hub_backed_plugins(tmp_path):
     assert not (primary / "plugins" / "fastmail.json").exists()
 
 
-def test_merge_openclaw_hub_plugins_requires_requested_plugin_chunk(tmp_path):
+def test_merge_openclaw_hub_plugins_skips_missing_satellite_chunk(tmp_path):
     primary = tmp_path / "primary"
     satellite = tmp_path / "satellite"
     primary.mkdir()
@@ -54,9 +54,5 @@ def test_merge_openclaw_hub_plugins_requires_requested_plugin_chunk(tmp_path):
     )
     (satellite / "manifest.json").write_text(json.dumps({"artifacts": []}), encoding="utf-8")
 
-    try:
-        merge_openclaw_hub_plugins(primary, satellite)
-    except FileNotFoundError as exc:
-        assert "plugins/stock-quotes.json" in str(exc)
-    else:
-        raise AssertionError("Expected FileNotFoundError when satellite chunk is missing")
+    merged = merge_openclaw_hub_plugins(primary, satellite)
+    assert merged == []
