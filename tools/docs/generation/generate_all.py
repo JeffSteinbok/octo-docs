@@ -1283,7 +1283,7 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
         ("builtin",       "🌐 Built-in",                   "Core capabilities provided by OpenClaw itself."),
         ("openclaw-hub",  "📦 Open Source (openclaw-hub)",  "Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub)."),
         ("external",      "🔌 External",                   "Third-party plugins from outside the openclaw-hub."),
-        ("octo",          "🔒 Private (octo)",             "Plugins with private source in the octo repo."),
+        ("octo",          "🔒 Private (octo)",             "Source is private (often under active development), but docs are still available below."),
     ]
 
     def _render_entry(entry: dict) -> str:
