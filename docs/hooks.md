@@ -2,7 +2,7 @@
 layout: default
 title: Hooks
 nav_order: 6
-has_children: true
+
 ---
 
 # Hooks
