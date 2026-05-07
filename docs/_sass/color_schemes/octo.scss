@@ -142,6 +142,15 @@ figure.highlight {
   width: auto;
 }
 
+// ── Plugin table: narrow emoji column ──
+.main-content table td:first-child,
+.main-content table th:first-child {
+  width: 1.5em;
+  text-align: center;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
 // ── Rouge syntax tokens (dark theme — scoped to .highlight) ──
 .highlight {
   .c, .c1, .cm, .cs   { color: #94a3b8; font-style: italic; } // comments
