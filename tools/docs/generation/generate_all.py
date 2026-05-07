@@ -796,7 +796,6 @@ def _process_hooks_page(
             child_front_matter = {
                 "layout": "default",
                 "title": metadata["name"],
-                "parent": parent_title,
                 "nav_order": nav_index,
                 "nav_exclude": True,
             }
@@ -988,7 +987,6 @@ def _process_skills_page(
             child_front_matter = {
                 "layout": "default",
                 "title": skill_name,
-                "parent": parent_title,
                 "nav_order": nav_index,
                 "nav_exclude": True,
             }
@@ -1394,7 +1392,6 @@ def _process_plugin_bundle_page(
             child_front_matter = {
                 "layout": "default",
                 "title": metadata["name"],
-                "parent": parent_title,
                 "nav_order": nav_index,
                 "nav_exclude": True,
             }
@@ -1502,7 +1499,6 @@ def _process_chunked_page(
             child_front_matter = {
                 "layout": "default",
                 "title": plugin_name,
-                "parent": parent_title,
                 "nav_order": nav_index,
                 "nav_exclude": True,
             }
