@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Config Backup
-parent: Plugins
 nav_order: 1
 nav_exclude: true
 ---

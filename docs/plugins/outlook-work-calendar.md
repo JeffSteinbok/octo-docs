@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Outlook Work Calendar
-parent: Plugins
 nav_order: 12
 nav_exclude: true
 ---

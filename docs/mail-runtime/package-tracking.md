@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Package Tracking Core
-parent: Shared Mail Runtime
 nav_exclude: true
 nav_order: 2
 ---

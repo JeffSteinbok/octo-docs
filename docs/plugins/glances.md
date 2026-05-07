@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Glances
-parent: Plugins
 nav_order: 4
 nav_exclude: true
 ---

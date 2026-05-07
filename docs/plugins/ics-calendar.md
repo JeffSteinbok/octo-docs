@@ -1,7 +1,6 @@
 ---
 layout: default
 title: ICS Calendar
-parent: Plugins
 nav_order: 7
 nav_exclude: true
 ---

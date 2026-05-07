@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Shared Mail Runtime
-parent: Mail Runtime
 nav_exclude: true
 nav_order: 1
 ---

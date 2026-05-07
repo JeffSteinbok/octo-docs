@@ -1,7 +1,6 @@
 ---
 layout: default
 title: USPS Mail Runtime
-parent: Shared Mail Runtime
 nav_exclude: true
 nav_order: 1
 ---
