@@ -47,7 +47,6 @@ Third-party plugins from outside the openclaw-hub.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
-| 🛰️ | [octo-satellite](plugins/octo-satellite) | OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools. | [Read docs](plugins/octo-satellite) · by octo-satellite [↗](https://github.com/JeffSteinbok/octo/tree/main/plugins/satellite) |
 | 🍽️ | [restaurant-cli](https://github.com/omarshahine/restaurant-cli) | Pluggable reservation booking via Resy, OpenTable, Tock, and other providers | [External docs](https://github.com/omarshahine/restaurant-cli) · by OmarShahine [↗](https://github.com/omarshahine/restaurant-cli) |
 
 ## 🔒 Private (octo)
@@ -58,4 +57,5 @@ Source is private (often under active development), but docs are still available
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [Read docs](plugins/github) |
+| 🛰️ | [Octo Satellite](plugins/octo-satellite) | OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools. | [Read docs](plugins/octo-satellite) |
 | 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) |
