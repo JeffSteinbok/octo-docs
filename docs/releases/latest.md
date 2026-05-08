@@ -6,6 +6,19 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-05-08
+
+
+### Changed
+
+- **Calendar fetch cron** rewritten to use CLI binaries directly via shell script (`scripts/calendar_fetch.sh`) instead of an agent tool-call loop — ~6s vs ~75s, no LLM tokens for fetching.
+- **Upgrade cron notifications** rerouted from `#root` main channel to the `#Upgrade` thread.
+- **Finance agent** given `web_fetch` and `web_search` tool access.
+
+### Fixed
+
+- `outlook-work-calendar` plugin: adapter was reading `pluginConfig.calendarUrl` but schema declared field as `url` — fixed to match.
+
 ## 2026-05-07
 
 
