@@ -1,8 +1,7 @@
 ---
 layout: default
 title: Plugin Architecture
-parent: Plugins
-nav_order: 0
+nav_order: 5
 ---
 
 # Plugin Architecture
