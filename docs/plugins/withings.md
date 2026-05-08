@@ -49,9 +49,9 @@ Set Withings under `plugins.entries["withings"].config`:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `WITHINGS_CLIENT_ID` | No | Backing value for plugin config `clientId |
-| `WITHINGS_CLIENT_SECRET` | No | Backing value for plugin config `clientSecret |
-| `WITHINGS_REDIRECT_URI` | No | Backing value for plugin config `redirectUri |
+| `WITHINGS_CLIENT_ID` | No | Withings OAuth2 client ID |
+| `WITHINGS_CLIENT_SECRET` | No | Withings OAuth2 client secret |
+| `WITHINGS_REDIRECT_URI` | No | OAuth2 redirect URI |
 
 ## Tools
 
