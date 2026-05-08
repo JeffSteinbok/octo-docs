@@ -30,6 +30,10 @@ nav_order: 7
 
 - WeightWatchers plugin handler extraction and CLI generation.
 
+### Migrated
+
+- Moved `octo-satellite` and `weightwatchers` plugins to [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub) (open-sourced).
+
 ## 2026-05-06
 
 
