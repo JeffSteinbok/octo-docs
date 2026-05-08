@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Outlook Mail
-nav_order: 12
+nav_order: 11
 nav_exclude: true
 ---
 

@@ -49,19 +49,19 @@ Set Withings under `plugins.entries["withings"].config`:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `WITHINGS_CLIENT_ID` | No | Withings OAuth2 client ID |
-| `WITHINGS_CLIENT_SECRET` | No | Withings OAuth2 client secret |
-| `WITHINGS_REDIRECT_URI` | No | OAuth2 redirect URI |
+| `WITHINGS_CLIENT_ID` | Yes | Withings OAuth app client ID |
+| `WITHINGS_CLIENT_SECRET` | Yes | Withings OAuth app client secret |
+| `WITHINGS_REDIRECT_URI` | Yes | OAuth redirect URI registered with the Withings app |
 
 ## Tools
 
 ### `withings_auth_url`
 
-Generate a Withings OAuth2 authorization URL. Open this URL in a browser to link a Withings account.
+Generate a Withings OAuth2 authorization URL. Open this URL in a browser to link a Withings account. After authorizing, call withings_auth_complete with the code from the redirect URL.
 
 ### `withings_auth_complete`
 
-Complete Withings OAuth2 flow by exchanging the authorization code for tokens.
+Complete Withings OAuth2 flow by exchanging the authorization code for tokens. Pass the 'code' query parameter from the redirect URL.
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
@@ -78,7 +78,7 @@ Fetch body measurements from Withings: weight, body fat %, BMI, blood pressure, 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `days_back` | integer | Optional | How many days of history to fetch (default: 7). |
-| `meastypes` | string | Optional | Optional comma-separated measurement type IDs (e.g. '1,6' for weight and fat ratio). |
+| `meastypes` | string | Optional | Optional comma-separated Withings measurement type IDs to filter (e.g. '1,6' for weight and fat ratio). |
 
 ### `withings_get_activity`
 
@@ -122,10 +122,10 @@ npm install && npm run build
 ## Show help
 node dist/bin/withings.js --help
 
-## Generate a Withings OAuth2 authorization URL. Open this URL in a browser to link a Withings account.
+## Generate a Withings OAuth2 authorization URL. Open this URL in a browser to link a Withings account. After authorizing, call withings_auth_complete with the code from the redirect URL.
 node dist/bin/withings.js withings-auth-url
 
-## Complete Withings OAuth2 flow by exchanging the authorization code for tokens.
+## Complete Withings OAuth2 flow by exchanging the authorization code for tokens. Pass the 'code' query parameter from the redirect URL.
 node dist/bin/withings.js withings-auth-complete <code>
 
 ## Check whether a Withings account is currently linked and whether the access token is valid.

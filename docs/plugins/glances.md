@@ -24,22 +24,11 @@ Read CPU, memory, disk, and summary metrics from a Glances server
 
 ## Example config
 
-Set Glances under `plugins.entries["glances"].config`:
+The plugin uses a configurable Glances base URL:
 
-```json
-{
-  "plugins": {
-    "entries": {
-      "glances": {
-        "enabled": true,
-        "config": {
-          "url": "http://127.0.0.1:61208"
-        }
-      }
-    }
-  }
-}
-```
+| Field | Description |
+|-------|-------------|
+| `url` | Base URL for the Glances web server, e.g. `http://127.0.0.1:61208` |
 
 If omitted, the plugin defaults to `http://127.0.0.1:61208`.
 
