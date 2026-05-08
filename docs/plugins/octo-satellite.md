@@ -112,3 +112,62 @@ Get spending trends from Monarch Money — income, expenses, and savings broken 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `months` | integer | Optional | Number of months to look back (default: 3). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/octo-satellite
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/octo-satellite.js --help
+
+## List or search Amazon orders with pagination (10 per page). Optionally filter by search query. Returns order id, date, total, status, item titles, total count, and pagination info.
+node dist/bin/octo-satellite.js amazon-list-orders <q> <page>
+
+## Get full details and tracking info for a specific Amazon order. Returns items, quantities, prices, shipping address, and carrier tracking.
+node dist/bin/octo-satellite.js amazon-get-order <order_id>
+
+## Search Amazon products by query string. Returns product titles, prices, ratings, ASINs, and pagination info.
+node dist/bin/octo-satellite.js amazon-search <q> <page>
+
+## Get product details by ASIN. Returns title, price, rating, features, availability, and more.
+node dist/bin/octo-satellite.js amazon-get-product <asin>
+
+## View current Amazon cart contents.
+node dist/bin/octo-satellite.js amazon-get-cart
+
+## Add a product to the Amazon cart by ASIN.
+node dist/bin/octo-satellite.js amazon-add-to-cart <asin>
+
+## Remove an item from the Amazon cart by item_id (the ephemeral cart item ID from amazon_get_cart).
+node dist/bin/octo-satellite.js amazon-remove-from-cart <item_id>
+
+## Get financial accounts and balances from Monarch Money, grouped by type (Investments, Cash, Credit Cards, etc). Each account shows name, balance, institution, and last updated timestamp.
+node dist/bin/octo-satellite.js monarch-get-accounts
+
+## Get net worth summary from Monarch Money. Returns total assets, total liabilities, and net worth.
+node dist/bin/octo-satellite.js monarch-get-net-worth
+
+## Get spending trends from Monarch Money — income, expenses, and savings broken down by month. Defaults to the last 3 months.
+node dist/bin/octo-satellite.js monarch-get-spending <months>
+
+## JSON output
+node dist/bin/octo-satellite.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `OCTO_SATELLITE_TOKEN` | Satellite API <redacted-bearer-token> |
+| `OCTO_SATELLITE_BASE_URL` | Satellite base URL (default: http://localhost:9000) |

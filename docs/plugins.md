@@ -10,6 +10,8 @@ This page catalogs the plugins available in Octo today and links to the right do
 
 Octo currently exposes **23 plugins** through its runtime.
 
+> **See also:** [Plugin Architecture](plugin-architecture) — how plugins are structured, loaded, and can run as standalone CLIs.
+
 ## 🌐 Built-in
 
 Core capabilities provided by OpenClaw itself.

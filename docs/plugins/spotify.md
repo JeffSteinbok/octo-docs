@@ -114,3 +114,60 @@ Add a track to a Spotify playlist by playlist ID and track URI.
 |------|------|----------|-------------|
 | `playlist_id` | string | Required | Spotify playlist ID (from spotify_get_playlists). |
 | `track_uri` | string | Required | Spotify track URI to add (e.g. spotify:track:...). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/spotify
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/spotify.js --help
+
+## Get the currently playing item on Spotify, including playback details.
+node dist/bin/spotify.js spotify-now-playing
+
+## Start or resume Spotify playback. Optionally provide a Spotify URI to play something specific.
+node dist/bin/spotify.js spotify-play <uri> <device_id>
+
+## Pause Spotify playback.
+node dist/bin/spotify.js spotify-pause <device_id>
+
+## Skip to the next track in the Spotify queue.
+node dist/bin/spotify.js spotify-next <device_id>
+
+## Go back to the previous track on Spotify.
+node dist/bin/spotify.js spotify-previous <device_id>
+
+## Search Spotify for tracks, albums, artists, or playlists.
+node dist/bin/spotify.js spotify-search <query> <type> <limit>
+
+## List the current user's Spotify playlists with IDs and track counts.
+node dist/bin/spotify.js spotify-get-playlists <limit>
+
+## List available Spotify Connect devices (speakers, phones, computers) with their IDs and active status.
+node dist/bin/spotify.js spotify-get-devices
+
+## Add a track to a Spotify playlist by playlist ID and track URI.
+node dist/bin/spotify.js spotify-add-to-playlist <playlist_id> <track_uri>
+
+## JSON output
+node dist/bin/spotify.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `SPOTIFY_CLIENT_ID` | Spotify app client ID |
+| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret |
+| `SPOTIFY_REDIRECT_URI` | Spotify OAuth redirect URI |

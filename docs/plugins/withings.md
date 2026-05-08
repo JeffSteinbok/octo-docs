@@ -103,3 +103,54 @@ Fetch heart rate and ECG records from Withings, including AFib classification wh
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `days_back` | integer | Optional | How many days of history to fetch (default: 7). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/withings
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/withings.js --help
+
+## Generate a Withings OAuth2 authorization URL. Open this URL in a browser to link a Withings account.
+node dist/bin/withings.js withings-auth-url
+
+## Complete Withings OAuth2 flow by exchanging the authorization code for tokens.
+node dist/bin/withings.js withings-auth-complete <code>
+
+## Check whether a Withings account is currently linked and whether the access token is valid.
+node dist/bin/withings.js withings-auth-status
+
+## Fetch body measurements from Withings: weight, body fat %, BMI, blood pressure, heart rate, and more.
+node dist/bin/withings.js withings-get-measurements <days_back> <meastypes>
+
+## Fetch daily activity summaries from Withings: steps, distance, calories, and active/light/moderate/intense minutes.
+node dist/bin/withings.js withings-get-activity <days_back>
+
+## Fetch sleep summary data from Withings: total sleep time, REM, deep sleep, light sleep, sleep score, snoring, and wake count.
+node dist/bin/withings.js withings-get-sleep <days_back>
+
+## Fetch heart rate and ECG records from Withings, including AFib classification where available.
+node dist/bin/withings.js withings-get-heart <days_back>
+
+## JSON output
+node dist/bin/withings.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `WITHINGS_CLIENT_ID` | Withings OAuth2 App Client ID |
+| `WITHINGS_CLIENT_SECRET` | Withings OAuth2 App Client Secret (use env var WITHINGS_CLIENT_SECRET) |
+| `WITHINGS_REDIRECT_URI` | OAuth redirect URI registered with the Withings developer app |

@@ -139,3 +139,65 @@ Snapshot multiple cameras simultaneously and compose them into a grid collage im
 |------|------|----------|-------------|
 | `camera_names` | array | Optional | List of camera names to include. Defaults to all outdoor + garage cameras: front-doorbell, front-doorbell-package, driveway, backyard-left, backyard-right, garage. Available: living-room, front-doorbell, front-doorbell-package, backyard-right, backyard-left, driveway, family-room, garage. |
 | `label` | boolean | Optional | Draw camera name labels on each cell (default: true). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/homeassistant
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/homeassistant.js --help
+
+## Get the current state of a Home Assistant entity.
+node dist/bin/homeassistant.js hass-state-get <entity_id>
+
+## List Home Assistant entities, optionally filtered by domain.
+node dist/bin/homeassistant.js hass-state-list <domain>
+
+## Call a Home Assistant service.
+node dist/bin/homeassistant.js hass-service-call <domain> <service> <entity_id> <data>
+
+## List Home Assistant event types.
+node dist/bin/homeassistant.js hass-event-list <entity_id>
+
+## Find a Home Assistant person by name or entity ID.
+node dist/bin/homeassistant.js hass-person-find <name> <entity_id>
+
+## Get the volume level of one speaker or all speakers.
+node dist/bin/homeassistant.js hass-speaker-volume-get <entity_id>
+
+## Set the volume level of a speaker.
+node dist/bin/homeassistant.js hass-speaker-volume-set <entity_id> <volume_level>
+
+## Get Home Assistant logbook entries with optional filters.
+node dist/bin/homeassistant.js hass-logbook <entity_id> <hours> <start_time> <end_time> <keyword> <limit>
+
+## List available Home Assistant cameras.
+node dist/bin/homeassistant.js hass-camera-list
+
+## Take a snapshot from a Home Assistant camera.
+node dist/bin/homeassistant.js hass-camera-snapshot <camera_name>
+
+## Snapshot multiple cameras simultaneously and compose them into a grid collage image. Defaults to all outdoor + garage cameras. Returns a single local file path to the collage image.
+node dist/bin/homeassistant.js hass-camera-collage <camera_names...> <label>
+
+## JSON output
+node dist/bin/homeassistant.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `HOMEASSISTANT_SERVER` | Home Assistant server URL |
+| `HOMEASSISTANT_TOKEN` | Home Assistant long-lived access token |

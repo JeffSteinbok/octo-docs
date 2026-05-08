@@ -147,3 +147,61 @@ Log a saved WW meal, recipe, or custom food to the diary by its meal_id from ww_
 | `type` | string | Required | Type: meal, recipe, or food. |
 | `meal_type` | string | Optional | Time of day: morning, midday, evening, anytime (default: morning). |
 | `date` | string | Optional | Date in YYYY-MM-DD format (default: today). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/weightwatchers
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/weightwatchers.js --help
+
+## Get daily WW food diary. Returns tracked meals and points summary.
+node dist/bin/weightwatchers.js ww-daily <date>
+
+## Search the WW food database. Returns food IDs, points, and portion options needed for logging.
+node dist/bin/weightwatchers.js ww-search <query> <limit>
+
+## Log a food item to the WW diary. Requires food_id, version_id, and portion_id from ww_search results.
+node dist/bin/weightwatchers.js ww-log <food_id> <version_id> <portion_id> <portion_size> <date> <meal_type> <source_type>
+
+## Calculate WW SmartPoints offline from nutrition data. No authentication required.
+node dist/bin/weightwatchers.js ww-points <calories> <saturated_fat> <sugar> <protein>
+
+## Get remaining WW points budget for a date. Shows daily and weekly allowances.
+node dist/bin/weightwatchers.js ww-budget <date>
+
+## Quick-add a points value to the WW diary without specifying a food item. Useful when you know the points but not the exact food.
+node dist/bin/weightwatchers.js ww-quick-add <points> <name> <meal_type> <date>
+
+## Delete a tracked food entry from the WW diary by its tracking ID. Use ww_daily to get tracking IDs.
+node dist/bin/weightwatchers.js ww-delete <tracking_id> <date>
+
+## List saved WW meals, recipes, and custom foods. Returns meal_id, name, points, and type needed for ww_log_meal.
+node dist/bin/weightwatchers.js ww-search-meals <query> <type>
+
+## Log a saved WW meal, recipe, or custom food to the diary by its meal_id from ww_search_meals.
+node dist/bin/weightwatchers.js ww-log-meal <meal_id> <type> <meal_type> <date>
+
+## JSON output
+node dist/bin/weightwatchers.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `WEIGHTWATCHERS_JWT` | WW API JWT token (preferred auth method) |
+| `WEIGHTWATCHERS_EMAIL` | WW account email used for fallback login |
+| `WEIGHTWATCHERS_PASSWORD` | WW account password used for fallback login |
+| `WEIGHTWATCHERS_TLD` | WW regional TLD (for example `com`) |

@@ -127,3 +127,62 @@ Query calendar events by date range, text, attendee email, or UID. Shows attende
 | `text` | string | Optional | Filter by text match on title/description. |
 | `attendee` | string | Optional | Filter to events including this attendee email. |
 | `uid` | string | Optional | Return the single event with this exact UID. |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/fastmail
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/fastmail.js --help
+
+## Send a plain-text email via Fastmail JMAP, with optional file attachments.
+node dist/bin/fastmail.js fastmail-send <to> <subject> <body> <cc...> <signature> <attachment...>
+
+## Search emails in Fastmail inbox by keyword, sender, subject, or date range via JMAP.
+node dist/bin/fastmail.js fastmail-search <query> <from> <to> <subject> <since> <before> <limit> <account_id>
+
+## Read a specific email by its JMAP email ID, returning full headers and body text.
+node dist/bin/fastmail.js fastmail-read <id> <account_id>
+
+## Show recent emails from the Fastmail inbox, optionally filtered to unread only.
+node dist/bin/fastmail.js fastmail-inbox <limit> <unread> <account_id>
+
+## Create a calendar meeting invite via CalDAV and send iMIP invitations to attendees.
+node dist/bin/fastmail.js fastmail-meeting <to> <subject> <start> <cc...> <duration> <location> <description> <timezone> <signature>
+
+## Find a calendar event by UID or text search and update its title, time, location, attendees, or status.
+node dist/bin/fastmail.js fastmail-update-event <uid> <find> <new_title> <new_start> <new_duration> <new_location> <new_description> <timezone> <status> <add_attendee...> <remove_attendee...> <force>
+
+## Query calendar events by date range, text, attendee email, or UID. Shows attendee RSVP status.
+node dist/bin/fastmail.js fastmail-query-events <after> <before> <text> <attendee> <uid>
+
+## JSON output
+node dist/bin/fastmail.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `FASTMAIL_ACCOUNT_ID` | JMAP account identifier |
+| `FASTMAIL_JMAP_TOKEN` | JMAP API authentication token |
+| `FASTMAIL_FROM_EMAIL` | Sender email address |
+| `FASTMAIL_FROM_NAME` | Sender display name |
+| `FASTMAIL_IDENTITY_ID` | JMAP identity ID for sending |
+| `FASTMAIL_DRAFTS_ID` | JMAP mailbox ID for drafts |
+| `FASTMAIL_SENT_ID` | JMAP mailbox ID for sent mail |
+| `FASTMAIL_CALDAV_URL` | CalDAV server URL |
+| `FASTMAIL_CALDAV_USERNAME` | CalDAV username |
+| `FASTMAIL_CALDAV_PASSWORD` | CalDAV password |
+| `FASTMAIL_CALDAV_CALENDAR_PATH` | CalDAV calendar path |

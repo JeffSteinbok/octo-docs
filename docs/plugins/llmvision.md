@@ -95,3 +95,44 @@ Create a new event in the LLM Vision timeline.
 | `camera_entity` | string | Optional | Optional camera entity ID to capture an image from. |
 | `start_time` | string | Optional | Event start time as ISO 8601 (defaults to now). |
 | `end_time` | string | Optional | Event end time as ISO 8601 (defaults to start_time). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/llmvision
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/llmvision.js --help
+
+## Get events from the LLM Vision timeline. Returns AI-generated observation events with timestamps, summaries, and descriptions.
+node dist/bin/llmvision.js llmvision-timeline-get <days> <limit> <start_time> <end_time>
+
+## Download a keyframe image from HA LLM Vision media storage. Pass a key_frame path from a timeline event. Returns the local file path.
+node dist/bin/llmvision.js llmvision-get-image <key_frame>
+
+## Trigger an AI image analysis on a Home Assistant camera entity using LLM Vision.
+node dist/bin/llmvision.js llmvision-analyze-image <camera_entity> <message> <provider> <model> <store_in_timeline> <expose_images> <generate_title> <response_format> <max_tokens>
+
+## Create a new event in the LLM Vision timeline.
+node dist/bin/llmvision.js llmvision-create-event <title> <description> <label> <image_path> <camera_entity> <start_time> <end_time>
+
+## JSON output
+node dist/bin/llmvision.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `LLMVISION_SERVER` | Home Assistant server URL |
+| `LLMVISION_TOKEN` | Home Assistant long-lived access token |

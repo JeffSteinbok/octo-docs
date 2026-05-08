@@ -62,3 +62,37 @@ Get the latest quotes for multiple stock, ETF, or mutual fund symbols.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `symbols` | array | Required | Array of stock ticker symbols (e.g., ['MSFT', 'QQQ', 'FXAIX']). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/stock-quotes
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/stock-quotes.js --help
+
+## Get the latest quote for a stock, ETF, or mutual fund symbol.
+node dist/bin/stock-quotes.js stock-quote <symbol>
+
+## Get the latest quotes for multiple stock, ETF, or mutual fund symbols.
+node dist/bin/stock-quotes.js stock-quotes <symbols...>
+
+## JSON output
+node dist/bin/stock-quotes.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `STOCK_QUOTES_FINNHUB_API_KEY` | Optional Finnhub API key |

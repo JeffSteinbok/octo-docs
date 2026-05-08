@@ -71,3 +71,38 @@ Fetch upcoming events from Outlook personal, family, or combined calendars.
 |------|------|----------|-------------|
 | `calendar` | string | Optional | Which calendar to fetch: personal, family, or all (default: all). |
 | `days` | integer | Optional | Number of days ahead to fetch events for (default: 7). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/outlook-calendar
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/outlook-calendar.js --help
+
+## Fetch upcoming events from Outlook personal, family, or combined calendars.
+node dist/bin/outlook-calendar.js outlook-calendar-fetch <calendar> <days>
+
+## JSON output
+node dist/bin/outlook-calendar.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `OUTLOOK_CALENDAR_CLIENT_ID` | Microsoft Graph OAuth2 client ID |
+| `OUTLOOK_CALENDAR_CLIENT_SECRET` | Microsoft Graph OAuth2 client secret |
+| `OUTLOOK_CALENDAR_REFRESH_TOKEN` | Microsoft Graph OAuth2 refresh token |
+| `OUTLOOK_CALENDAR_PERSONAL_CALENDAR_NAMES` | Optional additional Outlook calendar names to try before the built-in personal defaults |
+| `OUTLOOK_CALENDAR_FAMILY_CALENDAR_NAMES` | Optional additional Outlook calendar names to try before the built-in family defaults |

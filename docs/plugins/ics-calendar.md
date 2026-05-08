@@ -74,3 +74,34 @@ Fetch upcoming events from a published ICS calendar feed.
 | `url` | string | Optional | Direct ICS URL override for one-off fetches. |
 | `label` | string | Optional | Optional display label when using a direct URL override. |
 | `days` | integer | Optional | Number of days ahead to fetch (default 7). Default: `7`. |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/ics-calendar
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/ics-calendar.js --help
+
+## Fetch upcoming events from a published ICS calendar feed.
+node dist/bin/ics-calendar.js ics-calendar-fetch <calendar_id> <url> <label> <days>
+
+## JSON output
+node dist/bin/ics-calendar.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `ICS_CALENDAR_CALENDARS` | Configured ICS feeds available by id |
