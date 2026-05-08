@@ -9,6 +9,8 @@ nav_exclude: true
 
 OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools.
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite)
+
 ## Configuration Schema
 
 <table class="config-schema-table">

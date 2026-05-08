@@ -35,6 +35,7 @@ Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/Jeff
 | 📄 | [HTML to PDF](plugins/html-to-pdf) | Convert HTML files to PDF using Chromium headless | [Read docs](plugins/html-to-pdf) |
 | 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | [Read docs](plugins/ics-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
 | 📝 | [Markdown to HTML](plugins/md-to-html) | Convert styled Markdown reports to HTML using a CSS template | [Read docs](plugins/md-to-html) |
+| 🛰️ | [Octo Satellite](plugins/octo-satellite) | OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools. | [Read docs](plugins/octo-satellite) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) |
 | 📅 | [Outlook Calendar](plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | [Read docs](plugins/outlook-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar) |
 | 📧 | [Outlook Mail](plugins/outlook-mail) | Search and read messages from Outlook inboxes | [Read docs](plugins/outlook-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) |
 | 📅 | [Outlook Work Calendar](plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [Read docs](plugins/outlook-work-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
@@ -60,5 +61,4 @@ Source is private (often under active development), but docs are still available
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [Read docs](plugins/github) |
-| 🛰️ | [Octo Satellite](plugins/octo-satellite) | OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools. | [Read docs](plugins/octo-satellite) |
 | 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) |
