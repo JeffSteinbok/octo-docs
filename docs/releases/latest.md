@@ -6,6 +6,30 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-05-07
+
+
+### Added
+
+- **CLI generation system** — all plugins can now run as standalone CLIs without writing per-plugin CLI code. The `@openclaw/cli-shared` library introspects `createEntry()` metadata and generates CLI entry points at build time.
+- Added `libs/ts/cli_shared` to both openclaw-hub and octo with runtime + build-time generator.
+- Extracted `handlers.ts` (pure business logic) from all 19 plugins across both repos.
+- Added CLI Usage sections to all plugin READMEs and PLUGIN_README_SHAPE.md.
+- Created [Plugin Architecture](https://octo.steinbok.net/plugin-architecture) docs site page.
+- Auto-generated CLI Usage sections in docs pipeline for all plugin pages.
+- Created READMEs for fastmail and usps-mail plugins.
+
+### Changed
+
+- All plugin `package.json` files now include `bin` field and `generate-cli` build step.
+- All plugin `tsup.config.ts` files now include `src/handlers.ts` in entry array.
+- Plugin `src/index.ts` files refactored to thin shims delegating to handlers.
+- openclaw-hub README now notes all plugins support CLI usage.
+
+### Fixed
+
+- WeightWatchers plugin handler extraction and CLI generation.
+
 ## 2026-05-06
 
 
