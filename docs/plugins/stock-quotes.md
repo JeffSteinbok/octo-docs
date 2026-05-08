@@ -62,3 +62,50 @@ Get the latest quotes for multiple stock, ETF, or mutual fund symbols.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `symbols` | array | Required | Array of stock ticker symbols (e.g., ['MSFT', 'QQQ', 'FXAIX']). |
+
+## CLI Usage
+
+The stock-quotes plugin can also run as a standalone command-line tool. No gateway required.
+
+### Setup
+
+```bash
+cd plugins/stock-quotes
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+# Get a single quote
+node dist/bin/stock-quotes.js stock-quote AAPL
+# Output: AAPL  $198.11  ▲ +1.23 (+0.63%)  [REGULAR]
+
+# Get multiple quotes
+node dist/bin/stock-quotes.js stock-quotes MSFT GOOGL QQQ
+# Output:
+# MSFT   $420.77  ▲ +6.9 (+1.67%)   [REGULAR]
+# GOOGL  $397.99  ▲ +0.17 (+0.04%)  [REGULAR]
+# QQQ    $694.94  ▼ -0.81 (-0.12%)  [REGULAR]
+
+# JSON output
+node dist/bin/stock-quotes.js stock-quote AAPL --json
+
+# Show help
+node dist/bin/stock-quotes.js --help
+```
+
+### Environment variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `STOCK_QUOTES_FINNHUB_API_KEY` | No | Optional Finnhub API key for premium data. Without it, falls back to Yahoo Finance. |
+
+### Global install
+
+After building, you can link the CLI globally:
+
+```bash
+npm link
+stock-quotes stock-quote TSLA
+```
