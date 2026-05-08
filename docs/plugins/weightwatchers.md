@@ -127,3 +127,23 @@ Delete a tracked food entry from the WW diary by its tracking ID. Use ww_daily t
 |------|------|----------|-------------|
 | `tracking_id` | string | Required | Tracking ID of the diary entry to delete (from ww_daily results). |
 | `date` | string | Optional | Date of the entry in YYYY-MM-DD format (default: today). |
+
+### `ww_search_meals`
+
+List saved WW meals, recipes, and custom foods. Returns meal_id, name, points, and type needed for ww_log_meal.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `query` | string | Optional | Filter by name (case-insensitive substring match). |
+| `type` | string | Optional | Type filter: meal, recipe, food, or all (default: all). |
+
+### `ww_log_meal`
+
+Log a saved WW meal, recipe, or custom food to the diary by its meal_id from ww_search_meals.
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `meal_id` | string | Required | Meal/recipe/food ID from ww_search_meals results. |
+| `type` | string | Required | Type: meal, recipe, or food. |
+| `meal_type` | string | Optional | Time of day: morning, midday, evening, anytime (default: morning). |
+| `date` | string | Optional | Date in YYYY-MM-DD format (default: today). |
