@@ -9,6 +9,8 @@ nav_exclude: true
 
 Search foods, log meals, view diary and points budget via the unofficial WW API
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers)
+
 ## Configuration Schema
 
 <table class="config-schema-table">

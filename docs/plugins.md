@@ -43,6 +43,7 @@ Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/Jeff
 | 🎵 | [Spotify](plugins/spotify) | Control Spotify playback, search music, and manage playlists | [Read docs](plugins/spotify) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) |
 | 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [Read docs](plugins/stock-quotes) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes) |
 | 📬 | [USPS Mail Analyzer](plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [Read docs](plugins/usps-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
+| 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers) |
 | ❤️ | [Withings](plugins/withings) | Fetch health data from Withings devices (weight, body composition, heart rate, sleep, activity) | [Read docs](plugins/withings) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) |
 
 ## 🔌 External
@@ -61,4 +62,3 @@ Source is private (often under active development), but docs are still available
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
 | 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [Read docs](plugins/github) |
-| 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) |
