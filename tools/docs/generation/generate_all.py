@@ -538,9 +538,8 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
         param_str = ""
         if params:
             parts = []
-            for p in params:
-                p_name = p.get("name", "")
-                p_type = p.get("type", "")
+            for p_name, p_meta in params.items():
+                p_type = p_meta.get("type", "") if isinstance(p_meta, dict) else ""
                 if p_type == "array":
                     parts.append(f"<{p_name}...>")
                 else:
