@@ -378,7 +378,7 @@ def _schema_field_type(schema: dict) -> str:
     if schema_type == "array":
         items = schema.get("items")
         if isinstance(items, dict):
-            return f"array<{_schema_field_type(items)}>"
+            return f"{_schema_field_type(items)}[]"
         return "array"
     if isinstance(schema_type, str) and schema_type:
         return schema_type
