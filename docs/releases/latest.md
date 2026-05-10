@@ -6,6 +6,14 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-05-09
+
+
+### Added
+
+- **Amazon status provider** — queries the octo-satellite `/amazon/orders/:id` endpoint to get Amazon package delivery status. Maps order status to standard `CarrierStatusResult` format.
+- **Amazon mail action update** — `process_amazon_shipment` handoff prompt now includes `order_id` when calling `package_add`, enabling the Amazon provider to look up order details.
+
 ## 2026-05-08
 
 

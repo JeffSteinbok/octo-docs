@@ -19,7 +19,7 @@ _No plugin config schema documented._
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `status_providers` | `string[]` | Paths to external ESM carrier status provider modules |
+| `status_providers` | `string[]` | Paths to external ESM carrier status provider modules (optional — built-ins work without this) |
 
 ## CLI Usage
 
