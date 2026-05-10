@@ -11,8 +11,11 @@ nav_order: 7
 
 ### Added
 
-- **Amazon status provider** — queries the octo-satellite `/amazon/orders/:id` endpoint to get Amazon package delivery status. Maps order status to standard `CarrierStatusResult` format.
+- **Built-in carrier status providers** — USPS, FedEx, and UPS status lookups now ship with `package_tracking_core` and auto-register when the plugin loads. No configuration needed. Uses [Camoufox](https://github.com/nichochar/camoufox) (stealth Firefox) to scrape carrier tracking pages.
+- **Amazon status provider** — queries the octo-satellite `/amazon/orders/:id` endpoint to get Amazon package delivery status. Configured as an external provider via `status_providers`.
+- **Provider registry with fallback chain** — providers are tried in reverse registration order; external/API providers override built-ins. If a provider returns `null`, the next one is tried.
 - **Amazon mail action update** — `process_amazon_shipment` handoff prompt now includes `order_id` when calling `package_add`, enabling the Amazon provider to look up order details.
+- **Satellite tracking endpoints** — FedEx and Amazon tracking endpoints added to octo-satellite plugin.
 
 ## 2026-05-08
 
