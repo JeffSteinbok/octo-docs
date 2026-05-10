@@ -13,7 +13,14 @@ Track packages from UPS, FedEx, USPS, and Amazon
 
 ## Configuration Schema
 
-_No plugin config schema documented._
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>status_providers</code></td><td>array&lt;string&gt;</td><td>Optional</td><td>Paths to external ESM carrier status provider modules.</td></tr>
+  </tbody>
+</table>
 
 ## Example config
 
@@ -42,3 +49,9 @@ node dist/bin/package-tracking.js --help
 ## JSON output
 node dist/bin/package-tracking.js <command> [args...] --json
 ```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `PACKAGE_TRACKING_STATUS_PROVIDERS` | Paths to external ESM carrier status provider modules |
