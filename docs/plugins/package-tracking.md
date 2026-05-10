@@ -18,7 +18,7 @@ Track packages from UPS, FedEx, USPS, and Amazon
     <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>status_providers</code></td><td>array&lt;string&gt;</td><td>Optional</td><td>Paths to external ESM carrier status provider modules.</td></tr>
+    <tr><td><code>status_providers</code></td><td>string[]</td><td>Optional</td><td>Paths to external ESM carrier status provider modules.</td></tr>
   </tbody>
 </table>
 

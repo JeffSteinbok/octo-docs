@@ -18,7 +18,7 @@ Fetch upcoming events from a published ICS calendar feed
     <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>calendars</code></td><td>array&lt;object&gt;</td><td>Optional</td><td>Configured ICS feeds available by id.</td></tr>
+    <tr><td><code>calendars</code></td><td>object[]</td><td>Optional</td><td>Configured ICS feeds available by id.</td></tr>
     <tr><td><code>calendars[].id</code></td><td>string</td><td>Required</td><td>Stable calendar identifier used by tool calls.</td></tr>
     <tr><td><code>calendars[].label</code></td><td>string</td><td>Optional</td><td>Friendly display name used in output.</td></tr>
     <tr><td><code>calendars[].url</code></td><td>string</td><td>Required</td><td>Published ICS feed URL.</td></tr>

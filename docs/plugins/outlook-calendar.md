@@ -21,8 +21,8 @@ Fetch upcoming events from Outlook personal and family calendars
     <tr><td><code>clientId</code></td><td>string</td><td>Optional</td><td>Microsoft Graph OAuth2 client ID.</td></tr>
     <tr><td><code>clientSecret</code></td><td>string</td><td>Optional</td><td>Microsoft Graph OAuth2 client secret.</td></tr>
     <tr><td><code>refreshToken</code></td><td>string</td><td>Optional</td><td>Microsoft Graph OAuth2 refresh token.</td></tr>
-    <tr><td><code>personalCalendarNames</code></td><td>array&lt;string&gt;</td><td>Optional</td><td>Optional additional Outlook calendar names to try before the built-in personal defaults.</td></tr>
-    <tr><td><code>familyCalendarNames</code></td><td>array&lt;string&gt;</td><td>Optional</td><td>Optional additional Outlook calendar names to try before the built-in family defaults.</td></tr>
+    <tr><td><code>personalCalendarNames</code></td><td>string[]</td><td>Optional</td><td>Optional additional Outlook calendar names to try before the built-in personal defaults.</td></tr>
+    <tr><td><code>familyCalendarNames</code></td><td>string[]</td><td>Optional</td><td>Optional additional Outlook calendar names to try before the built-in family defaults.</td></tr>
   </tbody>
 </table>
 
