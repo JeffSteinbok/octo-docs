@@ -109,7 +109,11 @@ Security is the most important aspect of this experiment — even above just hav
 ## 💰 Cost
 
 - **Self-hosted** — Runs on an old Lenovo X1 Yoga Gen 3 with 16 GB of RAM running Ubuntu Desktop.
-- **Token-conscious** — As much work as possible is pushed to Python plugins to reduce token usage. Primary model is GitHub Copilot Sonnet (covered by the Copilot subscription), with Anthropic and Gemini as fallbacks.
+- **Token-conscious** — As much work as possible is pushed to Python plugins to reduce token usage. Primary model is GitHub Copilot Sonnet (covered by the Copilot subscription), with Anthropic and Gemini as fallbacks. Ongoing effort goes into keeping per-run costs low:
+    - Recurring tasks that don't need reasoning are rewritten as plain shell scripts executed via `exec`, eliminating model tokens entirely (e.g., calendar fetching dropped from ~75 s with 5 tool calls to ~6 s with zero tokens).
+    - Cron jobs use `lightContext: true` to strip session history from the context window, cutting input tokens on every scheduled run.
+    - Tool-allow lists (`toolsAllow`) are scoped narrowly on cron entries so agents can't accidentally reach for expensive tools.
+    - The general pattern is: push work into scripts, let agents just interpret results.
 
   | Role | Model | Notes |
   |------|-------|-------|

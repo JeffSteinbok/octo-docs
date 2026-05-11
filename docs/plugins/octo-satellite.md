@@ -9,6 +9,8 @@ nav_exclude: true
 
 OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools.
 
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite)
+
 ## Configuration Schema
 
 <table class="config-schema-table">
@@ -41,74 +43,31 @@ Set Octo Satellite under `plugins.entries["octo-satellite"].config`:
 }
 ```
 
-## Tools
+## CLI Usage
 
-### `amazon_list_orders`
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
 
-List or search Amazon orders with pagination (10 per page). Optionally filter by search query. Returns order id, date, total, status, item titles, total count, and pagination info.
+### Setup
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `q` | string | Optional | Optional search query to filter orders. |
-| `page` | integer | Optional | Page number, 1-based (default: 1, 10 orders per page). |
+```bash
+cd plugins/octo-satellite
+npm install && npm run build
+```
 
-### `amazon_get_order`
+### Commands
 
-Get full details and tracking info for a specific Amazon order. Returns items, quantities, prices, shipping address, and carrier tracking.
+```bash
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `order_id` | string | Required | Amazon order ID (e.g. 113-1234567-8901234). |
+## Show help
+node dist/bin/octo-satellite.js --help
 
-### `amazon_search`
+## JSON output
+node dist/bin/octo-satellite.js <command> [args...] --json
+```
 
-Search Amazon products by query string. Returns product titles, prices, ratings, ASINs, and pagination info.
+### Environment Variables (CLI mode)
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `q` | string | Required | Search query. |
-| `page` | integer | Optional | Page number, 1-based (default: 1). |
-
-### `amazon_get_product`
-
-Get product details by ASIN. Returns title, price, rating, features, availability, and more.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `asin` | string | Required | Amazon product identifier (e.g. B0FQFB8FMG). |
-
-### `amazon_get_cart`
-
-View current Amazon cart contents.
-
-### `amazon_add_to_cart`
-
-Add a product to the Amazon cart by ASIN.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `asin` | string | Required | Amazon product identifier (e.g. B0FQFB8FMG). |
-
-### `amazon_remove_from_cart`
-
-Remove an item from the Amazon cart by item_id (the ephemeral cart item ID from amazon_get_cart).
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `item_id` | string | Required | Cart item ID (from amazon_get_cart response). |
-
-### `monarch_get_accounts`
-
-Get financial accounts and balances from Monarch Money, grouped by type (Investments, Cash, Credit Cards, etc). Each account shows name, balance, institution, and last updated timestamp.
-
-### `monarch_get_net_worth`
-
-Get net worth summary from Monarch Money. Returns total assets, total liabilities, and net worth.
-
-### `monarch_get_spending`
-
-Get spending trends from Monarch Money — income, expenses, and savings broken down by month. Defaults to the last 3 months.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `months` | integer | Optional | Number of months to look back (default: 3). |
+| Variable | Description |
+|----------|-------------|
+| `OCTO_SATELLITE_TOKEN` | Satellite API <redacted-bearer-token> |
+| `OCTO_SATELLITE_BASE_URL` | Satellite base URL (default: http://localhost:9000) |

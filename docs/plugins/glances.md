@@ -80,3 +80,46 @@ Fetch a raw JSON payload from a specific Glances /api/3 endpoint.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `path` | string | Required | Glances API path beginning with /api/3/ (for example /api/3/uptime). |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/glances
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/glances.js --help
+
+## Get a compact Glances summary with CPU, memory, uptime, and one filesystem.
+node dist/bin/glances.js glances-summary-get <mount_point>
+
+## Get current CPU metrics from Glances.
+node dist/bin/glances.js glances-cpu-get <include_percpu>
+
+## Get current memory usage metrics from Glances.
+node dist/bin/glances.js glances-memory-get
+
+## Get filesystem usage metrics for one mount point from Glances.
+node dist/bin/glances.js glances-disk-get <mount_point>
+
+## Fetch a raw JSON payload from a specific Glances /api/3 endpoint.
+node dist/bin/glances.js glances-endpoint-get <path>
+
+## JSON output
+node dist/bin/glances.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `GLANCES_URL` | Base URL for the Glances web server, e.g. http://127.0.0.1:61208 |

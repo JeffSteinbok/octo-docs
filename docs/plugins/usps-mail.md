@@ -83,3 +83,43 @@ Show the current USPS mail workflow state.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `workspace_agent` | string | Required | Agent workspace that owns USPS rules, config, analysis history, and workflow state. |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/usps-mail
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/usps-mail.js --help
+
+## Process a USPS Informed Delivery digest folder and classify each mailpiece.
+node dist/bin/usps-mail.js usps-process-digest <folder> <workspace_agent> <analysis...> <date> <dry_run> <vision_backend> <message_id> <memory_agent> <vision_agent>
+
+## Search saved USPS mail history by GUID, date, or text.
+node dist/bin/usps-mail.js usps-lookup <workspace_agent> <guid> <date> <search>
+
+## Add, remove, or test USPS mail classification rules.
+node dist/bin/usps-mail.js usps-update-rule <action> <workspace_agent> <conditions> <importance> <comment> <index> <comment_match> <mailpiece>
+
+## List USPS classification rules or test a sample mailpiece.
+node dist/bin/usps-mail.js usps-rules <workspace_agent> <test_mailpiece>
+
+## Show summary statistics for processed USPS mail.
+node dist/bin/usps-mail.js usps-stats <workspace_agent>
+
+## Show the current USPS mail workflow state.
+node dist/bin/usps-mail.js usps-status <workspace_agent>
+
+## JSON output
+node dist/bin/usps-mail.js <command> [args...] --json
+```

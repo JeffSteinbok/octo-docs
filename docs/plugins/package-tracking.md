@@ -13,60 +13,52 @@ Track packages from UPS, FedEx, USPS, and Amazon
 
 ## Configuration Schema
 
-_No plugin config schema documented._
+<table class="config-schema-table">
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>status_providers</code></td><td>string[]</td><td>Optional</td><td>Paths to external ESM carrier status provider modules.</td></tr>
+  </tbody>
+</table>
 
 ## Example config
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `status_providers` | `string[]` | Paths to external ESM carrier status provider modules |
+```json
+{
+  "status_providers": [
+    "/path/to/custom_provider/dist/index.js"
+  ]
+}
+```
 
-## Tools
+Built-in providers (USPS, FedEx, UPS) require no configuration — they auto-register on startup.
+Only add `status_providers` if you need external providers like Amazon.
 
-### `package_track`
+## CLI Usage
 
-Look up a package by tracking number and return the carrier and tracking URL.
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `tracking_number` | string | Required | Package tracking number (e.g., 1Z999AA10123456784, 940000000000000000000, TBA012345678901US). |
-| `carrier` | string | Optional | Optional carrier override: UPS, FedEx, USPS, or Amazon. |
+### Setup
 
-### `package_add`
+```bash
+cd plugins/package-tracking
+npm install && npm run build
+```
 
-Save a package to the tracking list, with an optional label.
+### Commands
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `tracking_number` | string | Required | Package tracking number. |
-| `carrier` | string | Optional | Optional carrier override: UPS, FedEx, USPS, or Amazon. |
-| `label` | string | Optional | Optional label/description for the package. |
+```bash
 
-### `package_remove`
+## Show help
+node dist/bin/package-tracking.js --help
 
-Remove a saved package from the tracking list.
+## JSON output
+node dist/bin/package-tracking.js <command> [args...] --json
+```
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `tracking_number` | string | Required | Package tracking number to remove. |
+### Environment Variables (CLI mode)
 
-### `package_list`
-
-List saved packages with carriers, tracking URLs, labels, and added dates.
-
-### `package_scan`
-
-Scan text for package tracking numbers and identify their carriers.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `text` | string | Required | Text to scan for tracking numbers (e.g., email body). |
-
-### `get_package_status`
-
-Get live carrier status for a tracking number. Requires a carrier status provider to be configured via status_providers.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `tracking_number` | string | Required | Package tracking number to check status for. |
-| `carrier` | string | Optional | Optional carrier override: UPS, FedEx, USPS, or Amazon. |
+| Variable | Description |
+|----------|-------------|
+| `PACKAGE_TRACKING_STATUS_PROVIDERS` | Paths to external ESM carrier status provider modules |

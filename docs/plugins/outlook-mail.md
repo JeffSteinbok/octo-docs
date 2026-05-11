@@ -95,3 +95,45 @@ Download attachments from an Outlook message to a local directory.
 | `message_id` | string | Required | The Microsoft Graph message ID. |
 | `output_dir` | string | Required | Local directory path to save attachments to (created if needed). |
 | `content_types` | array | Optional | Content type filters (e.g. ['image/*']). Defaults to ['image/*']. |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/outlook-mail
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/outlook-mail.js --help
+
+## List recent messages from the Outlook inbox, or any other mail folder.
+node dist/bin/outlook-mail.js outlook-inbox <limit> <unread> <folder>
+
+## Search Outlook messages by query text, sender, subject, or date range.
+node dist/bin/outlook-mail.js outlook-search <query> <from> <subject> <since> <before> <limit>
+
+## Read a specific Outlook message by its ID, including full body content.
+node dist/bin/outlook-mail.js outlook-read <message_id>
+
+## Download attachments from an Outlook message to a local directory.
+node dist/bin/outlook-mail.js outlook-save-attachments <message_id> <output_dir> <content_types...>
+
+## JSON output
+node dist/bin/outlook-mail.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `OUTLOOK_MAIL_CLIENT_ID` | Microsoft Graph OAuth2 client ID |
+| `OUTLOOK_MAIL_CLIENT_SECRET` | Microsoft Graph OAuth2 client secret |
+| `OUTLOOK_MAIL_REFRESH_TOKEN` | Microsoft Graph OAuth2 refresh token |

@@ -59,3 +59,35 @@ Fetch upcoming events from the published Outlook work calendar. Requires OUTLOOK
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `days` | integer | Optional | Number of days ahead to fetch (default 7). Default: `7`. |
+
+## CLI Usage
+
+This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
+
+### Setup
+
+```bash
+cd plugins/outlook-work-calendar
+npm install && npm run build
+```
+
+### Commands
+
+```bash
+
+## Show help
+node dist/bin/outlook-work-calendar.js --help
+
+## Fetch upcoming events from the published Outlook work calendar. Requires OUTLOOK_WORK_CALENDAR_URL and OUTLOOK_WORK_FOLDER_ID environment variables.
+node dist/bin/outlook-work-calendar.js outlook-work-calendar-fetch <days>
+
+## JSON output
+node dist/bin/outlook-work-calendar.js <command> [args...] --json
+```
+
+### Environment Variables (CLI mode)
+
+| Variable | Description |
+|----------|-------------|
+| `OUTLOOK_WORK_CALENDAR_URL` | Published Outlook work calendar base URL |
+| `OUTLOOK_WORK_CALENDAR_FOLDER_ID` | EWS folder identifier for the published calendar |

@@ -6,6 +6,58 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-05-09
+
+
+### Added
+
+- **Built-in carrier status providers** — USPS, FedEx, and UPS status lookups now ship with `package_tracking_core` and auto-register when the plugin loads. No configuration needed. Uses [Camoufox](https://github.com/nichochar/camoufox) (stealth Firefox) to scrape carrier tracking pages.
+- **Amazon status provider** — queries the octo-satellite `/amazon/orders/:id` endpoint to get Amazon package delivery status. Configured as an external provider via `status_providers`.
+- **Provider registry with fallback chain** — providers are tried in reverse registration order; external/API providers override built-ins. If a provider returns `null`, the next one is tried.
+- **Amazon mail action update** — `process_amazon_shipment` handoff prompt now includes `order_id` when calling `package_add`, enabling the Amazon provider to look up order details.
+- **Satellite tracking endpoints** — FedEx and Amazon tracking endpoints added to octo-satellite plugin.
+
+## 2026-05-08
+
+
+### Changed
+
+- **Calendar fetch cron** rewritten to use CLI binaries directly via shell script (`scripts/calendar_fetch.sh`) instead of an agent tool-call loop — ~6s vs ~75s, no LLM tokens for fetching.
+- **Upgrade cron notifications** rerouted from `#root` main channel to the `#Upgrade` thread.
+- **Finance agent** given `web_fetch` and `web_search` tool access.
+
+### Fixed
+
+- `outlook-work-calendar` plugin: adapter was reading `pluginConfig.calendarUrl` but schema declared field as `url` — fixed to match.
+
+## 2026-05-07
+
+
+### Added
+
+- **CLI generation system** — all plugins can now run as standalone CLIs without writing per-plugin CLI code. The `@openclaw/cli-shared` library introspects `createEntry()` metadata and generates CLI entry points at build time.
+- Added `libs/ts/cli_shared` to both openclaw-hub and octo with runtime + build-time generator.
+- Extracted `handlers.ts` (pure business logic) from all 19 plugins across both repos.
+- Added CLI Usage sections to all plugin READMEs and PLUGIN_README_SHAPE.md.
+- Created [Plugin Architecture](https://octo.steinbok.net/plugin-architecture) docs site page.
+- Auto-generated CLI Usage sections in docs pipeline for all plugin pages.
+- Created READMEs for fastmail and usps-mail plugins.
+
+### Changed
+
+- All plugin `package.json` files now include `bin` field and `generate-cli` build step.
+- All plugin `tsup.config.ts` files now include `src/handlers.ts` in entry array.
+- Plugin `src/index.ts` files refactored to thin shims delegating to handlers.
+- openclaw-hub README now notes all plugins support CLI usage.
+
+### Fixed
+
+- WeightWatchers plugin handler extraction and CLI generation.
+
+### Migrated
+
+- Moved `octo-satellite` and `weightwatchers` plugins to [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub) (open-sourced).
+
 ## 2026-05-06
 
 

@@ -378,7 +378,7 @@ def _schema_field_type(schema: dict) -> str:
     if schema_type == "array":
         items = schema.get("items")
         if isinstance(items, dict):
-            return f"array<{_schema_field_type(items)}>"
+            return f"{_schema_field_type(items)}[]"
         return "array"
     if isinstance(schema_type, str) and schema_type:
         return schema_type
@@ -511,6 +511,58 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
             lines.extend(["", description])
         if parameters:
             lines.extend(["", *_render_parameter_table(parameters)])
+
+    # CLI Usage section — all plugins support CLI via @openclaw/cli-shared
+    cli_bin_name = plugin_id  # e.g. "stock-quotes"
+    env_prefix = plugin_id.upper().replace("-", "_")  # e.g. "STOCK_QUOTES"
+
+    lines.extend(["", "## CLI Usage", ""])
+    lines.append(f"This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.")
+    lines.extend(["", "### Setup", ""])
+    lines.append("```bash")
+    lines.append(f"cd plugins/{plugin_id}")
+    lines.append("npm install && npm run build")
+    lines.append("```")
+    lines.extend(["", "### Commands", ""])
+    lines.append("```bash")
+    lines.append(f"# Show help")
+    lines.append(f"node dist/bin/{cli_bin_name}.js --help")
+    lines.append("")
+
+    for tool in tools:
+        tool_name = tool.get("name", "")
+        if not isinstance(tool_name, str) or not tool_name.strip():
+            continue
+        cli_cmd = tool_name.strip().replace("_", "-")
+        params = _extract_parameters(tool)
+        param_str = ""
+        if params:
+            parts = []
+            for p_name, p_meta in params.items():
+                p_type = p_meta.get("type", "") if isinstance(p_meta, dict) else ""
+                if p_type == "array":
+                    parts.append(f"<{p_name}...>")
+                else:
+                    parts.append(f"<{p_name}>")
+            param_str = " " + " ".join(parts)
+        lines.append(f"# {tool.get('description', cli_cmd)}")
+        lines.append(f"node dist/bin/{cli_bin_name}.js {cli_cmd}{param_str}")
+        lines.append("")
+
+    lines.append("# JSON output")
+    lines.append(f"node dist/bin/{cli_bin_name}.js <command> [args...] --json")
+    lines.append("```")
+
+    # Environment variables for CLI mode
+    if config_schema and config_schema.get("properties"):
+        lines.extend(["", "### Environment Variables (CLI mode)", ""])
+        lines.append("| Variable | Description |")
+        lines.append("|----------|-------------|")
+        for field_name, field_def in config_schema.get("properties", {}).items():
+            snake = re.sub(r'(?<=[a-z0-9])([A-Z])', r'_\1', field_name).upper()
+            env_var = f"{env_prefix}_{snake}"
+            desc = field_def.get("description", "") if isinstance(field_def, dict) else ""
+            lines.append(f"| `{env_var}` | {desc} |")
 
     return "\n".join(lines).strip() + "\n", {
         "id": plugin_id,
@@ -1277,6 +1329,8 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
         "This page catalogs the plugins available in Octo today and links to the right documentation for each one.",
         "",
         f"Octo currently exposes **{len(sorted_entries)} plugin{'s' if len(sorted_entries) != 1 else ''}** through its runtime.",
+        "",
+        "> **See also:** [Plugin Architecture](plugin-architecture) — how plugins are structured, loaded, and can run as standalone CLIs.",
     ]
 
     SECTIONS = [
