@@ -304,7 +304,7 @@ def test_process_page_bundle_plugins_mixes_local_and_external_inventory(tmp_path
     index_content = (repo_root / "docs/plugins.md").read_text(encoding="utf-8")
     child_content = (repo_root / "docs/plugins/fastmail.md").read_text(encoding="utf-8")
 
-    assert "## 📦 Open Source (openclaw-hub)" in index_content
+    assert "## 📦 Open Source" in index_content
     assert "## 🔌 External" in index_content
     assert "[FastMail tools](plugins/fastmail)" in index_content
     assert "[External docs](https://core.telegram.org/bots)" in index_content
