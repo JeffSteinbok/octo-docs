@@ -9,7 +9,7 @@ nav_exclude: true
 
 Send email and manage calendar events in Fastmail
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail)
 
 ## Configuration Schema
 

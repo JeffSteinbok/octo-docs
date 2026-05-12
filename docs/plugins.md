@@ -22,9 +22,9 @@ Core capabilities provided by OpenClaw itself.
 | 🤖 | [GitHub Copilot](https://docs.github.com/en/copilot) | Provider integration that lets the instance use GitHub Copilot-hosted models. | [External docs](https://docs.github.com/en/copilot) |
 | 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | [External docs](https://ai.google.dev/gemini-api/docs) |
 
-## 📦 Open Source (openclaw-hub)
+## 📦 Open Source
 
-Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub).
+Open-source plugins maintained by Jeff.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
@@ -48,7 +48,7 @@ Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/Jeff
 
 ## 🔌 External
 
-Third-party plugins from outside the openclaw-hub.
+Third-party plugins from outside the project.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|

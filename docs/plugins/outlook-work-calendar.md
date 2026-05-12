@@ -9,7 +9,7 @@ nav_exclude: true
 
 Fetch upcoming events from a published Outlook work calendar
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar)
 
 ## Configuration Schema
 

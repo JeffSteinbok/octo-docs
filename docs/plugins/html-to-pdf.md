@@ -9,7 +9,7 @@ nav_exclude: true
 
 Convert HTML files to PDF using Chromium headless
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf)
 
 ## Configuration Schema
 

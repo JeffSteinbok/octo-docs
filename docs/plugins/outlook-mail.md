@@ -9,7 +9,7 @@ nav_exclude: true
 
 Search and read messages from Outlook inboxes
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail)
 
 ## Configuration Schema
 

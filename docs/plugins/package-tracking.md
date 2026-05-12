@@ -9,7 +9,7 @@ nav_exclude: true
 
 Track packages from UPS, FedEx, USPS, and Amazon
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking)
 
 ## Configuration Schema
 

@@ -9,7 +9,7 @@ nav_exclude: true
 
 Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events.
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision)
 
 ## Configuration Schema
 

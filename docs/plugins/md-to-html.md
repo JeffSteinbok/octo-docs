@@ -9,7 +9,7 @@ nav_exclude: true
 
 Convert styled Markdown reports to HTML using a CSS template
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html)
 
 ## Configuration Schema
 

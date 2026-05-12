@@ -9,7 +9,7 @@ nav_exclude: true
 
 Fetch upcoming events from Outlook personal and family calendars
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar)
 
 ## Configuration Schema
 

@@ -9,7 +9,7 @@ nav_exclude: true
 
 Fetch upcoming events from a published ICS calendar feed
 
-> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar)
+> **Source:** [JeffSteinbok/openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar)
 
 ## Configuration Schema
 
