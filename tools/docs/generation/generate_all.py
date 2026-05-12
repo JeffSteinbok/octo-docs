@@ -477,10 +477,17 @@ def _render_plugin_page_content(plugin_json: dict, chunk_path: str, inventory_me
     if summary:
         lines.extend(["", summary])
 
-    # Add source attribution for hub-sourced plugins
-    if isinstance(inventory_meta, dict) and inventory_meta.get("origin") == "openclaw-hub":
-        hub_url = f"https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/{plugin_id}"
-        lines.extend(["", f'> **Source:** [openclaw-hub]({hub_url})'])
+    # Add source attribution for open-source plugins
+    if isinstance(inventory_meta, dict) and inventory_meta.get("origin") in ("openclaw-hub", "open-source"):
+        source_url = inventory_meta.get("source_url")
+        if source_url:
+            # Use source_url from inventory metadata (supports standalone repos)
+            source_label = inventory_meta.get("source_label") or source_url.split("github.com/")[-1].split("/tree/")[0] if "github.com/" in source_url else source_url
+            lines.extend(["", f'> **Source:** [{source_label}]({source_url})'])
+        else:
+            # Fall back to openclaw-hub path convention
+            hub_url = f"https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/{plugin_id}"
+            lines.extend(["", f'> **Source:** [openclaw-hub]({hub_url})'])
 
     if config_schema:
         lines.extend(["", "## Configuration Schema", ""])
@@ -1335,8 +1342,8 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
 
     SECTIONS = [
         ("builtin",       "🌐 Built-in",                   "Core capabilities provided by OpenClaw itself."),
-        ("openclaw-hub",  "📦 Open Source (openclaw-hub)",  "Open-source plugins maintained by Jeff in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub)."),
-        ("external",      "🔌 External",                   "Third-party plugins from outside the openclaw-hub."),
+        ("open-source",   "📦 Open Source",                 "Open-source plugins maintained by Jeff."),
+        ("external",      "🔌 External",                   "Third-party plugins from outside the project."),
         ("octo",          "🔒 Private (octo)",             "Source is private (often under active development), but docs are still available below."),
     ]
 
@@ -1357,7 +1364,7 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
         source_url = entry.get("source_url", "")
         if docs_mode == "local":
             docs_text = f"[Read docs]({docs_url})" if docs_url else "Read docs"
-            if origin == "openclaw-hub" and source_url:
+            if origin in ("openclaw-hub", "open-source") and source_url:
                 docs_text += f" · [Source ↗]({source_url})"
             elif origin == "external" and source_url:
                 author = entry.get("author") or entry.get("id") or "External"
@@ -1372,6 +1379,9 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
     entries_by_origin: dict[str, list] = {}
     for entry in sorted_entries:
         o = entry.get("origin", "octo")
+        # Normalize legacy "openclaw-hub" origin to "open-source"
+        if o == "openclaw-hub":
+            o = "open-source"
         entries_by_origin.setdefault(o, []).append(entry)
 
     if sorted_entries:
