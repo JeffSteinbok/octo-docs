@@ -1449,10 +1449,12 @@ def _process_plugin_bundle_page(
     for nav_index, chunk_path in enumerate(chunk_paths, start=1):
         plugin_json = bundle.load_json(chunk_path)
         plugin_id = _plugin_id(plugin_json, chunk_path)
-        page_content, metadata = _render_plugin_page_content(plugin_json, chunk_path, inventory_by_id.get(plugin_id))
+        inventory_meta = inventory_by_id.get(plugin_id)
+        page_content, metadata = _render_plugin_page_content(plugin_json, chunk_path, inventory_meta)
         plugin_entries.append(metadata)
 
-        if child_dir:
+        # Only generate a child page when the inventory says this plugin should have one
+        if child_dir and (not inventory_meta or inventory_meta.get("has_bundle_page", True)):
             child_front_matter = {
                 "layout": "default",
                 "title": metadata["name"],
