@@ -14,11 +14,11 @@ on:
         required: false
         default: ""
       hub_artifact_name:
-        description: "Name of the openclaw-hub workflow artifact containing plugin detail (leave blank to skip)"
+        description: "Deprecated — no longer used"
         required: false
-        default: "docs-satellite-bundle"
+        default: ""
       hub_artifact_run_id:
-        description: "openclaw-hub run ID that uploaded the satellite bundle artifact"
+        description: "Deprecated — no longer used"
         required: false
         default: ""
       bundle_path:
@@ -47,7 +47,7 @@ on:
       hub_artifact_name:
         required: false
         type: string
-        default: "docs-satellite-bundle"
+        default: ""
       hub_artifact_run_id:
         required: false
         type: string
@@ -99,15 +99,11 @@ jobs:
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
               echo "artifact_name=$ARTIFACT_NAME"                       >> "$GITHUB_OUTPUT"
               echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
-              echo "hub_artifact_name=${{ inputs.hub_artifact_name }}"   >> "$GITHUB_OUTPUT"
-              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             else
               echo "use_artifact=false"                                 >> "$GITHUB_OUTPUT"
               echo "artifact_name="                                     >> "$GITHUB_OUTPUT"
               echo "run_id="                                            >> "$GITHUB_OUTPUT"
-              echo "hub_artifact_name=${{ inputs.hub_artifact_name }}"   >> "$GITHUB_OUTPUT"
-              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=${{ inputs.bundle_path }}"              >> "$GITHUB_OUTPUT"
             fi
             echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
@@ -117,16 +113,12 @@ jobs:
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
               echo "artifact_name=$ARTIFACT_NAME"                       >> "$GITHUB_OUTPUT"
               echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
-              echo "hub_artifact_name=${{ inputs.hub_artifact_name }}"   >> "$GITHUB_OUTPUT"
-              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             else
               # No artifact specified — download the latest docs-bundle from octo
               echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
               echo "artifact_name=docs-bundle"                          >> "$GITHUB_OUTPUT"
               echo "run_id="                                            >> "$GITHUB_OUTPUT"
-              echo "hub_artifact_name=${{ inputs.hub_artifact_name || 'docs-satellite-bundle' }}" >> "$GITHUB_OUTPUT"
-              echo "hub_run_id=${{ inputs.hub_artifact_run_id }}"        >> "$GITHUB_OUTPUT"
               echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
             fi
             echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
@@ -147,30 +139,6 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
-
-      - name: Download openclaw-hub satellite bundle
-        run: |
-          ARTIFACT_NAME="${{ steps.inputs.outputs.hub_artifact_name }}"
-          RUN_ID="${{ steps.inputs.outputs.hub_run_id }}"
-          if [ -z "$ARTIFACT_NAME" ]; then
-            exit 0
-          fi
-          if [ -n "$RUN_ID" ]; then
-            gh run download "$RUN_ID" --repo JeffSteinbok/openclaw-hub --name "$ARTIFACT_NAME" --dir ./hub-bundle
-          else
-            if ! gh run download --repo JeffSteinbok/openclaw-hub --name "$ARTIFACT_NAME" --dir ./hub-bundle; then
-              echo "No openclaw-hub satellite artifact available; continuing without hub overlay."
-              rm -rf ./hub-bundle
-            fi
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
-
-      - name: Merge openclaw-hub plugin detail
-        run: |
-          if [ -d ./hub-bundle ]; then
-            PYTHONPATH=tools python -c 'from docs.bundle.merge_satellite_bundle import merge_openclaw_hub_plugins; merged = merge_openclaw_hub_plugins("./bundle", "./hub-bundle"); print(f"Merged {len(merged)} openclaw-hub plugin chunk(s): {'"'"', '"'"'.join(merged) if merged else '"'"'none'"'"'}")'
-          fi
 
       - name: Generate docs
         id: generate
