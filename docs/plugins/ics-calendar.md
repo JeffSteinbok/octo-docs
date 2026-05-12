@@ -1,7 +1,7 @@
 ---
 layout: default
 title: ICS Calendar
-nav_order: 7
+nav_order: 6
 nav_exclude: true
 ---
 
@@ -62,19 +62,6 @@ Set calendars in `plugins.entries["ics-calendar"].config`:
 
 Use `${...}` interpolation if you want the actual feed URLs to come from `.env`.
 
-## Tools
-
-### `ics_calendar_fetch`
-
-Fetch upcoming events from a published ICS calendar feed.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `calendar_id` | string | Optional | Configured calendar id from plugin config. |
-| `url` | string | Optional | Direct ICS URL override for one-off fetches. |
-| `label` | string | Optional | Optional display label when using a direct URL override. |
-| `days` | integer | Optional | Number of days ahead to fetch (default 7). Default: `7`. |
-
 ## CLI Usage
 
 This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
@@ -92,9 +79,6 @@ npm install && npm run build
 
 ## Show help
 node dist/bin/ics-calendar.js --help
-
-## Fetch upcoming events from a published ICS calendar feed.
-node dist/bin/ics-calendar.js ics-calendar-fetch <calendar_id> <url> <label> <days>
 
 ## JSON output
 node dist/bin/ics-calendar.js <command> [args...] --json

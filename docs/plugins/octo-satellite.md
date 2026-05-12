@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Octo Satellite
-nav_order: 10
+nav_order: 9
 nav_exclude: true
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Outlook Calendar
-nav_order: 11
+nav_order: 10
 nav_exclude: true
 ---
 
@@ -61,17 +61,6 @@ The calendar-name arrays are optional overrides. If omitted, the plugin uses its
 | `OUTLOOK_PERSONAL_CALENDAR_NAMES` | No | Backing value for plugin config `personalCalendarNames` as a comma-separated list |
 | `OUTLOOK_FAMILY_CALENDAR_NAMES` | No | Backing value for plugin config `familyCalendarNames` as a comma-separated list |
 
-## Tools
-
-### `outlook_calendar_fetch`
-
-Fetch upcoming events from Outlook personal, family, or combined calendars.
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `calendar` | string | Optional | Which calendar to fetch: personal, family, or all (default: all). |
-| `days` | integer | Optional | Number of days ahead to fetch events for (default: 7). |
-
 ## CLI Usage
 
 This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
@@ -89,9 +78,6 @@ npm install && npm run build
 
 ## Show help
 node dist/bin/outlook-calendar.js --help
-
-## Fetch upcoming events from Outlook personal, family, or combined calendars.
-node dist/bin/outlook-calendar.js outlook-calendar-fetch <calendar> <days>
 
 ## JSON output
 node dist/bin/outlook-calendar.js <command> [args...] --json
