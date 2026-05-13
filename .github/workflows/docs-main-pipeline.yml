@@ -4,46 +4,22 @@ on:
   push:
     branches: [main]
     paths:
-      - "tools/docs/**"
+      - "docs/**"
       - ".github/workflows/**"
-  pull_request:
-    paths:
-      - "tools/docs/**"
-      - ".github/workflows/**"
+
   repository_dispatch:
-    types: ["Bundle ready: octo", "bundle-ready"]
+    types: ["docs-site-ready", "Bundle ready: octo", "bundle-ready"]
+
   workflow_dispatch:
     inputs:
-      phase:
-        description: "Which part of the docs pipeline to run"
-        required: false
-        default: "full"
-        type: choice
-        options:
-          - "full"
-          - "validate"
-          - "generate"
-          - "deploy"
       artifact_name:
-        description: "Bundle artifact name to download (leave blank to use bundle_path)"
+        description: "Artifact name to download from octo"
         required: false
-        default: "docs-bundle"
+        default: "docs-site"
       artifact_run_id:
-        description: "Octo workflow run ID that uploaded the artifact"
+        description: "Octo workflow run ID that uploaded the artifact (blank = latest)"
         required: false
         default: ""
-      bundle_path:
-        description: "Path to an existing bundle on disk when artifact_name is blank"
-        required: false
-        default: "./bundle"
-      regenerate_all:
-        description: "Regenerate all pages instead of using changed_pages.json"
-        required: false
-        default: "true"
-        type: choice
-        options:
-          - "false"
-          - "true"
 
 permissions:
   contents: write
@@ -53,17 +29,15 @@ permissions:
   issues: write
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # 1. Resolve which artifact to download
+  # ---------------------------------------------------------------------------
   prepare:
     runs-on: ubuntu-latest
     outputs:
       artifact_name: ${{ steps.resolve.outputs.artifact_name }}
       artifact_run_id: ${{ steps.resolve.outputs.artifact_run_id }}
-      bundle_path: ${{ steps.resolve.outputs.bundle_path }}
-      regenerate_all: ${{ steps.resolve.outputs.regenerate_all }}
-      deploy_ref: ${{ steps.resolve.outputs.deploy_ref }}
-      run_validation: ${{ steps.resolve.outputs.run_validation }}
-      run_generate: ${{ steps.resolve.outputs.run_generate }}
-      run_deploy: ${{ steps.resolve.outputs.run_deploy }}
+      skip_receive: ${{ steps.resolve.outputs.skip_receive }}
     steps:
       - name: Resolve inputs
         id: resolve
@@ -71,11 +45,9 @@ jobs:
           GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
         run: |
           latest_successful_run_id() {
-            local repo="$1"
-            local workflow="$2"
             gh run list \
-              --repo "$repo" \
-              --workflow "$workflow" \
+              --repo JeffSteinbok/octo \
+              --workflow "Build & Publish Docs" \
               --status success \
               --limit 1 \
               --json databaseId \
@@ -83,108 +55,121 @@ jobs:
           }
 
           if [ "${{ github.event_name }}" = "push" ]; then
-            echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
-            echo "artifact_run_id=$(latest_successful_run_id JeffSteinbok/octo 'Build Docs Bundle')" >> "$GITHUB_OUTPUT"
-            echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
-            echo "regenerate_all=true" >> "$GITHUB_OUTPUT"
-            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
-            echo "run_validation=true" >> "$GITHUB_OUTPUT"
-            echo "run_generate=true" >> "$GITHUB_OUTPUT"
-            echo "run_deploy=true" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
+            # Push to main (e.g. theme change) — just redeploy, no new artifact
+            echo "skip_receive=true" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
-            echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
-            echo "regenerate_all=false" >> "$GITHUB_OUTPUT"
-            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
-            echo "run_validation=true" >> "$GITHUB_OUTPUT"
-            echo "run_generate=false" >> "$GITHUB_OUTPUT"
-            echo "run_deploy=false" >> "$GITHUB_OUTPUT"
+
           elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            OCTO_RUN_ID="${{ github.event.client_payload.octo_run_id || github.event.client_payload.run_id || '' }}"
-            if [ -z "$OCTO_RUN_ID" ]; then
-              OCTO_RUN_ID="$(latest_successful_run_id JeffSteinbok/octo 'Build Docs Bundle')"
+            RUN_ID="${{ github.event.client_payload.run_id || '' }}"
+            if [ -z "$RUN_ID" ]; then
+              RUN_ID="$(latest_successful_run_id)"
             fi
-            echo "artifact_name=${{ github.event.client_payload.octo_artifact_name || github.event.client_payload.artifact_name || 'docs-bundle' }}" >> "$GITHUB_OUTPUT"
-            echo "artifact_run_id=$OCTO_RUN_ID" >> "$GITHUB_OUTPUT"
-            echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
-            echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
-            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
-            echo "run_validation=true" >> "$GITHUB_OUTPUT"
-            echo "run_generate=true" >> "$GITHUB_OUTPUT"
-            echo "run_deploy=true" >> "$GITHUB_OUTPUT"
+            ARTIFACT="${{ github.event.client_payload.artifact_name || 'docs-site' }}"
+            echo "skip_receive=false" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=$ARTIFACT" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
           else
-            echo "artifact_name=${{ inputs.artifact_name }}" >> "$GITHUB_OUTPUT"
-            echo "artifact_run_id=${{ inputs.artifact_run_id }}" >> "$GITHUB_OUTPUT"
-            echo "bundle_path=${{ inputs.bundle_path }}" >> "$GITHUB_OUTPUT"
-            echo "regenerate_all=${{ inputs.regenerate_all }}" >> "$GITHUB_OUTPUT"
-            echo "deploy_ref=main" >> "$GITHUB_OUTPUT"
-            case "${{ inputs.phase }}" in
-              full)
-                echo "run_validation=true" >> "$GITHUB_OUTPUT"
-                echo "run_generate=true" >> "$GITHUB_OUTPUT"
-                echo "run_deploy=true" >> "$GITHUB_OUTPUT"
-                ;;
-              validate)
-                echo "run_validation=true" >> "$GITHUB_OUTPUT"
-                echo "run_generate=false" >> "$GITHUB_OUTPUT"
-                echo "run_deploy=false" >> "$GITHUB_OUTPUT"
-                ;;
-              generate)
-                echo "run_validation=false" >> "$GITHUB_OUTPUT"
-                echo "run_generate=true" >> "$GITHUB_OUTPUT"
-                echo "run_deploy=false" >> "$GITHUB_OUTPUT"
-                ;;
-              deploy)
-                echo "run_validation=false" >> "$GITHUB_OUTPUT"
-                echo "run_generate=false" >> "$GITHUB_OUTPUT"
-                echo "run_deploy=true" >> "$GITHUB_OUTPUT"
-                ;;
-            esac
+            # workflow_dispatch
+            RUN_ID="${{ inputs.artifact_run_id }}"
+            if [ -z "$RUN_ID" ]; then
+              RUN_ID="$(latest_successful_run_id)"
+            fi
+            echo "skip_receive=false" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=${{ inputs.artifact_name || 'docs-site' }}" >> "$GITHUB_OUTPUT"
+            echo "artifact_run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
           fi
 
-  tests:
+  # ---------------------------------------------------------------------------
+  # 2. Download artifact, copy into docs/, commit to main
+  # ---------------------------------------------------------------------------
+  receive-docs:
     needs: prepare
-    if: needs.prepare.outputs.run_validation == 'true'
-    uses: ./.github/workflows/tests.yml
-    secrets: inherit
+    if: needs.prepare.outputs.skip_receive != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Download docs-site artifact
+        env:
+          GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
+        run: |
+          ARTIFACT_NAME="${{ needs.prepare.outputs.artifact_name }}"
+          RUN_ID="${{ needs.prepare.outputs.artifact_run_id }}"
+          if [ -n "$RUN_ID" ]; then
+            gh run download "$RUN_ID" --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./incoming
+          else
+            gh run download --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./incoming
+          fi
+          echo "Downloaded artifact contents:"
+          find ./incoming -type f | head -50
+
+      - name: Copy generated pages into docs/
+        run: |
+          # Copy all .md files from the artifact into docs/, preserving subdirectory structure.
+          # Hand-written files (index.md, 404.md, mail-runtime.md) and theme files
+          # (_config.yml, _includes/, _sass/, assets/, CNAME, Gemfile) are NOT overwritten
+          # because the artifact only contains generated pages.
+          cp -rv ./incoming/*.md docs/ 2>/dev/null || true
+          # Copy subdirectories (plugins/, services/, skills/, hooks/, releases/)
+          for subdir in plugins services skills hooks releases; do
+            if [ -d "./incoming/$subdir" ]; then
+              mkdir -p "docs/$subdir"
+              cp -rv "./incoming/$subdir/"*.md "docs/$subdir/" 2>/dev/null || true
+            fi
+          done
+          echo "Updated docs/ contents:"
+          find docs/ -name '*.md' | sort
+
+      - name: Commit to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          if git diff --cached --quiet; then
+            echo "No docs changes to commit."
+          else
+            git commit -m "Update generated documentation"
+            pushed=false
+            for attempt in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                pushed=true
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                echo "Push race on main; retrying (${attempt}/3)..."
+                sleep 2
+              fi
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Failed to push generated docs after retries."
+              exit 1
+            fi
+          fi
+
+  # ---------------------------------------------------------------------------
+  # 3. Secret scan (runs on the committed state)
+  # ---------------------------------------------------------------------------
   secret-scan:
-    needs: prepare
-    if: needs.prepare.outputs.run_validation == 'true'
+    needs: receive-docs
+    if: always() && (needs.receive-docs.result == 'success' || needs.receive-docs.result == 'skipped')
     uses: ./.github/workflows/secret-scan.yml
     secrets: inherit
 
-  generate-docs:
-    needs:
-      - prepare
-      - tests
-      - secret-scan
-    if: |
-      needs.prepare.outputs.run_generate == 'true' &&
-      (
-        needs.prepare.outputs.run_validation != 'true' ||
-        (needs.tests.result == 'success' && needs.secret-scan.result == 'success')
-      )
-    uses: ./.github/workflows/generate-docs.yml
-    with:
-      artifact_name: ${{ needs.prepare.outputs.artifact_name }}
-      artifact_run_id: ${{ needs.prepare.outputs.artifact_run_id }}
-      bundle_path: ${{ needs.prepare.outputs.bundle_path }}
-      regenerate_all: ${{ needs.prepare.outputs.regenerate_all }}
-    secrets: inherit
-
+  # ---------------------------------------------------------------------------
+  # 4. Deploy to GitHub Pages via Jekyll
+  # ---------------------------------------------------------------------------
   deploy:
     needs:
       - prepare
-      - generate-docs
+      - receive-docs
+      - secret-scan
     if: |
-      needs.prepare.outputs.run_deploy == 'true' &&
-      (
-        needs.prepare.outputs.run_generate != 'true' ||
-        needs.generate-docs.result == 'success'
-      )
+      always() &&
+      needs.secret-scan.result == 'success' &&
+      (needs.receive-docs.result == 'success' || needs.receive-docs.result == 'skipped')
     uses: ./.github/workflows/jekyll-gh-pages.yml
     with:
-      ref: ${{ needs.prepare.outputs.deploy_ref }}
+      ref: main
     secrets: inherit
