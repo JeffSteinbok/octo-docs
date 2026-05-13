@@ -1428,12 +1428,28 @@ def _process_plugin_bundle_page(
     inventory_by_id: dict[str, dict] = {}
     if isinstance(overview_source, str) and overview_source and bundle.exists(overview_source):
         overview_payload = bundle.load_json(overview_source)
-        loaded_entries = overview_payload.get("plugins")
-        if isinstance(loaded_entries, list):
-            inventory_entries = loaded_entries
+        raw_plugins = overview_payload.get("plugins", {})
+        # Support both object-keyed format (doc-manifest.json) and array format
+        if isinstance(raw_plugins, dict):
+            for pid, meta in raw_plugins.items():
+                if not isinstance(meta, dict) or not meta.get("public", False):
+                    continue
+                entry = dict(meta)
+                entry["id"] = pid
+                # Normalise camelCase keys to snake_case for the renderer
+                if "docsUrl" in entry:
+                    entry.setdefault("docs_url", entry.pop("docsUrl"))
+                if "sourceUrl" in entry:
+                    entry.setdefault("source_url", entry.pop("sourceUrl"))
+                if "docsMode" in entry:
+                    entry.setdefault("docs_mode", entry.pop("docsMode"))
+                inventory_entries.append(entry)
+                inventory_by_id[pid] = entry
+        elif isinstance(raw_plugins, list):
+            inventory_entries = raw_plugins
             inventory_by_id = {
                 entry.get("id"): entry
-                for entry in loaded_entries
+                for entry in raw_plugins
                 if isinstance(entry, dict) and isinstance(entry.get("id"), str)
             }
 

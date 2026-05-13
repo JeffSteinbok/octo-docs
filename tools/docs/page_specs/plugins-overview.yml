@@ -8,12 +8,12 @@ front_matter:
   nav_order: 4
 
 sources:
-  - path: runtime-plugins.json
+  - path: doc-manifest.json
   - path: plugins/*.json
 
 template: overview
 strategy: bundle-plugins
-overview_source: runtime-plugins.json
+overview_source: doc-manifest.json
 chunk_source: "plugins/*.json"
 chunk_output_dir: docs/plugins
 
