@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **18 plugins** through its runtime.
+Octo currently exposes **23 plugins** through its runtime.
 
 
 ## 🌐 Built-in
@@ -27,18 +27,23 @@ Open-source plugins maintained by Jeff.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
-| 📧 | [FastMail tools](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) | Send email and manage calendar events in Fastmail | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
-| 📊 | [Glances](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) | Read CPU, memory, disk, and summary metrics from a Glances server | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) |
-| 🏠 | [Home Assistant](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
-| 📷 | [Home Assistant – LLM Vision](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
-| 📄 | [HTML to PDF](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf) | Convert HTML files to PDF using Chromium headless | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf) |
-| 🗓️ | [ICS Calendar](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
-| 📝 | [Markdown to HTML](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html) | Convert styled Markdown reports to HTML using a CSS template | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html) |
-| 📦 | [Package Tracking](https://github.com/JeffSteinbok/carapace-package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | [GitHub ↗](https://github.com/JeffSteinbok/carapace-package-tracking) |
-| 📈 | [Stock Quotes](https://github.com/JeffSteinbok/carapace-stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [GitHub ↗](https://github.com/JeffSteinbok/carapace-stock-quotes) |
-| 📬 | [USPS Mail Analyzer](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
-| 🍽️ | [WeightWatchers](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers) |
-| ❤️ | [Withings](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) | Fetch health data from Withings devices (weight, body composition, heart rate, sleep, activity) | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) |
+| 📧 | [FastMail tools](plugins/fastmail) | Send email and manage calendar events in Fastmail | [Read docs](plugins/fastmail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
+| 📊 | [Glances](plugins/glances) | Read CPU, memory, disk, and summary metrics from a Glances server | [Read docs](plugins/glances) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) |
+| 🏠 | [Home Assistant](plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [Read docs](plugins/homeassistant) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
+| 📷 | [Home Assistant – LLM Vision](plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | [Read docs](plugins/llmvision) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
+| 📄 | [HTML to PDF](plugins/html-to-pdf) | Convert HTML files to PDF using Chromium headless | [Read docs](plugins/html-to-pdf) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf) |
+| 🗓️ | [ICS Calendar](plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | [Read docs](plugins/ics-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
+| 📝 | [Markdown to HTML](plugins/md-to-html) | Convert styled Markdown reports to HTML using a CSS template | [Read docs](plugins/md-to-html) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html) |
+| 🛰️ | [Octo Satellite](plugins/octo-satellite) | OpenClaw toolset providing structured access to the [Octo Satellite](https://github.com/JeffSteinbok/octo-satellite) service. Exposes Amazon order management and Monarch Money financial tools. | [Read docs](plugins/octo-satellite) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) |
+| 📅 | [Outlook Calendar](plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | [Read docs](plugins/outlook-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar) |
+| 📧 | [Outlook Mail](plugins/outlook-mail) | Search and read messages from Outlook inboxes | [Read docs](plugins/outlook-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) |
+| 📅 | [Outlook Work Calendar](plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [Read docs](plugins/outlook-work-calendar) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
+| 📦 | [Package Tracking](plugins/package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | [Read docs](plugins/package-tracking) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/package-tracking) |
+| 🎵 | [Spotify](plugins/spotify) | Control Spotify playback, search music, and manage playlists | [Read docs](plugins/spotify) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) |
+| 📈 | [Stock Quotes](plugins/stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [Read docs](plugins/stock-quotes) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/stock-quotes) |
+| 📬 | [USPS Mail Analyzer](plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [Read docs](plugins/usps-mail) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
+| 🍽️ | [WeightWatchers](plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [Read docs](plugins/weightwatchers) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers) |
+| ❤️ | [Withings](plugins/withings) | Fetch health data from Withings devices (weight, body composition, heart rate, sleep, activity) | [Read docs](plugins/withings) · [Source ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) |
 
 ## 🔌 External
 
