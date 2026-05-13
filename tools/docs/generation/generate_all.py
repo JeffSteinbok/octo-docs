@@ -1330,7 +1330,7 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
 
     SECTIONS = [
         ("builtin",       "🌐 Built-in",                   "Core capabilities provided by OpenClaw itself."),
-        ("open-source",   "📦 Open Source",                 "Open-source plugins maintained by Jeff."),
+        ("open-source",   "📦 Open Source",                 "Open-source plugins maintained by [Jeff](https://github.com/JeffSteinbok)."),
         ("external",      "🔌 External",                   "Third-party plugins from outside the project."),
         ("octo",          "🔒 Private (octo)",             "Source is private (often under active development), but docs are still available below."),
     ]

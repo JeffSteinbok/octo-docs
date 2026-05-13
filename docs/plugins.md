@@ -23,7 +23,7 @@ Core capabilities provided by OpenClaw itself.
 
 ## 📦 Open Source
 
-Open-source plugins maintained by Jeff.
+Open-source plugins maintained by [Jeff](https://github.com/JeffSteinbok).
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
