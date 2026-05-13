@@ -79,7 +79,6 @@ PLUGIN_EMOJIS = {
 }
 SERVICE_EMOJIS = {
     "fastmail-sse": "📡",
-    "shared_mail_runtime": "🔄",
 }
 HOOK_EMOJIS = {
     "hass-hooks": "🪝",
@@ -902,7 +901,6 @@ def _process_services_overview_page(
         "",
         "OpenClaw services are background processes that keep long-running automations available between conversations.",
         "",
-        "Shared runtime subsystems such as the mail runtime are documented separately under [Mail Runtime](mail-runtime).",
         "",
         "## Service Summary",
         "",
@@ -912,7 +910,14 @@ def _process_services_overview_page(
 
     for service in services:
         service_id = service.get("id", "")
-        link = f"[Read more →](services/{service_id})" if bundle.exists(f"services/{service_id}.json") else "—"
+        source_url = service.get("source_url", "")
+        docs_mode = service.get("docs_mode", "local")
+        if docs_mode == "external" and source_url:
+            link = f"[GitHub ↗]({source_url})"
+        elif bundle.exists(f"services/{service_id}.json"):
+            link = f"[Read more →](services/{service_id})"
+        else:
+            link = "—"
         lines.append(
             f"| {SERVICE_EMOJIS.get(service_id, '⚙️')} {service.get('name', service_id)} | "
             f"{_markdown_cell(service.get('description', ''))} | "
@@ -921,6 +926,10 @@ def _process_services_overview_page(
 
     for service in services:
         service_id = service.get("id", "")
+        docs_mode = service.get("docs_mode", "local")
+        # External services only get a table row, no detail section
+        if docs_mode == "external":
+            continue
         detail = _load_json_if_present(bundle, f"services/{service_id}.json") or {}
         features = detail.get("features", [])
         env_vars = detail.get("env_vars", [])
@@ -972,27 +981,7 @@ def _process_service_detail_page(
     for section_title, body in (service.get("sections") or {}).items():
         lines.extend(["", *_render_markdown_section(section_title, body)])
 
-    if source_path in {"services/shared_mail_runtime.json", "libs/mail_runtime_core.json"}:
-        related_links = []
-        if bundle.exists("libs/package_tracking_core.json"):
-            related_links.append("- [Package Tracking Core](package-tracking)")
-        if bundle.exists("libs/mail_action_usps-action.json"):
-            related_links.append("- [USPS Mail Runtime](usps)")
-        if related_links:
-            lines.extend([
-                "",
-                "## Related Runtime Docs",
-                "",
-                *related_links,
-            ])
-
     content = format_markdown("\n".join(lines))
-    content = content.replace("[`usps/README.md`](./usps/README.md)", "[USPS Mail Runtime](usps)")
-    content = content.replace(
-        "[`services/shared_mail_runtime/usps/README.md`](../shared_mail_runtime/usps/README.md)",
-        "[USPS Mail Runtime](usps)",
-    )
-    content = content.replace("`services/shared_mail_runtime/README.md`", "[Shared Mail Runtime](shared_mail_runtime)")
     if dry_run:
         logger.info("[dry-run] Would generate page: %s", page_spec["id"])
         return page_spec["output_path"]
@@ -1337,7 +1326,6 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
         "",
         f"Octo currently exposes **{len(sorted_entries)} plugin{'s' if len(sorted_entries) != 1 else ''}** through its runtime.",
         "",
-        "> **See also:** [Plugin Architecture](plugin-architecture) — how plugins are structured, loaded, and can run as standalone CLIs.",
     ]
 
     SECTIONS = [
@@ -1370,10 +1358,15 @@ def _build_plugin_inventory_index(entries: list[dict], link_prefix: str = "plugi
                 author = entry.get("author") or entry.get("id") or "External"
                 docs_text += f" · by {author} [↗]({source_url})"
         else:
-            docs_text = f"[External docs]({docs_url})" if docs_url else "—"
-            if origin == "external" and source_url:
+            if origin in ("openclaw-hub", "open-source") and source_url:
+                docs_text = f"[GitHub ↗]({source_url})"
+            elif origin == "external":
                 author = entry.get("author") or entry.get("id") or "External"
-                docs_text += f" · by {author} [↗]({source_url})"
+                docs_text = f"[GitHub ↗]({docs_url})" if docs_url else "—"
+                if source_url and source_url != docs_url:
+                    docs_text += f" · by {author}"
+            else:
+                docs_text = f"[External docs]({docs_url})" if docs_url else "—"
         return f"| {emoji} | {plugin_link} | {description} | {docs_text} |"
 
     entries_by_origin: dict[str, list] = {}

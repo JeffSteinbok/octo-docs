@@ -307,7 +307,7 @@ def test_process_page_bundle_plugins_mixes_local_and_external_inventory(tmp_path
     assert "## 📦 Open Source" in index_content
     assert "## 🔌 External" in index_content
     assert "[FastMail tools](plugins/fastmail)" in index_content
-    assert "[External docs](https://core.telegram.org/bots)" in index_content
+    assert "[GitHub ↗](https://core.telegram.org/bots)" in index_content
     assert "**Source:**" in child_content
     assert "openclaw-hub" in child_content
     assert "# 📧 FastMail tools" in child_content
@@ -432,78 +432,6 @@ def test_process_page_bundle_service_detail_renders_without_llm(tmp_path, monkey
     assert "Structured demo service summary." in content
     assert "## Features" in content
     assert "Use deterministic bundle data." in content
-
-
-def test_process_page_bundle_service_detail_links_usps_child(tmp_path, monkeypatch):
-    bundle_root = tmp_path / "bundle"
-    libs_dir = bundle_root / "libs"
-    libs_dir.mkdir(parents=True)
-
-    (bundle_root / "manifest.json").write_text(
-        json.dumps({"artifacts": ["libs/mail_runtime_core.json", "libs/mail_action_usps-action.json"]}),
-        encoding="utf-8",
-    )
-    (libs_dir / "mail_runtime_core.json").write_text(
-        json.dumps(
-            {
-                "library": "mail_runtime_core",
-                "name": "Shared Mail Runtime",
-                "summary": "Provider-agnostic mail runtime.",
-                "sections": {
-                    "Features": "- One",
-                },
-            }
-        ),
-        encoding="utf-8",
-    )
-    (libs_dir / "mail_action_usps-action.json").write_text(
-        json.dumps(
-            {
-                "id": "mail-action-usps",
-                "name": "USPS Mail Runtime",
-                "summary": "USPS-specific runtime docs.",
-                "sections": {},
-            }
-        ),
-        encoding="utf-8",
-    )
-
-    repo_root = tmp_path / "repo"
-    repo_root.mkdir()
-
-    from docs.bundle.load_bundle import BundleLoader
-    import docs.generation.generate_all as ga
-
-    monkeypatch.setattr(ga, "REPO_ROOT", repo_root)
-    monkeypatch.setattr(
-        ga,
-        "generate_page",
-        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM should not be called")),
-    )
-
-    page_spec = {
-        "id": "shared-mail-runtime",
-        "output_path": "docs/mail-runtime/shared_mail_runtime.md",
-        "template": "overview",
-        "strategy": "bundle-service-detail",
-        "front_matter": {
-            "layout": "default",
-            "title": "Shared Mail Runtime",
-            "parent": "Mail Runtime",
-            "nav_order": 1,
-            "has_children": True,
-        },
-        "sources": [
-            {"path": "libs/mail_runtime_core.json"},
-        ],
-    }
-
-    output = ga.process_page(page_spec, BundleLoader(str(bundle_root)))
-
-    assert output == "docs/mail-runtime/shared_mail_runtime.md"
-    content = (repo_root / "docs/mail-runtime/shared_mail_runtime.md").read_text(encoding="utf-8")
-    assert "## Related Runtime Docs" in content
-    assert "[USPS Mail Runtime](usps)" in content
 
 
 def test_process_page_bundle_scheduled_tasks_renders_without_llm(tmp_path, monkeypatch):

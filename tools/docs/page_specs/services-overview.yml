@@ -20,7 +20,6 @@ instructions:
     - list of background services as H2 headings with a fitting emoji
     - description and purpose of each service
     - for each service include a summary of key features as a bullet list
-    - "link to the detail page for each service: [Read more →](services/fastmail-sse)"
     - environment variables table (name, required, description) for each service if available in source data
   exclude:
     - internal implementation details
