@@ -14,4 +14,3 @@ OpenClaw services are background processes that keep long-running automations av
 | Service | Description | Docs |
 |---------|-------------|------|
 | 📡 FastMail SSE Service | Real-time email notification daemon using JMAP EventSource | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse) |
-| ⚙️ Mail Actions | Rule-based mail processing engine (notify, tracking detection) | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mail-actions) |

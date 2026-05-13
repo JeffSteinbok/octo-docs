@@ -49,7 +49,7 @@ List GitHub issues with optional filters. Filter by state (open/closed/all), lab
 |------|------|----------|-------------|
 | `owner` | string | Required | Repository owner (user or organisation name). |
 | `repo` | string | Required | Repository name. |
-| `state` | string | Optional | Filter by state (default: open). Allowed: `open`, `closed`, `all`. |
+| `state` | string | Optional | Filter by state (default: open). |
 | `labels` | string | Optional | Comma-separated list of labels to filter by. |
 | `assignee` | string | Optional | Filter by assignee username. |
 | `milestone` | string | Optional | Filter by milestone number or '*' for any milestone. |
@@ -91,7 +91,7 @@ Edit an existing GitHub issue. Update title, body, state, labels, assignees, or 
 | `issue_number` | integer | Required | Issue number. |
 | `title` | string | Optional | New issue title. |
 | `body` | string | Optional | New issue body (Markdown supported). |
-| `state` | string | Optional | Issue state (open or closed). Allowed: `open`, `closed`. |
+| `state` | string | Optional | Issue state (open or closed). |
 | `labels` | array | Optional | Labels to apply (replaces existing labels). |
 | `assignees` | array | Optional | Assignees (replaces existing assignees). |
 | `milestone` | integer | Optional | Milestone number. |
