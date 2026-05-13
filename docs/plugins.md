@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **19 plugins** through its runtime.
+Octo currently exposes **18 plugins** through its runtime.
 
 
 ## 🌐 Built-in
@@ -34,7 +34,6 @@ Open-source plugins maintained by Jeff.
 | 📄 | [HTML to PDF](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf) | Convert HTML files to PDF using Chromium headless | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf) |
 | 🗓️ | [ICS Calendar](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
 | 📝 | [Markdown to HTML](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html) | Convert styled Markdown reports to HTML using a CSS template | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html) |
-| 🛰️ | [Octo Satellite](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) | Amazon order management and Monarch Money financial tools via the Octo Satellite proxy service | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) |
 | 📦 | [Package Tracking](https://github.com/JeffSteinbok/carapace-package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | [GitHub ↗](https://github.com/JeffSteinbok/carapace-package-tracking) |
 | 📈 | [Stock Quotes](https://github.com/JeffSteinbok/carapace-stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [GitHub ↗](https://github.com/JeffSteinbok/carapace-stock-quotes) |
 | 📬 | [USPS Mail Analyzer](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
