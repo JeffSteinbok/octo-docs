@@ -52,6 +52,10 @@ permissions:
   actions: write
   issues: write
 
+concurrency:
+  group: docs-main-pipeline
+  cancel-in-progress: true
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
