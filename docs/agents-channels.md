@@ -29,13 +29,14 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `finance` | Published agent surface | `profile:minimal` tools. | Separates this agent from the rest of the system. |
 | `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
 | `coding` | Coding specialist in #coding on Discord | `inherited-default` tools. | Dedicated coding agent for code review, architecture, ACP agent delegation, and infra/DevOps work. Kept separate from main to allow elevated shell access without exposing it to everyday chat. |
+| `notify` | Published agent surface | `custom-allowlist` tools. | Separates this agent from the rest of the system. |
 
 ## Channels
 
 | Channel | Enabled | DM Policy | Group Policy | Streaming |
 |---------|---------|-----------|--------------|-----------|
 | `discord` | Yes | pairing | allowlist | partial |
-| `telegram` | No | pairing | allowlist | off |
+| `telegram` | Yes | pairing | allowlist | off |
 
 ## Session Settings
 
