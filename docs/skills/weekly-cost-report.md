@@ -31,7 +31,7 @@ Generate the weekly LLM API cost report, render it to PDF, post to Discord, and 
    - `input_path`: the HTML file from step 3
    - `output_path`: same path but `.pdf` extension
 
-5. **Post to Discord** — Send a message to `channel:1480763223392260116` saying the weekly cost report is ready, including the date range covered. Attach the PDF using the message tool's `filePath` parameter.
+5. **Post to Discord** — Send a message to `channel:1480763223392260116` with a brief summary (date range, total cost, daily average) and attach the PDF using the message tool's `filePath` parameter.
 
 6. **Commit and push** — Run:
    ```bash
