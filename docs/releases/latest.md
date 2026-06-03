@@ -6,6 +6,33 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-06-03
+
+
+### Added
+
+- **Obsidian Vault plugin** — read-only access to an Obsidian vault with 6 tools: search, read, recent, tags, backlinks, related notes. Full-text search via FTS5, symlink-safe path resolution.
+- **Fastmail threading support** — `In-Reply-To` and `References` headers in `fastmail_send` for proper email reply threading.
+- **`monarch_get_investments`** tool in octo-satellite — query investment holdings from Monarch Money.
+- **Mail-actions improvements** — quote original email in self-email replies, Discord DM notifications after sending replies, proper reply-all parsing, Message-ID passthrough for threading.
+- **Full backup script** — `scripts/backup.sh` for complete system backup.
+- **Carapace Plugin SDK** — initial release through 1.0.4 on npm. Includes CLI generation, source metadata injection, contracts auto-discovery, npm trusted publishing, and `definePluginEntry()` contracts preservation fix.
+- **Carapace Package Tracking** — URL-first extraction to reduce false-positive tracking detection, OIDC trusted publishing, released through 1.0.4.
+- **Doc-manifest entries** for obsidian-vault and screenshot-capture plugins.
+
+### Changed
+
+- **Docs pipeline decoupled** from openclaw-hub — external plugin/service configs, doc-manifest is now the single source of truth for plugin inventory.
+- **openclaw-hub CI** — lockfile now resolves `carapace-plugin-sdk` from npm registry (local dev uses `npm link`).
+- **USPS mail docs** restructured into usage guide + architecture.
+- Migrated `octo-satellite` and `weightwatchers` plugins to openclaw-hub (open-sourced).
+- Converted all openclaw-hub plugins to Carapace SDK with updated READMEs.
+
+### Fixed
+
+- **Fastmail JMAP headers** — preserve angle brackets in `In-Reply-To` / `References` (JMAP expects them intact).
+- **Mail-actions reply threading** — pass Message-ID in self-email handoff, fix reply-all parsing and notify ordering.
+
 ## 2026-05-09
 
 
