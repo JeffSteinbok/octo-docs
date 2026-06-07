@@ -79,6 +79,8 @@ PLUGIN_EMOJIS = {
 }
 SERVICE_EMOJIS = {
     "fastmail-sse": "📡",
+    "onedrive-sync": "🗂️",
+    "obsidian-indexer": "📝",
 }
 HOOK_EMOJIS = {
     "hass-hooks": "🪝",
