@@ -1,0 +1,14 @@
+id: service-onedrive-sync
+
+output_path: docs/services/onedrive-sync.md
+
+front_matter:
+  layout: default
+  title: OneDrive Sync
+  parent: Services
+  nav_order: 1
+
+sources:
+  - path: services/onedrive-sync.json
+
+strategy: bundle-service-detail

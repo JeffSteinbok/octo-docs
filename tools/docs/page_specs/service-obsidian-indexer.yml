@@ -1,0 +1,14 @@
+id: service-obsidian-indexer
+
+output_path: docs/services/obsidian-indexer.md
+
+front_matter:
+  layout: default
+  title: Obsidian Vault Indexer
+  parent: Services
+  nav_order: 2
+
+sources:
+  - path: services/obsidian-indexer.json
+
+strategy: bundle-service-detail
