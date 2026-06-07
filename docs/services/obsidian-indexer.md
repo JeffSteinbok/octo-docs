@@ -7,7 +7,7 @@ nav_order: 2
 
 # Obsidian Vault Indexer
 
-Long-running systemd service that watches the Obsidian vault directory and maintains a SQLite FTS5 full-text search index. Part of the [carapace-obsidian](https://github.com/JeffSteinbok/carapace-obsidian) plugin.
+Long-running systemd service that watches the Obsidian vault directory and maintains a SQLite FTS5 full-text search index. Part of the [`carapace-obsidian`](https://github.com/JeffSteinbok/carapace-obsidian) plugin.
 
 ## Features
 

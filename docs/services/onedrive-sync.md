@@ -21,13 +21,14 @@ Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Micros
 The client runs with no custom config file — all defaults. It is installed via apt and enabled as a user systemd service.
 
 ```bash
-# Check status
+
+## Check status
 systemctl --user status onedrive
 
-# View logs
+## View logs
 journalctl --user -u onedrive -n 50 --no-pager
 
-# Restart
+## Restart
 systemctl --user restart onedrive
 ```
 
@@ -48,6 +49,8 @@ systemctl --user restart onedrive
 ```
 
 ## Watchdog (Planned)
+
+To avoid having to manually restart the service, a systemd watchdog is planned:
 
 Source files live in the `octo` repo:
 
