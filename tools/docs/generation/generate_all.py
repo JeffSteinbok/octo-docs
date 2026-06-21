@@ -730,7 +730,7 @@ def _process_agents_channels_page(
 
     def _agent_why(agent_id: str) -> str:
         if agent_id == "main":
-            return "Keeps the everyday assistant capable without giving the default chat direct shell/process control."
+            return "Keeps the everyday assistant capable with access to vetted CLI tools via safebin, without opening a full shell."
         if agent_id == "mail":
             return "Treats mail as untrusted input and isolates mail processing from broader tools."
         if agent_id == "root":
@@ -783,6 +783,16 @@ def _process_agents_channels_page(
             f"{_markdown_cell(_agent_why(agent_id))} |"
         )
 
+    lines.extend([
+        "",
+        "### Exec & Safebin",
+        "",
+        "Agents with exec `allowlist` can only run pre-approved CLI tools from `~/safebin/`. "
+        "This directory contains symlinks to vetted scripts — the gateway resolves binaries "
+        "against `safeBinTrustedDirs` and denies anything not explicitly listed in `safeBins`. "
+        "See [CLI Tools](clis) for the full inventory.",
+    ])
+
     lines.extend(["", "## Channels", ""])
     lines.extend([
         "| Channel | Enabled | DM Policy | Group Policy | Streaming |",
@@ -824,17 +834,39 @@ def _process_hooks_page(
     bundle: BundleLoader,
     dry_run: bool = False,
 ) -> str:
-    """Render hook overview and child pages directly from structured bundle data."""
+    """Render hook overview and child pages directly from structured bundle data.
+
+    Uses doc-manifest.json hooks section as the source of truth for which hooks
+    exist, then pulls agent detail from the corresponding agents/*.json files.
+    Falls back to chunk_source glob if no manifest hooks section exists.
+    """
     page_id = page_spec["id"]
     output_path = REPO_ROOT / page_spec["output_path"]
-    chunk_pattern = page_spec["chunk_source"]
+    chunk_pattern = page_spec.get("chunk_source", "agents/*hooks*.json")
     chunk_output_dir = page_spec.get("chunk_output_dir")
-    parent_title = page_spec.get("front_matter", {}).get("title", "")
 
     logger.info("Processing bundle-rendered hooks page: %s -> %s", page_id, page_spec["output_path"])
 
-    chunk_paths = sorted(bundle.glob(chunk_pattern))
-    logger.info("Found %d hook chunks for pattern: %s", len(chunk_paths), chunk_pattern)
+    # Try manifest-driven discovery first
+    manifest = bundle.load_json("doc-manifest.json") if bundle.exists("doc-manifest.json") else {}
+    hooks_manifest = manifest.get("hooks", {})
+
+    chunk_paths: list[str] = []
+    if hooks_manifest:
+        # Load agent data for each hook defined in the manifest
+        for hook_id, hook_meta in sorted(hooks_manifest.items()):
+            if not (isinstance(hook_meta, dict) and hook_meta.get("public")):
+                continue
+            agent_id = hook_meta.get("agentId", hook_id)
+            agent_path = f"agents/{agent_id}.json"
+            if bundle.exists(agent_path):
+                chunk_paths.append(agent_path)
+            else:
+                logger.warning("Hook %s references agent %s but %s not found in bundle", hook_id, agent_id, agent_path)
+    else:
+        chunk_paths = sorted(bundle.glob(chunk_pattern))
+
+    logger.info("Found %d hook chunks", len(chunk_paths))
 
     if dry_run:
         logger.info("[dry-run] Would generate bundle-rendered page: %s (%d chunks)", page_id, len(chunk_paths))
@@ -847,9 +879,29 @@ def _process_hooks_page(
 
     hook_entries = []
     expected_child_pages: set[str] = set()
+
+    # Build a lookup from agentId -> manifest metadata for richer descriptions
+    manifest_by_agent: dict[str, dict] = {}
+    for hook_id, hook_meta in hooks_manifest.items():
+        if isinstance(hook_meta, dict):
+            agent_id = hook_meta.get("agentId", hook_id)
+            manifest_by_agent[agent_id] = hook_meta
+
     for nav_index, chunk_path in enumerate(chunk_paths, start=1):
         hook_json = bundle.load_json(chunk_path)
         page_content, metadata = _render_hook_page_content(hook_json, chunk_path)
+
+        # Enrich metadata from manifest if available
+        agent_id = metadata.get("id", "")
+        if agent_id in manifest_by_agent:
+            m = manifest_by_agent[agent_id]
+            if m.get("name"):
+                metadata["name"] = m["name"]
+            if m.get("summary"):
+                metadata["description"] = m["summary"]
+            if m.get("path"):
+                metadata["endpoint"] = m["path"]
+
         hook_entries.append(metadata)
 
         if child_dir:
@@ -873,19 +925,85 @@ def _process_hooks_page(
         "",
         f"Octo currently publishes **{len(hook_entries)} hook{'s' if len(hook_entries) != 1 else ''}** in the public bundle.",
         "",
-        "| | Hook | Description | Sections |",
-        "|---|------|-------------|:--------:|",
+        "| | Hook | Endpoint | Description |",
+        "|---|------|----------|-------------|",
     ]
     link_prefix = Path(chunk_output_dir).name if chunk_output_dir else "hooks"
     for entry in hook_entries:
         link = f"[{entry['name']}]({link_prefix}/{entry['slug']})"
+        endpoint = entry.get("endpoint", "")
         lines.append(
-            f"| {entry.get('emoji') or '🪝'} | {link} | {entry.get('description') or ''} | {entry.get('section_count', 0)} |"
+            f"| {entry.get('emoji') or '🪝'} | {link} | `{endpoint}` | {entry.get('description') or ''} |"
         )
 
     content = format_markdown("\n".join(lines))
     write_page(output_path, content, front_matter=page_spec.get("front_matter"))
     logger.info("Written hook index page: %s (%d hooks)", output_path, len(hook_entries))
+    return page_spec["output_path"]
+
+
+def _process_clis_page(
+    page_spec: dict,
+    bundle: BundleLoader,
+    dry_run: bool = False,
+) -> str:
+    """Render the CLIs overview page from clis.json bundle artifact.
+
+    Documents the safebin infrastructure and lists available CLI tools.
+    """
+    page_id = page_spec["id"]
+    output_path = REPO_ROOT / page_spec["output_path"]
+
+    logger.info("Processing bundle-rendered CLIs page: %s -> %s", page_id, page_spec["output_path"])
+
+    clis_data = bundle.load_json("clis.json") if bundle.exists("clis.json") else {}
+    clis = clis_data.get("clis", [])
+
+    if dry_run:
+        logger.info("[dry-run] Would generate CLIs page: %s (%d CLIs)", page_id, len(clis))
+        return page_spec["output_path"]
+
+    lines = [
+        "# CLI Tools",
+        "",
+        "CLI tools are lightweight scripts that agents can execute via the `exec` tool. "
+        "They live in `~/safebin/` and are governed by the exec allowlist.",
+        "",
+        "## How It Works",
+        "",
+        "Octo uses a **safebin** model for shell execution:",
+        "",
+        "1. **`~/safebin/` directory** — contains symlinks to approved CLI scripts",
+        "2. **Exec allowlist mode** — the gateway's `tools.exec.mode` is set to `allowlist`, "
+        "meaning *only* binaries listed in `safeBins` can run; everything else is denied",
+        "3. **`safeBinTrustedDirs`** — directories the gateway trusts for resolving safebin binaries",
+        "4. **`pathPrepend`** — ensures `~/safebin/` is on PATH during exec runs",
+        "",
+        "This gives agents access to specific, vetted tools without opening a full shell.",
+        "",
+        "## Available CLIs",
+        "",
+        f"**{len(clis)} CLI{'s' if len(clis) != 1 else ''}** currently published.",
+        "",
+    ]
+
+    if clis:
+        lines.extend([
+            "| CLI | Summary | Example |",
+            "|-----|---------|---------|",
+        ])
+        for cli in clis:
+            name = cli.get("name", cli.get("id", ""))
+            summary = cli.get("summary", "")
+            usage = cli.get("usage", "")
+            source_url = cli.get("source_url", "")
+            name_display = f"[`{name}`]({source_url})" if source_url else f"`{name}`"
+            usage_display = f"`{usage}`" if usage else ""
+            lines.append(f"| {name_display} | {summary} | {usage_display} |")
+
+    content = format_markdown("\n".join(lines))
+    write_page(output_path, content, front_matter=page_spec.get("front_matter"))
+    logger.info("Written CLIs page: %s (%d CLIs)", output_path, len(clis))
     return page_spec["output_path"]
 
 
@@ -1616,6 +1734,8 @@ def process_page(
         return _process_agents_channels_page(page_spec, bundle, dry_run)
     if strategy == "bundle-hooks":
         return _process_hooks_page(page_spec, bundle, dry_run)
+    if strategy == "bundle-clis":
+        return _process_clis_page(page_spec, bundle, dry_run)
     if strategy == "bundle-services":
         return _process_services_overview_page(page_spec, bundle, dry_run)
     if strategy == "bundle-service-detail":

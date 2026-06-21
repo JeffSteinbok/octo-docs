@@ -1,0 +1,17 @@
+id: clis-overview
+
+output_path: docs/clis.md
+
+front_matter:
+  layout: default
+  title: CLI Tools
+  nav_order: 7
+
+sources:
+  - path: clis.json
+  - path: doc-manifest.json
+
+strategy: bundle-clis
+
+instructions:
+  audience: external developers and self-hosters
