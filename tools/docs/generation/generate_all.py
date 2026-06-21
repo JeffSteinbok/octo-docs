@@ -730,7 +730,7 @@ def _process_agents_channels_page(
 
     def _agent_why(agent_id: str) -> str:
         if agent_id == "main":
-            return "Keeps the everyday assistant capable with access to vetted CLI tools via safebin, without opening a full shell."
+            return "Keeps the everyday assistant capable without giving the default chat direct shell/process control."
         if agent_id == "mail":
             return "Treats mail as untrusted input and isolates mail processing from broader tools."
         if agent_id == "root":
@@ -787,9 +787,8 @@ def _process_agents_channels_page(
         "",
         "### Exec & Safebin",
         "",
-        "Agents with exec `allowlist` can only run pre-approved CLI tools from `~/safebin/`. "
-        "This directory contains symlinks to vetted scripts — the gateway resolves binaries "
-        "against `safeBinTrustedDirs` and denies anything not explicitly listed in `safeBins`. "
+        "The `~/safebin/` directory contains symlinks to vetted CLI scripts that agents can run via the `exec` tool. "
+        "Currently, only agents with exec access (like `root` and `coding`) can use these tools. "
         "See [CLI Tools](clis) for the full inventory.",
     ])
 
@@ -966,20 +965,14 @@ def _process_clis_page(
     lines = [
         "# CLI Tools",
         "",
-        "CLI tools are lightweight scripts that agents can execute via the `exec` tool. "
-        "They live in `~/safebin/` and are governed by the exec allowlist.",
+        "CLI tools are lightweight scripts that agents can run via the `exec` tool. "
+        "They live in `~/safebin/` — a directory of symlinks to approved scripts.",
         "",
         "## How It Works",
         "",
-        "Octo uses a **safebin** model for shell execution:",
-        "",
-        "1. **`~/safebin/` directory** — contains symlinks to approved CLI scripts",
-        "2. **Exec allowlist mode** — the gateway's `tools.exec.mode` is set to `allowlist`, "
-        "meaning *only* binaries listed in `safeBins` can run; everything else is denied",
-        "3. **`safeBinTrustedDirs`** — directories the gateway trusts for resolving safebin binaries",
-        "4. **`pathPrepend`** — ensures `~/safebin/` is on PATH during exec runs",
-        "",
-        "This gives agents access to specific, vetted tools without opening a full shell.",
+        "1. **`~/safebin/` directory** — contains symlinks to vetted CLI scripts",
+        "2. **Agents with exec access** (e.g. `root`, `coding`) can invoke these tools directly",
+        "3. **No external dependencies** — CLIs use only Python stdlib to keep the footprint minimal",
         "",
         "## Available CLIs",
         "",

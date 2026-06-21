@@ -799,7 +799,7 @@ def test_process_page_bundle_agents_channels_derives_clear_roles(tmp_path, monke
     assert "Jeff's primary direct chats and proactive assistant flows" in content
     assert "`customized` tools; exec `denied`;" in content
     assert "Treats mail as untrusted input and isolates mail processing from broader tools." in content
-    assert "Keeps the everyday assistant capable with access to vetted CLI tools via safebin, without opening a full shell." in content
+    assert "Keeps the everyday assistant capable without giving the default chat direct shell/process control." in content
     assert "## Agents" not in content
     assert "- **Tool mode:**" not in content
 
