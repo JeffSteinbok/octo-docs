@@ -11,7 +11,7 @@ CLI tools are lightweight scripts that agents can run via the `exec` tool. They 
 ## How It Works
 
 1. **`~/safebin/` directory** — contains symlinks to vetted CLI scripts
-2. **Agents with exec access** (e.g. `root`, `coding`) can invoke these tools directly
+2. **Per-agent exec security** — `main` uses `security: allowlist` so it can *only* run binaries listed in its `safeBins`; `root` uses `security: full` for unrestricted access
 3. **No external dependencies** — CLIs use only Python stdlib to keep the footprint minimal
 
 ## Available CLIs
