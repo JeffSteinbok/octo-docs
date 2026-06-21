@@ -730,7 +730,7 @@ def _process_agents_channels_page(
 
     def _agent_why(agent_id: str) -> str:
         if agent_id == "main":
-            return "Keeps the everyday assistant capable without giving the default chat direct shell/process control."
+            return "Keeps the everyday assistant capable with exec restricted to safebin CLIs only — no arbitrary shell access."
         if agent_id == "mail":
             return "Treats mail as untrusted input and isolates mail processing from broader tools."
         if agent_id == "root":
@@ -787,9 +787,13 @@ def _process_agents_channels_page(
         "",
         "### Exec & Safebin",
         "",
-        "The `~/safebin/` directory contains symlinks to vetted CLI scripts that agents can run via the `exec` tool. "
-        "Currently, only agents with exec access (like `root` and `coding`) can use these tools. "
-        "See [CLI Tools](clis) for the full inventory.",
+        "Exec permissions are configured **per agent** using `agents.list[].tools.exec`:",
+        "",
+        "- **`main`** — `security: allowlist` — can only run binaries listed in `safeBins` (vetted CLI scripts in `~/safebin/`)",
+        "- **`root`** — `security: full` — unrestricted shell access for admin/debug escalation",
+        "- **Other agents** — exec denied entirely",
+        "",
+        "See [CLI Tools](clis) for the available safebin inventory.",
     ])
 
     lines.extend(["", "## Channels", ""])
@@ -971,7 +975,8 @@ def _process_clis_page(
         "## How It Works",
         "",
         "1. **`~/safebin/` directory** — contains symlinks to vetted CLI scripts",
-        "2. **Agents with exec access** (e.g. `root`, `coding`) can invoke these tools directly",
+        "2. **Per-agent exec security** — `main` uses `security: allowlist` so it can *only* run "
+        "binaries listed in its `safeBins`; `root` uses `security: full` for unrestricted access",
         "3. **No external dependencies** — CLIs use only Python stdlib to keep the footprint minimal",
         "",
         "## Available CLIs",
