@@ -22,7 +22,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 
 | Agent | Used for | Permissions | Why it is set up this way |
 |-------|----------|-------------|---------------------------|
-| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `denied`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`. | Keeps the everyday assistant capable without giving the default chat direct shell/process control. |
+| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `allowed`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`. | Keeps the everyday assistant capable without giving the default chat direct shell/process control. |
 | `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. | Treats mail as untrusted input and isolates mail processing from broader tools. |
 | `root` | Explicit owner escalations for admin/debugging work | `inherited-default` tools; broad inherited access posture; exec `inherited`. | Concentrates privileged admin/debug access in a separate escalation path. |
 | `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `denied`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. |
