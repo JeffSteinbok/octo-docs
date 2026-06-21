@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Hass Hooks
+title: Home Assistant Events
 nav_order: 1
 nav_exclude: true
 ---
