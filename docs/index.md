@@ -45,6 +45,11 @@ nav_order: 1
     <div class="card-title">Hooks</div>
     <div class="card-desc">Event-driven automations triggered by real-world activity</div>
   </a>
+  <a class="card" href="{{ site.baseurl }}/clis">
+    <div class="card-icon">⌨️</div>
+    <div class="card-title">CLI Tools</div>
+    <div class="card-desc">Vetted scripts agents run via exec from ~/safebin/</div>
+  </a>
 </div>
 
 ---
