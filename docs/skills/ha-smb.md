@@ -1,13 +1,13 @@
 ---
 layout: default
 title: Ha Smb
-nav_order: 1
+nav_order: 2
 nav_exclude: true
 ---
 
 # 🧠 Ha Smb
 
-Read and write files on the HA config share. The target host and credentials load automatically from the workspace `.env` file.
+Read and write files on the HA config share (host configured via `HA_SMB_HOST`). Credentials load automatically from the workspace `.env` file.
 
 ## Share Layout
 

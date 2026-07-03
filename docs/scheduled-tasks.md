@@ -10,7 +10,7 @@ Scheduled tasks are background jobs that run without direct user input. The publ
 
 Feature-specific reminders, briefs, personal nudges, and other user-facing automations are intentionally excluded from the public bundle and from this page.
 
-Octo currently publishes **8 infrastructure tasks**.
+Octo currently publishes **9 infrastructure tasks**.
 
 ## Infrastructure Tasks
 
@@ -24,3 +24,4 @@ Octo currently publishes **8 infrastructure tasks**.
 | `openclaw-upgrade-readiness-check` | `0 10 * * *` (America/Los_Angeles) | Checks for new OpenClaw releases and evaluates whether an upgrade is safe based on changelog and config compatibility. |
 | `usage-summary-weekly` | `0 9 * * 1` (America/Los_Angeles) | Aggregates weekly LLM usage metrics across all providers into a summary report. |
 | `weekly-cost-report` | `0 5 * * 1` (America/Los_Angeles) | Generates a weekly LLM API cost report, renders it to PDF, posts to Discord, and commits the artifacts. |
+| `agent-review-weekly` | `0 6 * * 1` (America/Los_Angeles) | Scans session transcripts, tool failures, and memory files for patterns; deduplicates recurring findings via fingerprint state, auto-files guarded GitHub issues, and delivers a prioritized weekly report via Discord DM. |
