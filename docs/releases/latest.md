@@ -6,6 +6,31 @@ nav_order: 7
 
 # Release Notes
 
+## 2026-07-03
+
+
+### Added
+
+- **Weekly agent-review skill** — periodic self-improvement analysis that reviews recent activity and surfaces suggested improvements.
+- **Home Assistant Lovelace dashboard tools** (openclaw-hub) — read and write Lovelace dashboard configuration.
+
+### Changed
+
+- **Docs rendering moved into `octo`** — the bundle pipeline now extracts, sanitizes, **renders the final Jekyll Markdown pages**, and validates them, publishing a `docs-site` artifact and dispatching `docs-site-ready`. Removed dead change-mapping code and stale page specs.
+- **`octo-docs` simplified to receive-and-deploy** — dropped ~3,000 lines of local rendering; it now downloads the rendered `docs-site` artifact, secret-scans it, and deploys to GitHub Pages.
+- **obsidian-vault split** (openclaw-hub) — refactored into a standalone indexer service plus a read-only plugin.
+
+### Fixed
+
+- **ha-smb skill** — redacted a hardcoded private Home Assistant IP that failed public-bundle validation; reference `HA_SMB_HOST` instead.
+- **Docs validation crash** — fixed a `relative_to` error that masked real validation failures with a traceback.
+- **GitHub Pages deploy race** — moved the `pages` concurrency guard to the deploy job (top-level concurrency is ignored in reusable workflows), fixing intermittent "Deployment failed, try again later" errors.
+- **ReDoS hardening** (openclaw-hub) — replaced regex patterns vulnerable to catastrophic backtracking, including in md-to-html.
+
+### Dependencies
+
+- Routine updates across `octo` and `openclaw-hub`: vite, vitest, esbuild, tsx, @types/node, nodemailer/mailparser, carapace-package-tracking, and `actions/checkout` v7.
+
 ## 2026-06-03
 
 
