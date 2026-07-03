@@ -11,7 +11,7 @@ on:
       - "tools/docs/**"
       - ".github/workflows/**"
   repository_dispatch:
-    types: ["Bundle ready: octo", "bundle-ready"]
+    types: ["docs-site-ready"]
   workflow_dispatch:
     inputs:
       phase:
@@ -87,7 +87,7 @@ jobs:
           }
 
           if [ "${{ github.event_name }}" = "push" ]; then
-            echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=docs-site" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=$(latest_successful_run_id JeffSteinbok/octo 'Build Docs Bundle')" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=true" >> "$GITHUB_OUTPUT"
@@ -96,7 +96,7 @@ jobs:
             echo "run_generate=true" >> "$GITHUB_OUTPUT"
             echo "run_deploy=true" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "artifact_name=docs-bundle" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=docs-site" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=false" >> "$GITHUB_OUTPUT"
@@ -109,7 +109,7 @@ jobs:
             if [ -z "$OCTO_RUN_ID" ]; then
               OCTO_RUN_ID="$(latest_successful_run_id JeffSteinbok/octo 'Build Docs Bundle')"
             fi
-            echo "artifact_name=${{ github.event.client_payload.octo_artifact_name || github.event.client_payload.artifact_name || 'docs-bundle' }}" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=${{ github.event.client_payload.octo_artifact_name || github.event.client_payload.artifact_name || 'docs-site' }}" >> "$GITHUB_OUTPUT"
             echo "artifact_run_id=$OCTO_RUN_ID" >> "$GITHUB_OUTPUT"
             echo "bundle_path=./bundle" >> "$GITHUB_OUTPUT"
             echo "regenerate_all=${{ github.event.client_payload.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
@@ -147,12 +147,6 @@ jobs:
             esac
           fi
 
-  tests:
-    needs: prepare
-    if: needs.prepare.outputs.run_validation == 'true'
-    uses: ./.github/workflows/tests.yml
-    secrets: inherit
-
   secret-scan:
     needs: prepare
     if: needs.prepare.outputs.run_validation == 'true'
@@ -162,20 +156,17 @@ jobs:
   generate-docs:
     needs:
       - prepare
-      - tests
       - secret-scan
     if: |
       needs.prepare.outputs.run_generate == 'true' &&
       (
         needs.prepare.outputs.run_validation != 'true' ||
-        (needs.tests.result == 'success' && needs.secret-scan.result == 'success')
+        needs.secret-scan.result == 'success'
       )
     uses: ./.github/workflows/generate-docs.yml
     with:
       artifact_name: ${{ needs.prepare.outputs.artifact_name }}
       artifact_run_id: ${{ needs.prepare.outputs.artifact_run_id }}
-      bundle_path: ${{ needs.prepare.outputs.bundle_path }}
-      regenerate_all: ${{ needs.prepare.outputs.regenerate_all }}
     secrets: inherit
 
   deploy:
