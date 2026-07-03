@@ -1,171 +1,86 @@
-name: Generate Public Docs
+name: Receive Rendered Docs
+
+# Rendering now happens upstream in JeffSteinbok/octo, which uploads a
+# `docs-site` artifact containing the final Jekyll Markdown pages. This
+# workflow simply downloads that artifact, copies the pages into docs/, and
+# commits them to main. No Python rendering happens here anymore.
 
 on:
-  # Manual trigger — either supply an artifact_name to download from a previous
-  # workflow run, or provide a bundle_path that already exists in the workspace.
   workflow_dispatch:
     inputs:
       artifact_name:
-        description: "Name of the octo workflow artifact containing the runtime bundle (leave blank to use bundle_path)"
+        description: "Name of the octo artifact containing the rendered docs site"
         required: false
-        default: ""
+        default: "docs-site"
       artifact_run_id:
-        description: "Octo run ID that uploaded the runtime bundle artifact"
+        description: "Octo run ID that uploaded the rendered site artifact"
         required: false
         default: ""
-      hub_artifact_name:
-        description: "Deprecated — no longer used"
-        required: false
-        default: ""
-      hub_artifact_run_id:
-        description: "Deprecated — no longer used"
-        required: false
-        default: ""
-      bundle_path:
-        description: "Path to an existing bundle on disk (used when artifact_name is blank)"
-        required: false
-        default: "./bundle"
-      regenerate_all:
-        description: "Regenerate all pages (ignore changed_pages.json)"
-        required: false
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
 
   workflow_call:
     inputs:
       artifact_name:
         required: false
         type: string
-        default: "docs-bundle"
+        default: "docs-site"
       artifact_run_id:
         required: false
         type: string
         default: ""
-      hub_artifact_name:
-        required: false
-        type: string
-        default: ""
-      hub_artifact_run_id:
-        required: false
-        type: string
-        default: ""
-      bundle_path:
-        required: false
-        type: string
-        default: "./bundle"
-      regenerate_all:
-        required: false
-        type: string
-        default: "false"
     outputs:
       has_changes:
-        description: "Whether docs generation committed changes to main"
-        value: ${{ jobs.generate-docs.outputs.has_changes }}
+        description: "Whether the received docs committed changes to main"
+        value: ${{ jobs.receive-docs.outputs.has_changes }}
 
 permissions:
   contents: write
 
 jobs:
-  generate-docs:
+  receive-docs:
     runs-on: ubuntu-latest
     outputs:
       has_changes: ${{ steps.commit.outputs.has_changes }}
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: pip install -r tools/docs/requirements.txt
-
-      # Resolve all trigger-specific inputs into a single set of step outputs so
-      # every subsequent step uses one consistent variable regardless of how the
-      # workflow was triggered.
-      - name: Resolve inputs
-        id: inputs
+      # Download the rendered site artifact from the private octo repo.
+      # Uses OCTO_DOCS_BUNDLE_READ_TOKEN because the artifact lives cross-repo.
+      - name: Download rendered site artifact
         run: |
-          if [ "${{ github.event_name }}" = "workflow_call" ]; then
-            ARTIFACT_NAME="${{ inputs.artifact_name }}"
-            if [ -n "$ARTIFACT_NAME" ]; then
-              echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
-              echo "artifact_name=$ARTIFACT_NAME"                       >> "$GITHUB_OUTPUT"
-              echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
-              echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
-            else
-              echo "use_artifact=false"                                 >> "$GITHUB_OUTPUT"
-              echo "artifact_name="                                     >> "$GITHUB_OUTPUT"
-              echo "run_id="                                            >> "$GITHUB_OUTPUT"
-              echo "bundle_path=${{ inputs.bundle_path }}"              >> "$GITHUB_OUTPUT"
-            fi
-            echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
-          else
-            ARTIFACT_NAME="${{ inputs.artifact_name }}"
-            if [ -n "$ARTIFACT_NAME" ]; then
-              echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
-              echo "artifact_name=$ARTIFACT_NAME"                       >> "$GITHUB_OUTPUT"
-              echo "run_id=${{ inputs.artifact_run_id }}"               >> "$GITHUB_OUTPUT"
-              echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
-            else
-              # No artifact specified — download the latest docs-bundle from octo
-              echo "use_artifact=true"                                  >> "$GITHUB_OUTPUT"
-              echo "artifact_name=docs-bundle"                          >> "$GITHUB_OUTPUT"
-              echo "run_id="                                            >> "$GITHUB_OUTPUT"
-              echo "bundle_path=./bundle"                               >> "$GITHUB_OUTPUT"
-            fi
-            echo "regenerate_all=${{ inputs.regenerate_all || 'false' }}" >> "$GITHUB_OUTPUT"
-          fi
-
-      # Download the artifact when one is provided; use `gh run download` so that
-      # the run-id argument is only passed when it is actually set.
-      # The artifact lives in the private octo repo, so we need OCTO_DOCS_BUNDLE_READ_TOKEN.
-      - name: Download bundle artifact
-        if: steps.inputs.outputs.use_artifact == 'true'
-        run: |
-          ARTIFACT_NAME="${{ steps.inputs.outputs.artifact_name }}"
-          RUN_ID="${{ steps.inputs.outputs.run_id }}"
+          ARTIFACT_NAME="${{ inputs.artifact_name || 'docs-site' }}"
+          RUN_ID="${{ inputs.artifact_run_id }}"
+          rm -rf ./incoming
           if [ -n "$RUN_ID" ]; then
-            gh run download "$RUN_ID" --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./bundle
+            gh run download "$RUN_ID" --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./incoming
           else
-            gh run download --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./bundle
+            gh run download --repo JeffSteinbok/octo --name "$ARTIFACT_NAME" --dir ./incoming
           fi
         env:
           GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
 
-      - name: Generate docs
-        id: generate
+      # Copy the rendered Markdown pages into docs/, leaving Jekyll theme files
+      # (_config.yml, _includes/, _sass/, index.md, assets, etc.) untouched.
+      - name: Copy rendered pages into docs/
         run: |
-          EXTRA_FLAGS=""
-          if [ "${{ steps.inputs.outputs.regenerate_all }}" = "true" ]; then
-            EXTRA_FLAGS="--all"
+          if [ ! -d ./incoming ] || [ -z "$(ls -A ./incoming 2>/dev/null)" ]; then
+            echo "::error::No rendered site content was downloaded."
+            exit 1
           fi
-          python tools/docs/generation/generate_all.py \
-            --bundle "${{ steps.inputs.outputs.bundle_path }}" \
-            $EXTRA_FLAGS
+          rsync -av --exclude='.git' ./incoming/ docs/
+          rm -rf ./incoming
 
-      # Always attempt to commit, even if generation had partial failures,
-      # so that successfully generated pages are not lost.
       - name: Commit to main
-        if: always() && steps.inputs.conclusion == 'success'
         id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/
-          git add .last_bundle_ref 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No docs changes to commit."
           else
-            git commit -m "Update generated documentation"
+            git commit -m "Update rendered documentation"
             pushed=false
             for attempt in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
@@ -178,7 +93,7 @@ jobs:
               fi
             done
             if [ "$pushed" != "true" ]; then
-              echo "Failed to push generated docs after retries."
+              echo "Failed to push received docs after retries."
               exit 1
             fi
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
