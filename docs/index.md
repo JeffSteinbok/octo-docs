@@ -138,24 +138,24 @@ Security is the most important aspect of this experiment — even above just hav
 
 ## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
 
-🤖 **Agents** are personas powered by language models. Each agent has its own
+🤖 **[Agents & Channels]({{ site.baseurl }}/agents-channels)** — Agents are personas powered by language models. Each agent has its own
 identity, personality, and set of permitted tools. Agents communicate with
 users through **channels** — messaging platforms like Telegram or Discord.
 
-💬 **Channels** are the messaging platforms that connect agents to users.
-Each channel is bound to a specific agent and handles message routing
-between the platform (e.g. Telegram, Discord) and the agent's conversation loop.
-
-🧩 **Plugins** are self-contained capabilities that agents can invoke: sending
+🧩 **[Plugins]({{ site.baseurl }}/plugins)** are self-contained capabilities that agents can invoke: sending
 email, checking restaurant availability, snapping a security camera, and more.
 Each plugin declares its own dependencies and is independently versioned.
 
-🎯 **Skills** are lightweight, markdown-defined capabilities. Unlike plugins,
+🎯 **[Skills]({{ site.baseurl }}/skills)** are lightweight, markdown-defined capabilities. Unlike plugins,
 skills don't run code — they provide structured prompts and instructions that
 guide an agent's behavior. Think of plugins as _tools_ and skills as _knowledge_.
 
-⚙️ **Services** are long-running background daemons that watch for events (like
+⌨️ **[CLI Tools]({{ site.baseurl }}/clis)** are vetted shell scripts that agents can invoke via `exec` from `~/safebin/`.
+They let agents run deterministic, token-free operations — file transforms, data exports,
+system queries — without reaching for a plugin.
+
+⚙️ **[Services]({{ site.baseurl }}/services)** are long-running background daemons that watch for events (like
 incoming email) and route notifications through the system.
 
-🪝 **Hooks** are event-driven entry points — camera webhooks and other
+🪝 **[Hooks]({{ site.baseurl }}/hooks)** are event-driven entry points — camera webhooks and other
 signals that kick off targeted automations the moment something happens.
