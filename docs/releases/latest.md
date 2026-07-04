@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Release Notes
-nav_order: 7
+nav_order: 11
 ---
 
 # Release Notes
