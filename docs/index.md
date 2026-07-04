@@ -135,6 +135,7 @@ Security is the most important aspect of this experiment — even above just hav
 
 - **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)**— All plugin and config development is done through Copilot CLI. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
 - **Crontab over agent jobs** — Recurring tasks are pushed to crontab whenever possible to avoid spinning up agent sessions. If something fails, the script can send a message to OpenClaw to inform of the error.
+- **Weekly cost report** — Every Monday at 5 AM PT, the root agent runs a [weekly cost report skill]({{ site.baseurl }}/skills/weekly-cost-report) that parses OpenClaw's usage logs, generates a Markdown report broken down by agent, model, and token type, renders it to PDF, and posts it to Discord. It covers token cost breakdown (input / output / cache read / cache write), per-agent spend, cron job vs. interactive split, daily trend, and a model split table — everything needed to spot where costs are climbing and why.
 
 ## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
 
