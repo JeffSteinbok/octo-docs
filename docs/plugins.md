@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **25 plugins** through its runtime.
+Octo currently exposes **26 plugins** through its runtime.
 
 
 ## 🌐 Built-in
@@ -28,6 +28,7 @@ Open-source plugins maintained by [Jeff](https://github.com/JeffSteinbok).
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
 | 📧 | [FastMail tools](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) | Send email and manage calendar events in Fastmail | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
+| 📚 | [Goodreads](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/goodreads) | Read and manage Goodreads shelves via headless Playwright with anti-403 browser context | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/goodreads) |
 | 📊 | [Glances](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) | Read CPU, memory, disk, and summary metrics from a Glances server | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) |
 | 🏠 | [Home Assistant](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
 | 📷 | [Home Assistant – LLM Vision](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
