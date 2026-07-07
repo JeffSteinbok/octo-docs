@@ -10,11 +10,7 @@ This page explains each published agent's permission profile and why it is isola
 
 The public bundle includes agent identity and a simplified permission/config posture. Exact peer bindings, raw filesystem paths, and detailed private allowlists are still omitted.
 
-## Models
-
-- **Primary model:** `github-copilot/claude-sonnet-4.6`
-- **Fallback models:** `github-copilot/gpt-5.4`
-- **Primary image model:** `github-copilot/claude-sonnet-4.6`
+For AI model and voice configuration, see the [Models](models) page.
 
 ## Agent Architecture
 

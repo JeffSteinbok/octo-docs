@@ -6,6 +6,32 @@ nav_order: 11
 
 # Release Notes
 
+## 2026-07-07
+
+
+### Added
+
+- **Strict plugin manifest validation** — unknown keys, missing required fields (`origin`, `name`, `summary`, `docsMode`), and bad `docsMode` values now fail the docs build instead of being silently skipped or mis-bucketed.
+- **Glances service** — documented as a third-party service (server run outside OpenClaw).
+- **About These Docs page** — new static-markdown doc page spec (`tools/docs/page_specs/about-docs.yml`).
+- **Docs pipeline guide** (`docs/DOCS-PIPELINE.md`) — end-user reference for the extract → render → publish flow.
+- **Mail model A/B replay script** (`scripts/mail-model-ab-replay/`) — tooling for replaying mail through different models for evaluation.
+
+### Changed
+
+- **OPENCLAW_CONFIG.md model roles table** — rewritten to match current `config/openclaw.json` (primary `claude-sonnet-4.6`, fallback `gpt-5.4`, image gen `gemini-3-pro-image-preview`, alias `sonnet`).
+- **OPENCLAW_CONFIG.md voice/talk config** — documented TTS (Azure Speech, `en-US-AndrewMultilingualNeural`), realtime voice (`gpt-realtime-mini`, WebRTC), and STT (`azure-stt`).
+- **Docs nav order** — reordered page specs: Skills→5, CLI Tools→6, Services→7, Hooks→8, Scheduled Tasks→9, Release Notes→11.
+- **Services page** — service emoji split into its own column for improved readability.
+- **External plugin classification** — author/repository now read from `doc-manifest.json` only (not `openclaw.plugin.json`), fixing obsidian-vault (`carapace-obsidian`) being silently dropped from the plugins page.
+- **`config-backup` plugin** — now backs up the `safebin/` directory alongside the OpenClaw config.
+- **`static-markdown` strategy** — added to the docs render pipeline for pages that embed a static markdown file as-is.
+
+### Fixed
+
+- **Goodreads plugin manifest** — entry was malformed (`source`/`repo`/`description` keys instead of the standard `origin`/`name`/`summary` shape); now renders correctly in Open Source with a working GitHub link.
+- **GitHub plugin `getIssue` / `formatIssue`** — issue body was fetched from the GitHub API but never returned to the tool caller; now included in `IssueResponse`.
+
 ## 2026-07-03
 
 
