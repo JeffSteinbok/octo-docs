@@ -20,11 +20,11 @@ Long-running systemd service that watches the Obsidian vault directory and maint
 ## Architecture
 
 ```
-┌────────────────────┐       ┌──────────────────┐       ┌────────────────┐
-│  Obsidian Vault    │       │  Indexer Service  │       │  Plugin (r/o)  │
-│  (markdown files)  │──────▶│  (chokidar watch) │──────▶│  (VaultReader) │
-│                    │ watch  │  SQLite FTS5 DB   │ read  │  6 tools       │
-└────────────────────┘       └──────────────────┘       └────────────────┘
+┌──────────────────┐       ┌──────────────────┐       ┌────────────────┐
+│ Obsidian Vault   │       │ Indexer Service  │       │ Plugin (r/o)   │
+│ (markdown files) │──────▶│ (chokidar watch) │──────▶│ (VaultReader)  │
+│                  │ watch │ SQLite FTS5 DB   │  read │ 6 tools        │
+└──────────────────┘       └──────────────────┘       └────────────────┘
 ```
 
 ## Vault Location
