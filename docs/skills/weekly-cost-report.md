@@ -17,19 +17,19 @@ A daily cron job (`enrich-sessions-daily`, ID `457e5a07-8fd3-4e59-95f9-e851d6b58
 
 1. **Refresh usage data** — Run:
    ```bash
-   python3 /home/openclaw/.openclaw/agents/root/workspace/scripts/usage_summary.py --all
+   python3 /home/openclaw/git/octo/agents/root/skills/weekly-cost-report/scripts/usage_summary.py --all
    ```
 
 2. **Generate the Markdown report** — Run:
    ```bash
-   bash /home/openclaw/.openclaw/agents/root/workspace/scripts/generate_cost_report.sh
+   bash /home/openclaw/git/octo/agents/root/skills/weekly-cost-report/scripts/generate_cost_report.sh
    ```
    The script prints the path of the generated `.md` file.
 
 3. **Render to HTML** — Use the `md_to_html` tool:
    - `input_path`: the MD file path from step 2
    - `output_path`: same path but `.html` extension
-   - `template_path`: `/home/openclaw/git/octo/agents/root/reports/api-cost/template.html`
+   - `template_path`: `/home/openclaw/git/octo/agents/root/skills/weekly-cost-report/assets/template.html`
 
 4. **Render to PDF** — Use the `html_to_pdf` tool:
    - `input_path`: the HTML file from step 3
