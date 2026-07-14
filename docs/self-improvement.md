@@ -4,12 +4,6 @@ title: Self-Improvement
 nav_order: 12
 ---
 
----
-layout: default
-title: Self-Improvement
-nav_order: 12
----
-
 # 🔁 Self-Improvement
 
 Octo has a small but growing set of mechanisms for detecting its own drift, inconsistencies, and quality problems — and filing issues to fix them.
