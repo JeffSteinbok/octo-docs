@@ -92,4 +92,4 @@ Scans session trajectories and memory files for recurring tool failures, missing
 
 Every issue filed in `JeffSteinbok/octo` flows through a label-driven state machine. Octo drives each transition automatically; the only manual step is Jeff adding `plan-approved`.
 
-See **[Issue Lifecycle](./ISSUE-LIFECYCLE.md)** for the full state machine with Mermaid diagram and per-state details.
+See **[Issue Lifecycle](./harness/issue-lifecycle)** for the full state machine with Mermaid diagram and per-state details.
