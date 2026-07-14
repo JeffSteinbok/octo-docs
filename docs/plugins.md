@@ -63,4 +63,4 @@ Source is private (often under active development), but docs are still available
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
-| 🐙 | [GitHub](plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [External docs](plugins/github) |
+| 🐙 | [GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [External docs](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/github) |
