@@ -7,29 +7,29 @@ nav_order: 1
 
 # Issue Lifecycle — State Machine
 
-Every issue filed in [`JeffSteinbok/octo`](https://github.com/JeffSteinbok/octo) flows through an automated state machine — from triage through planning, Copilot fix, PR review, and merge. Octo drives each transition automatically via GitHub webhooks; the only manual step required is Jeff adding the `plan-approved` label.
+This document describes the automated lifecycle for issues filed in `JeffSteinbok/octo` — from detection through triage, planning, Copilot fix, PR review, and merge.
 
 ---
 
-## State Diagram
+## State Machine
 
 ```mermaid
 stateDiagram-v2
     [*] --> Opened : issue opened
 
-    Opened --> PlanPending : Octo picks up issue\nadds plan-pending
+    Opened --> PlanPending : Octo picks up issue\nadds plan-pending label
 
-    PlanPending --> PlanReady : Octo writes plan\ncomments on issue\nadds plan-ready
+    PlanPending --> PlanReady : Octo writes plan\ncomments on issue\nadds plan-ready label
 
-    PlanReady --> PlanApproved : Jeff adds\nplan-approved
+    PlanReady --> PlanApproved : Jeff adds\nplan-approved label
 
-    PlanReady --> NeedsInput : Jeff adds\nneeds-input\n(plan needs changes)
+    PlanReady --> NeedsInput : Jeff adds\nneeds-input label\n(plan needs changes)
 
     NeedsInput --> PlanPending : Jeff updates issue\nor clarifies
 
-    PlanApproved --> CopilotAssigned : Octo assigns @copilot\nadds copilot-assigned
+    PlanApproved --> CopilotAssigned : Octo assigns @copilot\nadds copilot-assigned label
 
-    CopilotAssigned --> PRReview : Copilot opens PR\nOcto reviews + adds pr-review
+    CopilotAssigned --> PRReview : Copilot opens PR\nOcto adds pr-review label
 
     PRReview --> Merged : Jeff merges PR
 
@@ -52,17 +52,17 @@ stateDiagram-v2
 | `copilot-assigned` | Copilot is working on the fix |
 | `pr-review` | PR is open — Octo has reviewed and pinged Jeff |
 
-Only one lifecycle label should be active at a time. The only label Jeff needs to add manually is `plan-approved` (or `needs-input` to push back on a plan).
+Only one lifecycle label should be active at a time. Octo manages transitions automatically; the only label Jeff needs to add manually is `plan-approved` (or `needs-input` to push back).
 
 ---
 
-## What Octo Does at Each Step
+## What Octo does at each step
 
 ### Issue opened
 1. Adds `plan-pending`
 2. Reads the issue body
-3. Writes a plan comment: what changes, which files, approach, risks
-4. Replaces `plan-pending` → `plan-ready`
+3. Writes a plan comment — what changes, which files, approach, risks
+4. Replaces `plan-pending` with `plan-ready`
 5. Pings Jeff in `#root`
 
 ### `plan-approved` label added
@@ -80,9 +80,8 @@ Only one lifecycle label should be active at a time. The only label Jeff needs t
 
 ---
 
-## How It's Wired
+## Skill
 
-- GitHub webhooks fire on issue and PR events → Caddy gateway → OpenClaw hooks endpoint
-- The `github-issues` hook mapping routes events to the `coding` agent
-- A transform filter (`github-issues.js`) drops pings, bot events, and unrecognised actors
-- The coding agent's `issue-lifecycle` skill implements the full state machine
+The coding agent's `issue-lifecycle` skill implements this flow. It is invoked by the `github-issues` webhook hook mapping whenever a relevant issue or PR event fires.
+
+See [`agents/coding/skills/issue-lifecycle/SKILL.md`](../agents/coding/skills/issue-lifecycle/SKILL.md).
