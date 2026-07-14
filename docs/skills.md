@@ -12,11 +12,25 @@ Unlike plugins, skills do not execute code. They give agents shared instructions
 
 Octo currently publishes **3 skills** in the public bundle.
 
-| | Skill | Used by | Description |
-|---|-------|---------|-------------|
-| 🔍 | [Agent Review](skills/agent-review) | `root` | Weekly self-improvement analysis — scan session transcripts, tool failures, and memory for patterns; deliver prioritized suggestions to Jeff via Discord DM. |
-| 🏠 | [Ha Smb](skills/ha-smb) | `coding` | Access, read, and write files on the Home Assistant server via SMB. Use when you need to read or modify HA config files (automations.yaml, scripts.yaml, blueprints, configuration.yaml, etc.) directly on the HA server. Credentials are stored in the workspace .env file. |
-| 📊 | [Usage Report](skills/usage-report) | `root` | Generate the weekly LLM API usage and cost report, render to PDF, post to Discord, and commit. |
+Skills are grouped by whether their source is open source or private to Octo. Host-specific commands are omitted from the individual pages — they run on the Octo host and reference private paths.
+
+## 📦 Open Source
+
+Skills whose source lives in a public OpenClaw repo — reusable across installs.
+
+| | Skill | Used by | Description | Source |
+|---|-------|---------|-------------|--------|
+| 📊 | [Usage Report](skills/usage-report) | `root` | Generate the weekly LLM API usage and cost report, render to PDF, post to Discord, and commit. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/usage-report) |
+
+## 🔒 Private (octo)
+
+Octo-specific skills. Source is private, but the docs are published below.
+
+| | Skill | Used by | Description | Source |
+|---|-------|---------|-------------|--------|
+| 🔍 | [Agent Review](skills/agent-review) | `root` | Weekly self-improvement analysis — scan session transcripts, tool failures, and memory for patterns; deliver prioritized suggestions to Jeff via Discord DM. | Private |
+| 🏠 | [HA SMB](skills/ha-smb) | `coding` | Access, read, and write files on the Home Assistant server via SMB. Use when you need to read or modify HA config files (automations.yaml, scripts.yaml, blueprints, configuration.yaml, etc.) directly on the HA server. Credentials are stored in the workspace .env file. | Private |
+
 
 ## How Skills Differ from Plugins
 

@@ -12,14 +12,11 @@ Perform a weekly self-improvement analysis of Octo's own session transcripts, cr
 ## Steps
 
 1. **Run the extraction script** — Execute:
-   ```bash
-   python3 /home/openclaw/git/octo/agents/root/scripts/agent_review.py --days 7 --file-issues --issue-repo JeffSteinbok/octo --issue-min-count 3 --issue-min-runs 2 --issue-max-open-per-run 3
-   ```
-   The script scans trajectory files and memory files, updates fingerprint state at `~/.openclaw/state/agent-review/fingerprints.json`, takes a lightweight local backup under `~/.openclaw/state/agent-review/backups/`, and prints a structured JSON summary to stdout.
+   The script scans trajectory files and memory files, updates fingerprint state at `<host-path>`, takes a lightweight local backup under `<host-path>`, and prints a structured JSON summary to stdout.
 
 2. **Read recent memory files** — For additional context, read the last 7 days of daily memory notes from both agents (files match `YYYY-MM-DD.md` and will be dated within the past week):
-   - `/home/openclaw/.openclaw/agents/main/memory/` — scan files newer than 7 days
-   - `/home/openclaw/.openclaw/agents/root/memory/` — scan files newer than 7 days
+   - `<host-path>` — scan files newer than 7 days
+   - `<host-path>` — scan files newer than 7 days
 
 3. **Synthesize findings** — Review the script output and memory files together. Identify and rank:
    - **Tool failures** — which tools errored most frequently, with representative error messages
@@ -28,24 +25,7 @@ Perform a weekly self-improvement analysis of Octo's own session transcripts, cr
    - **Repeated friction** — tasks Octo struggled with or took multiple retries
    - **Capability gaps** — things Jeff asked for that Octo couldn't do or had to partially refuse
 
-4. **Compose the Discord DM** — Send ONE Discord DM to `target='user:819456855092494356'` with the weekly review. Format:
-
-   ```
-   🔍 **Weekly Agent Review** — week of <date>
-
-   **Top findings this week:**
-
-   🔴 Critical (fix ASAP)
-   - [item]: [brief description + frequency]
-
-   🟡 High priority
-   - [item]: [brief description + frequency]
-
-   🟢 Low priority / ideas
-   - [item]: [brief description]
-
-   **Cron health:** X/Y jobs ran clean · Z had errors
-   ```
+4. **Compose the Discord DM** — Send ONE Discord DM to `target='user:<redacted>'` with the weekly review. Format:
 
    Keep it scannable — bullet points, no walls of text. Omit any section that has nothing to report. If there are zero issues across all categories, send a brief "✅ Clean week — nothing to flag" message.
 

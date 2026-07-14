@@ -9,8 +9,8 @@ nav_exclude: true
 
 This is Octo's thin wrapper around the shared `usage-report` skill in `openclaw-hub`.
 
-- Shared implementation: `/home/openclaw/git/openclaw-hub/skills/usage-report`
-- Octo-specific output dir: `/home/openclaw/git/octo/agents/root/reports/api-cost`
+- Shared implementation: `<host-path>`
+- Octo-specific output dir: `<host-path>`
 - Delivery target: `#root`
 - Daily label enrichment cron: `usage-enrich-sessions`
 - Weekly report cron: `usage-weekly-report`
@@ -38,17 +38,8 @@ These stay Octo-specific:
 ## How Octo runs it
 
 1. Refresh usage CSVs:
-   ```bash
-   python3 /home/openclaw/git/openclaw-hub/skills/usage-report/scripts/usage_summary.py --all
-   ```
 
 2. Generate the Markdown report:
-   ```bash
-   OPENCLAW_LOGS_DIR=/home/openclaw/.openclaw/logs \
-   USAGE_REPORT_OUT_DIR=/home/openclaw/git/octo/agents/root/reports/api-cost \
-   USAGE_REPORT_TEMPLATE=/home/openclaw/git/openclaw-hub/skills/usage-report/assets/template.html \
-   bash /home/openclaw/git/openclaw-hub/skills/usage-report/scripts/generate_usage_report.sh
-   ```
 
 3. Render to HTML with `md_to_html`
 4. Render to PDF with `html_to_pdf`
