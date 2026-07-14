@@ -17,26 +17,26 @@ This document describes the automated lifecycle for issues filed in `JeffSteinbo
 stateDiagram-v2
     [*] --> Opened : issue opened
 
-    Opened --> PlanPending : Octo picks up issue\nadds plan-pending label
+    Opened --> PlanPending : Octo picks up issue
 
-    PlanPending --> PlanReady : Octo writes plan\ncomments on issue\nadds plan-ready label
+    PlanPending --> PlanReady : Octo writes plan + comments
 
-    PlanReady --> PlanApproved : Jeff adds\nplan-approved label
+    PlanReady --> PlanApproved : Jeff adds plan-approved
 
-    PlanReady --> NeedsInput : Jeff adds\nneeds-input label\n(plan needs changes)
+    PlanReady --> NeedsInput : Jeff adds needs-input
 
-    NeedsInput --> PlanPending : Jeff updates issue\nor clarifies
+    NeedsInput --> PlanPending : Jeff clarifies
 
-    PlanApproved --> CopilotAssigned : Octo assigns @copilot\nadds copilot-assigned label
+    PlanApproved --> CopilotAssigned : Octo assigns copilot
 
-    CopilotAssigned --> PRReview : Copilot opens PR\nOcto adds pr-review label
+    CopilotAssigned --> PRReview : Copilot opens PR
 
     PRReview --> Merged : Jeff merges PR
 
-    PRReview --> CopilotAssigned : PR needs rework\nOcto requests changes
+    PRReview --> CopilotAssigned : Octo requests changes
 
     Merged --> [*]
-    Opened --> [*] : closed as wontfix\nor duplicate
+    Opened --> [*] : closed / wontfix
 ```
 
 ---
