@@ -1,3 +1,10 @@
+---
+layout: default
+title: Engineering Harness
+nav_order: 10
+has_children: true
+---
+
 # 🔧 Engineering Harness
 
 The Engineering Harness is the self-improvement loop built into Octo. Detection skills run on a schedule, find problems, and file GitHub issues. A fix workflow then drives each issue from triage through planning, automated fix, and PR review — with GitHub Issues as the single source of truth throughout.
@@ -55,6 +62,7 @@ Validates `config/doc-manifest.json` against the live `openclaw.json` config:
 | WARN | Enabled but undocumented — enabled non-provider plugin missing from manifest |
 
 ```bash
+cd ~/git/octo
 python3 tools/docs/scripts/validate_docs.py           # run + file issues
 python3 tools/docs/scripts/validate_docs.py --dry-run  # preview only
 python3 tools/docs/scripts/validate_docs.py --no-issues  # check only
@@ -62,7 +70,7 @@ python3 tools/docs/scripts/validate_docs.py --no-issues  # check only
 
 ### Agent Review
 
-**Skill:** [`agent-review`](/skills/agent-review)
+**Skill:** `agents/root/skills/agent-review/`
 **Script:** `agents/root/scripts/agent_review.py`
 **Cron:** Mondays 6 AM PT
 **Label:** `agent-review`
@@ -77,4 +85,4 @@ Scans session trajectories and memory files for recurring tool failures, missing
 
 Every issue filed in `JeffSteinbok/octo` flows through a label-driven state machine. Octo drives each transition automatically; the only manual step is Jeff adding `plan-approved`.
 
-See **[Issue Lifecycle →](./harness/issue-lifecycle)** for the full state machine with Mermaid diagram and per-state details.
+See **[Issue Lifecycle](./ISSUE-LIFECYCLE.md)** for the full state machine with Mermaid diagram and per-state details.
