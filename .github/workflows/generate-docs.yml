@@ -88,7 +88,12 @@ jobs:
           done
           # Copy generated top-level files only (no --delete) to preserve theme
           # files and hand-maintained top-level pages.
-          rsync -av --exclude='.git' --exclude='*/' ./incoming/ docs/
+          rsync -av --exclude='.git' --exclude='*/' \
+            --exclude='index.md' \
+            --exclude='harness.md' \
+            --exclude='mail-runtime.md' \
+            --exclude='about-docs.md' \
+            ./incoming/ docs/
           rm -rf ./incoming
 
       - name: Commit to main
