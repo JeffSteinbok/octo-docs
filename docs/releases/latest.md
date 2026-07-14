@@ -45,6 +45,29 @@ nav_order: 13
 - **`jobs.json` schedule format** — `docs-validate-weekly` entry had `schedule` as a plain string instead of `{kind, expr, tz}` dict; fixed to pass CI.
 - **`job_summary` hardening** — `enrich_sessions.py` now handles malformed schedule entries without crashing.
 
+## 2026-07-14
+
+### Upgraded
+- **OpenClaw 2026.7.1**
+
+### Added
+- **Engineering Harness** — new docs section covering the self-improvement loop: detection skills → GitHub Issues → fix lifecycle, with flowchart and Mermaid state machine diagrams
+- **Issue lifecycle labels and coding agent skill** — label-driven workflow with two hard manual gates (Jeff approves plan + merges PR)
+- **`docs-validate` weekly cron** — validates doc manifest vs live config, files deduplicated GitHub issues for findings
+- **Token counts** in weekly usage report per-agent and cron tables
+- **`usage-report` and `agent-review`** migrated to `openclaw-hub` as canonical home
+
+### Changed
+- **Renamed Self-Improvement → Engineering Harness** throughout docs, nav, and homepage
+- **Left nav reordered** and homepage tiles updated to match
+- **Crons renamed** `cost-*` → `usage-*` prefix
+
+### Fixed
+- CI rsync was overwriting hand-maintained top-level pages on every pipeline run
+- Page spec `nav_order` values were stale, causing nav regressions after every render
+- Mermaid edge label `\n` caused diagram parse errors
+- `jobs.json` schedule format bug for `docs-validate-weekly`
+
 ## 2026-07-07
 
 
