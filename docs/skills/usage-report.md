@@ -86,4 +86,5 @@ That daily enrichment is why `usage-enrich-sessions` runs before the weekly repo
 
 The public website entry for this skill is generated from this wrapper and points back to the shared source in `openclaw-hub`.
 
-Source: <https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/usage-report>
+
+> **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/usage-report)
