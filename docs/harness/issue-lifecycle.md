@@ -13,13 +13,6 @@ This document describes the automated lifecycle for issues filed in `JeffSteinbo
 
 ## State Machine
 
-> ⚠️ **Nothing merges without Jeff's approval.**
-> Octo writes plans and reviews PRs, but two manual gates are always required:
-> 1. Jeff adds the `plan-approved` label before any code is written
-> 2. Jeff clicks **Merge** on the PR — no auto-merge is configured
->
-> Code goes in only when Jeff says so.
-
 ```mermaid
 stateDiagram-v2
     [*] --> Opened : issue opened
@@ -91,4 +84,4 @@ Only one lifecycle label should be active at a time. Octo manages transitions au
 
 The coding agent's `issue-lifecycle` skill implements this flow. It is invoked by the `github-issues` webhook hook mapping whenever a relevant issue or PR event fires.
 
-The skill lives at `agents/coding/skills/issue-lifecycle/SKILL.md` in the octo repo.
+See [`agents/coding/skills/issue-lifecycle/SKILL.md`](../agents/coding/skills/issue-lifecycle/SKILL.md).
