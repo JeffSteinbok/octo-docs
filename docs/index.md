@@ -66,35 +66,6 @@ my own.
 
 ---
 
-<div class="info-box info-box--highlight" markdown="0">
-  <h3>🐢 Featured: Carapace Plugin SDK</h3>
-  <p>
-    <a href="https://github.com/JeffSteinbok/carapace-plugin-sdk">
-      <img src="https://raw.githubusercontent.com/JeffSteinbok/carapace-plugin-sdk/main/assets/github-social-preview.png"
-           alt="Carapace Plugin SDK"
-           style="max-width: 480px; width: 100%; border-radius: 8px; margin-bottom: 12px;" />
-    </a>
-  </p>
-  <p>
-    The plugin system that powers OpenClaw is now available as an open-source SDK on npm.
-    <strong>Carapace Plugin SDK</strong> gives you everything you need to build, test, and
-    ship your own plugins — type-safe tool definitions, config schemas, and automatic CLI
-    generation from a single <code>definePlugin()</code> call.
-  </p>
-  <p><strong>Ecosystem:</strong></p>
-  <ul>
-    <li><a href="https://www.npmjs.com/package/carapace-plugin-sdk"><strong>carapace-plugin-sdk</strong></a> — the core SDK (<code>npm install carapace-plugin-sdk</code>)</li>
-    <li><a href="https://github.com/JeffSteinbok/carapace-plugin-template"><strong>carapace-plugin-template</strong></a> — scaffold a new plugin repo in seconds</li>
-    <li><a href="https://github.com/JeffSteinbok/carapace-stock-quotes"><strong>carapace-stock-quotes</strong></a> — a real-world example plugin for stock, ETF, and mutual fund quotes</li>
-    <li><a href="https://github.com/JeffSteinbok/carapace-mail-runtime"><strong>carapace-mail-runtime</strong></a> — provider-agnostic mail rule engine</li>
-    <li><a href="https://github.com/JeffSteinbok/carapace-package-tracking"><strong>carapace-package-tracking</strong></a> — carrier detection, tracking URLs, and status providers</li>
-  </ul>
-  <p>
-    Every plugin in <a href="https://github.com/JeffSteinbok/openclaw-hub">openclaw-hub</a>
-    has been converted to use the Carapace SDK. Want to build your own?
-    <a href="https://github.com/JeffSteinbok/carapace-plugin-template">Start from the template →</a>
-  </p>
-</div>
 
 ## 💬 Channels
 
