@@ -1,14 +1,13 @@
 ---
 layout: default
 title: Self-Improvement
-nav_order: 12
+nav_order: 11
+has_children: true
 ---
 
 # 🔁 Self-Improvement
 
-Octo has a small but growing set of mechanisms for detecting its own drift, inconsistencies, and quality problems — and filing issues to fix them.
-
-This page documents those mechanisms. Over time it will also cover the full lifecycle: how issues get triaged, planned, fixed, reviewed, and closed.
+Octo has a small but growing set of mechanisms for detecting its own drift, inconsistencies, and quality problems — and filing issues to fix them automatically.
 
 ---
 
@@ -41,8 +40,6 @@ For each finding, the script:
 2. Files a new `JeffSteinbok/octo` issue if none already exists
 3. Labels errors as `bug` + `docs-validate`, warnings as `documentation` + `docs-validate`
 
-This means findings flow directly into the normal issue triage and fix lifecycle without any manual step.
-
 ---
 
 ## Agent Review
@@ -51,22 +48,14 @@ This means findings flow directly into the normal issue triage and fix lifecycle
 **Script:** `agents/root/scripts/agent_review.py`
 **Cron:** Weekly, Monday mornings
 
-Scans session trajectories and memory files for recurring tool failures, missing context patterns, and quality issues. Produces a weekly report delivered to `#root` and files `agent-review`-labelled issues for actionable items.
+Scans session trajectories and memory files for recurring tool failures, missing context patterns, and quality issues. Produces a summary report and files `agent-review`-labelled issues for actionable items.
 
 > ⚠️ Known bug: trajectory field names are mismatched ([#210](https://github.com/JeffSteinbok/octo/issues/210)) — cron stats are currently always 0. Fix in progress.
 
 ---
 
-## Planned: Full Fix Lifecycle
+## Issue Lifecycle
 
-Eventually this page will document the end-to-end flow from detection to merged fix:
+Every issue filed in `JeffSteinbok/octo` flows through an automated state machine — from triage through planning, Copilot fix, PR review, and merge. Octo drives each transition; the only manual step is Jeff adding `plan-approved`.
 
-1. **Detect** — validation scripts, agent review cron, or manual observation
-2. **File** — issue auto-filed with appropriate labels
-3. **Triage** — Octo reads the issue, writes a plan, pings Jeff in `#root`
-4. **Plan approved** — Jeff adds `plan-approved` label
-5. **Fix** — Copilot assigned, opens PR
-6. **Review** — Octo reviews PR, comments, pings Jeff
-7. **Merge** — done
-
-See [#208](https://github.com/JeffSteinbok/octo/issues/208) for the full lifecycle design.
+See **[Issue Lifecycle](./self-improvement/issue-lifecycle)** for the full state machine with Mermaid diagram.
