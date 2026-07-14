@@ -60,14 +60,35 @@ jobs:
           GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
 
       # Copy the rendered Markdown pages into docs/, leaving Jekyll theme files
-      # (_config.yml, _includes/, _sass/, index.md, assets, etc.) untouched.
+      # (_config.yml, _includes/, _sass/, index.md, assets, etc.) and
+      # hand-maintained top-level pages (e.g. mail-runtime.md, self-improvement.md)
+      # untouched.
+      #
+      # Pruning strategy:
+      #   * Each generated subdirectory (hooks/, plugins/, releases/, services/,
+      #     skills/) is fully owned by the generator, so we sync it with --delete
+      #     to prune pages that were removed upstream (e.g. a retired skill).
+      #   * Top-level Markdown files are copied WITHOUT --delete so generated pages
+      #     are refreshed while theme files and hand-maintained pages survive.
+      # This deletes stale child pages (the recurring problem) without risking the
+      # Jekyll theme or hand-authored top-level content.
       - name: Copy rendered pages into docs/
         run: |
           if [ ! -d ./incoming ] || [ -z "$(ls -A ./incoming 2>/dev/null)" ]; then
             echo "::error::No rendered site content was downloaded."
             exit 1
           fi
-          rsync -av --exclude='.git' ./incoming/ docs/
+          # Sync each generated subdirectory with --delete so retired pages are pruned.
+          for dir in ./incoming/*/; do
+            [ -d "$dir" ] || continue
+            name="$(basename "$dir")"
+            echo "Syncing generated subdir '$name/' (with prune)"
+            mkdir -p "docs/$name"
+            rsync -av --delete --exclude='.git' "./incoming/$name/" "docs/$name/"
+          done
+          # Copy generated top-level files only (no --delete) to preserve theme
+          # files and hand-maintained top-level pages.
+          rsync -av --exclude='.git' --exclude='*/' ./incoming/ docs/
           rm -rf ./incoming
 
       - name: Commit to main
