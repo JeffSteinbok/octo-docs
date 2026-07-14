@@ -40,6 +40,13 @@ flowchart TD
     RV -->|needs rework| CA
 ```
 
+> ⚠️ **Nothing merges without Jeff's approval.**
+> Octo writes plans and reviews PRs, but two manual gates are always required:
+> 1. Jeff adds the `plan-approved` label before any code is written
+> 2. Jeff clicks **Merge** on the PR — no auto-merge is configured
+>
+> Code goes in only when Jeff says so.
+
 ---
 
 ## Detection Skills
