@@ -1,0 +1,44 @@
+{
+  "agents": [
+    {
+      "id": "coding",
+      "name": "coding",
+      "description": "This is the coding-focused agent. You live in `#coding` on Discord."
+    },
+    {
+      "id": "family",
+      "name": "family",
+      "description": "1. Greet the user warmly"
+    },
+    {
+      "id": "finance",
+      "name": "finance",
+      "description": "I am the finance and retirement planning agent for Jeff."
+    },
+    {
+      "id": "hass-hooks",
+      "name": "hass-hooks",
+      "description": "handle Home Assistant webhook events from `/hooks/hass`. When something interesting happens, snap all outdoor cameras into a collage, analyze it together, and send Jeff a casual one-line summary with the image."
+    },
+    {
+      "id": "mail",
+      "name": "mail",
+      "description": "- **Name:**"
+    },
+    {
+      "id": "main",
+      "name": "main",
+      "description": "- **Name:** Octo"
+    },
+    {
+      "id": "notify",
+      "name": "notify",
+      "description": "relay LAN notify hook payloads directly to Jeff as a Discord DM. No interpretation, no paraphrasing \u2014 send exactly what arrives."
+    },
+    {
+      "id": "root",
+      "name": "root",
+      "description": "You are the **root agent** \u2014 a privileged agent with shell access (exec/process)."
+    }
+  ]
+}

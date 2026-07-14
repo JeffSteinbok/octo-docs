@@ -1,0 +1,197 @@
+{
+  "jobs": [
+    {
+      "name": "config-backup",
+      "description": "Backup openclaw.json to Git daily (only commits if changed)",
+      "summary": "Runs the config-backup plugin to commit OpenClaw configuration changes to git and report failures.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "every",
+        "everyMs": 86400000
+      }
+    },
+    {
+      "name": "evening-briefing",
+      "description": "Weekday 9 PM briefing: what's on tap tomorrow morning",
+      "summary": "Reads the synced calendar snapshots and sends a short Discord briefing about tomorrow's schedule.",
+      "enabled": true,
+      "public": true,
+      "category": "feature",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 22 * * 0-4",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "evening-alarm-reminder",
+      "description": "Nightly 10:30 PM: remind Jeff to check alarm if early morning work meeting",
+      "summary": "Checks for early work meetings or late-night/early-morning conflicts and warns Jeff to adjust plans or alarms.",
+      "enabled": true,
+      "public": true,
+      "category": "feature",
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 22 * * *",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "Daily package delivery check",
+      "description": "",
+      "summary": "Reviews tracked packages for today's deliveries or notable updates and removes delivered items.",
+      "enabled": true,
+      "public": true,
+      "category": "feature",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 8 * * *",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "plugin-health-check",
+      "description": "Daily plugin health check \u2014 posts failures to #octo-status; silent on all-pass",
+      "summary": "Daily smoke test that calls one tool from every configured plugin and reports pass/fail to Discord.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * *",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "late-early-conflict-morning-check",
+      "description": "10 AM daily: flag if today has late meeting (after 6 PM) and tomorrow has early meeting (before 9 AM)",
+      "summary": "Looks for late meetings today plus early meetings tomorrow and flags the conflict early enough to reschedule.",
+      "enabled": true,
+      "public": true,
+      "category": "feature",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 10 * * *",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "Lobster changelog weekly scan",
+      "description": "Weekly Monday scan of lobster.shahine.com/changelog for new ideas",
+      "summary": "Scans the Lobster changelog for new ideas worth adopting and reports only when something changed.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * 1",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "Log rotation - openclaw.log",
+      "description": "",
+      "summary": "Runs copy-truncate rotation for the main OpenClaw log and keeps a bounded archive set.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 3 * * *",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "Nightly browser recycle",
+      "description": "Stop and restart the OpenClaw-managed browser profile nightly to clear stale tabs/workers and keep CDP healthy.",
+      "summary": "Restarts the headless Camoufox browser instance overnight to reclaim memory and clear stale sessions.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 4 * * *",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "openclaw-upgrade-readiness-check",
+      "description": "",
+      "summary": "Checks for new OpenClaw releases and evaluates whether an upgrade is safe based on changelog and config compatibility.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 10 * * *",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "usage-summary-weekly",
+      "description": "",
+      "summary": "Aggregates weekly LLM usage metrics across all providers into a summary report.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * 1",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "weekly-cost-report",
+      "description": "Monday 5 AM PT: generate weekly LLM cost report for last 7 days and post to #root",
+      "summary": "Generates a weekly LLM API cost report, renders it to PDF, posts to Discord, and commits the artifacts.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 5 * * 1",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "agent-review-weekly",
+      "description": "Weekly Monday self-improvement analysis \u2014 scan session transcripts, tool failures, and memory for patterns; deliver prioritized suggestions to Jeff via Discord DM.",
+      "summary": "Scans session transcripts, tool failures, and memory files for patterns; deduplicates recurring findings via fingerprint state, auto-files guarded GitHub issues, and delivers a prioritized weekly report via Discord DM.",
+      "enabled": true,
+      "public": true,
+      "category": "infrastructure",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 6 * * 1",
+        "tz": "America/Los_Angeles"
+      }
+    },
+    {
+      "name": "calendar-fetch",
+      "description": "Fetch calendars at midnight and hourly 7am-5pm PST",
+      "summary": "Runs a shell script to sync calendar data from all configured providers without using LLM tokens.",
+      "enabled": true,
+      "public": true,
+      "category": "feature",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 0,7-17 * * *"
+      }
+    },
+    {
+      "name": "portfolio-closing-briefing",
+      "description": "",
+      "summary": "Pulls closing prices for Jeff's portfolio and sends a concise end-of-day market summary.",
+      "enabled": true,
+      "public": true,
+      "category": "feature",
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 21 * * 1-5",
+        "tz": "America/Los_Angeles"
+      }
+    }
+  ]
+}

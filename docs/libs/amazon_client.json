@@ -1,0 +1,17 @@
+{
+  "library": "amazon_client",
+  "language": "typescript",
+  "name": "amazon_client",
+  "summary": "",
+  "exports": [],
+  "modules": [],
+  "paths": {
+    "package": "libs/ts/amazon_client",
+    "entry": "libs/ts/amazon_client/src/index.ts"
+  },
+  "readme": null,
+  "sections": {},
+  "content": "",
+  "source_url": "https://github.com/JeffSteinbok/octo/tree/main/libs/ts/amazon_client",
+  "origin": "octo"
+}

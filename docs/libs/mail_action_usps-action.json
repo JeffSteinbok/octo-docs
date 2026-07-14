@@ -1,0 +1,9 @@
+{
+  "id": "mail-action-usps",
+  "name": "\ud83d\udcee USPS Mail Action",
+  "summary": "USPS Informed Delivery processing \u2014 digest parsing, vision analysis, memory, rules.",
+  "sections": {},
+  "content": "",
+  "source_url": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/libs/ts/mail_action_usps",
+  "origin": "openclaw-hub"
+}

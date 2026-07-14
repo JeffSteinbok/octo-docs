@@ -1,0 +1,37 @@
+{
+  "library": "mail_actions",
+  "language": "typescript",
+  "name": "@octo/mail-actions",
+  "summary": "Private mail action plugin for `fastmail-sse`. Implements custom mail processing actions that live outside the public `openclaw-hub` monorepo.",
+  "exports": [],
+  "modules": [
+    {
+      "name": "amazon",
+      "summary": "",
+      "path": "libs/ts/mail_actions/src/amazon.ts"
+    },
+    {
+      "name": "costco",
+      "summary": "",
+      "path": "libs/ts/mail_actions/src/costco.ts"
+    },
+    {
+      "name": "self-email",
+      "summary": "",
+      "path": "libs/ts/mail_actions/src/self-email.ts"
+    }
+  ],
+  "paths": {
+    "package": "libs/ts/mail_actions",
+    "entry": "libs/ts/mail_actions/src/index.ts"
+  },
+  "readme": "libs/ts/mail_actions/README.md",
+  "sections": {
+    "Actions": "### `process_amazon_shipment`\n\nDetects Amazon shipping confirmation and out-for-delivery emails, then triggers an agent handoff\nto update the package tracking list automatically.\n\n**Behaviour:**\n\n1. Checks that the sender is from `amazon.com` and the subject contains a shipping keyword\n   (`shipped`, `your order`, `out for delivery`, `delivery`).\n2. If an Amazon order ID (`NNN-NNNNNNN-NNNNNNN`) is found in the email:\n   - Hands off to the `main` agent with a prompt instructing it to:\n     - Call `amazon_get_order` for each order ID\n     - Call `package_add` for each tracking number (or `package_remove` if delivered)\n     - Post a summary to Discord channel `1501454872745082910`\n3. If no order ID is found but raw tracking numbers are detected in the body:\n   - Hands off to the `main` agent to call `package_add` for each number and post a summary.\n4. Returns `[]` (no-op) if the email is not a shipping notification or nothing is found.",
+    "Setup": "### Build\n\n```sh\ncd libs/ts/mail_actions\nnpm install\nnpm run build\n```\n\n### Wire up in fastmail-sse-config.json\n\n```json\n{\n  \"action_plugins\": [\n    \"/home/openclaw/git/octo/libs/ts/mail_actions/dist/index.js\"\n  ],\n  \"mail_rules\": [\n    {\n      \"id\": \"amazon-shipment\",\n      \"accounts\": [\"u54e940a4\"],\n      \"match\": {\n        \"sender_domain\": \"amazon.com\",\n        \"subject_contains\": [\"shipped\", \"Your order\", \"out for delivery\"]\n      },\n      \"actions\": [{ \"name\": \"process_amazon_shipment\" }],\n      \"continue\": false\n    }\n  ]\n}\n```\n\n### Restart service\n\n```sh\nsystemctl --user restart fastmail-sse.service\nsystemctl --user status fastmail-sse.service\n```\n\nYou should see a log line like:\n```\n[fastmail-sse] loaded action plugin: /home/openclaw/git/octo/libs/ts/mail_actions/dist/index.js\n```",
+    "Development": "Dependencies are resolved from the carapace packages via GitHub URLs and local `@octo/*` packages\nvia `file:` paths. The TypeScript compiler uses these for type checking; at runtime the service\nuses its own installed copies.\n\n```sh\nnpm run build   # compile to dist/\nnpm run clean   # remove dist/\n```"
+  },
+  "content": "# @octo/mail-actions\n\nPrivate mail action plugin for `fastmail-sse`. Implements custom mail processing actions that\nlive outside the public `openclaw-hub` monorepo.\n\n## Actions\n\n### `process_amazon_shipment`\n\nDetects Amazon shipping confirmation and out-for-delivery emails, then triggers an agent handoff\nto update the package tracking list automatically.\n\n**Behaviour:**\n\n1. Checks that the sender is from `amazon.com` and the subject contains a shipping keyword\n   (`shipped`, `your order`, `out for delivery`, `delivery`).\n2. If an Amazon order ID (`NNN-NNNNNNN-NNNNNNN`) is found in the email:\n   - Hands off to the `main` agent with a prompt instructing it to:\n     - Call `amazon_get_order` for each order ID\n     - Call `package_add` for each tracking number (or `package_remove` if delivered)\n     - Post a summary to Discord channel `1501454872745082910`\n3. If no order ID is found but raw tracking numbers are detected in the body:\n   - Hands off to the `main` agent to call `package_add` for each number and post a summary.\n4. Returns `[]` (no-op) if the email is not a shipping notification or nothing is found.\n\n## Setup\n\n### Build\n\n```sh\ncd libs/ts/mail_actions\nnpm install\nnpm run build\n```\n\n### Wire up in fastmail-sse-config.json\n\n```json\n{\n  \"action_plugins\": [\n    \"/home/openclaw/git/octo/libs/ts/mail_actions/dist/index.js\"\n  ],\n  \"mail_rules\": [\n    {\n      \"id\": \"amazon-shipment\",\n      \"accounts\": [\"u54e940a4\"],\n      \"match\": {\n        \"sender_domain\": \"amazon.com\",\n        \"subject_contains\": [\"shipped\", \"Your order\", \"out for delivery\"]\n      },\n      \"actions\": [{ \"name\": \"process_amazon_shipment\" }],\n      \"continue\": false\n    }\n  ]\n}\n```\n\n### Restart service\n\n```sh\nsystemctl --user restart fastmail-sse.service\nsystemctl --user status fastmail-sse.service\n```\n\nYou should see a log line like:\n```\n[fastmail-sse] loaded action plugin: /home/openclaw/git/octo/libs/ts/mail_actions/dist/index.js\n```\n\n## Development\n\nDependencies are resolved from the carapace packages via GitHub URLs and local `@octo/*` packages\nvia `file:` paths. The TypeScript compiler uses these for type checking; at runtime the service\nuses its own installed copies.\n\n```sh\nnpm run build   # compile to dist/\nnpm run clean   # remove dist/\n```",
+  "source_url": "https://github.com/JeffSteinbok/octo/tree/main/libs/ts/mail_actions",
+  "origin": "octo"
+}

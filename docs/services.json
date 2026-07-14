@@ -1,0 +1,28 @@
+{
+  "services": [
+    {
+      "id": "fastmail-sse",
+      "name": "FastMail SSE Service",
+      "description": "Real-time email notification daemon using JMAP EventSource",
+      "docs_mode": "external",
+      "source_url": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse"
+    },
+    {
+      "id": "obsidian-indexer",
+      "name": "Obsidian Vault Indexer",
+      "description": "Long-running systemd service that watches the Obsidian vault directory and maintains a SQLite FTS5 full-text search index. Part of the [`carapace-obsidian`](https://github.com/JeffSteinbok/carapace-obsidian) plugin."
+    },
+    {
+      "id": "octo-satellite",
+      "name": "Octo Satellite",
+      "description": "Local secrets broker providing credentialed access to Amazon and Monarch Money without exposing passwords or session cookies to the gateway",
+      "docs_mode": "external",
+      "source_url": "https://github.com/JeffSteinbok/octo-satellite"
+    },
+    {
+      "id": "onedrive-sync",
+      "name": "OneDrive Sync",
+      "description": "Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive using the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) Linux client."
+    }
+  ]
+}

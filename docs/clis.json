@@ -1,0 +1,12 @@
+{
+  "clis": [
+    {
+      "id": "waitlistme",
+      "name": "waitlistme",
+      "summary": "Join a Waitlist.me queue from the command line",
+      "usage": "",
+      "source_url": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/clis/waitlistme",
+      "content": ""
+    }
+  ]
+}

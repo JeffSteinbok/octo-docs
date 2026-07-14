@@ -1,0 +1,241 @@
+{
+  "agents": [
+    {
+      "id": "main",
+      "name": "Octo",
+      "emoji": "\ud83d\udc19",
+      "configProfile": {
+        "toolMode": "customized",
+        "allowedSubagents": [
+          "root",
+          "family",
+          "finance"
+        ],
+        "hasDedicatedWorkspace": false,
+        "capabilities": {
+          "read": "default",
+          "write": "default",
+          "edit": "default",
+          "browser": "default",
+          "exec": "allowed",
+          "process": "denied",
+          "cron": "default",
+          "gateway": "denied",
+          "sessions_send": "default",
+          "sessions_spawn": "default"
+        }
+      }
+    },
+    {
+      "id": "mail",
+      "name": "mail-agent",
+      "emoji": "\ud83d\udcec",
+      "configProfile": {
+        "toolMode": "profile:minimal",
+        "allowedSubagents": [],
+        "hasDedicatedWorkspace": true,
+        "capabilities": {
+          "read": "allowed",
+          "write": "denied",
+          "edit": "denied",
+          "browser": "denied",
+          "exec": "denied",
+          "process": "denied",
+          "cron": "denied",
+          "gateway": "denied",
+          "sessions_send": "default",
+          "sessions_spawn": "default"
+        }
+      }
+    },
+    {
+      "id": "root",
+      "name": "Root",
+      "emoji": "\ud83d\udd11",
+      "configProfile": {
+        "toolMode": "inherited-default",
+        "allowedSubagents": [],
+        "hasDedicatedWorkspace": true,
+        "capabilities": {
+          "read": "default",
+          "write": "default",
+          "edit": "default",
+          "browser": "default",
+          "exec": "default",
+          "process": "default",
+          "cron": "default",
+          "gateway": "default",
+          "sessions_send": "default",
+          "sessions_spawn": "default"
+        }
+      }
+    },
+    {
+      "id": "family",
+      "name": "Family",
+      "emoji": "\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d\udc66",
+      "configProfile": {
+        "toolMode": "profile:messaging",
+        "allowedSubagents": [],
+        "hasDedicatedWorkspace": true,
+        "capabilities": {
+          "read": "denied",
+          "write": "denied",
+          "edit": "denied",
+          "browser": "denied",
+          "exec": "denied",
+          "process": "denied",
+          "cron": "denied",
+          "gateway": "denied",
+          "sessions_send": "default",
+          "sessions_spawn": "default"
+        }
+      }
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "emoji": "\ud83d\udcca",
+      "configProfile": {
+        "toolMode": "profile:minimal",
+        "allowedSubagents": [],
+        "hasDedicatedWorkspace": true,
+        "capabilities": {
+          "read": "allowed",
+          "write": "allowed",
+          "edit": "allowed",
+          "browser": "denied",
+          "exec": "denied",
+          "process": "denied",
+          "cron": "denied",
+          "gateway": "denied",
+          "sessions_send": "default",
+          "sessions_spawn": "default"
+        }
+      }
+    },
+    {
+      "id": "hass-hooks",
+      "name": "HA Hooks",
+      "emoji": "\ud83d\udcf7",
+      "configProfile": {
+        "toolMode": "custom-allowlist",
+        "allowedSubagents": [],
+        "hasDedicatedWorkspace": true,
+        "capabilities": {
+          "read": "default",
+          "write": "default",
+          "edit": "default",
+          "browser": "default",
+          "exec": "default",
+          "process": "default",
+          "cron": "default",
+          "gateway": "default",
+          "sessions_send": "default",
+          "sessions_spawn": "default"
+        }
+      }
+    },
+    {
+      "id": "coding",
+      "name": "Octo (Coding)",
+      "emoji": "\ud83d\udcbb",
+      "configProfile": {
+        "toolMode": "inherited-default",
+        "allowedSubagents": [],
+        "hasDedicatedWorkspace": true,
+        "capabilities": {
+          "read": "inherited",
+          "write": "inherited",
+          "edit": "inherited",
+          "browser": "inherited",
+          "exec": "inherited",
+          "process": "inherited",
+          "cron": "inherited",
+          "gateway": "inherited",
+          "sessions_send": "inherited",
+          "sessions_spawn": "inherited"
+        }
+      }
+    },
+    {
+      "id": "notify",
+      "name": "Notify",
+      "emoji": "\ud83d\udce2",
+      "configProfile": {
+        "toolMode": "custom-allowlist",
+        "allowedSubagents": [],
+        "hasDedicatedWorkspace": true,
+        "capabilities": {
+          "read": "default",
+          "write": "default",
+          "edit": "default",
+          "browser": "default",
+          "exec": "default",
+          "process": "default",
+          "cron": "default",
+          "gateway": "default",
+          "sessions_send": "default",
+          "sessions_spawn": "default"
+        }
+      }
+    }
+  ],
+  "models": {
+    "primary": "github-copilot/claude-sonnet-4.6",
+    "fallbacks": [
+      "github-copilot/gpt-5.4"
+    ],
+    "available": [
+      {
+        "id": "github-copilot/claude-haiku-4.5"
+      },
+      {
+        "id": "github-copilot/claude-sonnet-4.6",
+        "alias": "sonnet"
+      },
+      {
+        "id": "github-copilot/gpt-5.4"
+      },
+      {
+        "id": "github-copilot/gpt-5.4-mini"
+      }
+    ],
+    "imageModel": {
+      "primary": "github-copilot/claude-sonnet-4.6",
+      "fallbacks": [
+        "github-copilot/gpt-5.5"
+      ]
+    }
+  },
+  "channels": [
+    {
+      "type": "discord",
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "groupPolicy": "allowlist",
+      "streaming": {
+        "mode": "partial",
+        "preview": {
+          "toolProgress": false
+        }
+      }
+    },
+    {
+      "type": "telegram",
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "groupPolicy": "allowlist",
+      "streaming": {
+        "mode": "off"
+      }
+    }
+  ],
+  "session": {
+    "scope": "per-channel-peer",
+    "reset": {
+      "mode": "idle",
+      "atHour": 4
+    }
+  }
+}

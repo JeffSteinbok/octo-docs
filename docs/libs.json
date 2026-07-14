@@ -1,0 +1,28 @@
+{
+  "group": "shared-ts-libs",
+  "name": "Shared TypeScript libs",
+  "summary": "",
+  "language": "typescript",
+  "dependency_rules": [],
+  "sections": {},
+  "libraries": [
+    {
+      "id": "amazon_client",
+      "name": "amazon_client",
+      "description": "",
+      "language": "typescript"
+    },
+    {
+      "id": "amazon_status_provider",
+      "name": "Amazon Status Provider",
+      "description": "Carrier status provider for Amazon packages. Fetches order details via the Octo Satellite local proxy, which maintains an authenticated Amazon session.",
+      "language": "typescript"
+    },
+    {
+      "id": "mail_actions",
+      "name": "@octo/mail-actions",
+      "description": "Private mail action plugin for `fastmail-sse`. Implements custom mail processing actions that live outside the public `openclaw-hub` monorepo.",
+      "language": "typescript"
+    }
+  ]
+}

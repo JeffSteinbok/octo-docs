@@ -1,0 +1,16 @@
+{
+  "plugins": [
+    {
+      "plugin": "config-backup",
+      "summary": "Backs up OpenClaw config to Git with SHA-256 change detection",
+      "public_types": [],
+      "endpoints": []
+    },
+    {
+      "plugin": "github",
+      "summary": "Manage GitHub issues. Create, read, update, close, comment on, and list issues.",
+      "public_types": [],
+      "endpoints": []
+    }
+  ]
+}

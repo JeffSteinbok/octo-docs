@@ -1,0 +1,23 @@
+{
+  "library": "amazon_status_provider",
+  "language": "typescript",
+  "name": "Amazon Status Provider",
+  "summary": "Carrier status provider for Amazon packages. Fetches order details via the Octo Satellite local proxy, which maintains an authenticated Amazon session.",
+  "exports": [],
+  "modules": [],
+  "paths": {
+    "package": "libs/ts/amazon_status_provider",
+    "entry": "libs/ts/amazon_status_provider/src/index.ts"
+  },
+  "readme": "libs/ts/amazon_status_provider/README.md",
+  "sections": {
+    "How it works": "1. When a package is added with `package_add`, the Amazon **order ID** is\n   stored alongside the **TBA tracking number** (via the `order_id` param).\n2. On `get_package_status`, the provider reads the stored `order_id`, calls\n   `GET /amazon/orders/:id` on the satellite proxy, and maps the response\n   to a `CarrierStatusResult`.",
+    "Prerequisites": "- Octo Satellite must be running locally (default: `http://localhost:9000`)\n- Satellite must have a valid Amazon session",
+    "Configuration": "| Env var | Default | Description |\n|---------|---------|-------------|\n| `SATELLITE_BASE_URL` | `http://localhost:9000` | Satellite proxy URL |\n| `SATELLITE_TOKEN` | _(none)_ | Optional <redacted-bearer-token> |",
+    "Wiring it up": "Add to `openclaw.json` status_providers alongside the Camoufox provider:\n\n```json\n{\n  \"plugin\": \"package-tracking\",\n  \"config\": {\n    \"status_providers\": [\n      \"/path/to/octo/libs/ts/amazon_status_provider/dist/index.js\",\n      \"/path/to/openclaw-hub/libs/ts/camoufox_status_provider/dist/index.js\"\n    ]\n  }\n}\n```",
+    "Building": "```bash\nnpm install\nnpm run build\nnpm test         # 6 unit tests\n```"
+  },
+  "content": "# Amazon Status Provider\n\nCarrier status provider for Amazon packages. Fetches order details via the\nOcto Satellite local proxy, which maintains an authenticated Amazon session.\n\n## How it works\n\n1. When a package is added with `package_add`, the Amazon **order ID** is\n   stored alongside the **TBA tracking number** (via the `order_id` param).\n2. On `get_package_status`, the provider reads the stored `order_id`, calls\n   `GET /amazon/orders/:id` on the satellite proxy, and maps the response\n   to a `CarrierStatusResult`.\n\n## Prerequisites\n\n- Octo Satellite must be running locally (default: `http://localhost:9000`)\n- Satellite must have a valid Amazon session\n\n## Configuration\n\n| Env var | Default | Description |\n|---------|---------|-------------|\n| `SATELLITE_BASE_URL` | `http://localhost:9000` | Satellite proxy URL |\n| `SATELLITE_TOKEN` | _(none)_ | Optional <redacted-bearer-token> |\n\n## Wiring it up\n\nAdd to `openclaw.json` status_providers alongside the Camoufox provider:\n\n```json\n{\n  \"plugin\": \"package-tracking\",\n  \"config\": {\n    \"status_providers\": [\n      \"/path/to/octo/libs/ts/amazon_status_provider/dist/index.js\",\n      \"/path/to/openclaw-hub/libs/ts/camoufox_status_provider/dist/index.js\"\n    ]\n  }\n}\n```\n\n## Building\n\n```bash\nnpm install\nnpm run build\nnpm test         # 6 unit tests\n```",
+  "source_url": "https://github.com/JeffSteinbok/octo/tree/main/libs/ts/amazon_status_provider",
+  "origin": "octo"
+}

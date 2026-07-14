@@ -1,0 +1,565 @@
+{
+  "plugins": {
+    "config-backup": {
+      "public": true,
+      "canonicalPath": "plugins/config-backup",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "docsMode": "local",
+      "mirrors": [
+        {
+          "path": "plugins/config-backup",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "Config Backup",
+      "origin": "octo",
+      "repoPath": "plugins/config-backup",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/config-backup",
+      "summary": "Backs up OpenClaw config to Git with SHA-256 change detection",
+      "toolCount": 1
+    },
+    "fastmail": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail",
+      "canonicalPath": "plugins/fastmail",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/fastmail",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "FastMail tools",
+      "repoPath": "plugins/fastmail",
+      "summary": "Send email and manage calendar events in Fastmail",
+      "toolCount": 7
+    },
+    "github": {
+      "public": true,
+      "origin": "octo",
+      "docsMode": "external",
+      "name": "GitHub",
+      "emoji": "\ud83d\udc19",
+      "summary": "Manage GitHub issues. Create, read, update, close, comment on, and list issues.",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/github"
+    },
+    "homeassistant": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant",
+      "canonicalPath": "plugins/homeassistant",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/homeassistant",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "Home Assistant",
+      "repoPath": "plugins/homeassistant",
+      "summary": "Control devices, query state, and inspect activity in Home Assistant",
+      "toolCount": 11
+    },
+    "html-to-pdf": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "emoji": "\ud83d\udcc4",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/html-to-pdf",
+      "canonicalPath": "plugins/html-to-pdf",
+      "canonicalRepo": "JeffSteinbok/openclaw-hub",
+      "mirrors": [],
+      "name": "HTML to PDF",
+      "repoPath": "plugins/html-to-pdf",
+      "summary": "Convert HTML files to PDF using Chromium headless",
+      "toolCount": null
+    },
+    "ics-calendar": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar",
+      "canonicalPath": "plugins/ics-calendar",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/ics-calendar",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "ICS Calendar",
+      "repoPath": "plugins/ics-calendar",
+      "summary": "Fetch upcoming events from a published ICS calendar feed",
+      "toolCount": 1
+    },
+    "llmvision": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision",
+      "canonicalPath": "plugins/llmvision",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/llmvision",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "Home Assistant \u2013 LLM Vision",
+      "repoPath": "plugins/llmvision",
+      "summary": "Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events.",
+      "toolCount": 4
+    },
+    "md-to-html": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "emoji": "\ud83d\udcdd",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html",
+      "canonicalPath": "plugins/md-to-html",
+      "canonicalRepo": "JeffSteinbok/openclaw-hub",
+      "mirrors": [],
+      "name": "Markdown to HTML",
+      "repoPath": "plugins/md-to-html",
+      "summary": "Convert styled Markdown reports to HTML using a CSS template",
+      "toolCount": null
+    },
+    "octo-satellite": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "name": "Octo Satellite",
+      "emoji": "\ud83d\udef0\ufe0f",
+      "summary": "OpenClaw toolset providing structured access to the Octo Satellite service. Exposes Amazon order management and Monarch Money financial tools.",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite"
+    },
+    "outlook-calendar": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "name": "Outlook Calendar",
+      "emoji": "\ud83d\udcc5",
+      "summary": "Fetch upcoming events from Outlook personal and family calendars",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar"
+    },
+    "outlook-mail": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "name": "Outlook Mail",
+      "emoji": "\ud83d\udce7",
+      "summary": "Search and read messages from Outlook inboxes",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail"
+    },
+    "outlook-work-calendar": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "name": "Outlook Work Calendar",
+      "emoji": "\ud83d\udcc5",
+      "summary": "Fetch upcoming events from a published Outlook work calendar",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar"
+    },
+    "package-tracking": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/carapace-package-tracking",
+      "sourceUrl": "https://github.com/JeffSteinbok/carapace-package-tracking",
+      "canonicalPath": "plugins/package-tracking",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/package-tracking",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "Package Tracking",
+      "repoPath": "plugins/package-tracking",
+      "summary": "Track packages from UPS, FedEx, USPS, and Amazon",
+      "toolCount": 5
+    },
+    "restaurant-cli": {
+      "public": true,
+      "origin": "external",
+      "docsMode": "external",
+      "name": "restaurant-cli",
+      "emoji": "\ud83c\udf7d\ufe0f",
+      "author": "OmarShahine",
+      "sourceUrl": "https://github.com/omarshahine/restaurant-cli",
+      "summary": "Pluggable reservation booking via Resy, OpenTable, Tock, and other providers",
+      "docsUrl": "https://github.com/omarshahine/restaurant-cli"
+    },
+    "spotify": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "name": "Spotify",
+      "emoji": "\ud83c\udfb5",
+      "summary": "Control Spotify playback, search music, and manage playlists",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify"
+    },
+    "stock-quotes": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/carapace-stock-quotes",
+      "sourceUrl": "https://github.com/JeffSteinbok/carapace-stock-quotes",
+      "canonicalPath": "plugins/stock-quotes",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/stock-quotes",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "Stock Quotes",
+      "repoPath": "plugins/stock-quotes",
+      "summary": "Fetch current stock, ETF, and mutual fund quotes",
+      "toolCount": null
+    },
+    "usps-mail": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail",
+      "canonicalPath": "plugins/usps-mail",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/usps-mail",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "USPS Mail Analyzer",
+      "repoPath": "plugins/usps-mail",
+      "summary": "Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications",
+      "toolCount": 6
+    },
+    "weightwatchers": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers",
+      "canonicalPath": "plugins/weightwatchers",
+      "canonicalRepo": "JeffSteinbok/openclaw-hub",
+      "mirrors": [],
+      "name": "WeightWatchers",
+      "repoPath": "plugins/weightwatchers",
+      "summary": "Search foods, log meals, view diary and points budget via the unofficial WW API",
+      "toolCount": 7
+    },
+    "browser": {
+      "public": true,
+      "origin": "builtin",
+      "docsMode": "external",
+      "name": "Browser",
+      "summary": "Browser automation capability used when the assistant needs to inspect or act on live web pages.",
+      "emoji": "\ud83c\udf10",
+      "docsUrl": "https://playwright.dev/docs/intro",
+      "sourceUrl": "https://playwright.dev/docs/intro"
+    },
+    "github-copilot": {
+      "public": true,
+      "origin": "builtin",
+      "docsMode": "external",
+      "name": "GitHub Copilot",
+      "summary": "Provider integration that lets the instance use GitHub Copilot-hosted models.",
+      "emoji": "\ud83e\udd16",
+      "docsUrl": "https://docs.github.com/en/copilot",
+      "sourceUrl": "https://docs.github.com/en/copilot"
+    },
+    "google": {
+      "public": true,
+      "origin": "builtin",
+      "docsMode": "external",
+      "name": "Google",
+      "summary": "Provider integration for Gemini models and Google-powered web search features.",
+      "emoji": "\ud83d\udd0e",
+      "docsUrl": "https://ai.google.dev/gemini-api/docs",
+      "sourceUrl": "https://ai.google.dev/gemini-api/docs"
+    },
+    "glances": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "emoji": "\ud83d\udcca",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances",
+      "canonicalPath": "plugins/glances",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/glances",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "Glances",
+      "repoPath": "plugins/glances",
+      "summary": "Read CPU, memory, disk, and summary metrics from a Glances server",
+      "toolCount": 5
+    },
+    "withings": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "emoji": "\u2764\ufe0f",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings",
+      "canonicalPath": "plugins/withings",
+      "canonicalRepo": "JeffSteinbok/openclaw-hub",
+      "mirrors": [],
+      "name": "Withings",
+      "repoPath": "plugins/withings",
+      "summary": "Fetch health data from Withings devices (weight, body composition, heart rate, sleep, activity)",
+      "toolCount": 7
+    },
+    "obsidian-vault": {
+      "public": true,
+      "origin": "carapace-obsidian",
+      "docsMode": "external",
+      "emoji": "\ud83d\udcd3",
+      "docsUrl": "https://github.com/JeffSteinbok/carapace-obsidian",
+      "sourceUrl": "https://github.com/JeffSteinbok/carapace-obsidian",
+      "canonicalPath": "plugins/obsidian-vault",
+      "canonicalRepo": "JeffSteinbok/carapace-obsidian",
+      "mirrors": [
+        {
+          "path": ".",
+          "repo": "JeffSteinbok/carapace-obsidian"
+        }
+      ],
+      "name": "Obsidian Vault",
+      "repoPath": ".",
+      "summary": "Read-only access to an Obsidian vault \u2014 search, read, and explore notes securely",
+      "toolCount": 6
+    },
+    "screenshot-capture": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "emoji": "\ud83d\udcf8",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/screenshot-capture",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/screenshot-capture",
+      "canonicalPath": "plugins/screenshot-capture",
+      "canonicalRepo": "JeffSteinbok/octo",
+      "mirrors": [
+        {
+          "path": "plugins/screenshot-capture",
+          "repo": "JeffSteinbok/openclaw-hub"
+        }
+      ],
+      "name": "Screenshot Capture",
+      "repoPath": "plugins/screenshot-capture",
+      "summary": "Capture screenshots from paired nodes, write to gateway media store",
+      "toolCount": 1
+    }
+  },
+  "services": {
+    "onedrive-sync": {
+      "public": true,
+      "name": "OneDrive Sync",
+      "description": "Keeps the Obsidian vault and other files synced to Microsoft OneDrive via the abraunegg/onedrive Linux client"
+    },
+    "obsidian-indexer": {
+      "public": true,
+      "name": "Obsidian Vault Indexer",
+      "description": "Long-running indexer that maintains a SQLite FTS5 index of the Obsidian vault for full-text search"
+    },
+    "fastmail-sse": {
+      "public": true,
+      "name": "FastMail SSE Service",
+      "description": "Real-time email notification daemon using JMAP EventSource",
+      "docsMode": "external",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse"
+    },
+    "octo-satellite": {
+      "public": true,
+      "name": "Octo Satellite",
+      "description": "Local secrets broker providing credentialed access to Amazon and Monarch Money without exposing passwords or session cookies to the gateway",
+      "docsMode": "external",
+      "sourceUrl": "https://github.com/JeffSteinbok/octo-satellite"
+    }
+  },
+  "skills": {
+    "ha-smb": {
+      "public": true
+    },
+    "weekly-cost-report": {
+      "public": true
+    },
+    "agent-review": {
+      "public": true
+    }
+  },
+  "jobs": {
+    "calendar-fetch-hourly": {
+      "public": true,
+      "category": "feature",
+      "summary": "Refreshes the local calendar memory files that calendar briefings and reminder jobs rely on during the day."
+    },
+    "config-backup": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Runs the config-backup plugin to commit OpenClaw configuration changes to git and report failures."
+    },
+    "evening-briefing": {
+      "public": true,
+      "category": "feature",
+      "summary": "Reads the synced calendar snapshots and sends a short Discord briefing about tomorrow's schedule."
+    },
+    "portfolio-closing-briefing": {
+      "public": true,
+      "category": "feature",
+      "summary": "Pulls closing prices for Jeff's portfolio and sends a concise end-of-day market summary."
+    },
+    "evening-alarm-reminder": {
+      "public": true,
+      "category": "feature",
+      "summary": "Checks for early work meetings or late-night/early-morning conflicts and warns Jeff to adjust plans or alarms."
+    },
+    "Daily package delivery check": {
+      "public": true,
+      "category": "feature",
+      "summary": "Reviews tracked packages for today's deliveries or notable updates and removes delivered items."
+    },
+    "daily-health-check": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Sends a daily test email to verify outbound mail is healthy and alerts Jeff only if the send fails."
+    },
+    "Remind Jeff to reach out to Zack Ali for dinner": {
+      "public": false,
+      "category": "feature",
+      "summary": "One-shot personal reminder."
+    },
+    "WW Daily Points Check-in": {
+      "public": false,
+      "category": "feature",
+      "summary": "Checks WeightWatchers daily and weekly points and sends the remaining budget to Jeff."
+    },
+    "late-early-conflict-morning-check": {
+      "public": true,
+      "category": "feature",
+      "summary": "Looks for late meetings today plus early meetings tomorrow and flags the conflict early enough to reschedule."
+    },
+    "Lobster changelog weekly scan": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Scans the Lobster changelog for new ideas worth adopting and reports only when something changed."
+    },
+    "calendar-fetch-midnight": {
+      "public": true,
+      "category": "feature",
+      "summary": "Performs the same calendar sync overnight so the next day starts with fresh memory snapshots."
+    },
+    "ww-diet-sync": {
+      "public": false,
+      "category": "feature",
+      "summary": "Runs the nightly WeightWatchers diet sync script from the main-agent workspace."
+    },
+    "dal394-inbound-check": {
+      "public": false,
+      "category": "feature",
+      "summary": "One-shot flight status check."
+    },
+    "test-reminder": {
+      "public": false,
+      "category": "feature",
+      "summary": "Temporary cron test reminder."
+    },
+    "Log rotation - openclaw.log": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Runs copy-truncate rotation for the main OpenClaw log and keeps a bounded archive set."
+    },
+    "plugin-health-check": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Daily smoke test that calls one tool from every configured plugin and reports pass/fail to Discord."
+    },
+    "weekly-cost-report": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Generates a weekly LLM API cost report, renders it to PDF, posts to Discord, and commits the artifacts."
+    },
+    "usage-summary-weekly": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Aggregates weekly LLM usage metrics across all providers into a summary report."
+    },
+    "openclaw-upgrade-readiness-check": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Checks for new OpenClaw releases and evaluates whether an upgrade is safe based on changelog and config compatibility."
+    },
+    "Nightly browser recycle": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Restarts the headless Camoufox browser instance overnight to reclaim memory and clear stale sessions."
+    },
+    "calendar-fetch": {
+      "public": true,
+      "category": "feature",
+      "summary": "Runs a shell script to sync calendar data from all configured providers without using LLM tokens."
+    },
+    "finance-daily-snapshot": {
+      "public": false,
+      "category": "feature",
+      "summary": "Captures a daily snapshot of portfolio holdings and account balances."
+    },
+    "agent-review-weekly": {
+      "public": true,
+      "category": "infrastructure",
+      "summary": "Scans session transcripts, tool failures, and memory files for patterns; deduplicates recurring findings via fingerprint state, auto-files guarded GitHub issues, and delivers a prioritized weekly report via Discord DM."
+    },
+    "late-early-conflict-benchmark": {
+      "public": false,
+      "category": "infrastructure",
+      "summary": "Benchmark variant of the late-early conflict check for testing."
+    }
+  },
+  "clis": {
+    "waitlistme": {
+      "public": true,
+      "origin": "openclaw-hub",
+      "docsMode": "external",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/clis/waitlistme",
+      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/clis/waitlistme",
+      "name": "waitlistme",
+      "summary": "Join a Waitlist.me queue from the command line"
+    }
+  },
+  "hooks": {
+    "hass": {
+      "public": true,
+      "name": "Home Assistant Events",
+      "summary": "Receives HA automation webhooks (motion, camera/LLMVision detections, doorbell) and responds with camera collage analysis via Discord",
+      "path": "/hooks/hass",
+      "agentId": "hass-hooks"
+    },
+    "notify": {
+      "public": true,
+      "name": "LAN Notify Relay",
+      "summary": "Relays notifications from LAN services directly to Discord DM without interpretation",
+      "path": "/hooks/notify",
+      "agentId": "notify"
+    }
+  }
+}
