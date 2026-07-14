@@ -96,15 +96,27 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
+          git add -A docs/
           if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No docs changes to commit."
           else
-            git commit -m "Update rendered documentation"
+            # The docs/ tree is fully generated and authoritative, so rather than
+            # rebasing (which conflicts when concurrent runs regenerate the same
+            # page) we replay our generated changes on top of the latest remote via
+            # `reset --soft`. This is conflict-free and always lands our fresh output.
             pushed=false
             for attempt in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
+              git fetch origin main
+              git reset --soft origin/main
+              git add -A docs/
+              if git diff --cached --quiet; then
+                echo "Remote already up to date; nothing to push."
+                pushed=true
+                break
+              fi
+              git commit -m "Update rendered documentation"
+              if git push origin main; then
                 pushed=true
                 break
               fi
