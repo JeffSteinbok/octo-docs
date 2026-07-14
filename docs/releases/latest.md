@@ -9,64 +9,31 @@ nav_order: 13
 ## 2026-07-14
 
 
-### Added
-
-- **Engineering Harness** — new first-class docs section covering the full self-improvement loop: detection skills → GitHub Issues → fix lifecycle. Includes flowchart diagram on the overview page and a full state machine diagram on the Issue Lifecycle page.
-- **Issue lifecycle state machine** — label-driven workflow (`plan-pending` → `plan-ready` → `plan-approved` → `copilot-assigned` → `pr-review` → merged) with coding agent skill, Mermaid diagram, and public docs. Two hard manual gates: Jeff adds `plan-approved` and Jeff clicks Merge — nothing goes in automatically.
-- **`issue-lifecycle` coding agent skill** — `agents/coding/skills/issue-lifecycle/SKILL.md` defines what the coding agent does at each label transition.
-- **`docs-validate` skill** — `agents/root/skills/docs-validate/SKILL.md` wraps `validate_docs.py` for use by the root agent.
-- **`openclaw-issue` skill** — `agents/root/skills/openclaw-issue/SKILL.md` documents the `gh auth switch JeffSteinbok` flow for filing upstream openclaw issues without using the forbidden `jeffsteinbokopenclaw` account.
-- **`docs-validate-weekly` cron** — Mondays 6 AM PT, Haiku 4.5, announces findings to `#root` and files GitHub issues with deduplication.
-- **`validate_docs.py`** — 4-check doc manifest validator (schema, manifest↔config, public-but-disabled, enabled-but-undocumented); supports `--dry-run`, `--no-issues`, `--quiet`.
-- **`docs-validate` GitHub label** on `JeffSteinbok/octo`.
-- **Token counts** added to per-agent and cron summary tables in the weekly usage report.
-- **`usage-report` skill** migrated to `openclaw-hub` as canonical home; octo retains a thin SKILL.md wrapper.
-- **`agent-review` skill** migrated to `openclaw-hub`; doc-manifest updated to reflect new origin.
-- **Upstream feature request** filed: `openclaw/openclaw#107138` — per-agent skill visibility/allowlist.
-
-### Changed
-
-- **Renamed Self-Improvement → Engineering Harness** everywhere: internal source docs, page specs, public docs nav, and homepage section.
-- **Left nav reordered**: Home=1, Agents=2, Models=3, Plugins=4, Skills=5, CLI Tools=6, Services=7, Hooks=8, Scheduled Tasks=9, Engineering Harness=10, Mail Runtime=11, About These Docs=12, Release Notes=13.
-- **Homepage tiles reordered** to match new nav order; removed stale "Featured" section; added "Engineering Harness" section above "How OpenClaw Works".
-- **Renamed crons** from `cost-*` prefix to `usage-*` prefix (`usage-enrich-sessions`, `usage-weekly-report`).
-- **`usage-weekly-report` cron** upgraded to `github-copilot/claude-sonnet-4.6`; updated to use openclaw-hub script paths.
-- **Skills page** — grouped skills by open-source vs private; removed hardcoded "How Skills Differ from Plugins" section; source URL callout rendered when `sourceUrl` present in manifest.
-- **`issue-lifecycle` skill** intentionally excluded from public skills page — internal coding-agent implementation detail; Engineering Harness page describes it instead.
-- **OPENCLAW_CONFIG.md** updated to match live config (models, voice/TTS, realtime).
-
-### Fixed
-
-- **Nav order regression** — page specs had stale `nav_order` values that were overwriting hand-edited values on every pipeline render. Fixed at source in all affected page specs.
-- **CI rsync overwrite** — `generate-docs.yml` rsync was clobbering hand-maintained top-level pages (`index.md`, `harness.md`, `mail-runtime.md`, `about-docs.md`) on every pipeline run. Added explicit excludes.
-- **`hooks-overview.yml` YAML parse error** — fixed malformed spec that was breaking the docs pipeline.
-- **Mermaid `\n` in edge labels** — replaced literal `\n` with single-line labels in both internal and public issue-lifecycle docs.
-- **Broken SKILL.md link** in issue-lifecycle public page — replaced relative path link with plain inline code reference.
-- **`jobs.json` schedule format** — `docs-validate-weekly` entry had `schedule` as a plain string instead of `{kind, expr, tz}` dict; fixed to pass CI.
-- **`job_summary` hardening** — `enrich_sessions.py` now handles malformed schedule entries without crashing.
-
-## 2026-07-14
-
 ### Upgraded
+
 - **OpenClaw 2026.7.1**
 
 ### Added
-- **Engineering Harness** — new docs section covering the self-improvement loop: detection skills → GitHub Issues → fix lifecycle, with flowchart and Mermaid state machine diagrams
-- **Issue lifecycle labels and coding agent skill** — label-driven workflow with two hard manual gates (Jeff approves plan + merges PR)
-- **`docs-validate` weekly cron** — validates doc manifest vs live config, files deduplicated GitHub issues for findings
-- **Token counts** in weekly usage report per-agent and cron tables
-- **`usage-report` and `agent-review`** migrated to `openclaw-hub` as canonical home
+
+- **Engineering Harness** — new docs section: self-improvement loop with flowchart (detection → GitHub Issues → fix lifecycle) and full issue lifecycle state machine with Mermaid diagram
+- **Issue lifecycle labels**: `plan-pending`, `plan-ready`, `plan-approved`, `needs-input`, `copilot-assigned`, `pr-review`; coding agent skill drives transitions; two hard manual gates (Jeff approves plan + merges PR)
+- **`docs-validate` skill + weekly cron** — validates doc manifest vs live config, files deduplicated GitHub issues for findings (Mondays 6 AM PT)
+- **`openclaw-issue` skill** — documents safe flow for filing upstream openclaw issues via `gh auth switch JeffSteinbok`
+- **Token counts** in per-agent and cron summary tables of weekly usage report
+- **`usage-report` and `agent-review` skills** migrated to `openclaw-hub` as canonical home
 
 ### Changed
+
 - **Renamed Self-Improvement → Engineering Harness** throughout docs, nav, and homepage
 - **Left nav reordered** and homepage tiles updated to match
 - **Crons renamed** `cost-*` → `usage-*` prefix
 
 ### Fixed
-- CI rsync was overwriting hand-maintained top-level pages on every pipeline run
-- Page spec `nav_order` values were stale, causing nav regressions after every render
-- Mermaid edge label `\n` caused diagram parse errors
-- `jobs.json` schedule format bug for `docs-validate-weekly`
+
+- **CI rsync** was overwriting hand-maintained top-level pages on every pipeline run; added explicit excludes
+- **Page spec `nav_order` values** were stale, causing nav regressions after every render
+- **Mermaid edge label `\n`** caused diagram parse errors; replaced with single-line labels
+- **`jobs.json` schedule format** for `docs-validate-weekly` was plain string instead of `{kind, expr, tz}`
 
 ## 2026-07-07
 
