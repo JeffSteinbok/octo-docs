@@ -6,6 +6,29 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-07-14
+
+### Added
+- **Engineering Harness** — new first-class docs section covering the full self-improvement loop: detection skills → GitHub Issues → fix lifecycle. Includes flowchart diagram on the overview page and a full state machine diagram on the Issue Lifecycle page.
+- **Issue lifecycle state machine** — label-driven workflow (`plan-pending` → `plan-ready` → `plan-approved` → `copilot-assigned` → `pr-review` → merged) with coding agent skill, Mermaid diagram, and public docs. Two hard manual gates: Jeff adds `plan-approved` and Jeff clicks Merge — nothing goes in automatically.
+- **`docs-validate` skill** — wraps `validate_docs.py`; runs weekly on Mondays, files deduplicated GitHub issues for findings.
+- **`validate_docs.py`** — 4-check doc manifest validator (schema, manifest↔config, public-but-disabled, enabled-but-undocumented).
+- **Token counts** added to per-agent and cron summary tables in the weekly usage report.
+- **`usage-report` skill** migrated to `openclaw-hub` as canonical home.
+
+### Changed
+- **Renamed Self-Improvement → Engineering Harness** everywhere: internal source docs, page specs, public docs nav, and homepage section.
+- **Left nav reordered**: Home, Agents, Models, Plugins, Skills, CLI Tools, Services, Hooks, Scheduled Tasks, Engineering Harness, Mail Runtime, About These Docs, Release Notes.
+- **Homepage tiles reordered** to match new nav; removed stale "Featured" section; added "Engineering Harness" section.
+- **Renamed crons** from `cost-*` to `usage-*` prefix.
+- **Skills page** — grouped by open-source vs private; source URL callout rendered when available.
+
+### Fixed
+- **Nav order regression** — page specs had stale `nav_order` values overwriting hand-edited values on every pipeline render.
+- **CI rsync overwrite** — `generate-docs.yml` was clobbering hand-maintained top-level pages on every pipeline run; added explicit excludes.
+- **Mermaid `\n` in edge labels** — replaced literal `\n` with single-line labels.
+- **`jobs.json` schedule format** — `docs-validate-weekly` had `schedule` as plain string instead of `{kind, expr, tz}` dict.
+
 ## 2026-07-07
 
 
