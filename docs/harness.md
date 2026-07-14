@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Self-Improvement
+title: Harness
 nav_order: 11
 has_children: true
 ---
 
-# 🔁 Self-Improvement
+# 🔁 Harness
 
 Octo has a small but growing set of mechanisms for detecting its own drift, inconsistencies, and quality problems — and filing issues to fix them automatically.
 
@@ -58,4 +58,4 @@ Scans session trajectories and memory files for recurring tool failures, missing
 
 Every issue filed in `JeffSteinbok/octo` flows through an automated state machine — from triage through planning, Copilot fix, PR review, and merge. Octo drives each transition; the only manual step is Jeff adding `plan-approved`.
 
-See **[Issue Lifecycle](./self-improvement/issue-lifecycle)** for the full state machine with Mermaid diagram.
+See **[Issue Lifecycle](./harness/issue-lifecycle)** for the full state machine with Mermaid diagram.
