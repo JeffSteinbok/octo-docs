@@ -42,7 +42,7 @@ jobs:
       has_changes: ${{ steps.commit.outputs.has_changes }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Download the rendered site artifact from the private octo repo.
       # Uses OCTO_DOCS_BUNDLE_READ_TOKEN because the artifact lives cross-repo.
