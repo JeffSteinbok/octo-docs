@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Issue Lifecycle
-parent: Harness
+parent: Engineering Harness
 nav_order: 1
 ---
 
