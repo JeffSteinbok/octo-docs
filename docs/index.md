@@ -108,6 +108,14 @@ Security is the most important aspect of this experiment — even above just hav
 - **Crontab over agent jobs** — Recurring tasks are pushed to crontab whenever possible to avoid spinning up agent sessions. If something fails, the script can send a message to OpenClaw to inform of the error.
 - **Weekly cost report** — Every Monday at 5 AM PT, the root agent runs a [weekly cost report skill]({{ site.baseurl }}/skills/weekly-cost-report) that parses OpenClaw's usage logs, generates a Markdown report broken down by agent, model, and token type, renders it to PDF, and posts it to Discord. It covers token cost breakdown (input / output / cache read / cache write), per-agent spend, cron job vs. interactive split, daily trend, and a model split table — everything needed to spot where costs are climbing and why.
 
+## 🔧 Self-Improvement — The Octo Engineering Harness
+
+Octo has a small but growing set of mechanisms for detecting its own drift and quality problems — and fixing them automatically. Validation scripts run on a weekly cron, file GitHub issues for anything they find, and a state machine drives each issue from triage through planning, Copilot fix, PR review, and merge. The only manual step is approving the plan.
+
+**[Engineering Harness →]({{ site.baseurl }}/harness)**
+
+---
+
 ## 🦞 How [OpenClaw](https://openclaw.ai) Works — Super High Level ✈️
 
 🤖 **[Agents & Channels]({{ site.baseurl }}/agents-channels)** — Agents are personas powered by language models. Each agent has its own
