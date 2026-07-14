@@ -11,7 +11,7 @@ Generate the weekly LLM API cost report, render it to PDF, post to Discord, and 
 
 ## Prerequisites
 
-A daily cron job (`enrich-sessions-daily`, ID `457e5a07-8fd3-4e59-95f9-e851d6b58a26`) runs at 4 AM PT every day to keep `~/.openclaw/logs/session-labels.csv` fresh. This enriches sessions with accurate category/subcategory labels **before** the weekly report runs at 5 AM Monday PT. You do not need to run enrich_sessions.py manually.
+A daily cron job (`cost-enrich-sessions`, ID `969d8645-a734-4fac-af1b-c2ce7d2e3caa`) runs at 4 AM PT every day to keep `~/.openclaw/logs/session-labels.csv` fresh. This enriches sessions with accurate category/subcategory labels **before** the weekly report runs at 5 AM Monday PT. You do not need to run enrich_sessions.py manually.
 
 ## Steps
 
@@ -87,7 +87,7 @@ Flags sessions exceeding 3× the p75 token count (or 1M tokens minimum). Useful 
 
 Session labels (used for Section 3b/3c breakdowns and Recommendations) come from two sources:
 
-1. **`session-labels.csv`** — Written by `enrich_sessions.py` (daily at 4 AM via cron). Provides high/medium confidence labels using heuristics + optional LLM fallback.
+1. **`session-labels.csv`** — Written by `enrich_sessions.py` (daily at 4 AM via `cost-enrich-sessions` cron). Provides high/medium confidence labels using heuristics + optional LLM fallback.
 2. **Inline heuristics** — `usage_summary.py` falls back to reading the session `.jsonl` file directly for unlabeled sessions.
 
 The daily enrichment cron ensures label coverage is maximized before each Monday report.
