@@ -28,7 +28,7 @@ Octo-specific skills. Source is private, but the docs are published below.
 
 | | Skill | Used by | Description | Source |
 |---|-------|---------|-------------|--------|
-| 🔍 | [Agent Review](skills/agent-review) | `root` | Weekly self-improvement analysis — scan session transcripts, tool failures, and memory for patterns; deliver prioritized suggestions to Jeff via Discord DM. | Private |
+| 🔍 | [Agent Review](skills/agent-review) | `root` | Weekly self-improvement analysis — scan session transcripts, tool failures, cron errors, and memory for patterns; file GitHub issues for recurring findings; deliver prioritized suggestions to Jeff via Discord DM. | Private |
 | 🏠 | [HA SMB](skills/ha-smb) | `coding` | Access, read, and write files on the Home Assistant server via SMB. Use when you need to read or modify HA config files (automations.yaml, scripts.yaml, blueprints, configuration.yaml, etc.) directly on the HA server. Credentials are stored in the workspace .env file. | Private |
 
 
