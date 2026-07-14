@@ -1,7 +1,7 @@
 ---
 layout: default
 title: About These Docs
-nav_order: 10
+nav_order: 12
 ---
 
 # How Octo's Docs System Works
@@ -151,7 +151,7 @@ sources:
 front_matter:
   layout: default
   title: Plugins
-  nav_order: 4
+  nav_order: 12
 ```
 
 The `strategy` field selects a rendering function. All strategies are deterministic — no templating engine, no LLM:
