@@ -5,7 +5,7 @@ nav_order: 2
 nav_exclude: true
 ---
 
-# 🧠 Ha Smb
+# 🏠 Ha Smb
 
 Read and write files on the HA config share (host configured via `HA_SMB_HOST`). Credentials load automatically from the workspace `.env` file.
 

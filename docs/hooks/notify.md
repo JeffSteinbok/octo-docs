@@ -1,7 +1,7 @@
 ---
 layout: default
 title: LAN Notify Relay
-nav_order: 2
+nav_order: 3
 nav_exclude: true
 ---
 

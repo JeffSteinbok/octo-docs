@@ -5,7 +5,7 @@ nav_order: 1
 nav_exclude: true
 ---
 
-# 🧠 Agent Review
+# 🔍 Agent Review
 
 Perform a weekly self-improvement analysis of Octo's own session transcripts, cron run history, and memory files. Identify what's broken, friction-heavy, or missing, then deliver a prioritized summary to Jeff.
 
