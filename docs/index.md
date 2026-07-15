@@ -15,6 +15,11 @@ nav_order: 1
 </div>
 
 <div class="card-grid" markdown="0">
+  <a class="card" href="{{ site.baseurl }}/memory">
+    <div class="card-icon">🧠</div>
+    <div class="card-title">Memory</div>
+    <div class="card-desc">How agents remember — manual notes, dreaming, and HEARTBEAT discipline</div>
+  </a>
   <a class="card" href="{{ site.baseurl }}/agents-channels">
     <div class="card-icon">🤖</div>
     <div class="card-title">Agents &amp; Channels</div>
@@ -139,3 +144,7 @@ incoming email) and route notifications through the system.
 
 🪝 **[Hooks]({{ site.baseurl }}/hooks)** are event-driven entry points — camera webhooks and other
 signals that kick off targeted automations the moment something happens.
+
+🧠 **[Memory]({{ site.baseurl }}/memory)** covers how agents build up long-term knowledge — manual
+`MEMORY.md` files and daily notes committed to git, plus the autonomous **dreaming** process
+that synthesises session transcripts in the background during idle time.
