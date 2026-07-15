@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **26 plugins** through its runtime.
+Octo currently exposes **25 plugins** through its runtime.
 
 
 ## 🌐 Built-in
@@ -45,7 +45,6 @@ Open-source plugins maintained by [Jeff](https://github.com/JeffSteinbok).
 | 🎵 | [Spotify](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) | Control Spotify playback, search music, and manage playlists | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) |
 | 📈 | [Stock Quotes](https://github.com/JeffSteinbok/carapace-stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [GitHub ↗](https://github.com/JeffSteinbok/carapace-stock-quotes) |
 | 📬 | [USPS Mail Analyzer](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) | Analyze USPS Informed Delivery digest emails: parse mailpiece scans, vision-classify, apply rules, write memory, send notifications | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/usps-mail) |
-| 🍽️ | [WeightWatchers](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers) | Search foods, log meals, view diary and points budget via the unofficial WW API | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/weightwatchers) |
 | ❤️ | [Withings](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) | Fetch health data from Withings devices (weight, body composition, heart rate, sleep, activity) | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/withings) |
 
 ## 🔌 External
