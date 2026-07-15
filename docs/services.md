@@ -13,6 +13,7 @@ OpenClaw services are background processes that keep long-running automations av
 
 |    | Service | Description | Docs |
 | -- | ------- | ----------- | ---- |
+| 🛡️ | Config Watchdog | Watches `openclaw.json` and auto-recovers the gateway if a bad config is detected — rotating backups, recovery ladder, and GitHub incident filing | [Read more →](services/config-watchdog) |
 | 📡 | FastMail SSE Service | Real-time email notification daemon using JMAP EventSource | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/fastmail-sse) |
 | ⚙️ | Glances | Third-party system-monitoring server run outside OpenClaw on each monitored host; the Glances plugin reads CPU, memory, disk, and summary metrics from it | [GitHub ↗](https://github.com/nicolargo/glances) |
 | 📝 | Obsidian Vault Indexer | Long-running systemd service that watches the Obsidian vault directory and maintains a SQLite FTS5 full-text search index. Part of the [`carapace-obsidian`](https://github.com/JeffSteinbok/carapace-obsidian) plugin. | [Read more →](services/obsidian-indexer) |

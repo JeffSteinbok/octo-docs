@@ -395,6 +395,14 @@
       "description": "Local secrets broker providing credentialed access to Amazon and Monarch Money without exposing passwords or session cookies to the gateway",
       "docsMode": "external",
       "sourceUrl": "https://github.com/JeffSteinbok/octo-satellite"
+    },
+    "config-watchdog": {
+      "public": true,
+      "source": "openclaw-hub",
+      "name": "Config Watchdog",
+      "summary": "Watches openclaw.json and auto-recovers the gateway if a bad config is detected \u2014 rotating backups, recovery ladder, and GitHub incident filing.",
+      "docsMode": "local",
+      "docsPath": "services/config-watchdog"
     }
   },
   "skills": {
