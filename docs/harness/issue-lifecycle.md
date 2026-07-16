@@ -15,7 +15,7 @@ This document describes the automated lifecycle for issues filed in `JeffSteinbo
 
 > ⚠️ **Nothing merges without Jeff's approval.**
 > Octo writes plans and reviews PRs, but two manual gates are always required:
-> 1. Jeff adds the `plan-approved` label before any code is written
+> 1. Jeff adds the `ilc:plan-approved` label before any code is written
 > 2. Jeff clicks **Merge** on the PR — no auto-merge is configured
 >
 > Code goes in only when Jeff says so.
@@ -24,23 +24,27 @@ This document describes the automated lifecycle for issues filed in `JeffSteinbo
 stateDiagram-v2
     [*] --> Opened : issue opened
 
-    Opened --> PlanPending : Octo picks up issue
+    Opened --> PlanPending : Octo picks up issue (ilc:plan-pending)
 
-    PlanPending --> PlanReady : Octo writes plan + comments
+    PlanPending --> PlanWorking : Octo starts writing (ilc:plan-working)
 
-    PlanReady --> PlanApproved : Jeff adds plan-approved
+    PlanWorking --> PlanComplete : plan written + commented (ilc:plan-complete)
 
-    PlanReady --> NeedsInput : Jeff adds needs-input
+    PlanComplete --> PlanApproved : Jeff adds ilc:plan-approved
 
-    NeedsInput --> PlanPending : Jeff clarifies
+    PlanComplete --> NeedsInput : Jeff adds ilc:needs-input
 
-    PlanApproved --> CopilotAssigned : Octo assigns copilot
+    NeedsInput --> PlanWorking : Jeff clarifies
 
-    CopilotAssigned --> PRReview : Copilot opens PR
+    PlanApproved --> Implementing : Octo spawns coding agent (ilc:impl-working)
+
+    Implementing --> ImplComplete : code committed (ilc:impl-complete)
+
+    ImplComplete --> PRReview : PR opened (ilc:pr-review)
 
     PRReview --> Merged : Jeff merges PR
 
-    PRReview --> CopilotAssigned : Octo requests changes
+    PRReview --> Implementing : review comments (ilc:pr-needs-work)
 
     Merged --> [*]
     Opened --> [*] : closed / wontfix
@@ -50,40 +54,60 @@ stateDiagram-v2
 
 ## Labels
 
+All lifecycle labels are namespaced with the `ilc:` prefix (**i**ssue **l**ife**c**ycle) so they group together and never collide with ad-hoc labels. Only one lifecycle label should be active at a time.
+
+**Plan phase**
+
 | Label | Meaning |
 |---|---|
-| `plan-pending` | Octo is reading the issue and writing a plan |
-| `plan-ready` | Plan written and commented — awaiting Jeff's review |
-| `plan-approved` | Jeff approved the plan — Copilot can be assigned |
-| `needs-input` | Plan needs changes or clarification before proceeding |
-| `copilot-assigned` | Copilot is working on the fix |
-| `pr-review` | PR is open — Octo has reviewed and pinged Jeff |
+| `ilc:plan-pending` | Plan queued, not yet started |
+| `ilc:plan-working` | Octo is actively writing the plan |
+| `ilc:plan-complete` | Plan written and commented — awaiting Jeff's review |
+| `ilc:needs-input` | Blocked — waiting on info or a decision before proceeding |
+| `ilc:plan-approved` | Jeff approved the plan — implementation can start |
 
-Only one lifecycle label should be active at a time. Octo manages transitions automatically; the only label Jeff needs to add manually is `plan-approved` (or `needs-input` to push back).
+**Implementation phase**
+
+| Label | Meaning |
+|---|---|
+| `ilc:impl-pending` | Implementation queued, not yet started |
+| `ilc:impl-working` | Coding subagent is actively implementing |
+| `ilc:impl-complete` | Implementation done, PR not yet open |
+
+**PR phase**
+
+| Label | Meaning |
+|---|---|
+| `ilc:pr-draft` | Draft PR open |
+| `ilc:pr-review` | PR ready for Jeff's review and merge |
+| `ilc:pr-needs-work` | PR has review comments — needs fixes |
+
+Octo manages transitions automatically; the only labels Jeff adds manually are `ilc:plan-approved` (to proceed) or `ilc:needs-input` (to push back).
 
 ---
 
 ## What Octo does at each step
 
 ### Issue opened
-1. Adds `plan-pending`
+1. Adds `ilc:plan-pending`, then `ilc:plan-working` as it starts
 2. Reads the issue body
 3. Writes a plan comment — what changes, which files, approach, risks
-4. Replaces `plan-pending` with `plan-ready`
-5. Pings Jeff in `#root`
+4. Replaces `ilc:plan-working` with `ilc:plan-complete`
+5. Pings Jeff in the issue's `#coding` thread
 
-### `plan-approved` label added
-1. Removes `plan-ready`
-2. Assigns `@copilot` to the issue
-3. Adds `copilot-assigned`
-4. Pings Jeff in `#root`
+### `ilc:plan-approved` label added
+1. Removes `ilc:plan-complete`
+2. Spawns the coding agent into the `#coding` thread; sets `ilc:impl-working`
+3. Coding agent implements the fix, commits, sets `ilc:impl-complete`, opens a PR
+4. Adds `ilc:pr-review`
+5. Pings Jeff in the thread
 
-### PR opened by Copilot
+### PR opened
 1. Reads the diff
 2. Reviews for correctness, completeness, style
 3. Posts a review comment on the PR
-4. Adds `pr-review` to the issue
-5. Pings Jeff in `#root`
+4. Ensures `ilc:pr-review` is set on the issue
+5. Pings Jeff in the thread
 
 ---
 

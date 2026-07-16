@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## Unreleased
+
+
+### Changed
+
+- **Issue lifecycle labels renamed to `ilc:` namespace** and expanded into a 3-phase model (plan → impl → pr): `ilc:plan-pending`, `ilc:plan-working`, `ilc:plan-complete`, `ilc:needs-input`, `ilc:plan-approved`, `ilc:impl-pending`, `ilc:impl-working`, `ilc:impl-complete`, `ilc:pr-draft`, `ilc:pr-review`, `ilc:pr-needs-work`. Replaces the old flat set (`plan-pending`, `plan-ready`, `plan-approved`, `copilot-assigned`, `pr-review`, `pr-pending`, `pr-needs-work`, `needs-input`). Docs, both issue-lifecycle skills, agent AGENTS.md quick-refs, and the PR-monitor cron updated to match. Stale labels (`plan-needed`, `pr-pending`, `ready to implement`) removed from GitHub.
+
 ## 2026-07-14
 
 
