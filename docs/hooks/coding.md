@@ -133,33 +133,20 @@ Write daily notes to `memory/YYYY-MM-DD.md` — decisions made, things in flight
 
 All implementation work on `JeffSteinbok/octo` goes through a defined lifecycle. See `skills/issue-lifecycle/SKILL.md` for the full playbook (also at `agents/root/workspace/skills/issue-lifecycle/SKILL.md` for root agent view).
 
-All lifecycle labels are namespaced with the `ilc:` prefix (**i**ssue **l**ife**c**ycle). Exactly one is active at a time.
-
 ### State Machine (quick ref)
 
-**Plan phase**
-- 🟡 `ilc:plan-pending` — Plan queued, not yet started
-- 🟨 `ilc:plan-working` — Octo is actively writing the plan
-- 🔵 `ilc:plan-complete` — Plan written, Jeff reviews
-- ⏸️ `ilc:needs-input` — Blocked, waiting on info or decision
-- 🟣 `ilc:plan-approved` — Jeff approved, ready to implement *(gate)*
-
-**Implementation phase**
-- ⚪ `ilc:impl-pending` — Implementation queued, not yet started
-- 🟪 `ilc:impl-working` — Subagent actively implementing
-- 🟦 `ilc:impl-complete` — Implementation done, PR not yet open
-
-**PR phase**
-- 📝 `ilc:pr-draft` — Draft PR open
-- 🟠 `ilc:pr-review` — PR ready for Jeff review and merge *(gate)*
-- 🔴 `ilc:pr-needs-work` — PR has review comments, pick it back up
+- 🟡 `plan-pending` — Octo is writing a plan
+- 🔵 `plan-ready` — Plan written, Jeff reviews
+- 🟣 `plan-approved` — Coding agent implements the fix
+- 🟠 `pr-pending` — PR open, Jeff reviews
+- 🔴 `pr-needs-work` — PR has comments, pick it back up
 - ✅ closed — Merged and done
 
 ### Approval Protocol
 
 **Explicit approval only:**
 - `approve #N` or `approved #N` in `#root` or coding thread ✅
-- Adding `ilc:plan-approved` label in GitHub ✅
+- Adding `plan-approved` label in GitHub ✅
 - "sure", "ok", "sounds good" without an issue number ❌
 
 ### Rules
@@ -167,8 +154,8 @@ All lifecycle labels are namespaced with the `ilc:` prefix (**i**ssue **l**ife**
 - Branch `fix/<N>-<slug>` off `main` for every issue
 - Commit with `fix: <description> (closes #N)`
 - PR body must include `Closes #N` so GitHub auto-closes on merge
-- Add `ilc:pr-review` label when PR is ready; remove the `ilc:impl-*` label
-- Post all updates in the Discord thread for `#N` (channel `1500294291149422642`)
+- Add `pr-pending` label when PR is open; remove `plan-approved`
+- Post all updates in the Discord thread for `#N` using `channel:1500294291149422642`
 - Jeff always merges — **no auto-merge, ever**
 
 ## Subagent Spawning — Thread Delivery

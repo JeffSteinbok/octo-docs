@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **25 plugins** through its runtime.
+Octo currently exposes **24 plugins** through its runtime.
 
 
 ## 🌐 Built-in
@@ -37,8 +37,7 @@ Open-source plugins maintained by [Jeff](https://github.com/JeffSteinbok).
 | 📝 | [Markdown to HTML](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html) | Convert styled Markdown reports to HTML using a CSS template | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/md-to-html) |
 | 📓 | [Obsidian Vault](https://github.com/JeffSteinbok/carapace-obsidian) | Read-only access to an Obsidian vault — search, read, and explore notes securely | [GitHub ↗](https://github.com/JeffSteinbok/carapace-obsidian) |
 | 🛰️ | [Octo Satellite](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) | OpenClaw toolset providing structured access to the Octo Satellite service. Exposes Amazon order management and Monarch Money financial tools. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) |
-| 📅 | [Outlook Calendar](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar) | Fetch upcoming events from Outlook personal and family calendars | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar) |
-| 📧 | [Outlook Mail](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) | Search and read messages from Outlook inboxes | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail) |
+| 📧 | [Outlook](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook) | Mail and calendar tools for Outlook via Microsoft Graph | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook) |
 | 📅 | [Outlook Work Calendar](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
 | 📦 | [Package Tracking](https://github.com/JeffSteinbok/carapace-package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | [GitHub ↗](https://github.com/JeffSteinbok/carapace-package-tracking) |
 | 📸 | [Screenshot Capture](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/screenshot-capture) | Capture screenshots from paired nodes, write to gateway media store | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/screenshot-capture) |
