@@ -57,8 +57,8 @@ nav_order: 1
 This is the documentation for **Octo** 🐙 — [Jeff Steinbok](https://github.com/JeffSteinbok)'s personal instance of
 [OpenClaw](https://openclaw.ai), a modular AI assistant framework.
 
-Selected public plugins, services, and shared Python libraries documented here are also mirrored in
-[`openclaw-hub`](https://github.com/JeffSteinbok/openclaw-hub), which acts as the public source repo for those surfaces.
+Selected public plugins, services, and shared Python libraries documented here are mirrored in their public source repos, including
+[`carapace-outlook`](https://github.com/JeffSteinbok/carapace-outlook), [`carapace-stock-quotes`](https://github.com/JeffSteinbok/carapace-stock-quotes), and [`openclaw-hub`](https://github.com/JeffSteinbok/openclaw-hub).
 
 Much of this setup is inspired by [Omar Shahine](https://github.com/omarshahine)'s
 work on 🦞 [Lobster](https://lobster.shahine.com) — his docs inspired me to publish
@@ -84,7 +84,7 @@ Security is the most important aspect of this experiment — even above just hav
 
 ### 📬 Mail & Calendar
 
-- **Full mail read access** — Octo reads Jeff's personal Outlook inbox directly via the Microsoft Graph API (OAuth2). Mail is never injected into the AI as raw content — Octo queries it on demand using structured API calls.
+- **Full mail, calendar, and task access** — Octo reads Jeff's personal Outlook data directly via the Microsoft Graph API (OAuth2) through `carapace-outlook`. Mail is never injected into the AI as raw content — Octo queries it on demand using structured API calls.
 - **Calendar access** — Octo fetches Jeff's personal and family calendars via Graph API, Nicole's calendar via ICS feed, and the work calendar via Exchange/Graph API. Calendars are synced to markdown files in memory every hour (7 AM–5 PM) and at midnight.
 - **Dedicated mailbox** — Octo has its own mailbox on [Fastmail](https://www.fastmail.com) where it sends mail on Jeff's behalf. Incoming mail to that address is monitored via a Python SSE service.
 

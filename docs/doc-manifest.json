@@ -143,25 +143,15 @@
       "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite",
       "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite"
     },
-    "outlook-calendar": {
+    "outlook": {
       "public": true,
-      "origin": "openclaw-hub",
+      "origin": "carapace-outlook",
       "docsMode": "external",
-      "name": "Outlook Calendar",
-      "emoji": "\ud83d\udcc5",
-      "summary": "Fetch upcoming events from Outlook personal and family calendars",
-      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar",
-      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-calendar"
-    },
-    "outlook-mail": {
-      "public": true,
-      "origin": "openclaw-hub",
-      "docsMode": "external",
-      "name": "Outlook Mail",
+      "name": "Outlook",
       "emoji": "\ud83d\udce7",
-      "summary": "Search and read messages from Outlook inboxes",
-      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail",
-      "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-mail"
+      "summary": "Mail, calendar, and task tools for Outlook via Microsoft Graph",
+      "docsUrl": "https://github.com/JeffSteinbok/carapace-outlook",
+      "sourceUrl": "https://github.com/JeffSteinbok/carapace-outlook"
     },
     "outlook-work-calendar": {
       "public": true,
