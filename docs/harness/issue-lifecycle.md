@@ -7,16 +7,17 @@ nav_order: 1
 
 # Issue Lifecycle — State Machine
 
-This document describes the automated lifecycle for issues filed in `JeffSteinbok/octo` — from detection through triage, planning, Copilot fix, PR review, and merge.
+This document describes the automated lifecycle for issues filed in `JeffSteinbok/octo` — from Jeff's approval through planning, implementation, PR review, and merge.
 
 ---
 
 ## State Machine
 
 > ⚠️ **Nothing merges without Jeff's approval.**
-> Octo writes plans and reviews PRs, but two manual gates are always required:
-> 1. Jeff adds the `ilc:plan-approved` label before any code is written
-> 2. Jeff clicks **Merge** on the PR — no auto-merge is configured
+> Two manual gates are always required:
+> 1. Jeff adds `ilc:approved` to kick off planning
+> 2. Jeff adds `ilc:plan-approved` to kick off implementation
+> 3. Jeff clicks **Merge** on the PR — no auto-merge, ever
 >
 > Code goes in only when Jeff says so.
 
@@ -24,19 +25,17 @@ This document describes the automated lifecycle for issues filed in `JeffSteinbo
 stateDiagram-v2
     [*] --> Opened : issue opened
 
-    Opened --> PlanPending : Octo picks up issue (ilc:plan-pending)
+    Opened --> [*] : nothing happens automatically
 
-    PlanPending --> PlanWorking : Octo starts writing (ilc:plan-working)
+    Opened --> PlanWorking : Jeff adds ilc:approved\nOcto starts writing plan (ilc:plan-working)
 
     PlanWorking --> PlanComplete : plan written + commented (ilc:plan-complete)
-
-    PlanComplete --> PlanApproved : Jeff adds ilc:plan-approved
 
     PlanComplete --> NeedsInput : Jeff adds ilc:needs-input
 
     NeedsInput --> PlanWorking : Jeff clarifies
 
-    PlanApproved --> Implementing : Octo spawns coding agent (ilc:impl-working)
+    PlanComplete --> Implementing : Jeff adds ilc:plan-approved\nOcto spawns coding agent (ilc:impl-working)
 
     Implementing --> ImplComplete : code committed (ilc:impl-complete)
 
@@ -44,7 +43,7 @@ stateDiagram-v2
 
     PRReview --> Merged : Jeff merges PR
 
-    PRReview --> Implementing : review comments (ilc:pr-needs-work)
+    PRReview --> Implementing : Jeff adds ilc:pr-needs-work\nloop back to impl-working
 
     Merged --> [*]
     Opened --> [*] : closed / wontfix
@@ -58,61 +57,55 @@ All lifecycle labels are namespaced with the `ilc:` prefix (**i**ssue **l**ife**
 
 **Plan phase**
 
-| Label | Meaning |
-|---|---|
-| `ilc:plan-pending` | Plan queued, not yet started |
-| `ilc:plan-working` | Octo is actively writing the plan |
-| `ilc:plan-complete` | Plan written and commented — awaiting Jeff's review |
-| `ilc:needs-input` | Blocked — waiting on info or a decision before proceeding |
-| `ilc:plan-approved` | Jeff approved the plan — implementation can start |
+| Label | Set by | Meaning |
+|---|---|---|
+| `ilc:approved` | Jeff | Start planning — Octo picks this up and writes a plan |
+| `ilc:plan-working` | Octo | Actively writing the plan |
+| `ilc:plan-complete` | Octo | Plan written and commented — awaiting Jeff's review |
+| `ilc:needs-input` | Jeff or Octo | Blocked — waiting on info or a decision before proceeding |
+| `ilc:plan-approved` | Jeff | Plan approved — implementation can start |
 
 **Implementation phase**
 
-| Label | Meaning |
-|---|---|
-| `ilc:impl-pending` | Implementation queued, not yet started |
-| `ilc:impl-working` | Coding subagent is actively implementing |
-| `ilc:impl-complete` | Implementation done, PR not yet open |
+| Label | Set by | Meaning |
+|---|---|---|
+| `ilc:impl-working` | Octo | Coding subagent is actively implementing |
+| `ilc:impl-complete` | Octo | Implementation done, PR not yet open |
 
 **PR phase**
 
-| Label | Meaning |
-|---|---|
-| `ilc:pr-draft` | Draft PR open |
-| `ilc:pr-review` | PR ready for Jeff's review and merge |
-| `ilc:pr-needs-work` | PR has review comments — needs fixes |
-
-Octo manages transitions automatically; the only labels Jeff adds manually are `ilc:plan-approved` (to proceed) or `ilc:needs-input` (to push back).
+| Label | Set by | Meaning |
+|---|---|---|
+| `ilc:pr-draft` | Octo | Draft PR open |
+| `ilc:pr-review` | Octo | PR ready for Jeff's review and merge |
+| `ilc:pr-needs-work` | Jeff | PR has review comments — loop back to impl-working |
 
 ---
 
 ## What Octo does at each step
 
-### Issue opened
-1. Adds `ilc:plan-pending`, then `ilc:plan-working` as it starts
+### `ilc:approved` label added by Jeff
+1. Removes `ilc:approved`, adds `ilc:plan-working`
 2. Reads the issue body
 3. Writes a plan comment — what changes, which files, approach, risks
 4. Replaces `ilc:plan-working` with `ilc:plan-complete`
 5. Pings Jeff in the issue's `#coding` thread
 
-### `ilc:plan-approved` label added
-1. Removes `ilc:plan-complete`
-2. Spawns the coding agent into the `#coding` thread; sets `ilc:impl-working`
+### `ilc:plan-approved` label added by Jeff
+1. Removes `ilc:plan-complete`, adds `ilc:impl-working`
+2. Spawns the coding agent into the `#coding` thread
 3. Coding agent implements the fix, commits, sets `ilc:impl-complete`, opens a PR
 4. Adds `ilc:pr-review`
 5. Pings Jeff in the thread
 
-### PR opened
-1. Reads the diff
-2. Reviews for correctness, completeness, style
-3. Posts a review comment on the PR
-4. Ensures `ilc:pr-review` is set on the issue
-5. Pings Jeff in the thread
+### `ilc:pr-needs-work` label added by Jeff
+1. Removes `ilc:pr-review`, adds `ilc:impl-working`
+2. Coding agent reads PR comments, fixes issues, pushes
+3. Restores `ilc:pr-review`
+4. Pings Jeff in the thread
 
 ---
 
 ## Skill
 
 The coding agent's `issue-lifecycle` skill implements this flow. It is invoked by the `github-issues` webhook hook mapping whenever a relevant issue or PR event fires.
-
-See [`agents/coding/skills/issue-lifecycle/SKILL.md`](../agents/coding/skills/issue-lifecycle/SKILL.md).

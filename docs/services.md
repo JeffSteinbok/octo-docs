@@ -20,7 +20,7 @@ OpenClaw services are background processes that keep long-running automations av
 | ⚙️ | Octo Satellite | Local secrets broker providing credentialed access to Amazon and Monarch Money without exposing passwords or session cookies to the gateway | [GitHub ↗](https://github.com/JeffSteinbok/octo-satellite) |
 | 🗂️ | OneDrive Sync | Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive using the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) Linux client. | [Read more →](services/onedrive-sync) |
 | ⚙️ | Outlook Webhook Service | Real-time Outlook inbox notifications via MS Graph change notifications, dispatched through the OpenClaw mail rule pipeline | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/outlook-webhook) |
-| ⚙️ | Webhook Proxy | Auth-validating webhook proxy that sits between Tailscale Funnel and OpenClaw hooks. Validates inbound auth (HMAC-SHA256 or bearer) per route and forwards with the OpenClaw hooks bearer *** injected. Enables separate auth schemes per hook endpoint. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/webhook-proxy) |
+| ⚙️ | webhook-proxy (octo config) | Local configuration and systemd unit for the `@openclaw/webhook-proxy` service. The service source lives in `openclaw-hub/services/webhook-proxy`. | [Read more →](services/webhook-proxy) |
 
 ## 📝 Obsidian Vault Indexer
 
@@ -56,3 +56,13 @@ Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Micros
 _No environment variables required._
 
 [Read more →](services/onedrive-sync)
+
+## ⚙️ webhook-proxy (octo config)
+
+Local configuration and systemd unit for the `@openclaw/webhook-proxy` service. The service source lives in `openclaw-hub/services/webhook-proxy`.
+
+### Environment Variables
+
+_No environment variables required._
+
+[Read more →](services/webhook-proxy)
