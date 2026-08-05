@@ -28,6 +28,27 @@ Octo's thin wrapper around the shared `agent-review` skill in `openclaw-hub`.
 - The `agent-review-weekly` cron job
 - Issue target (`JeffSteinbok/octo`) and Discord DM target
 
+## Synthesis rules
+
+These rules reinforce the grounding constraint from the shared SKILL.md. The
+root agent **must** follow them when composing the weekly delivery message.
+
+- Surface only findings traceable to `tool_errors`, `cron_errors`,
+  `memory_flags`, or `source_health.issues` in the JSON output.
+- If those fields are all empty/minimal → send a short **"clean week"** note.
+  Do not fill the absence of real findings with invented suggestions.
+- **Never recommend a schedule change** unless the JSON contains a
+  `cron_job_schedules` block with the job's actual schedule expression.
+  The script currently never emits that block, so schedule suggestions are
+  always prohibited until a future enhancement adds them.
+- **Never state or estimate run counts or dollar costs** (e.g. "ran 73x/week",
+  "saves $0.87/week") — the script has no such data.
+- `cron_stats.total_cron_sessions` counts session-level errors, not per-job
+  run frequencies. Do **not** use it to infer how often a named job runs.
+- `source_health` entries (e.g. "WARNING: 0 events extracted") describe scan
+  quality, not operational metrics. Do not derive cost/schedule claims from
+  them.
+
 ## How Octo runs it
 
 1. **Run the extraction script:**
