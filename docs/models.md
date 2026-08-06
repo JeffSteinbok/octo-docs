@@ -13,17 +13,18 @@ All values are derived from live config so they stay accurate.
 
 | Role | Model | Notes |
 |------|-------|-------|
-| Primary | `github-copilot/claude-sonnet-4.6` | Default model for all agents |
-| Fallback | `github-copilot/gpt-5.4` | Used when primary is unavailable |
-| Image (vision) | `github-copilot/claude-sonnet-4.6` | Used for image analysis |
-| Image fallback | `github-copilot/gpt-5.5` | |
+| Primary | `anthropic/claude-sonnet-4-6` | Default model for all agents |
+| Fallback | `anthropic/claude-haiku-4-5` | Used when primary is unavailable |
+| Image (vision) | `anthropic/claude-sonnet-4-6` | Used for image analysis |
+| Image fallback | `anthropic/claude-haiku-4-5` | |
 | Image generation | `google/gemini-3-pro-image-preview` | Used for generating images |
 
 ### Registered Aliases
 
 | Alias | Model |
 |-------|-------|
-| `sonnet` | `github-copilot/claude-sonnet-4.6` |
+| `haiku` | `anthropic/claude-haiku-4-5` |
+| `sonnet` | `anthropic/claude-sonnet-4-6` |
 
 ## Voice
 
