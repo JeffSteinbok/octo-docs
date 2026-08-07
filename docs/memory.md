@@ -110,4 +110,4 @@ No overrides are set — memory-core is running with all defaults.
 | `mail` | 0 | — | — | — |
 | `main` | 104 | 2026-03-01 | 2026-08-06 | — |
 | `notify` | 0 | — | — | — |
-| `root` | 23 | 2026-03-13 | 2026-08-02 | — |
+| `root` | 24 | 2026-03-13 | 2026-08-06 | — |

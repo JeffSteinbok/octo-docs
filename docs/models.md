@@ -25,6 +25,7 @@ All values are derived from live config so they stay accurate.
 |-------|-------|
 | `haiku` | `anthropic/claude-haiku-4-5` |
 | `sonnet` | `anthropic/claude-sonnet-4-6` |
+| `copilot-sonnet` | `github-copilot/claude-sonnet-4.6` |
 
 ## Voice
 
