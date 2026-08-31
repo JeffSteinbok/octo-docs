@@ -103,11 +103,11 @@ No overrides are set — memory-core is running with all defaults.
 
 | Agent | Memory Files | Earliest | Latest | Dreams Active |
 |-------|-------------|----------|--------|---------------|
-| `coding` | 5 | 2026-05-04 | 2026-07-17 | — |
+| `coding` | 6 | 2026-05-04 | 2026-08-06 | — |
 | `family` | 0 | — | — | — |
-| `finance` | 90 | 2026-05-06 | 2026-08-06 | — |
+| `finance` | 114 | 2026-05-06 | 2026-08-30 | — |
 | `hass-hooks` | 0 | — | — | — |
 | `mail` | 0 | — | — | — |
-| `main` | 104 | 2026-03-01 | 2026-08-06 | — |
+| `main` | 110 | 2026-03-01 | 2026-08-12 | — |
 | `notify` | 0 | — | — | — |
 | `root` | 25 | 2026-03-13 | 2026-08-26 | — |

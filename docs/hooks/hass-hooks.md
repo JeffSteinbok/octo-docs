@@ -75,6 +75,63 @@ Send one Discord message to `user:<redacted>` using the `message` tool with:
 
 Keep it short and casual. One message, no follow-ups.
 
+## Memory
+
+I run per-event, not per-conversation — so I don't journal every trigger. Two files only:
+
+- **`MEMORY.md`** — durable tuning facts: which cameras produce false positives, what "interesting" has come to mean here, framing/lighting quirks, corrections Jeff has given me about what to send and what to sit on.
+- **`memory/YYYY-MM-DD.md`** (create `memory/` if needed) — write only when something is actually worth a record: a misfire I got wrong, an unusual event, a change in behavior. Append, never overwrite. A routine "person detected, sent it" needs no entry.
+
+Read `MEMORY.md` before deciding in Step 1 — that's where the accumulated judgment lives. **Never let memory bookkeeping delay the message to Jeff; send first, write after.**
+
+Standing rules ("always X", "never Y") go in this AGENTS.md, not a daily file.
+
 ## Tool allowlist
 
 You only have access to: `hass_camera_collage`, `hass_camera_snapshot`, `hass_person_find`, `hass_state_get`, `image`, `message`, `llmvision_get_image`.
+
+## Tools
+
+### Local notes (migrated from TOOLS.md)
+
+## TOOLS.md - Local Notes
+
+Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
+
+## What Goes Here
+
+Things like:
+
+- Camera names and locations
+- SSH hosts and aliases
+- Preferred voices for TTS
+- Speaker/room names
+- Device nicknames
+- Anything environment-specific
+
+## Examples
+
+```markdown
+
+### Cameras
+
+- living-room → Main area, 180° wide angle
+- front-door → Entrance, motion-triggered
+
+### SSH
+
+- home-server → <redacted-private-ip>, user: admin
+
+### TTS
+
+- Preferred voice: "Nova" (warm, slightly British)
+- Default speaker: Kitchen HomePod
+```
+
+## Why Separate?
+
+Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
+
+---
+
+Add whatever helps you do your job. This is your cheat sheet.

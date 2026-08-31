@@ -17,7 +17,6 @@ All values are derived from live config so they stay accurate.
 | Fallback | `anthropic/claude-haiku-4-5` | Used when primary is unavailable |
 | Image (vision) | `anthropic/claude-sonnet-4-6` | Used for image analysis |
 | Image fallback | `anthropic/claude-haiku-4-5` | |
-| Image generation | `google/gemini-3-pro-image-preview` | Used for generating images |
 
 ### Registered Aliases
 
@@ -25,7 +24,8 @@ All values are derived from live config so they stay accurate.
 |-------|-------|
 | `haiku` | `anthropic/claude-haiku-4-5` |
 | `sonnet` | `anthropic/claude-sonnet-4-6` |
-| `copilot-sonnet` | `github-copilot/claude-sonnet-4.6` |
+| `gpt` | `openai/gpt-5.4` |
+| `gpt-mini` | `openai/gpt-5.4-mini` |
 
 ## Voice
 
