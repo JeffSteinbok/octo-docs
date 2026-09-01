@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **21 plugins** through its runtime.
+Octo currently exposes **23 plugins** through its runtime.
 
 
 ## 🌐 Built-in
@@ -27,6 +27,7 @@ Open-source plugins maintained by [Jeff](https://github.com/JeffSteinbok).
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
 | 📧 | [FastMail tools](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) | Send email and manage calendar events in Fastmail | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
+| 📁 | [Filesystem Utilities](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) | Core filesystem utility tools for reading, writing, copying, and moving files | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) |
 | 📊 | [Glances](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) | Read CPU, memory, disk, and summary metrics from a Glances server | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) |
 | 📚 | [Goodreads](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/goodreads) | Read and manage Goodreads shelves via headless Playwright with anti-403 browser context | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/goodreads) |
 | 🏠 | [Home Assistant](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
@@ -59,3 +60,4 @@ Source is private (often under active development), but docs are still available
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
 | 🐙 | [GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [External docs](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/github) |
+| 📧 | [Microsoft 365](https://github.com/JeffSteinbok/carapace-m365) | Mail, calendar, tasks, and OneDrive tools via Microsoft Graph | [External docs](https://github.com/JeffSteinbok/carapace-m365) |
