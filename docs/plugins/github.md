@@ -17,6 +17,8 @@ Manage GitHub issues. Create, read, update, close, comment on, and list issues.
   </thead>
   <tbody>
     <tr><td><code>token</code></td><td>string</td><td>Optional</td><td>GitHub personal access token or fine-grained token.</td></tr>
+    <tr><td><code>upstreamToken</code></td><td>string</td><td>Optional</td><td>Token for upstream repo owners (defaults to GITHUB_UPSTREAM_TOKEN).</td></tr>
+    <tr><td><code>upstreamOwners</code></td><td>string[]</td><td>Optional</td><td>Repo owners that use the upstream token (default: [&quot;openclaw&quot;]).</td></tr>
   </tbody>
 </table>
 
@@ -68,7 +70,7 @@ Get a single GitHub issue by its number. Returns issue details including title, 
 
 ### `github_create_issue`
 
-Create a new issue in a GitHub repository. Acts as the authenticated OpenClaw user (GITHUB_TOKEN). Returns the issue number, URL, and state.
+Create a new issue in a GitHub repository. Acts as the OpenClaw bot account (GITHUB_TOKEN); openclaw/* repos are filed as Jeff (GITHUB_UPSTREAM_TOKEN). Returns the issue number, URL, and state.
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
@@ -142,7 +144,7 @@ node dist/bin/github.js github-list-issues <owner> <repo> <state> <labels> <assi
 ## Get a single GitHub issue by its number. Returns issue details including title, body, state, labels, and assignees.
 node dist/bin/github.js github-get-issue <owner> <repo> <issue_number>
 
-## Create a new issue in a GitHub repository. Acts as the authenticated OpenClaw user (GITHUB_TOKEN). Returns the issue number, URL, and state.
+## Create a new issue in a GitHub repository. Acts as the OpenClaw bot account (GITHUB_TOKEN); openclaw/* repos are filed as Jeff (GITHUB_UPSTREAM_TOKEN). Returns the issue number, URL, and state.
 node dist/bin/github.js github-create-issue <owner> <repo> <title> <body> <labels...> <assignees...> <milestone>
 
 ## Edit an existing GitHub issue. Update title, body, state, labels, assignees, or milestone. At least one field to update must be provided.
@@ -163,3 +165,5 @@ node dist/bin/github.js <command> [args...] --json
 | Variable | Description |
 |----------|-------------|
 | `GITHUB_TOKEN` | GitHub personal access token or fine-grained token |
+| `GITHUB_UPSTREAM_TOKEN` | Token for upstream repo owners (defaults to GITHUB_UPSTREAM_TOKEN) |
+| `GITHUB_UPSTREAM_OWNERS` | Repo owners that use the upstream token (default: ["openclaw"]) |
