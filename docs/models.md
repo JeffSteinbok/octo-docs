@@ -15,6 +15,7 @@ All values are derived from live config so they stay accurate.
 |------|-------|-------|
 | Primary | `anthropic/claude-sonnet-4-6` | Default model for all agents |
 | Fallback | `anthropic/claude-haiku-4-5` | Used when primary is unavailable |
+| Fallback | `openai/gpt-6-astra` | Used when primary is unavailable |
 | Image (vision) | `anthropic/claude-sonnet-4-6` | Used for image analysis |
 | Image fallback | `anthropic/claude-haiku-4-5` | |
 
@@ -46,7 +47,7 @@ Octo supports text-to-speech, real-time voice conversation, and speech-to-text.
 | Setting | Value |
 |---------|-------|
 | Provider | `openai` |
-| Model | `gpt-realtime-mini` |
+| Model | `gpt-live-1-codex` |
 | Mode | `realtime` |
-| Transport | `webrtc` |
+| Transport | `gateway-relay` |
 | Brain agent | `agent-consult` |
