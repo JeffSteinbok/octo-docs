@@ -54,17 +54,20 @@ For **complex implementation work** or when **Jeff explicitly requests code work
 
 ### How to spawn
 
-Use `sessions_spawn` with a clear task brief:
+Code changes go to **Claude Code (Opus 5.5) via ACP**:
 
 ```javascript
 sessions_spawn({
-  task: `Issue #NNN: <description>\n\nContext: <relevant details>`,
+  runtime: "acp",
+  agentId: "claude",
+  model: "anthropic/claude-opus-5-5",
+  mode: "run",
   cwd: "/home/openclaw/git/<repo>",
-  // context: "fork"  // only if child needs the current transcript
+  task: `Issue #NNN: <description>\n\nContext: <relevant details>`,
 })
 ```
 
-The subagent inherits the workspace and delivery auto-binds to this thread.
+Claude Code has no OpenClaw tools (no `message`, no labels) and doesn't see this conversation — the task brief must be self-contained. You handle Discord posts, labels, and PRs; it handles the code. Use a native `sessions_spawn` (no `runtime`) only for non-code work that needs OpenClaw tools.
 
 ### What the subagent does
 - **In-depth analysis** — reads code, understands architecture
