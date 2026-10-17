@@ -35,11 +35,13 @@ stateDiagram-v2
 
     NeedsInput --> PlanWorking : Jeff clarifies
 
-    PlanComplete --> Implementing : Jeff adds ilc:plan-approved\nOcto spawns coding agent (ilc:impl-working)
+    PlanComplete --> Implementing : Jeff adds ilc:plan-approved\nOcto delegates to Claude Code via ACP (ilc:impl-working)
 
-    Implementing --> ImplComplete : code committed (ilc:impl-complete)
+    Implementing --> ImplComplete : Claude Code commits + pushes (ilc:impl-complete)
 
-    ImplComplete --> PRReview : PR opened (ilc:pr-review)
+    ImplComplete --> PRDraft : lifecycle subagent opens draft PR (ilc:pr-draft)
+
+    PRDraft --> PRReview : lifecycle subagent marks PR ready (ilc:pr-review)
 
     PRReview --> Merged : Jeff merges PR
 
@@ -69,8 +71,15 @@ All lifecycle labels are namespaced with the `ilc:` prefix (**i**ssue **l**ife**
 
 | Label | Set by | Meaning |
 |---|---|---|
-| `ilc:impl-working` | Octo | Coding subagent is actively implementing |
-| `ilc:impl-complete` | Octo | Implementation done, PR not yet open |
+| `ilc:impl-working` | Octo | Claude Code (via ACP) is writing, testing, and committing the code |
+| `ilc:impl-complete` | Octo | Code pushed to the branch, PR not yet open |
+
+During implementation the work is split in two:
+
+- **Lifecycle subagent (orchestrator)** — the native `issue-lifecycle` subagent owns everything around the code: label transitions, posts to the issue's `#coding` Discord thread, and opening/updating the PR.
+- **Claude Code (Opus 5.5) via ACP** — spawned with `sessions_spawn({ runtime: "acp", agentId: "claude" })`, it writes the code, runs the tests, commits, and pushes the branch. It does not touch labels, the Discord thread, or the PR.
+
+See `agents/coding/skills/issue-lifecycle/SKILL.md` → "Code Work — Claude Code via ACP" for the exact handoff.
 
 **PR phase**
 
@@ -92,17 +101,15 @@ All lifecycle labels are namespaced with the `ilc:` prefix (**i**ssue **l**ife**
 5. Pings Jeff in the issue's `#coding` thread
 
 ### `ilc:plan-approved` label added by Jeff
-1. Removes `ilc:plan-complete`, adds `ilc:impl-working`
-2. Spawns the coding agent into the `#coding` thread
-3. Coding agent implements the fix, commits, sets `ilc:impl-complete`, opens a PR
-4. Adds `ilc:pr-review`
-5. Pings Jeff in the thread
+1. Lifecycle subagent removes `ilc:plan-approved`, adds `ilc:impl-working`
+2. Lifecycle subagent posts to the issue's `#coding` Discord thread
+3. Lifecycle subagent spawns Claude Code (Opus 5.5) via ACP, which branches, implements, tests, commits, and pushes (see `agents/coding/skills/issue-lifecycle/SKILL.md` → "Code Work — Claude Code via ACP"); the lifecycle subagent then replaces `ilc:impl-working` with `ilc:impl-complete`
+4. Lifecycle subagent opens the PR as a **draft** and replaces `ilc:impl-complete` with `ilc:pr-draft`; once the draft is in place it marks the PR ready for review, replaces `ilc:pr-draft` with `ilc:pr-review`, and pings Jeff in the thread
 
 ### `ilc:pr-needs-work` label added by Jeff
-1. Removes `ilc:pr-review`, adds `ilc:impl-working`
-2. Coding agent reads PR comments, fixes issues, pushes
-3. Restores `ilc:pr-review`
-4. Pings Jeff in the thread
+1. Lifecycle subagent removes `ilc:pr-review`, adds `ilc:impl-working`
+2. Lifecycle subagent spawns Claude Code (Opus 5.5) via ACP with the PR review comments; Claude Code fixes, tests, commits, and pushes to the existing PR branch
+3. Lifecycle subagent restores `ilc:pr-review` and pings Jeff in the thread
 
 ---
 
