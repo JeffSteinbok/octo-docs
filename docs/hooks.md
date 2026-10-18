@@ -8,6 +8,13 @@ nav_order: 8
 
 Hooks are event-driven entry points that react to real-world signals instead of running on a timer.
 
+Hooks reach OpenClaw in one of two ways:
+
+- **Through the [Webhook Proxy](services/webhook-proxy)** (`/hooksproxy/...`) for senders on the public internet. The proxy checks each sender's own auth (such as GitHub's HMAC signature), can filter out events that shouldn't wake an agent, and forwards the rest with OpenClaw's hooks token added, so that token never leaves the machine.
+- **Directly** (`/hooks/...`) for senders that can hold OpenClaw's hooks token themselves, such as Home Assistant and LAN services.
+
+Apps that hold a conversation with Octo, rather than firing events at it, are covered under [Connected Apps](connected-apps).
+
 Octo currently publishes **3 hooks** in the public bundle.
 
 | | Hook | Endpoint | Description |
