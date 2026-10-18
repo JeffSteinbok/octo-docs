@@ -11,29 +11,44 @@ nav_order: 13
 
 ### Upgraded
 
-- **OpenClaw 2026.10.4**
-- **carapace-plugin-sdk 3.x** across Octo's plugins
+- **OpenClaw 2026.7.1 → 2026.10.4**, through 2026.8.1, 2026.9.2, 2026.9.6, 2026.9.7, 2026.9.8 and 2026.10.2
+- **carapace-plugin-sdk 3.0** — breaking change: tools return their structured result in `details`; all of Octo's plugins moved to `^3.0.1`
+- **Models** — moved from GitHub Copilot to Anthropic directly (Claude Sonnet 4.6 default, Haiku 4.5 and OpenAI GPT-6 Astra as fallbacks); realtime voice moved from `gpt-realtime-mini` to `gpt-live-1-codex`
 
 ### Added
 
-- **Connected Apps** docs section (under Agents & Channels) covering Hassonic (the iOS app now drives a dedicated `hassonic` agent for home control) and OctoDot (an OpenAI Dot)
+- **Connected Apps** docs section (under Agents & Channels) covering Hassonic and OctoDot (an OpenAI Dot)
+- **Hassonic** — the Hassonic iOS app drives a dedicated `hassonic` agent for home control, with its own fast model (`gpt-5.6-luna`)
 - **Hass Guard plugin** — allowlists hassonic's Home Assistant actions and safety-checks each one with TypeSafe AI's Jev decision model; anything not rated safe is blocked with an explanation instead of raising an approval prompt
-- **`claude` agent** — Claude Code runs over ACP for delegated coding work; the issue lifecycle and Engineering Harness now hand fixes to it
+- **TypeSafe AI** — typed decision model provider (Jev), used for hassonic's safety checks
+- **`claude` agent** — Claude Code (Opus 5.5) runs over ACP for delegated coding work; the issue lifecycle and Engineering Harness now hand fixes to it
+- **Microsoft 365 plugin** ([carapace-m365](https://github.com/JeffSteinbok/carapace-m365)) — OneDrive (with bounded reads, pagination and denied-path safeguards), Outlook tasks, drafts, mail search, mark/label/delete/folders, calendar date ranges, all-day events and free/busy; secret-less PKCE sign-in
+- **Home Assistant** — automation and script config tools
+- **Fastmail** — HTML email bodies and a calendar event delete tool
+- **LLM Vision** — `include_false_positives` on the timeline tool
+- **Outlook work calendar** — explicit date-range queries
+- **config-watchdog service**
 - **GitHub plugin** can file upstream `openclaw/*` issues with a separate token
 - **Docs:** Webhook Proxy service page, per-agent model and decision-model overrides on the Models page, and TypeSafe AI, ACPX and Hass Guard in the plugin inventory
 
 ### Changed
 
 - **Issue lifecycle labels renamed to `ilc:` namespace** and expanded into a 3-phase model (plan → impl → pr): `ilc:plan-pending`, `ilc:plan-working`, `ilc:plan-complete`, `ilc:needs-input`, `ilc:plan-approved`, `ilc:impl-pending`, `ilc:impl-working`, `ilc:impl-complete`, `ilc:pr-draft`, `ilc:pr-review`, `ilc:pr-needs-work`. Replaces the old flat set (`plan-pending`, `plan-ready`, `plan-approved`, `copilot-assigned`, `pr-review`, `pr-pending`, `pr-needs-work`, `needs-input`). Docs, both issue-lifecycle skills, agent AGENTS.md quick-refs, and the PR-monitor cron updated to match. Stale labels (`plan-needed`, `pr-pending`, `ready to implement`) removed from GitHub.
-- **Microsoft 365** replaces the separate Outlook plugin and webhook; the plugin and its `m365-webhook` service now live in the open-source `carapace-m365` repo
-- **Cron jobs** are stored in SQLite; the docs read an exported snapshot instead of `jobs.json`
+- **Outlook → Microsoft 365** — the separate Outlook mail and calendar plugins were merged, then replaced by the open-source `m365` plugin; its `m365-webhook` service handles Graph inbox notifications and token brokering
+- **Plugins install as managed packages** with typebox bundled into each build, roughly halving the files OpenClaw snapshots at startup
+- **Cron jobs and session transcripts** live in OpenClaw's SQLite stores; the docs and agent-review read from them
 - **Coding agent** wakes only on actionable `ilc:` labels, with GitHub filtering moved into the webhook proxy
+- **Plugin CI** runs on Node 24
 
 ### Fixed
 
+- **Gateway startup** freezes and memory spikes caused by duplicate per-plugin typebox copies
 - **Agent Architecture table** on Agents & Channels was empty after OpenClaw moved agents from `agents.list` to `agents.entries`
 - **Services page** linked to a Webhook Proxy page that was never generated
-- **Docs redaction** now strips bare private IPv4 addresses, and validation blocks Tailscale hostnames
+- **Fastmail** calendar events could not be updated
+- **Weight Watchers** `ww_delete` failed on quick-add entries
+- **agent-review** handles `.zst` session files and the current trajectory schema
+- **Docs redaction** strips bare private IPv4 addresses, and validation blocks Tailscale hostnames
 - **Daily config backup** restores the config copy step
 - **npm installs** run by agents no longer reset file permissions
 
