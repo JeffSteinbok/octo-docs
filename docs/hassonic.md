@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Hassonic
-nav_order: 11
+parent: External Integrations
+nav_order: 1
 ---
 
 # Hassonic

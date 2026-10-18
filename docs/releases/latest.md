@@ -16,7 +16,7 @@ nav_order: 13
 
 ### Added
 
-- **Hassonic** — the Hassonic iOS app now drives a dedicated `hassonic` agent for home control, with its own docs page
+- **External Integrations** docs section covering Hassonic (the iOS app now drives a dedicated `hassonic` agent for home control) and OctoDot (an OpenAI Dot)
 - **Hass Guard plugin** — allowlists hassonic's Home Assistant actions and safety-checks each one with TypeSafe AI's Jev decision model; anything not rated safe is blocked with an explanation instead of raising an approval prompt
 - **`claude` agent** — Claude Code runs over ACP for delegated coding work; the issue lifecycle and Engineering Harness now hand fixes to it
 - **GitHub plugin** can file upstream `openclaw/*` issues with a separate token
