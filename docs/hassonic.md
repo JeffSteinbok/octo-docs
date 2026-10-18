@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Hassonic
-parent: External Integrations
+parent: Connected Apps
+grand_parent: Agents & Channels
 nav_order: 1
 ---
 

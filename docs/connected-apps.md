@@ -1,0 +1,16 @@
+---
+layout: default
+title: Connected Apps
+parent: Agents & Channels
+nav_order: 1
+has_children: true
+---
+
+# Connected Apps
+
+Apps and agents outside OpenClaw that connect to the gateway as paired devices. Unlike [channels](agents-channels#channels), which OpenClaw connects out to, these connect in, and what they can do depends on the device's scopes and the agent it reaches.
+
+| Integration | What it is | How it connects |
+|-------------|------------|-----------------|
+| [Hassonic](hassonic) | Native iOS app for Home Assistant | Paired gateway device, talking only to the dedicated `hassonic` agent |
+| [OctoDot](octodot) | An [OpenAI Dot](https://openai.com/index/introducing-dots/) | OpenClaw web chat, paired as an operator device |

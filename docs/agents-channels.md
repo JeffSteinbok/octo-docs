@@ -2,6 +2,7 @@
 layout: default
 title: Agents & Channels
 nav_order: 2
+has_children: true
 ---
 
 # Agents & Channels
@@ -10,7 +11,7 @@ This page explains each published agent's permission profile and why it is isola
 
 The public bundle includes agent identity and a simplified permission/config posture. Exact peer bindings, raw filesystem paths, and detailed private allowlists are still omitted.
 
-For AI model and voice configuration, see the [Models](models) page.
+For AI model and voice configuration, see the [Models](models) page. Apps that connect to the gateway as paired devices, such as Hassonic and OctoDot, are covered under [Connected Apps](connected-apps).
 
 ## Agent Architecture
 
