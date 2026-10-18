@@ -22,7 +22,6 @@ nav_order: 13
 - **Hass Guard plugin** — allowlists hassonic's Home Assistant actions and safety-checks each one with TypeSafe AI's Jev decision model; anything not rated safe is blocked with an explanation instead of raising an approval prompt
 - **TypeSafe AI** — typed decision model provider (Jev), used for hassonic's safety checks
 - **`claude` agent** — Claude Code (Opus 5.5) runs over ACP for delegated coding work; the issue lifecycle and Engineering Harness now hand fixes to it
-- **Microsoft 365 plugin** ([carapace-m365](https://github.com/JeffSteinbok/carapace-m365)) — OneDrive (with bounded reads, pagination and denied-path safeguards), Outlook tasks, drafts, mail search, mark/label/delete/folders, calendar date ranges, all-day events and free/busy; secret-less PKCE sign-in
 - **Home Assistant** — automation and script config tools
 - **Fastmail** — HTML email bodies and a calendar event delete tool
 - **LLM Vision** — `include_false_positives` on the timeline tool
@@ -31,10 +30,16 @@ nav_order: 13
 - **GitHub plugin** can file upstream `openclaw/*` issues with a separate token
 - **Docs:** Webhook Proxy service page, per-agent model and decision-model overrides on the Models page, and TypeSafe AI, ACPX and Hass Guard in the plugin inventory
 
+### Carapace
+
+- **[carapace-m365](https://github.com/JeffSteinbok/carapace-m365)** (new; replaces the Outlook plugins)
+- **[carapace-plugin-sdk](https://github.com/JeffSteinbok/carapace-plugin-sdk) 3.0** — breaking: tool results carry their structured data in `details`; 3.0.1 bundles typebox into plugin builds as an optional peer; reusable CI workflow defaults to Node 24
+- **Managed installs** — the running m365, obsidian, package-tracking and stock-quotes plugins are built on SDK 3.0.1 and installed as managed packages; the matching repo changes (`npm run deploy`) are open PRs
+
 ### Changed
 
 - **Issue lifecycle labels renamed to `ilc:` namespace** and expanded into a 3-phase model (plan → impl → pr): `ilc:plan-pending`, `ilc:plan-working`, `ilc:plan-complete`, `ilc:needs-input`, `ilc:plan-approved`, `ilc:impl-pending`, `ilc:impl-working`, `ilc:impl-complete`, `ilc:pr-draft`, `ilc:pr-review`, `ilc:pr-needs-work`. Replaces the old flat set (`plan-pending`, `plan-ready`, `plan-approved`, `copilot-assigned`, `pr-review`, `pr-pending`, `pr-needs-work`, `needs-input`). Docs, both issue-lifecycle skills, agent AGENTS.md quick-refs, and the PR-monitor cron updated to match. Stale labels (`plan-needed`, `pr-pending`, `ready to implement`) removed from GitHub.
-- **Outlook → Microsoft 365** — the separate Outlook mail and calendar plugins were merged, then replaced by the open-source `m365` plugin; its `m365-webhook` service handles Graph inbox notifications and token brokering
+- **Outlook → Microsoft 365** — the separate Outlook mail and calendar plugins were merged, then replaced by the open-source `m365` plugin (see Carapace plugins below)
 - **Plugins install as managed packages** with typebox bundled into each build, roughly halving the files OpenClaw snapshots at startup
 - **Cron jobs and session transcripts** live in OpenClaw's SQLite stores; the docs and agent-review read from them
 - **Coding agent** wakes only on actionable `ilc:` labels, with GitHub filtering moved into the webhook proxy
