@@ -18,10 +18,20 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 
 | Agent | Used for | Permissions | Why it is set up this way |
 |-------|----------|-------------|---------------------------|
+| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `allowed`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`. | Keeps the everyday assistant capable with exec restricted to safebin CLIs only — no arbitrary shell access. |
+| `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. | Treats mail as untrusted input and isolates mail processing from broader tools. |
+| `root` | Explicit owner escalations for admin/debugging work | `customized` tools; broad inherited access posture; exec `default`. | Concentrates privileged admin/debug access in a separate escalation path. |
+| `family` | Family-facing direct chats | `profile:messaging` tools; writes `denied`; browser `denied`; exec `allowed`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. |
+| `finance` | Household finance and retirement planning | `profile:minimal` tools. | Keeps account data and planning notes away from everyday chat, with read-only finance tools. |
+| `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
+| `coding` | Coding specialist in #coding on Discord | `inherited-default` tools. | Dedicated coding agent for code review, architecture, ACP agent delegation, and infra/DevOps work. Kept separate from main to allow elevated shell access without exposing it to everyday chat. |
+| `notify` | Relays LAN notification hooks to Jeff as Discord DMs | `custom-allowlist` tools; can only send messages. | Hook payloads are untrusted, so the agent that receives them can do nothing but forward them. |
+| `claude` | One-shot Claude Code runs delegated over ACP | `inherited-default` tools. | Runs Claude Code as an external ACP agent so coding work happens outside the gateway's own tool policy. |
+| `hassonic` | Home control from the [Hassonic](hassonic) iPhone app | `custom-allowlist` tools; Home Assistant state and an allowlisted set of actions, plus web search. | The app talks only to this agent, so a phone request can reach Home Assistant but nothing else. Every action is checked by the hass-guard plugin. |
 
 ### Exec & Safebin
 
-Exec permissions are configured **per agent** using `agents.list[].tools.exec`:
+Exec permissions are configured **per agent** using `agents.entries.<id>.tools.exec`:
 
 - **`main`** — `security: allowlist` — can only run binaries listed in `safeBins` (vetted CLI scripts in `~/safebin/`)
 - **`root`** — `security: full` — unrestricted shell access for admin/debug escalation

@@ -8,7 +8,7 @@ nav_order: 4
 
 This page catalogs the plugins available in Octo today and links to the right documentation for each one.
 
-Octo currently exposes **23 plugins** through its runtime.
+Octo currently exposes **26 plugins** through its runtime.
 
 
 ## 🌐 Built-in
@@ -17,8 +17,10 @@ Core capabilities provided by OpenClaw itself.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
+| 🔗 | [ACPX Runtime](https://docs.openclaw.ai/tools/acp-agents) | ACP runtime backend used to run Claude Code as the claude agent. | [External docs](https://docs.openclaw.ai/tools/acp-agents) |
 | 🌐 | [Browser](https://playwright.dev/docs/intro) | Browser automation capability used when the assistant needs to inspect or act on live web pages. | [External docs](https://playwright.dev/docs/intro) |
 | 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | [External docs](https://ai.google.dev/gemini-api/docs) |
+| 🧮 | [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe) | Typed decision provider (Jev). Rates whether hassonic's Home Assistant actions are safe to run without asking. | [External docs](https://docs.openclaw.ai/plugins/typesafe) |
 
 ## 📦 Open Source
 
@@ -33,6 +35,7 @@ Open-source plugins maintained by [Jeff](https://github.com/JeffSteinbok).
 | 🏠 | [Home Assistant](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
 | 📷 | [Home Assistant – LLM Vision](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) | Home Assistant LLM Vision integration: analyze camera images with AI, query the vision timeline, and create timeline events. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/llmvision) |
 | 🗓️ | [ICS Calendar](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) | Fetch upcoming events from a published ICS calendar feed | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/ics-calendar) |
+| 📧 | [Microsoft 365](https://github.com/JeffSteinbok/carapace-m365) | Mail, calendar, tasks, and OneDrive tools via Microsoft Graph | [GitHub ↗](https://github.com/JeffSteinbok/carapace-m365) |
 | 📓 | [Obsidian Vault](https://github.com/JeffSteinbok/carapace-obsidian) | Read-only access to an Obsidian vault — search, read, and explore notes securely | [GitHub ↗](https://github.com/JeffSteinbok/carapace-obsidian) |
 | 🛰️ | [Octo Satellite](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) | OpenClaw toolset providing structured access to the Octo Satellite service. Exposes Amazon order management and Monarch Money financial tools. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) |
 | 📅 | [Outlook Work Calendar](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
@@ -60,4 +63,4 @@ Source is private (often under active development), but docs are still available
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Backs up OpenClaw config to Git with SHA-256 change detection | [Read docs](plugins/config-backup) |
 | 🐙 | [GitHub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/github) | Manage GitHub issues. Create, read, update, close, comment on, and list issues. | [External docs](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/github) |
-| 📧 | [Microsoft 365](https://github.com/JeffSteinbok/carapace-m365) | Mail, calendar, tasks, and OneDrive tools via Microsoft Graph | [External docs](https://github.com/JeffSteinbok/carapace-m365) |
+| 🛡️ | [Hass Guard](plugins/hass-guard) | Limits hassonic to an allowlist of Home Assistant actions and blocks any the Jev safety check doesn't rate safe. | [Read docs](plugins/hass-guard) |

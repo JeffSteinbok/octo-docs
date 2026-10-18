@@ -18,6 +18,19 @@ All values are derived from live config so they stay accurate.
 | Fallback | `openai/gpt-6-astra` | Used when primary is unavailable |
 | Image (vision) | `anthropic/claude-sonnet-4-6` | Used for image analysis |
 | Image fallback | `anthropic/claude-haiku-4-5` | |
+| Web search | `gemini` | Provider for web search tool |
+
+### Per-Agent Overrides
+
+Agents listed here use their own model instead of the default. A decision model answers small typed questions,
+such as whether an action is safe to run, without a full chat-model call.
+
+| Agent | Model | Decision model |
+|-------|-------|----------------|
+| `claude` | `anthropic/claude-opus-5-5` | — |
+| `hassonic` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
+
+`typesafe/*` decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe) (Jev).
 
 ### Registered Aliases
 

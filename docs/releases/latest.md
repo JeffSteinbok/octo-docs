@@ -6,12 +6,36 @@ nav_order: 13
 
 # Release Notes
 
-## Unreleased
+## 2026-10-17
 
+
+### Upgraded
+
+- **OpenClaw 2026.10.4**
+- **carapace-plugin-sdk 3.x** across Octo's plugins
+
+### Added
+
+- **Hassonic** — the Hassonic iOS app now drives a dedicated `hassonic` agent for home control, with its own docs page
+- **Hass Guard plugin** — allowlists hassonic's Home Assistant actions and safety-checks each one with TypeSafe AI's Jev decision model; anything not rated safe is blocked with an explanation instead of raising an approval prompt
+- **`claude` agent** — Claude Code runs over ACP for delegated coding work; the issue lifecycle and Engineering Harness now hand fixes to it
+- **GitHub plugin** can file upstream `openclaw/*` issues with a separate token
+- **Docs:** Webhook Proxy service page, per-agent model and decision-model overrides on the Models page, and TypeSafe AI, ACPX and Hass Guard in the plugin inventory
 
 ### Changed
 
 - **Issue lifecycle labels renamed to `ilc:` namespace** and expanded into a 3-phase model (plan → impl → pr): `ilc:plan-pending`, `ilc:plan-working`, `ilc:plan-complete`, `ilc:needs-input`, `ilc:plan-approved`, `ilc:impl-pending`, `ilc:impl-working`, `ilc:impl-complete`, `ilc:pr-draft`, `ilc:pr-review`, `ilc:pr-needs-work`. Replaces the old flat set (`plan-pending`, `plan-ready`, `plan-approved`, `copilot-assigned`, `pr-review`, `pr-pending`, `pr-needs-work`, `needs-input`). Docs, both issue-lifecycle skills, agent AGENTS.md quick-refs, and the PR-monitor cron updated to match. Stale labels (`plan-needed`, `pr-pending`, `ready to implement`) removed from GitHub.
+- **Microsoft 365** replaces the separate Outlook plugin and webhook; the plugin and its `m365-webhook` service now live in the open-source `carapace-m365` repo
+- **Cron jobs** are stored in SQLite; the docs read an exported snapshot instead of `jobs.json`
+- **Coding agent** wakes only on actionable `ilc:` labels, with GitHub filtering moved into the webhook proxy
+
+### Fixed
+
+- **Agent Architecture table** on Agents & Channels was empty after OpenClaw moved agents from `agents.list` to `agents.entries`
+- **Services page** linked to a Webhook Proxy page that was never generated
+- **Docs redaction** now strips bare private IPv4 addresses, and validation blocks Tailscale hostnames
+- **Daily config backup** restores the config copy step
+- **npm installs** run by agents no longer reset file permissions
 
 ## 2026-07-14
 
