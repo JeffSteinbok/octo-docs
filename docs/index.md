@@ -96,26 +96,22 @@ Security is the most important aspect of this experiment — even above just hav
 ## 💰 Cost
 
 - **Self-hosted** — Runs on an old Lenovo X1 Yoga Gen 3 with 16 GB of RAM running Ubuntu Desktop.
-- **Token-conscious** — As much work as possible is pushed to Python plugins to reduce token usage. Primary model is GitHub Copilot Sonnet (covered by the Copilot subscription), with Anthropic and Gemini as fallbacks. Ongoing effort goes into keeping per-run costs low:
+- **Token-conscious** — As much work as possible is pushed to Python plugins to reduce token usage. The default model is Anthropic Claude Sonnet 4.6, with Claude Haiku 4.5 and OpenAI as fallbacks. Ongoing effort goes into keeping per-run costs low:
     - Recurring tasks that don't need reasoning are rewritten as plain shell scripts executed via `exec`, eliminating model tokens entirely (e.g., calendar fetching dropped from ~75 s with 5 tool calls to ~6 s with zero tokens).
     - Cron jobs use `lightContext: true` to strip session history from the context window, cutting input tokens on every scheduled run.
     - Tool-allow lists (`toolsAllow`) are scoped narrowly on cron entries so agents can't accidentally reach for expensive tools.
+    - Yes/no judgment calls go to a small typed decision model ([TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe)'s Jev) instead of a full chat model.
     - The general pattern is: push work into scripts, let agents just interpret results.
 
-  | Role | Model | Notes |
-  |------|-------|-------|
-  | Primary | `github-copilot/claude-sonnet-4.6` | Default for all agents (alias: `copilot-sonnet`) |
-  | Fallbacks | `claude-haiku-4-5` → `claude-sonnet-4-6` → `gemini-2.5-flash` → `gemini-3-pro-preview` | In priority order |
-  | Image | `github-copilot/claude-sonnet-4.6` → `claude-sonnet-4-6` → `gemini-2.5-flash-preview` | |
-  | Web search | `gemini-2.5-flash-lite` | |
+  See [Models]({{ site.baseurl }}/models) for the current model lineup, fallbacks and per-agent overrides.
 
-- **Development via [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)**— All plugin and config development is done through Copilot CLI. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Copilot CLI session for development, log reading, and troubleshooting.
+- **Development via [Claude Code](https://claude.com/claude-code)** — All plugin and config development is done through Claude Code. Initially I had Octo debug itself, but it turned out to be far more effective to use a separate Claude Code session for development, log reading, and troubleshooting.
 - **Crontab over agent jobs** — Recurring tasks are pushed to crontab whenever possible to avoid spinning up agent sessions. If something fails, the script can send a message to OpenClaw to inform of the error.
-- **Weekly cost report** — Every Monday at 5 AM PT, the root agent runs a [weekly cost report skill]({{ site.baseurl }}/skills/weekly-cost-report) that parses OpenClaw's usage logs, generates a Markdown report broken down by agent, model, and token type, renders it to PDF, and posts it to Discord. It covers token cost breakdown (input / output / cache read / cache write), per-agent spend, cron job vs. interactive split, daily trend, and a model split table — everything needed to spot where costs are climbing and why.
+- **Weekly cost report** — Every Monday at 5 AM PT, the root agent runs a [usage report skill]({{ site.baseurl }}/skills/usage-report) that parses OpenClaw's usage logs, generates a Markdown report broken down by agent, model, and token type, renders it to PDF, and posts it to Discord. It covers token cost breakdown (input / output / cache read / cache write), per-agent spend, cron job vs. interactive split, daily trend, and a model split table — everything needed to spot where costs are climbing and why.
 
 ## 🔧 Self-Improvement — The Octo Engineering Harness
 
-Octo has a small but growing set of mechanisms for detecting its own drift and quality problems — and fixing them automatically. Validation scripts run on a weekly cron, file GitHub issues for anything they find, and a state machine drives each issue from triage through planning, Copilot fix, PR review, and merge. The only manual step is approving the plan.
+Octo has a small but growing set of mechanisms for detecting its own drift and quality problems — and fixing them automatically. Validation scripts run on a weekly cron, file GitHub issues for anything they find, and a state machine drives each issue from triage through planning, Claude Code fix, PR review, and merge. The only manual step is approving the plan.
 
 **[Engineering Harness →]({{ site.baseurl }}/harness)**
 
