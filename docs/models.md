@@ -22,15 +22,13 @@ All values are derived from live config so they stay accurate.
 
 ### Per-Agent Overrides
 
-Agents listed here use their own model instead of the default. A decision model answers small typed questions,
-such as whether an action is safe to run, without a full chat-model call.
+Agents listed here use their own model instead of the default. Decision models are covered in
+[Decision Models](#decision-models) below.
 
 | Agent | Model | Decision model |
 |-------|-------|----------------|
 | `claude` | `anthropic/claude-opus-5-5` | — |
 | `hassonic` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
-
-`typesafe/*` decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe) (Jev).
 
 ### Registered Aliases
 
@@ -40,6 +38,28 @@ such as whether an action is safe to run, without a full chat-model call.
 | `sonnet` | `anthropic/claude-sonnet-4-6` |
 | `gpt` | `openai/gpt-5.4` |
 | `gpt-mini` | `openai/gpt-5.4-mini` |
+
+## Decision Models
+
+A [decision model](https://docs.openclaw.ai/concepts/decision-models) is a separate model role from the chat model.
+It takes a fixed set of facts and a rubric and returns a typed answer — a choice, a score, or a yes/no with a
+probability — instead of free text. That makes it fast, cheap and predictable for bounded judgments like
+"is this safe to do without asking?", and the caller decides what to do with the probability.
+
+Octo's decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe)'s hosted Jev models.
+
+| Agent | Decision model |
+|-------|----------------|
+| `hassonic` | `typesafe/jev-latest` |
+
+### Where they're used
+
+| Where | Question asked | What happens with the answer |
+|-------|----------------|------------------------------|
+| [Hass Guard](plugins/hass-guard), before each Home Assistant action by [Hassonic](hassonic) | Is this action routine and safe to do immediately without asking? (yes/no) | Runs at 85% or higher; otherwise the action is blocked and the agent explains why |
+
+The `decision_evaluate` tool, which lets an agent ask a decision model directly, is not given to any agent.
+OpenClaw's experimental *decision assistance*, which uses a decision model to drop unneeded tools before each turn, is off.
 
 ## Voice
 
