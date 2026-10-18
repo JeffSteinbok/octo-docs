@@ -17,6 +17,8 @@ nav_order: 13
 
 ### Added
 
+- **Security hardening** for the intentionally public gateway: removed remote `camera.snap`/`screen.record` node commands, marked GitHub hook content as untrusted, explicitly denied shell for hook- and app-driven agents, and pruned six stale paired devices (tracked in #386)
+- **Docs audit** now checks retired and undocumented jobs, services without pages, and the rendered site for empty tables, unknown schedules and broken links
 - **Connected Apps** docs section (under Agents & Channels) covering Hassonic and OctoDot (an OpenAI Dot)
 - **Hassonic** — the Hassonic iOS app drives a dedicated `hassonic` agent for home control, with its own fast model (`gpt-5.6-luna`)
 - **Hass Guard plugin** — allowlists hassonic's Home Assistant actions and safety-checks each one with TypeSafe AI's Jev decision model; anything not rated safe is blocked with an explanation instead of raising an approval prompt
@@ -38,6 +40,8 @@ nav_order: 13
 
 ### Changed
 
+- **Six cron jobs no longer use a model**: evening alarm reminder and late/early conflict check (one shared calendar script), daily package delivery check and cleanup, the Costco stock check, and OpenClaw upgrade readiness now run scripts that only message Jeff when there's something to say
+- **Log rotation** runs `rotate_openclaw_log.py` directly and keeps 7 archives instead of a Haiku turn that emptied the log
 - **Issue lifecycle labels renamed to `ilc:` namespace** and expanded into a 3-phase model (plan → impl → pr): `ilc:plan-pending`, `ilc:plan-working`, `ilc:plan-complete`, `ilc:needs-input`, `ilc:plan-approved`, `ilc:impl-pending`, `ilc:impl-working`, `ilc:impl-complete`, `ilc:pr-draft`, `ilc:pr-review`, `ilc:pr-needs-work`. Replaces the old flat set (`plan-pending`, `plan-ready`, `plan-approved`, `copilot-assigned`, `pr-review`, `pr-pending`, `pr-needs-work`, `needs-input`). Docs, both issue-lifecycle skills, agent AGENTS.md quick-refs, and the PR-monitor cron updated to match. Stale labels (`plan-needed`, `pr-pending`, `ready to implement`) removed from GitHub.
 - **Outlook → Microsoft 365** — the separate Outlook mail and calendar plugins were merged, then replaced by the open-source `m365` plugin (see Carapace plugins below)
 - **Plugins install as managed packages** with typebox bundled into each build, roughly halving the files OpenClaw snapshots at startup
@@ -47,6 +51,10 @@ nav_order: 13
 
 ### Fixed
 
+- **Outlook mail actions never ran** after the Microsoft 365 migration — package tracking, USPS Informed Delivery digests, and Amazon/Costco shipment processing all failed with `Unknown mail action`; m365-webhook now loads its action plugins (#379)
+- **Weekly usage report** was frozen at 2026-08-24 after transcripts moved to SQLite, and priced every model at Sonnet rates; usage and session labels now come from SQLite (#380)
+- **Log rotation** emptied the gateway log instead of archiving it (#381)
+- **Docs pipeline** left retired pages in `out/docs-site`, and copied pages kept repo-relative links that broke on the site
 - **Gateway startup** freezes and memory spikes caused by duplicate per-plugin typebox copies
 - **Agent Architecture table** on Agents & Channels was empty after OpenClaw moved agents from `agents.list` to `agents.entries`
 - **Services page** linked to a Webhook Proxy page that was never generated
