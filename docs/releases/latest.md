@@ -6,6 +6,17 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-10-18
+
+
+### Added
+
+- **Cron failure alerts** — any cron job that fails twice in a row now posts to #octo-status (at most once an hour per job). Previously only `config-backup` alerted.
+
+### Fixed
+
+- **Work calendar went empty** — `calendar-fetch` failed from midnight Oct 18 after an `npm` run in octo deleted `@sinclair/typebox` through an old `config-backup` symlink into openclaw-hub's `node_modules`. Symlink removed and the package restored. `calendar_fetch.sh` now writes each calendar to a temp file and keeps the last good copy when a fetch fails, keeps going past a failed source, and exits non-zero naming the failures.
+
 ## 2026-10-17
 
 
