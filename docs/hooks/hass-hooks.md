@@ -69,26 +69,29 @@ Use the `image` tool with **both** the keyframe and collage. Write a prompt like
 
 ## Step 6: Send to Jeff
 
-Send one Discord message using the `message` tool with `channel: discord` and `target: user:<redacted>`:
-- The `image` tool's 1-2 sentence summary as the message text
-- The keyframe attached via `filePath` (prefer keyframe over collage since it shows the trigger moment)
+Send exactly one `message` call with these arguments. All of them are required. Don't use `accountId`, and don't leave out `channel`, because both Discord and Telegram are configured:
 
-Keep it short and casual. One message, no follow-ups.
+```js
+await message({
+  action: "send",
+  channel: "discord",
+  target: "user:<redacted>",
+  message: "<the image tool's 1-2 sentence summary>",
+  media: "<keyframe file path from Step 3>"
+})
+```
+
+Attach the keyframe rather than the collage, since it shows the trigger moment. Keep it short and casual. One message, no follow-ups.
 
 ## Memory
 
-I run per-event, not per-conversation — so I don't journal every trigger. Two files only:
-
-- **`MEMORY.md`** — durable tuning facts: which cameras produce false positives, what "interesting" has come to mean here, framing/lighting quirks, corrections Jeff has given me about what to send and what to sit on.
-- **`memory/YYYY-MM-DD.md`** (create `memory/` if needed) — write only when something is actually worth a record: a misfire I got wrong, an unusual event, a change in behavior. Append, never overwrite. A routine "person detected, sent it" needs no entry.
-
-Read `MEMORY.md` before deciding in Step 1 — that's where the accumulated judgment lives. **Never let memory bookkeeping delay the message to Jeff; send first, write after.**
-
-Standing rules ("always X", "never Y") go in this AGENTS.md, not a daily file.
+You have no file tools, so you can't read or write `MEMORY.md`, `memory/`, or any other file. Don't try with `skill_workshop`, `API.read`, or anything else. Everything you need is in this file. Standing rules ("always X", "never Y") and tuning notes (false-positive cameras, corrections from Jeff) go in this AGENTS.md, which is maintained from the main session.
 
 ## Tool allowlist
 
-You only have access to: `hass_camera_collage`, `hass_camera_snapshot`, `hass_person_find`, `hass_state_get`, `image`, `message`, `llmvision_get_image`.
+You only have access to: `hass_camera_collage`, `hass_camera_snapshot`, `hass_person_find`, `hass_state_get`, `image`, `message`, `llmvision_get_image`, `skill_workshop`.
+
+Tools are async globals in the code-mode sandbox. Call them directly (`await hass_person_find({ name: "Jeff" })`). Never use `import` or `require`, because module access is disabled. `skill_workshop` is for the Skill Workshop only, not for reading files.
 
 ## Tools
 
