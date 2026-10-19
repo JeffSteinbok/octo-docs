@@ -148,6 +148,7 @@ npm run build      # Build all plugins (framework first)
 
 - TypeScript compiles to `dist/`
 - Python files are symlinked into `dist/` via `scripts/symlink-python.mjs` post-build
+- octo plugins deploy as managed installs: `npm run deploy -- <id>|--all [--install]` (packs to `out/plugin-packs/`, copies `.py` instead of symlinking)
 - `dist/` and `node_modules/` are gitignored
 
 ## Agents (octo/agents/)
