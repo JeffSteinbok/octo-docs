@@ -69,7 +69,7 @@ Use the `image` tool with **both** the keyframe and collage. Write a prompt like
 
 ## Step 6: Send to Jeff
 
-Send one Discord message to `user:<redacted>` using the `message` tool with:
+Send one Discord message using the `message` tool with `channel: discord` and `target: user:<redacted>`:
 - The `image` tool's 1-2 sentence summary as the message text
 - The keyframe attached via `filePath` (prefer keyframe over collage since it shows the trigger moment)
 
