@@ -10,7 +10,7 @@ Scheduled tasks are background jobs that run without direct user input. The publ
 
 Feature-specific reminders, briefs, personal nudges, and other user-facing automations are intentionally excluded from the public bundle and from this page.
 
-Octo currently publishes **23 infrastructure tasks**.
+Octo currently publishes **13 infrastructure tasks**.
 
 ## Infrastructure Tasks
 
@@ -28,7 +28,6 @@ Times are Pacific (PT). Jobs without a listed time zone run on the gateway host'
 | `Nightly browser recycle` | Daily at 4:00 AM PT (`0 4 * * *`) | Restarts the headless Camoufox browser instance overnight to reclaim memory and clear stale sessions. |
 | `openclaw-upgrade-readiness-check` | Daily at 10:00 AM PT (`0 10 * * *`) | Script that checks npm for a new stable OpenClaw release and announces each new release once with an upgrade-readiness checklist. No model call. |
 | `plugin-health-check` | Daily at 9:00 AM PT (`0 9 * * *`) | Daily smoke test that calls one tool from every configured plugin and reports pass/fail to Discord. |
-| `skill-collection-review-<agent>` (10 jobs) | Weekly | Weekly per-agent review of the agent's skill collection: flags redundant or obsolete skills and keeps policies that still change decisions. |
 | `usage-enrich-sessions` | Daily at 4:00 AM PT (`0 4 * * *`) | Runs daily at 4 AM PT to enrich session labels with category/subcategory metadata, improving the accuracy of the weekly usage report breakdown. |
 | `usage-weekly-report` | Mondays at 5:00 AM PT (`0 5 * * 1`) | Generates the weekly LLM API usage and cost report, renders it to PDF, posts to Discord, and commits the artifacts. |
 | `weekly-full-backup` | Sundays at 2:00 AM PT (`0 2 * * 0`) | Copies the whole OpenClaw state directory, secrets included, into a timestamped local backup and compresses older backups. |
