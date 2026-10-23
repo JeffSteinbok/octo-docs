@@ -9,8 +9,8 @@ nav_exclude: true
 
 Octo's thin wrapper around the shared `agent-review` skill in `openclaw-hub`.
 
-- Shared implementation: `<host-path>`
-- Octo-specific report output: `<host-path>`
+- Shared implementation: `~/git/openclaw-hub/skills/agent-review`
+- Octo-specific report output: `~/git/octo/agents/root/reports/agent-review`
 - Issue repo: `JeffSteinbok/octo`
 - Delivery target: Jeff's Discord DM (`user:<redacted>`)
 
@@ -54,8 +54,8 @@ root agent **must** follow them when composing the weekly delivery message.
 1. **Run the extraction script:**
 
 2. **Read recent memory files** — scan files newer than 7 days from:
-   - `<host-path>`
-   - `<host-path>`
+   - `~/git/octo/agents/main/memory/`
+   - `~/git/octo/agents/root/memory/`
 
 3. **Synthesize and deliver** — follow the synthesis and Discord DM format steps in the shared SKILL.md.
 

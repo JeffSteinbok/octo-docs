@@ -36,8 +36,8 @@ Agents listed here use their own model instead of the default. Decision models a
 |-------|-------|
 | `haiku` | `anthropic/claude-haiku-4-5` |
 | `sonnet` | `anthropic/claude-sonnet-4-6` |
-| `gpt` | `openai/gpt-5.4` |
-| `gpt-mini` | `openai/gpt-5.4-mini` |
+| `gpt-mini` | `openai/gpt-5.6-luna` |
+| `gpt` | `openai/gpt-5.6-terra` |
 
 ## Decision Models
 

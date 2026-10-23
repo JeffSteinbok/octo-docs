@@ -29,6 +29,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `notify` | Relays LAN notification hooks to Jeff as Discord DMs | `custom-allowlist` tools; can only send messages. | Hook payloads are untrusted, so the agent that receives them can do nothing but forward them. |
 | `claude` | One-shot Claude Code runs delegated over ACP | `inherited-default` tools. | Runs Claude Code as an external ACP agent so coding work happens outside the gateway's own tool policy. |
 | `hassonic` | Home control from the [Hassonic](hassonic) iPhone app | `custom-allowlist` tools; Home Assistant state and an allowlisted set of actions, plus web search. | The app talks only to this agent, so a phone request can reach Home Assistant but nothing else. Every action is checked by the hass-guard plugin. |
+| `group` | Published agent surface | `profile:messaging` tools. | Separates this agent from the rest of the system. |
 
 ### Exec & Safebin
 
@@ -45,6 +46,7 @@ See [CLI Tools](clis) for the available safebin inventory.
 | Channel | Enabled | DM Policy | Group Policy | Streaming |
 |---------|---------|-----------|--------------|-----------|
 | `discord` | Yes | pairing | allowlist | partial |
+| `imessage` | Yes | allowlist | allowlist |  |
 | `telegram` | Yes | pairing | allowlist | off |
 
 ## Session Settings

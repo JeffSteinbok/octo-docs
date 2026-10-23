@@ -62,7 +62,7 @@ sessions_spawn({
   agentId: "claude",
   model: "anthropic/claude-opus-5-5",
   mode: "run",
-  cwd: "/home/openclaw/git/<repo>",
+  cwd: "/Users/octo/git/<repo>",
   task: `Issue #NNN: <description>\n\nContext: <relevant details>`,
 })
 ```

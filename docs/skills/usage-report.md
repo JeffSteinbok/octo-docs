@@ -9,8 +9,8 @@ nav_exclude: true
 
 This is Octo's thin wrapper around the shared `usage-report` skill in `openclaw-hub`.
 
-- Shared implementation: `<host-path>`
-- Octo-specific output dir: `<host-path>`
+- Shared implementation: `~/git/openclaw-hub/skills/usage-report`
+- Octo-specific output dir: `~/git/octo/agents/root/reports/api-cost`
 - Delivery target: `#root`
 - Daily label enrichment cron: `usage-enrich-sessions`
 - Weekly report cron: `usage-weekly-report`
