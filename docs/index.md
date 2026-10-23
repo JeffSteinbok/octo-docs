@@ -82,7 +82,7 @@ I talk to Octo via [Telegram](https://telegram.org) and [Discord](https://discor
 Security is the most important aspect of this experiment — even above just having fun.
 </div>
 
-- **Unprivileged account** — OpenClaw runs under its own dedicated user on Ubuntu with no `sudo` permissions. It can configure itself new plugins, but it cannot install anything on its own.
+- **Unprivileged account** — OpenClaw runs under its own dedicated standard (non-admin) macOS user with no `sudo` permissions. It can configure itself new plugins, but it cannot install anything on its own.
 - **Owner-only access** — Octo only responds to me. Not even family members have access.
 - **No secrets in Git** — All tokens and credentials are kept in hidden files that are never synced to version control.
 - **No exec on the main agent** — Octo's primary agent does not have `exec` permissions, meaning it cannot run arbitrary shell commands. If something truly dangerous needs to happen, I have to explicitly ask the **root** agent, which is the only one with elevated privileges. This also means we rely more heavily on purpose-built plugins rather than skills — since skills can't execute code without `exec`, every real-world interaction needs a proper plugin behind it.
@@ -95,7 +95,7 @@ Security is the most important aspect of this experiment — even above just hav
 
 ## 💰 Cost
 
-- **Self-hosted** — Runs on an old Lenovo X1 Yoga Gen 3 with 16 GB of RAM running Ubuntu Desktop.
+- **Self-hosted** — Runs on a Mac mini (Apple silicon, 16 GB of RAM) running macOS. It moved there from an old Lenovo X1 Yoga Gen 3 running Ubuntu in October 2026; the setup still works on Linux.
 - **Token-conscious** — As much work as possible is pushed to Python plugins to reduce token usage. The default model is Anthropic Claude Sonnet 4.6, with Claude Haiku 4.5 and OpenAI as fallbacks. Ongoing effort goes into keeping per-run costs low:
     - Recurring tasks that don't need reasoning are rewritten as plain shell scripts executed via `exec`, eliminating model tokens entirely (e.g., calendar fetching dropped from ~75 s with 5 tool calls to ~6 s with zero tokens).
     - Cron jobs use `lightContext: true` to strip session history from the context window, cutting input tokens on every scheduled run.

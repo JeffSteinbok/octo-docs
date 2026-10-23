@@ -9,6 +9,10 @@ nav_order: 1
 
 Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive using the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) Linux client.
 
+## Platform
+
+**Linux only (systemd).** This is the setup for a Linux host. On macOS (Octo's Mac mini since the 2026-10-21 move) use the Microsoft OneDrive app instead: it syncs to `~/Library/CloudStorage/OneDrive-Personal`, and `~/OneDrive` is a symlink to that folder, so paths under `~/OneDrive/` work the same. Nothing in this folder runs on the Mac.
+
 ## Features
 
 - Runs as a user systemd service in `--monitor` mode
