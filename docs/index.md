@@ -74,7 +74,9 @@ my own.
 
 ## 💬 Channels
 
-I talk to Octo via [Telegram](https://telegram.org) and [Discord](https://discord.com). I'd prefer to use iMessage or WhatsApp, but until I've decided for sure that this is useful, I'm not going out and buying a Mac Mini or getting a new phone number.
+I talk to Octo mostly via **iMessage**, plus [Discord](https://discord.com) and [Telegram](https://telegram.org). iMessage was always the channel I wanted, but it needs a Mac, and I wasn't buying one until I'd decided this was useful. It was: in October 2026 Octo moved to its own Mac mini, and now it sends and receives iMessages from there through OpenClaw's iMessage channel.
+
+Family can text Octo too. Their DMs and our family group chat go to a separate **family** agent (see Security below). In other group chats Octo only answers when someone mentions it.
 
 ## 🔒 Security
 
@@ -83,7 +85,8 @@ Security is the most important aspect of this experiment — even above just hav
 </div>
 
 - **Unprivileged account** — OpenClaw runs under its own dedicated standard (non-admin) macOS user with no `sudo` permissions. It can configure itself new plugins, but it cannot install anything on its own.
-- **Owner-only access** — Octo only responds to me. Not even family members have access.
+- **Owner-first access** — Octo's main agent only responds to me. Family members can message a separate **family** agent over iMessage, which has a much narrower set of tools.
+- **Per-person calendar rules** — The family agent can read and update the family calendar for anyone, but only Nicole can ask about her calendar, only Nicole or I can ask about my work calendar, and only I can ask about my personal calendar and TripIt. The calendar plugins enforce this from the sender the channel reports, not from what the message claims.
 - **No secrets in Git** — All tokens and credentials are kept in hidden files that are never synced to version control.
 - **No exec on the main agent** — Octo's primary agent does not have `exec` permissions, meaning it cannot run arbitrary shell commands. If something truly dangerous needs to happen, I have to explicitly ask the **root** agent, which is the only one with elevated privileges. This also means we rely more heavily on purpose-built plugins rather than skills — since skills can't execute code without `exec`, every real-world interaction needs a proper plugin behind it.
 
@@ -121,7 +124,7 @@ Octo has a small but growing set of mechanisms for detecting its own drift and q
 
 🤖 **[Agents & Channels]({{ site.baseurl }}/agents-channels)** — Agents are personas powered by language models. Each agent has its own
 identity, personality, and set of permitted tools. Agents communicate with
-users through **channels** — messaging platforms like Telegram or Discord.
+users through **channels** — messaging platforms like iMessage, Discord or Telegram.
 
 🧩 **[Plugins]({{ site.baseurl }}/plugins)** are self-contained capabilities that agents can invoke: sending
 email, checking restaurant availability, snapping a security camera, and more.
