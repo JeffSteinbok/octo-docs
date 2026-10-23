@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-10-22
+
+
+### Changed
+
+- **Docs and code follow the move to the Mac mini** (2026-10-21) — the skill and agent docs, service READMEs and the mail-actions README no longer assume the old Lenovo/Ubuntu host. Paths now use `~/`, and service and log instructions give the macOS (launchd, `~/Library/Logs/openclaw/gateway.log`) commands next to the Linux (systemd, `journalctl`) ones. `config-backup` and the `github-issues` hook transform use `os.homedir()` instead of a hard-coded `/home/openclaw` fallback. `onedrive-sync` and `onedrive-watchdog.sh` are marked Linux-only (the Mac uses the OneDrive app). In openclaw-hub, the retired `outlook-webhook` service was removed (carapace-m365's `m365-webhook` replaced it).
+
 ## 2026-10-18
 
 
