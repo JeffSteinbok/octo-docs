@@ -91,6 +91,10 @@ jobs:
             --exclude='index.md' \
             ./incoming/ docs/
           rm -rf ./incoming
+          # The site is Markdown only. Raw bundle JSON (agent prompts, config
+          # summaries) once leaked here and lingered for months; remove any that
+          # appears so it can't be served.
+          find docs -name '*.json' -not -path 'docs/_*' -not -path 'docs/assets/*' -print -delete
 
       - name: Commit to main
         id: commit
