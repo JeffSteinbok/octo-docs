@@ -82,7 +82,7 @@ changes to them, so memory files are versioned along with everything else:
 | `coding` | 6 | 2026-05-04 | 2026-08-06 | Yes |
 | `external` | 0 | — | — | — |
 | `family` | 0 | — | — | Yes |
-| `finance` | 169 | 2026-05-06 | 2026-10-24 | Yes |
+| `finance` | 170 | 2026-05-06 | 2026-10-25 | Yes |
 | `group` | 0 | — | — | Yes |
 | `hass-hooks` | 0 | — | — | — |
 | `hassonic` | 0 | — | — | Yes |

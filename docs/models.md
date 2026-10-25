@@ -29,7 +29,7 @@ Agents listed here use their own model instead of the default. Decision models a
 |-------|-------|----------------|
 | `claude` | `anthropic/claude-opus-5-5` | — |
 | `hassonic` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
-| `external` | `openai/gpt-5.6-luna` | — |
+| `external` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
 
 ### Registered Aliases
 
@@ -52,6 +52,7 @@ Octo's decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plug
 | Agent | Decision model |
 |-------|----------------|
 | `hassonic` | `typesafe/jev-latest` |
+| `external` | `typesafe/jev-latest` |
 
 ### Where they're used
 
