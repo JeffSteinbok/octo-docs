@@ -18,7 +18,7 @@ OpenClaw services are background processes that keep long-running automations av
 | ⚙️ | Glances | Third-party system-monitoring server run outside OpenClaw on each monitored host; the Glances plugin reads CPU, memory, disk, and summary metrics from it | [GitHub ↗](https://github.com/nicolargo/glances) |
 | ⚙️ | Microsoft 365 Webhook | Receives Microsoft Graph inbox change notifications, runs new mail through the carapace mail rule pipeline, and brokers Microsoft OAuth tokens for the m365 plugin | [GitHub ↗](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) |
 | 📝 | Obsidian Vault Indexer | Long-running systemd service that watches the Obsidian vault directory and maintains a SQLite FTS5 full-text search index. Part of the [`carapace-obsidian`](https://github.com/JeffSteinbok/carapace-obsidian) plugin. | [Read more →](services/obsidian-indexer) |
-| ⚙️ | Octo MCP | MCP server that lets OctoDot, an OpenAI Dot in ChatGPT, reach Octo. Every request needs a WorkOS AuthKit access token, checked before the request body is read, and only the owner's WorkOS account is allowed. The service source lives in [`openclaw-hub/services/octo-mcp`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/octo-mcp); on the Mac mini it runs from the LaunchAgent `com.octo.openclaw.octo-mcp`, backed up in this repo at `config/macos/launchd/`. See [MCP & OctoDot](../mcp) for the whole picture. | [Read more →](services/octo-mcp) |
+| ⚙️ | Octo MCP | MCP server that lets OctoDot, an OpenAI Dot in ChatGPT, reach Octo. Every request needs a WorkOS AuthKit access token, checked before the request body is read, and only the owner's WorkOS account is allowed. House and calendar questions go to OpenClaw's deliberately limited `external` agent; messages go straight out through the Gateway to a short allowlist of destinations. The service source lives in [`openclaw-hub/services/octo-mcp`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/octo-mcp); on the Mac mini it runs from the LaunchAgent `com.octo.openclaw.octo-mcp`, backed up in this repo at `config/macos/launchd/`. See [MCP & OctoDot](../mcp) for the whole picture and the reasoning. | [Read more →](services/octo-mcp) |
 | ⚙️ | Octo Satellite | Local secrets broker providing credentialed access to Amazon and Monarch Money without exposing passwords or session cookies to the gateway | [GitHub ↗](https://github.com/JeffSteinbok/octo-satellite) |
 | 🗂️ | OneDrive Sync | Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive using the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) Linux client. | [Read more →](services/onedrive-sync) |
 | ⚙️ | Webhook Proxy | Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. Each route checks the sender's own credential (an HMAC-SHA256 signature or a per-sender token in the `Authorization` header), optionally filters out events that shouldn't wake an agent, and forwards what's left to OpenClaw with the hooks token added, so no external sender ever holds the real hooks token. The service source lives in [`openclaw-hub/services/webhook-proxy`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/webhook-proxy); this folder holds Octo's setup notes and the Linux systemd unit. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.webhook-proxy`, backed up in this repo at `config/macos/launchd/`. | [Read more →](services/webhook-proxy) |
@@ -43,7 +43,7 @@ _No environment variables required._
 
 ## ⚙️ Octo MCP
 
-MCP server that lets OctoDot, an OpenAI Dot in ChatGPT, reach Octo. Every request needs a WorkOS AuthKit access token, checked before the request body is read, and only the owner's WorkOS account is allowed. The service source lives in [`openclaw-hub/services/octo-mcp`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/octo-mcp); on the Mac mini it runs from the LaunchAgent `com.octo.openclaw.octo-mcp`, backed up in this repo at `config/macos/launchd/`. See [MCP & OctoDot](../mcp) for the whole picture.
+MCP server that lets OctoDot, an OpenAI Dot in ChatGPT, reach Octo. Every request needs a WorkOS AuthKit access token, checked before the request body is read, and only the owner's WorkOS account is allowed. House and calendar questions go to OpenClaw's deliberately limited `external` agent; messages go straight out through the Gateway to a short allowlist of destinations. The service source lives in [`openclaw-hub/services/octo-mcp`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/octo-mcp); on the Mac mini it runs from the LaunchAgent `com.octo.openclaw.octo-mcp`, backed up in this repo at `config/macos/launchd/`. See [MCP & OctoDot](../mcp) for the whole picture and the reasoning.
 
 ### Key Features
 
@@ -51,9 +51,10 @@ MCP server that lets OctoDot, an OpenAI Dot in ChatGPT, reach Octo. Every reques
 - OAuth 2.1 resource server: protected resource metadata (RFC 9728), and AuthKit's authorization server metadata proxied for clients that look for it on this origin
 - Access tokens checked for JWKS signature, issuer, audience (the MCP URL), expiry, and a one-person allowlist
 - Fails closed: refuses to start without an AuthKit issuer, never serves `/mcp` unauthenticated
+- Tools split by risk: `house_status` and `calendar` (read-only, fixed prompts), `control_house` (changes the house, confirmed in ChatGPT), `send_message` (iMessage or Discord to named destinations, confirmed in ChatGPT), `ping`
+- MCP server instructions tell the client what Octo can and can't do
+- Paired with the OpenClaw Gateway as its own device (`operator.read` + `operator.write`, no admin); the shared Gateway token is used once to pair and never stored
 - Host header allowlist, POST only, 1 MiB body limit
-- Holds no secrets
-- Tools: `ping` (live); `ask_octo` (planned)
 
 ### Environment Variables
 
@@ -62,6 +63,9 @@ MCP server that lets OctoDot, an OpenAI Dot in ChatGPT, reach Octo. Every reques
 | `OCTO_MCP_AUTHKIT_ISSUER` | Yes | AuthKit domain (`https://<name>.authkit.app`); the service won't start without it |
 | `OCTO_MCP_RESOURCE` | No | Public MCP URL, which must equal the WorkOS resource indicator (default `https://<funnel-host>/mcp`) |
 | `OCTO_MCP_ALLOWED_SUBJECTS` | No | Comma-separated WorkOS user IDs allowed in; empty means nobody |
+| `OCTO_MCP_DEVICE_DIR` | No | Paired-device identity, device token and message destinations (default `~/.openclaw/secrets/octo-mcp`) |
+| `OCTO_MCP_GATEWAY_URL` | No | OpenClaw Gateway WebSocket (default `ws://127.0.0.1:18789`) |
+| `OCTO_MCP_AGENT` | No | Agent behind the house and calendar tools (default `external`) |
 | `OCTO_MCP_ALLOWED_HOSTS` | No | Host header allowlist |
 | `OCTO_MCP_PORT` | No | Listen port (default 18793) |
 

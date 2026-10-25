@@ -12,6 +12,7 @@ nav_order: 13
 ### Added
 
 - **MCP server for OctoDot** — new `octo-mcp` service: ChatGPT's custom MCP connector reaches Octo at `/mcp` on the
+- **OctoDot can use Octo** — octo-mcp offers tools split by risk: `house_status` and `calendar` (read-only, no
 - **Health check** — `scripts/healthcheck.py` snapshots the system before each change and reports anything that changed
 - **Remote-access smoke test** — `scripts/smoke-remote-access.sh` checks every public route with requests designed to be
 - **Owner-run Funnel scripts** — `config/tailscale/apply-step-*.sh` apply each Funnel change through the Tailscale

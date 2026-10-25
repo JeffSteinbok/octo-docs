@@ -74,7 +74,8 @@ Only port 443 is used. ChatGPT never connects to Funnel's other ports (8443, 100
 | Home Assistant proxy token | Home Assistant `secrets.yaml` and webhook-proxy | Token on the `/hass` route |
 | Microsoft Graph `clientState` | Graph subscription and m365-webhook | Validating change notifications |
 | OpenClaw shared Gateway token | Gateway, local services that run the `openclaw` CLI | Bootstrap auth; native clients move to paired-device tokens |
-| WorkOS access tokens | ChatGPT (short-lived) | Calling `/mcp`; octo-mcp only checks signatures, it stores no secret |
+| WorkOS access tokens | ChatGPT (short-lived) | Calling `/mcp`; octo-mcp only checks their signatures |
+| octo-mcp device token | octo-mcp (`~/.openclaw/secrets/octo-mcp`, mode 600) | Its own paired-device access to the Gateway (`operator.read` + `operator.write`, no admin) |
 
 No external sender holds the real hooks token. Every OpenClaw CLI process loads `~/.openclaw/.env`
 ([OpenClaw environment docs](https://docs.openclaw.ai/help/environment)), so local services that run the CLI can still
@@ -124,4 +125,4 @@ Every step is checked twice:
 
 - Re-pair the native clients with setup codes (no admin scope), prune old pairings, then rotate the shared Gateway
   token and bind the Gateway to loopback.
-- Give OctoDot an `ask_octo` tool backed by a least-privilege `octodot` agent.
+- Remove the old Control UI pairings OctoDot used before MCP.
