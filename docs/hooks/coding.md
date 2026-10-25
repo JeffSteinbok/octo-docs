@@ -271,7 +271,7 @@ Things like:
 
 ### SSH
 
-- home-server → <redacted-private-ip>, user: admin
+- home-server → `ssh home-server` (address and user are in `~/.ssh/config`, never in this repo)
 
 ### TTS
 
@@ -286,3 +286,7 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
+
+## Private Addresses
+
+Never write private hostnames or IP addresses (the tailnet name, LAN addresses such as Home Assistant's or the Mac's, Tailscale IPs) into memory, notes, or any file in this repo. They live in `~/.openclaw/.env` (for example `HASS_SERVER`, `OCTO_FUNNEL_HOST`) and `~/.ssh/config` (`ssh home-server`, `ssh ha`); refer to them by those names. The daily config backup refuses to commit files that contain them.
