@@ -14,6 +14,7 @@ nav_order: 13
 - **The Octo MCP runs on mcp-bridge** — octo-mcp became a generic, config-driven MCP server in openclaw-hub
 - **OctoDot's reads skip the model** — `house_status` and `calendar` call the Home Assistant and calendar tools
 - **Docs:** *MCP & OctoDot* is now **Octo MCP: Octo for other agents**, with the trust model and a *Build your own*
+- **Compact tool results for Octo's own agents** — with carapace-plugin-sdk 3.2's `view`, `hass_state_list` and the
 
 ### Fixed
 
