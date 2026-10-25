@@ -60,9 +60,8 @@ jobs:
           GH_TOKEN: ${{ secrets.OCTO_DOCS_BUNDLE_READ_TOKEN }}
 
       # Copy the rendered Markdown pages into docs/, leaving Jekyll theme files
-      # (_config.yml, _includes/, _sass/, index.md, assets, etc.) and
-      # hand-maintained top-level pages (e.g. mail-runtime.md, self-improvement.md)
-      # untouched.
+      # (_config.yml, _includes/, _sass/, assets, etc.) and the hand-maintained
+      # home page (index.md) untouched. Every other page comes from octo.
       #
       # Pruning strategy:
       #   * Each generated subdirectory (hooks/, plugins/, releases/, services/,
@@ -90,9 +89,6 @@ jobs:
           # files and hand-maintained top-level pages.
           rsync -av --exclude='.git' --exclude='*/' \
             --exclude='index.md' \
-            --exclude='harness.md' \
-            --exclude='mail-runtime.md' \
-            --exclude='about-docs.md' \
             ./incoming/ docs/
           rm -rf ./incoming
 
