@@ -11,7 +11,7 @@ Everything outside the house that talks to Octo, and how it gets in:
 
 | Integration | What it is |
 |---|---|
-| [MCP & OctoDot](mcp) | OctoDot, an OpenAI Dot in ChatGPT, calling Octo's own MCP server behind WorkOS sign-in |
+| [Octo MCP: Octo for other agents](mcp) | Other agents (today OctoDot, an OpenAI Dot in ChatGPT) using Octo through its MCP server, behind WorkOS sign-in |
 | [Connected Apps](connected-apps) | Apps that talk to Octo directly: Hassonic and OctoDot |
 | [Hooks](hooks) | Webhooks from GitHub, Home Assistant and Microsoft 365 that start agents |
 
@@ -33,7 +33,7 @@ flowchart LR
         GW["OpenClaw Gateway<br/>127.0.0.1:18789"]
         WP["webhook-proxy<br/>:18792"]
         MW["m365-webhook<br/>127.0.0.1:18790"]
-        MCP["octo-mcp<br/>127.0.0.1:18793"]
+        MCP["mcp-bridge<br/>127.0.0.1:18793"]
     end
     WK["WorkOS AuthKit"]
     APPS -->|"/ (token or device auth)"| F
@@ -60,7 +60,7 @@ names a path (the MCP routes do, so they arrive unchanged).
 | `/hooks` | Nothing: Funnel answers `not found` | The Gateway's hooks endpoint is never public |
 | `/hooksproxy/<route>` | [webhook-proxy](services/webhook-proxy) | Per route: GitHub HMAC signature, or a per-sender token in the `Authorization` header |
 | `/m365/webhook` | m365-webhook (Microsoft Graph change notifications) | Graph `clientState` |
-| `/mcp`, `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server` | [octo-mcp](services/octo-mcp) | WorkOS AuthKit OAuth (see [MCP & OctoDot](mcp)) |
+| `/mcp`, `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server` | [mcp-bridge](services/mcp-bridge) | WorkOS AuthKit OAuth (see [Octo MCP](mcp)) |
 
 Only port 443 is used. ChatGPT never connects to Funnel's other ports (8443, 10000), which is why the MCP server shares
 443 with the Gateway instead of having its own port.
@@ -74,8 +74,8 @@ Only port 443 is used. ChatGPT never connects to Funnel's other ports (8443, 100
 | Home Assistant proxy token | Home Assistant `secrets.yaml` and webhook-proxy | Token on the `/hass` route |
 | Microsoft Graph `clientState` | Graph subscription and m365-webhook | Validating change notifications |
 | OpenClaw shared Gateway token | Gateway, local services that run the `openclaw` CLI | Bootstrap auth; native clients move to paired-device tokens |
-| WorkOS access tokens | ChatGPT (short-lived) | Calling `/mcp`; octo-mcp only checks their signatures |
-| octo-mcp device token | octo-mcp (`~/.openclaw/secrets/octo-mcp`, mode 600) | Its own paired-device access to the Gateway (`operator.read` + `operator.write`, no admin) |
+| WorkOS access tokens | ChatGPT (short-lived) | Calling `/mcp`; the bridge only checks their signatures |
+| mcp-bridge device token | mcp-bridge (`~/.openclaw/secrets/mcp-bridge`, mode 600) | Its own paired-device access to the Gateway (`operator.read` + `operator.write`, no admin) |
 
 No external sender holds the real hooks token. Every OpenClaw CLI process loads `~/.openclaw/.env`
 ([OpenClaw environment docs](https://docs.openclaw.ai/help/environment)), so local services that run the CLI can still

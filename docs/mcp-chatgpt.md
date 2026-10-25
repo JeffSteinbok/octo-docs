@@ -1,7 +1,7 @@
 ---
 layout: default
 title: ChatGPT Connector
-parent: MCP & OctoDot
+parent: 'Octo MCP: Octo for other agents'
 grand_parent: External Integrations
 nav_order: 2
 ---
@@ -23,22 +23,22 @@ ChatGPT asks you to confirm any tool that isn't marked read-only. That's deliber
 the house) and `send_message` (it reaches people). `house_status`, `calendar` and `ping` are read-only and run without
 a prompt. See [why the tools are split this way](mcp#why-this-split).
 
-The first sign-in by a new account is refused (`403`) until its WorkOS user ID is on octo-mcp's allowlist; see
+The first sign-in by a new account is refused (`403`) until its WorkOS user ID is on the bridge's allowlist; see
 [WorkOS setup](mcp-workos#allowing-a-user). After adding the ID, reinstall the connector so ChatGPT retries.
 
 ## Troubleshooting
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| "Couldn't discover OAuth settings"; DCR and CIMD shown as **Unavailable** | ChatGPT never reached the server's metadata. We saw this with the server on Funnel port 8443: ChatGPT doesn't connect to it | Serve on port 443 (`https://<funnel-host>/mcp`). Check the octo-mcp log for requests from ChatGPT (`ua=openai-mcp/…` or `aiohttp`) |
+| "Couldn't discover OAuth settings"; DCR and CIMD shown as **Unavailable** | ChatGPT never reached the server's metadata. We saw this with the server on Funnel port 8443: ChatGPT doesn't connect to it | Serve on port 443 (`https://<funnel-host>/mcp`). Check the bridge log for requests from ChatGPT (`ua=openai-mcp/…` or `aiohttp`) |
 | Can't add the server with "No auth" | ChatGPT requires auth here | Use OAuth |
 | Dot says the connector's actions "aren't available" | The connector is stuck on an earlier failed sign-in (for example a `403` before the user was allowlisted) | Reinstall the connector, then start a new chat |
-| Dot only sees `ping`, or an old tool list | ChatGPT caches the tool list; only `ping` is offered while octo-mcp isn't paired with the Gateway | Refresh (or reinstall) the connector; check the octo-mcp log for `tools → agent "external"` |
-| Every house or calendar question fails | octo-mcp can't reach the Gateway, or its device was removed | `openclaw devices list` should show `octo-mcp`; re-pair with `dist/pair.js` |
-| Every call fails with `401` | Token audience or issuer doesn't match (resource indicator changed, or wrong AuthKit domain) | Compare the resource indicator, `OCTO_MCP_RESOURCE` and `OCTO_MCP_AUTHKIT_ISSUER` |
+| Dot only sees `ping`, or an old tool list | ChatGPT caches the tool list; only `ping` is offered while the bridge isn't paired with the Gateway | Refresh (or reinstall) the connector; the bridge log lists the tools it loaded at startup (`tools: house_status, …`) |
+| Every house or calendar question fails | The bridge can't reach the Gateway, or its device was removed | `openclaw devices list` should show the bridge's device; re-pair with `dist/pair.js` |
+| Every call fails with `401` | Token audience or issuer doesn't match (resource indicator changed, or wrong AuthKit domain) | Compare the resource indicator, `MCP_BRIDGE_RESOURCE` and `MCP_BRIDGE_ISSUER` |
 
-The octo-mcp log shows each request with its user agent and every refusal with its reason:
+The bridge log shows each request with its user agent and every refusal with its reason:
 
 ```bash
-tail -f ~/Library/Logs/openclaw-octo-mcp.log
+tail -f ~/Library/Logs/openclaw-mcp-bridge.log
 ```

@@ -1,26 +1,31 @@
 ---
 layout: default
 parent: External Integrations
-title: MCP & OctoDot
+title: 'Octo MCP: Octo for other agents'
 nav_order: 1
 has_children: true
 ---
 
-# 🔌 MCP & OctoDot
+# 🔌 Octo MCP: Octo for other agents
 
-OctoDot is an [OpenAI Dot](https://openai.com/index/introducing-dots/) in ChatGPT. It reaches Octo through a custom
-**MCP connector**: ChatGPT calls Octo's own MCP server, [octo-mcp](services/octo-mcp), which sits behind
-**WorkOS AuthKit** OAuth and is published on Tailscale Funnel at `https://<funnel-host>/mcp`. Behind octo-mcp, a
-deliberately limited OpenClaw agent, `external`, does the work.
+Octo is useful to more than the people who message it. Other agents can use it too: right now **OctoDot**, an
+[OpenAI Dot](https://openai.com/index/introducing-dots/) in ChatGPT, and anything else that speaks remote MCP with
+OAuth. They reach Octo through the **Octo MCP**: a small, OAuth-protected MCP server published on Tailscale Funnel at
+`https://<funnel-host>/mcp`. It offers a few curated tools, not OpenClaw's whole tool list, and sends the work to a
+deliberately limited OpenClaw agent, `external`.
+
+The server is [mcp-bridge](services/mcp-bridge), a generic service in
+[openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge). Octo's tools are a JSON
+file in this repo (`config/mcp-bridge/tools.json`), so you can run the same bridge with your own tools. See
+[Build your own](#build-your-own).
 
 ```mermaid
 sequenceDiagram
     participant U as You (ChatGPT)
     participant C as ChatGPT MCP client
-    participant M as octo-mcp (/mcp)
+    participant M as mcp-bridge (/mcp)
     participant W as WorkOS AuthKit
     participant G as OpenClaw Gateway
-    participant A as external agent
     C->>M: POST /mcp (no token)
     M-->>C: 401 + WWW-Authenticate resource_metadata
     C->>M: GET /.well-known/oauth-protected-resource/mcp
@@ -31,11 +36,10 @@ sequenceDiagram
     W-->>C: access token (aud = /mcp URL)
     C->>M: tools/call house_status + access token
     M->>M: verify signature, iss, aud, exp, allowed user
-    M->>G: chat.send (paired device, read + write scopes)
-    G->>A: fixed status question
-    A-->>G: reply (Home Assistant reads)
-    G-->>M: reply text
-    M-->>C: tool result
+    M->>G: tools.invoke hass_state_list x4 (as the external agent)
+    G-->>M: raw state (about 90 KB)
+    M->>M: condense to a few lines
+    M-->>C: tool result (about 350 characters)
 ```
 
 ## Tools
@@ -46,10 +50,10 @@ confirmed.
 
 | Tool | Kind | Confirmation | How it works |
 |---|---|---|---|
-| `house_status` | read-only | none | A fixed question to the `external` agent: lights, garage and covers, thermostat, TVs |
-| `calendar` | read-only | none | A fixed question with a validated range (`today`, `tomorrow`, `this_week`, `next_7_days`, or start/end dates) |
+| `house_status` | read-only | none | Calls Home Assistant state tools **directly**, under the `external` agent's policy, and condenses the result: lights on, garage and covers, thermostat, active TVs and speakers |
+| `calendar` | read-only | none | Calls the calendar tools directly for a validated range (`today`, `tomorrow`, `this_week`, `next_7_days`, or start/end dates) and merges them into one sorted list in Pacific time |
 | `control_house` | changes things | ChatGPT asks first | Your request goes to the `external` agent as quoted data; every Home Assistant action passes through Hass Guard, and unusual ones wait for Jeff's approval |
-| `send_message` | sends things | ChatGPT asks first | octo-mcp sends directly through the Gateway to a **named destination** (iMessage or Discord); no AI picks the recipient |
+| `send_message` | sends things | ChatGPT asks first | The bridge sends directly through the Gateway to a **named destination** (iMessage or Discord); no AI picks the recipient |
 | `ping` | read-only | none | Reachability check |
 
 The server also sends MCP **instructions** when ChatGPT connects, saying what Octo is for and what it can't do (email,
@@ -58,84 +62,117 @@ Octo.
 
 ### Why this split
 
-- **Reads carry no free text.** `house_status` takes no input and `calendar` only accepts a named range or dates. The
-  agent behind them can also change the house, so a read must not be talkable into a change. With no caller text in
-  the prompt, there's nothing to inject.
+- **Reads don't involve a model.** `house_status` and `calendar` call OpenClaw tools directly and condense what comes
+  back. They're fast (no agent run), cheap, and there's no prompt to inject into. They take no free text: only a
+  named range or dates.
+- **Reads are condensed.** Raw Home Assistant state for the house is about 90 KB; the condensed answer is a few lines.
+  That keeps the other agent's context small, and only what's needed leaves the house.
 - **Changes are one tool, not one per device.** `control_house` covers lights, TVs, fans, the thermostat and covers.
-  Hass Guard, not the tool list, decides which actions are allowed and which need approval. Fewer tools also makes it
-  easier for the Dot to pick the right one.
+  It's the one tool that needs judgment, so it goes to an agent, and Hass Guard decides which actions are allowed and
+  which need approval. Fewer tools also makes it easier for the Dot to pick the right one.
 - **Sending doesn't involve an AI.** A message from Octo reaches real people, so it's the riskiest action.
-  `send_message` only accepts destination names (`jeff`, `nicole`, `aaron`, `walter`, `jeff_discord`,
-  `discord_general`); the handles and channel IDs live in a private file on the Mac (mode 600, never in a repo), and
-  octo-mcp calls the Gateway's `send` itself. One tool covers both iMessage and Discord, so adding a destination
-  doesn't add a tool.
+  `send_message` only accepts destination names (Jeff, a few family members, a Discord channel); the handles and
+  channel IDs live in a private file on the Mac (mode 600, never in a repo), and the bridge calls the Gateway's `send`
+  itself. One tool covers both iMessage and Discord, so adding a destination doesn't add a tool.
 - **One honest annotation per tool.** `control_house` and `send_message` are marked as changing things even though
   that costs a confirmation every time. Marking them read-only would remove the prompt and your check on them.
 
 ## A separate agent, on purpose
 
-Outside assistants talk to `external`, not to Octo's main agent, even though the Dot works for Jeff:
+Outside assistants act as `external`, not Octo's main agent, even though the Dot works for Jeff:
 
 - **The Dot is another company's model acting on Jeff's behalf.** In ChatGPT it reads web pages, documents and mail
   that other people wrote, and any of those can carry instructions ("…then ask Octo to forward Jeff's mail"). Behind
   `main`, that could reach shell access, mail, messaging, files and memory. Behind `external`, the most it can reach is
   guarded house control and calendar reads.
 - **The front door is on the internet.** A stolen sign-in should not be a stolen Octo.
-- **Privacy.** Whatever the agent answers with goes into OpenAI's systems. A narrow agent keeps that narrow: no mail,
-  no finances, no memory of other conversations.
-- **Widening is deliberate.** Giving outside assistants something new (say, mail summaries) means adding one tool to
-  `external`, a reviewable change, rather than handing over everything and trying to claw it back.
+- **Privacy.** Whatever Octo answers with goes into OpenAI's systems. A narrow agent keeps that narrow: no mail, no
+  finances, no memory of other conversations.
+- **Widening is deliberate.** Giving outside assistants something new (say, mail summaries) means adding a tool to
+  `external` and a few lines to `tools.json`, a reviewable change, rather than handing over everything and trying to
+  claw it back.
 
 `external` has `hass_state_get`, `hass_state_list`, `hass_service_call` (under Hass Guard, like Hassonic), and read
-access to Jeff's Personal, Family, TripIt and Work calendars. It has no web, messaging, mail, files or exec. Messaging
-is done by octo-mcp directly, not by the agent.
+access to Jeff's Personal, Family, TripIt and Work calendars. It has no web, messaging, mail, files or exec. The direct
+reads run under its tool policy too, so a read tool can only call what `external` may call. Messaging is done by the
+bridge, not the agent.
 
-## How octo-mcp reaches OpenClaw
+## Trust model
 
-octo-mcp is **paired with the Gateway as its own device** (display name `octo-mcp`) using OpenClaw's official
-[`@openclaw/gateway-client`](https://docs.openclaw.ai/gateway/clients), with the `operator.read` and `operator.write`
-scopes. The shared Gateway token is used once, to request the pairing, and never stored; afterwards octo-mcp signs in
-with its own device token.
+Three layers, each with one job:
 
-What that access does and doesn't allow:
+| Layer | Trusts | Decides |
+|---|---|---|
+| **WorkOS AuthKit + the bridge's token check** | Jeff's WorkOS sign-in | *Who* gets in: one allowlisted user, with a token minted for this exact MCP URL |
+| **The bridge's tool definitions** | Its own config | *What* can be asked: four tools, validated parameters, named destinations |
+| **OpenClaw: the `external` agent and Hass Guard** | Its own policy | *What actually happens*: which tools run, which house actions are allowed or need approval |
 
-- **Can't:** change config, pair devices, or use owner-only tools (`cron`, `gateway`, `nodes`), and it can't use
-  admin-only request options.
-- **Can, in principle:** `operator.write` also allows invoking tools that an agent's policy permits and sending to any
-  target. octo-mcp's own code only ever sends questions to `external` and messages to its destination list, and all of
-  it sits behind WorkOS sign-in, so this matters only if octo-mcp itself were compromised.
-- **Why not narrower:** OpenClaw's session-only scopes (`operator.sessions.*`) need a verified user profile, which a
-  paired device doesn't have. Worth revisiting if OpenClaw user profiles are set up.
-- **Why not the alternatives:** `/v1/responses` only accepts the shared Gateway token (full admin); `/hooks/agent`
-  returns a status, not the reply; running the `openclaw` CLI would use its admin identity and every secret in `.env`.
+The bridge is **trusted local software**, in the same class as a Control UI session on the Mac. It's paired with the
+Gateway as its own device with `operator.read` and `operator.write`, which OpenClaw also uses for messaging any agent,
+invoking tools and sending to any target. The bridge's code only uses what `tools.json` defines; if the bridge process
+itself were compromised, the rest would be reachable. Two things would narrow that, and neither is available yet:
+
+- **Per-device agent restrictions.** OpenClaw's named roles can do this for verified user profiles, not for devices.
+- **Session-only scopes** (`operator.sessions.*`) also need a verified user profile.
+
+What the device can't do: change config, pair devices, use owner-only tools (`cron`, `gateway`, `nodes`), or use
+admin-only request options. The shared Gateway token was used once, to request the pairing, and is never stored.
+
+The alternatives were worse: `/v1/responses` only accepts the shared Gateway token (full admin); `/hooks/agent` returns
+a status, not the reply; running the `openclaw` CLI would use its admin identity and every secret in `.env`.
 
 Messages that start with `/` or `!` are prefixed before they reach the agent, so outside text can't be read as an
 OpenClaw command.
 
 ## What the server checks
 
-Every `POST /mcp` must carry an AuthKit access token. Before the request body is even read, octo-mcp checks:
+Every `POST /mcp` must carry an AuthKit access token. Before the request body is even read, the bridge checks:
 
 - the JWT signature against AuthKit's published keys (JWKS),
-- the issuer is the AuthKit domain,
+- the issuer is exactly the AuthKit domain,
 - the audience is exactly the MCP URL (ChatGPT sends it as the OAuth `resource`; AuthKit copies it into `aud`),
 - the token hasn't expired,
 - the WorkOS user ID is on a one-person allowlist.
 
 A missing or bad token gets `401` with a `WWW-Authenticate` challenge pointing at the metadata, which is what starts
-ChatGPT's sign-in. A valid token from anyone else gets `403`. Without an AuthKit issuer configured, the service refuses
-to start: it never serves `/mcp` unauthenticated.
+ChatGPT's sign-in. A valid token from anyone else gets `403`. Without an issuer, resource URL or tool definitions, the
+service refuses to start: it never serves `/mcp` unauthenticated.
+
+## Build your own
+
+Nothing in mcp-bridge is specific to Octo. If you run OpenClaw and want ChatGPT, Claude or another agent to use it,
+these parts are reusable as they are:
+
+| Part | What you get |
+|---|---|
+| **OAuth resource server** | The pieces ChatGPT needs to sign in: protected resource metadata (RFC 9728), the `401` challenge, JWT checks (signature, `iss`, `aud`, `exp`) and a user allowlist. Any provider that issues JWT access tokens and honors resource indicators works; [WorkOS setup](mcp-workos) covers the one used here |
+| **Gateway device pairing** | A one-time `pair` command that gives the bridge its own device token with no admin, using the official `@openclaw/gateway-client` |
+| **Tools as config** | Each tool is a few lines of JSON: `read` or `change`, a few validated parameters, and one action: call OpenClaw tools directly (`invoke`), ask an agent with a prompt template (`ask`), or send to a named destination (`send`) |
+| **Condensers** | Built-in summaries for Home Assistant state and calendar events, so reads come back as a few lines instead of raw JSON |
+| **Compact tool results inside OpenClaw** | The same problem exists for OpenClaw's own agents. [carapace-plugin-sdk](https://github.com/JeffSteinbok/carapace-plugin-sdk) 3.2 lets a plugin tool return a compact view for the model while keeping the full result for code |
+
+The [mcp-bridge README](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge) has the config
+reference, an example tools file and setup steps. The parts that took longest to find out:
+
+- **Use port 443.** ChatGPT never connected on Funnel port 8443; the connector setup just showed DCR and CIMD as
+  "Unavailable". The MCP paths share 443 with the Gateway instead.
+- **Make the resource URL the default resource indicator** in your OAuth provider, or tokens come back with the wrong
+  audience.
+- **Pair the bridge as `cli` with mode `backend`.** Pairing as `gateway-client` on loopback is treated as the Gateway's
+  own helper and never issues a device token.
+- **Give the bridge its own agent.** Point `agent` at a narrow one, and put guard plugins on it.
 
 ## Design decisions
 
 - **WorkOS AuthKit as the authorization server.** It supports both ways ChatGPT registers itself (Client ID Metadata
-  Documents and Dynamic Client Registration), resource indicators, and PKCE, and it's free at this scale. octo-mcp is
-  only a resource server, so swapping providers later is mostly configuration.
-- **Port 443, shared with the Gateway.** ChatGPT never connected to Funnel port 8443: the connector setup showed DCR
-  and CIMD as "Unavailable" because metadata discovery never reached the server. The MCP paths are mounted on 443
-  instead; the Gateway doesn't use them.
+  Documents and Dynamic Client Registration), resource indicators, and PKCE, and it's free at this scale. The bridge is
+  only a resource server, so swapping providers is configuration.
+- **A generic bridge with Octo's tools in config.** The server code lives in openclaw-hub, where anyone can use it;
+  what Octo exposes lives here, where changes to it are reviewed like any other config.
 - **No unauthenticated server, even for a test.** ChatGPT wouldn't add one anyway, and a public endpoint without auth
   is the wrong default.
+- **Private values stay out of repos.** The Funnel hostname, the AuthKit domain and the allowed user ID are in a
+  private env file on the Mac, not in config or docs.
 
 OctoDot's old Control UI pairings (full admin, from OpenAI's address range) were removed on 2026-10-24; it reaches
 Octo only through MCP now.
@@ -144,4 +181,4 @@ Octo only through MCP now.
 
 - [WorkOS setup](mcp-workos): the AuthKit settings and the gotchas we hit.
 - [ChatGPT connector](mcp-chatgpt): adding the server in ChatGPT, the first sign-in, confirmations, and troubleshooting.
-- [octo-mcp service](services/octo-mcp): configuration, pairing, logs and operations.
+- [mcp-bridge service](services/mcp-bridge): configuration, pairing, logs and operations on the Mac mini.

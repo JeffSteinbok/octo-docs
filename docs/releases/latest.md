@@ -6,6 +6,19 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-10-25
+
+
+### Changed
+
+- **The Octo MCP runs on mcp-bridge** — octo-mcp became a generic, config-driven MCP server in openclaw-hub
+- **OctoDot's reads skip the model** — `house_status` and `calendar` call the Home Assistant and calendar tools
+- **Docs:** *MCP & OctoDot* is now **Octo MCP: Octo for other agents**, with the trust model and a *Build your own*
+
+### Fixed
+
+- **ics-calendar 1.2.0** (openclaw-hub #154) — a request for one day returned the whole week (the tool only took
+
 ## 2026-10-24
 
 

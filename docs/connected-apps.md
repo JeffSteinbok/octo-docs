@@ -13,6 +13,6 @@ Apps outside OpenClaw that talk to Octo directly. Unlike [channels](agents-chann
 | Integration | What it is | How it connects |
 |-------------|------------|-----------------|
 | [Hassonic](hassonic) | Native iOS app for Home Assistant | Paired gateway device, talking only to the dedicated `hassonic` agent |
-| [OctoDot](mcp) | An [OpenAI Dot](https://openai.com/index/introducing-dots/) in ChatGPT | Custom MCP connector to Octo's MCP server, signed in through WorkOS, answered by the dedicated `external` agent. See [MCP & OctoDot](mcp) |
+| [OctoDot](mcp) | An [OpenAI Dot](https://openai.com/index/introducing-dots/) in ChatGPT | Custom MCP connector to the Octo MCP, signed in through WorkOS; reads come back condensed and changes go through the dedicated `external` agent. See [Octo MCP](mcp) |
 
 This section doesn't cover webhooks. Systems that trigger agents with one-way events, such as Home Assistant camera alerts and GitHub issues, are documented under [Hooks](hooks).
