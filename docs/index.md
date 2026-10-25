@@ -111,14 +111,14 @@ Security is the most important aspect of this experiment — even above just hav
 
 - **Unprivileged account** — OpenClaw runs under its own standard (non-admin) macOS user with no `sudo` rights. It can configure new plugins for itself, but it can't install software on its own.
 - **Owner-first access** — Octo's main agent only responds to me. Family members message a separate **family** agent over iMessage, which has a much narrower set of tools.
-- **Per-person calendar rules** — The family agent can read and update the family calendar for anyone, but only Nicole can ask about her calendar, only Nicole or I can ask about my work calendar, and only I can ask about my personal calendar and TripIt. The calendar plugins enforce this using the sender the channel reports, not what the message claims.
+- **Per-person calendar rules** — The family agent can read and update the shared family calendar for anyone, but personal calendars are limited to their owners: mine and TripIt only to me, my work calendar to me and one other family member. The calendar plugins enforce this using the sender the channel reports, not what the message claims.
 - **No secrets in Git** — Tokens and credentials live in local files that are never committed to version control.
 - **No `exec` on the main agent** — Octo's main agent can't run shell commands. If something truly needs elevated access, I have to ask the **root** agent explicitly; it is the only agent with elevated privileges. This is also why Octo leans on purpose-built plugins rather than skills: a skill can't run code without `exec`, so every real-world action needs a plugin behind it.
 
 ### 📬 Mail and calendar
 
 - **Mail read access** — Octo reads my personal Outlook inbox through the Microsoft Graph API (OAuth2). Mail is never fed to the model wholesale; Octo queries it on demand with structured API calls.
-- **Calendar access** — Octo reads my personal and family calendars through the Graph API, Nicole's calendar through an ICS feed, and my work calendar through Exchange and the Graph API. The calendars are synced to Markdown files in memory every hour from 7 AM to 5 PM, and at midnight.
+- **Calendar access** — Octo reads my personal and family calendars through the Graph API, another family member's calendar through an ICS feed, and my work calendar through Exchange and the Graph API. The calendars are synced to Markdown files in memory every hour from 7 AM to 5 PM, and at midnight.
 - **Its own mailbox** — Octo has its own [Fastmail](https://www.fastmail.com) mailbox, which it uses to send mail on my behalf. The [Fastmail SSE service]({{ site.baseurl }}/services/fastmail-sse) watches that mailbox for incoming mail.
 
 ## 💰 Cost
