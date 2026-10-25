@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Release Notes
-nav_order: 14
+nav_order: 13
 ---
 
 # Release Notes
@@ -15,7 +15,7 @@ nav_order: 14
 - **Health check** — `scripts/healthcheck.py` snapshots the system before each change and reports anything that changed
 - **Remote-access smoke test** — `scripts/smoke-remote-access.sh` checks every public route with requests designed to be
 - **Owner-run Funnel scripts** — `config/tailscale/apply-step-*.sh` apply each Funnel change through the Tailscale
-- **Docs:** Remote Access and MCP & OctoDot sections (WorkOS setup, ChatGPT connector, troubleshooting), Health Check,
+- **Docs:** new **External Integrations** section, near the top of the site: how everything outside reaches Octo
 
 ### Changed
 

@@ -1,7 +1,8 @@
 ---
 layout: default
+parent: External Integrations
 title: MCP & OctoDot
-nav_order: 12
+nav_order: 1
 has_children: true
 ---
 
@@ -28,7 +29,7 @@ sequenceDiagram
     W-->>C: access token (aud = /mcp URL)
     C->>M: POST /mcp + access token
     M->>M: verify signature, iss, aud, exp, allowed user
-    M-->>C: tools (ping; ask_octo planned)
+    M-->>C: tools (ping, ask_octo planned)
     Note over M,O: ask_octo (planned): octo-mcp, paired as a<br/>write-only operator device, sends the question<br/>to the octodot agent and returns the reply
 ```
 

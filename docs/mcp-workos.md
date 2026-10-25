@@ -2,6 +2,7 @@
 layout: default
 title: WorkOS Setup
 parent: MCP & OctoDot
+grand_parent: External Integrations
 nav_order: 1
 ---
 

@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Connected Apps
-parent: Agents & Channels
-nav_order: 1
+parent: External Integrations
+nav_order: 2
 has_children: true
 ---
 

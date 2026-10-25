@@ -28,7 +28,7 @@ About 40 read-only checks in roughly 13 seconds:
 |---|---|
 | Gateway | `/healthz`, `/startupz`, `/readyz` (agent databases, channels, plugin reload, event loop), `openclaw health`, CLI and Gateway versions, stability bundles, listening ports |
 | Channels | Each enabled channel configured, running, connected and ready; the iMessage bridge process |
-| Hooks | `main` can never be run by a hook; the [remote-access smoke test](remote-access#verifying-changes); proxy and GitHub hook logs |
+| Hooks | `main` can never be run by a hook; the [remote-access smoke test](external-integrations#verifying-changes); proxy and GitHub hook logs |
 | Plugins | Enabled plugins loaded; degraded plugins or secret owners |
 | Agents | Agent list and models, database files present and sane, session counts (a refused database makes them collapse to zero) |
 | Cron | Scheduler on; job errors, especially agent-database admission failures; overdue jobs; failed runs since the baseline |

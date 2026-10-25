@@ -2,7 +2,6 @@
 layout: default
 title: Agents & Channels
 nav_order: 2
-has_children: true
 ---
 
 # Agents & Channels

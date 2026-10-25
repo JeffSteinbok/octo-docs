@@ -1,7 +1,8 @@
 ---
 layout: default
+parent: External Integrations
 title: Hooks
-nav_order: 8
+nav_order: 3
 ---
 
 # Hooks

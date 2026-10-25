@@ -2,6 +2,7 @@
 layout: default
 title: ChatGPT Connector
 parent: MCP & OctoDot
+grand_parent: External Integrations
 nav_order: 2
 ---
 

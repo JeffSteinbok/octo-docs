@@ -2,7 +2,7 @@
 layout: default
 title: OctoDot
 parent: Connected Apps
-grand_parent: Agents & Channels
+grand_parent: External Integrations
 nav_order: 2
 ---
 
