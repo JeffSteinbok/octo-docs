@@ -1,10 +1,33 @@
 ---
 layout: default
 title: Release Notes
-nav_order: 13
+nav_order: 14
 ---
 
 # Release Notes
+
+## 2026-10-24
+
+
+### Added
+
+- **MCP server for OctoDot** — new `octo-mcp` service: ChatGPT's custom MCP connector reaches Octo at `/mcp` on the
+- **Health check** — `scripts/healthcheck.py` snapshots the system before each change and reports anything that changed
+- **Remote-access smoke test** — `scripts/smoke-remote-access.sh` checks every public route with requests designed to be
+- **Owner-run Funnel scripts** — `config/tailscale/apply-step-*.sh` apply each Funnel change through the Tailscale
+- **Docs:** Remote Access and MCP & OctoDot sections (WorkOS setup, ChatGPT connector, troubleshooting), Health Check,
+
+### Changed
+
+- **webhook-proxy** — one Funnel mount (`/hooksproxy`) with exact per-route matching, POST only, a 1 MiB body limit and
+- **Home Assistant hooks** go to webhook-proxy on the LAN with their own token instead of posting to the Gateway with
+- **Gateway `/hooks` is no longer public** — Funnel answers `not found`; every webhook enters through webhook-proxy or
+- **Hooks token rotated**, and webhook-proxy loads its own env file instead of the shared `.env`; no external sender
+
+### Fixed
+
+- **iMessage stopped replying** (typing indicators, no answer for about 80 minutes) after a Gateway restart left the
+- **Smoke-test isolation check** could never fail (`plutil` escapes slashes in paths)
 
 ## 2026-10-22
 
