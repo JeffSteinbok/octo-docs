@@ -125,4 +125,3 @@ Every step is checked twice:
 
 - Re-pair the native clients with setup codes (no admin scope), prune old pairings, then rotate the shared Gateway
   token and bind the Gateway to loopback.
-- Remove the old Control UI pairings OctoDot used before MCP.

@@ -137,9 +137,8 @@ to start: it never serves `/mcp` unauthenticated.
 - **No unauthenticated server, even for a test.** ChatGPT wouldn't add one anyway, and a public endpoint without auth
   is the wrong default.
 
-## Still to do
-
-- Remove the two old Control UI pairings OctoDot used before MCP, which had full admin access.
+OctoDot's old Control UI pairings (full admin, from OpenAI's address range) were removed on 2026-10-24; it reaches
+Octo only through MCP now.
 
 ## Pages
 
