@@ -7,6 +7,8 @@ nav_order: 4
 
 # MCP Bridge
 
+> **Source:** [openclaw-hub/services/mcp-bridge](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge)
+
 The OAuth-protected MCP server behind the [Octo MCP](../mcp): how other agents, such as OctoDot in ChatGPT, use Octo. Every request needs a WorkOS AuthKit access token, checked before the request body is read, and only the owner's WorkOS account is allowed. Its tools are defined in `config/mcp-bridge/tools.json` in this repo: house and calendar reads call OpenClaw tools directly under the deliberately limited `external` agent and come back condensed; house changes go to that agent through Hass Guard; messages go straight out through the Gateway to a short list of named destinations. The service source is generic and lives in [`openclaw-hub/services/mcp-bridge`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge); on the Mac mini it runs from the LaunchAgent `com.octo.openclaw.mcp-bridge`, backed up in this repo at `config/macos/launchd/`.
 
 ## Features

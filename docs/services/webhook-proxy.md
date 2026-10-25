@@ -7,6 +7,8 @@ nav_order: 3
 
 # Webhook Proxy
 
+> **Source:** [openclaw-hub/services/webhook-proxy](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/webhook-proxy)
+
 Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. Each route checks the sender's own credential (an HMAC-SHA256 signature or a per-sender token in the `Authorization` header), optionally filters out events that shouldn't wake an agent, and forwards what's left to OpenClaw with the hooks token added, so no external sender ever holds the real hooks token. The service source lives in [`openclaw-hub/services/webhook-proxy`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/webhook-proxy); this folder holds Octo's setup notes and the Linux systemd unit. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.webhook-proxy`, backed up in this repo at `config/macos/launchd/`.
 
 ## Features
