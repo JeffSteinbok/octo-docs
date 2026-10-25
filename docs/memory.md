@@ -106,7 +106,7 @@ No overrides are set — memory-core is running with all defaults.
 | `coding` | 6 | 2026-05-04 | 2026-08-06 | — |
 | `external` | 0 | — | — | — |
 | `family` | 0 | — | — | — |
-| `finance` | 167 | 2026-05-06 | 2026-10-22 | — |
+| `finance` | 169 | 2026-05-06 | 2026-10-24 | — |
 | `group` | 0 | — | — | — |
 | `hass-hooks` | 0 | — | — | — |
 | `hassonic` | 0 | — | — | — |

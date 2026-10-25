@@ -29,6 +29,7 @@ Each published agent has its own permission boundary. Interactive helpers stay s
 | `claude` | One-shot Claude Code runs delegated over ACP | `inherited-default` tools. | Runs Claude Code as an external ACP agent so coding work happens outside the gateway's own tool policy. |
 | `hassonic` | Home control from the [Hassonic](hassonic) iPhone app | `custom-allowlist` tools; Home Assistant state and an allowlisted set of actions, plus web search. | The app talks only to this agent, so a phone request can reach Home Assistant but nothing else. Every action is checked by the hass-guard plugin. |
 | `group` | Other iMessage group chats (replies only when mentioned) | `profile:messaging` tools. | Group chats can include people outside the family, so this agent gets only messaging, web search and read access to the family calendar — no exec, files or browser. |
+| `external` | Published agent surface | `custom-allowlist` tools. | Separates this agent from the rest of the system. |
 
 ### Exec & Safebin
 

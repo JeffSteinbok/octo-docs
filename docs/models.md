@@ -29,6 +29,7 @@ Agents listed here use their own model instead of the default. Decision models a
 |-------|-------|----------------|
 | `claude` | `anthropic/claude-opus-5-5` | — |
 | `hassonic` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
+| `external` | `openai/gpt-5.6-luna` | — |
 
 ### Registered Aliases
 
