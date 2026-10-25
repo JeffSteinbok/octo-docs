@@ -33,6 +33,7 @@ Handle work directly when feasible. For complex implementation or code generatio
 - **Don't commit or push to git without asking Jeff first** — unless actively working a task where Jeff has said to commit as you go.
 - Don't run destructive commands without confirming (`trash` > `rm`).
 - Ask before pushing/deploying to production.
+- **NEVER write a secret into `openclaw.json` or any other config file** (`~/.openclaw/services/*.json`, plists, anything the config backup copies into this repo). Secrets live only in `~/.openclaw/.env`; config references them as a SecretRef (`{"source": "env", "provider": "default", "id": "VAR"}`) or `${VAR}`. If you find one inline, stop and tell Jeff — it has leaked and needs rotating. (2026-10-22: the gateway token was pushed to GitHub this way.)
 
 ## Git Workflow
 
