@@ -6,27 +6,25 @@ nav_order: 5
 
 # Skills
 
-Skills are markdown-defined guidance modules that agents load for domain-specific rules, workflows, and operating context.
+Skills are instruction files (`SKILL.md`, written in Markdown) that teach an agent how to do a particular job: which tools to use, in what order, and what rules to follow. An agent loads a skill only when a task calls for it.
 
-Unlike plugins, skills do not execute code. They give agents shared instructions for how to use tools and interpret a problem domain.
+Unlike [plugins](plugins), skills don't add tools to an agent; they tell it how to use the tools it already has. Some come with scripts that the agent runs with its shell tool.
 
-Octo currently publishes **3 skills** in the public bundle.
-
-Skills are grouped by whether their source is open source or private to Octo. Host-specific commands are omitted from the individual pages — they run on the Octo host and reference private paths.
+Octo publishes **3 skills**, grouped by where the source lives. Each skill's page is the skill file itself, written as instructions to the agent. Commands that only run on the Octo host are left out.
 
 ## 📦 Open Source
 
-Skills whose source lives in a public OpenClaw repo — reusable across installs.
+Skills whose source is in a public repo, so other OpenClaw installs can use them too.
 
 | | Skill | Used by | Description | Source |
 |---|-------|---------|-------------|--------|
-| 🔍 | [Agent Review](skills/agent-review) | `root` | Weekly self-improvement analysis — scan session transcripts, tool failures, cron errors, and memory for patterns; file GitHub issues for recurring findings; deliver prioritized suggestions to Jeff via Discord DM. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/agent-review) |
-| 📊 | [Usage Report](skills/usage-report) | `root` | Generate the weekly LLM API usage and cost report, render to PDF, post to Discord, and commit. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/usage-report) |
+| 🔍 | [Agent Review](skills/agent-review) | `root` | Weekly review of session transcripts, tool failures, scheduled-job errors and memory files. Files a GitHub issue for each recurring problem it is confident about and sends a prioritized summary. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/agent-review) |
+| 📊 | [Usage Report](skills/usage-report) | `root` | Weekly report of model API usage and cost, broken down by agent, scheduled job and model. Rendered to PDF and posted to Discord. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/usage-report) |
 
 ## 🔒 Private (octo)
 
-Octo-specific skills. Source is private, but the docs are published below.
+Octo-specific skills. The source is private, but each skill's page is published here.
 
 | | Skill | Used by | Description | Source |
 |---|-------|---------|-------------|--------|
-| 🏠 | [HA SMB](skills/ha-smb) | `coding` | Access, read, and write files on the Home Assistant server via SMB. Use when you need to read or modify HA config files (automations.yaml, scripts.yaml, blueprints, configuration.yaml, etc.) directly on the HA server. Credentials are stored in the workspace .env file. | Private |
+| 🏠 | [HA SMB](skills/ha-smb) | `coding` | Read and edit Home Assistant's config files (automations, scripts, blueprints) over its SMB file share. | Private |

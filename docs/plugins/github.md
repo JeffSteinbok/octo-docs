@@ -7,7 +7,7 @@ nav_exclude: true
 
 # 🐙 GitHub
 
-Manage GitHub issues. Create, read, update, close, comment on, and list issues.
+Create, read, update, comment on, close and list GitHub issues.
 
 ## Configuration Schema
 
@@ -120,47 +120,30 @@ Add a comment to a GitHub issue. Returns the comment ID, body, user, and URL.
 | `issue_number` | integer | Required | Issue number. |
 | `body` | string | Required | Comment body (Markdown supported). |
 
-## CLI Usage
+## Command-Line Use
 
-This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
-
-### Setup
+Building the plugin also produces a standalone command-line version, with one command per tool. Add `--json` to any command for JSON output.
 
 ```bash
 cd plugins/github
 npm install && npm run build
+node dist/bin/github.js --help
 ```
 
-### Commands
+Commands:
 
 ```bash
-
-## Show help
-node dist/bin/github.js --help
-
-## List GitHub issues with optional filters. Filter by state (open/closed/all), labels, assignee, and milestone. Returns a list of issues and the total count.
 node dist/bin/github.js github-list-issues <owner> <repo> <state> <labels> <assignee> <milestone> <per_page> <page>
-
-## Get a single GitHub issue by its number. Returns issue details including title, body, state, labels, and assignees.
 node dist/bin/github.js github-get-issue <owner> <repo> <issue_number>
-
-## Create a new issue in a GitHub repository. Acts as the OpenClaw bot account (GITHUB_TOKEN); openclaw/* repos are filed as Jeff (GITHUB_UPSTREAM_TOKEN). Returns the issue number, URL, and state.
 node dist/bin/github.js github-create-issue <owner> <repo> <title> <body> <labels...> <assignees...> <milestone>
-
-## Edit an existing GitHub issue. Update title, body, state, labels, assignees, or milestone. At least one field to update must be provided.
 node dist/bin/github.js github-edit-issue <owner> <repo> <issue_number> <title> <body> <state> <labels...> <assignees...> <milestone>
-
-## Close or reopen a GitHub issue. By default closes the issue, set reopen=true to reopen it.
 node dist/bin/github.js github-close-issue <owner> <repo> <issue_number> <reopen>
-
-## Add a comment to a GitHub issue. Returns the comment ID, body, user, and URL.
 node dist/bin/github.js github-comment-issue <owner> <repo> <issue_number> <body>
-
-## JSON output
-node dist/bin/github.js <command> [args...] --json
 ```
 
-### Environment Variables (CLI mode)
+### Environment Variables (command line)
+
+On the command line, each config field is read from an environment variable instead:
 
 | Variable | Description |
 |----------|-------------|

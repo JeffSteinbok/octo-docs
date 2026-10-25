@@ -7,7 +7,9 @@ has_children: true
 
 # 🌐 External Integrations
 
-Everything outside the house that talks to Octo, and how it gets in:
+Everything outside the house that talks to Octo, and how it gets in. Octo runs on a Mac mini at home; this page
+covers the one public entry point to it and how each kind of traffic is authenticated.
+
 
 | Integration | What it is |
 |---|---|
@@ -15,8 +17,9 @@ Everything outside the house that talks to Octo, and how it gets in:
 | [Connected Apps](connected-apps) | Apps that talk to Octo directly: Hassonic and OctoDot |
 | [Hooks](hooks) | Webhooks from GitHub, Home Assistant and Microsoft 365 that start agents |
 
-The rest of this page covers the front door they all share. The native apps (macOS, Windows, iPhone, Hassonic) can't
-join the tailnet, so everything public goes through **Tailscale Funnel** on one hostname (`<funnel-host>` below) and
+The rest of this page covers the front door they all share. Not every client can join the tailnet (the private
+Tailscale network): OpenClaw's macOS, Windows and iPhone apps, Hassonic, and the cloud services all connect from the
+public internet. So everything public goes through **Tailscale Funnel** on one hostname (`<funnel-host>` below) and
 **port 443**.
 
 ```mermaid
@@ -59,7 +62,7 @@ names a path (the MCP routes do, so they arrive unchanged).
 | `/` | OpenClaw Gateway (Control UI, WebSocket) | OpenClaw shared token or paired-device token |
 | `/hooks` | Nothing: Funnel answers `not found` | The Gateway's hooks endpoint is never public |
 | `/hooksproxy/<route>` | [webhook-proxy](services/webhook-proxy) | Per route: GitHub HMAC signature, or a per-sender token in the `Authorization` header |
-| `/m365/webhook` | m365-webhook (Microsoft Graph change notifications) | Graph `clientState` |
+| `/m365/webhook` | [m365-webhook](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) (Microsoft Graph change notifications) | Graph `clientState` |
 | `/mcp`, `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server` | [mcp-bridge](services/mcp-bridge) | WorkOS AuthKit OAuth (see [Octo MCP](mcp)) |
 
 Only port 443 is used. ChatGPT never connects to Funnel's other ports (8443, 10000), which is why the MCP server shares
@@ -85,16 +88,16 @@ same-user process from reading a file.
 ## Hooks hardening
 
 - Webhooks enter only through webhook-proxy (or the dedicated M365 service); `/hooks` is blocked at Funnel.
-- The proxy matches routes by exact path, accepts only `POST`, caps bodies at 1 MiB, and locks out a client after 10
-  failed auth attempts in a minute (5 minutes).
+- The proxy matches routes by exact path, accepts only `POST`, caps bodies at 1 MiB, and locks a client out for 5
+  minutes after 10 failed auth attempts in a minute.
 - The GitHub route drops pings, unknown senders and non-actionable labels before anything reaches the Gateway.
 - `hooks.allowedAgentIds` lists only the agents hooks may run; `main` can never be started by a hook.
 - Home Assistant posts to the proxy on the LAN with its own token, not to the Gateway.
 
 ## Changing Funnel
 
-Funnel changes need the Tailscale operator account, so they are owner-run scripts with built-in checks and automatic
-rollback, in `config/tailscale/`:
+Funnel changes need the Tailscale operator account, so the owner runs them by hand, as scripts with built-in checks
+and automatic rollback in `config/tailscale/`:
 
 | File | Purpose |
 |---|---|
@@ -104,11 +107,11 @@ rollback, in `config/tailscale/`:
 
 ## Verifying changes
 
-Every step is checked twice:
+Every Funnel change is checked two ways:
 
 - `scripts/smoke-remote-access.sh` sends only requests designed to be rejected or dropped (unsigned webhooks, wrong
   tokens, unauthenticated MCP) and checks Funnel routes, services and the security audit.
-- `scripts/healthcheck.py` snapshots the whole system before a step and reports anything that changed but wasn't
+- `scripts/healthcheck.py` snapshots the whole system before the change and reports anything that changed but wasn't
   declared. See [Health Check](healthcheck).
 
 ## Alternatives considered

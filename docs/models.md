@@ -6,19 +6,19 @@ nav_order: 3
 
 # Models
 
-This page documents the AI models and voice configuration powering Octo.
-All values are derived from live config so they stay accurate.
+This page lists the AI models Octo uses for chat, images, web search, safety decisions and voice.
+The tables are generated from Octo's OpenClaw config each time the docs are built.
 
 ## Language Models
 
 | Role | Model | Notes |
 |------|-------|-------|
-| Primary | `anthropic/claude-sonnet-4-6` | Default model for all agents |
-| Fallback | `anthropic/claude-haiku-4-5` | Used when primary is unavailable |
-| Fallback | `openai/gpt-6-astra` | Used when primary is unavailable |
+| Primary | `anthropic/claude-sonnet-4-6` | Default for every agent without its own model |
+| Fallback | `anthropic/claude-haiku-4-5` | Tried in order when the primary model is unavailable |
+| Fallback | `openai/gpt-6-astra` | Tried in order when the primary model is unavailable |
 | Image (vision) | `anthropic/claude-sonnet-4-6` | Used for image analysis |
 | Image fallback | `anthropic/claude-haiku-4-5` | |
-| Web search | `gemini` | Provider for web search tool |
+| Web search | `gemini` | Provider behind the web search tool |
 
 ### Per-Agent Overrides
 
@@ -57,14 +57,14 @@ Octo's decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plug
 
 | Where | Question asked | What happens with the answer |
 |-------|----------------|------------------------------|
-| [Hass Guard](plugins/hass-guard), before each Home Assistant action by [Hassonic](hassonic) | Is this action routine and safe to do immediately without asking? (yes/no) | Runs at 85% or higher; otherwise the action is blocked and the agent explains why |
+| [Hass Guard](plugins/hass-guard), before each Home Assistant action by a guarded agent ([Hassonic](hassonic) or the [Octo MCP](mcp)'s `external` agent) | Is this action routine and safe to do immediately without asking? (yes/no) | Runs at 85% or higher; otherwise the action is blocked and the agent explains why |
 
 The `decision_evaluate` tool, which lets an agent ask a decision model directly, is not given to any agent.
 OpenClaw's experimental *decision assistance*, which uses a decision model to drop unneeded tools before each turn, is off.
 
 ## Voice
 
-Octo supports text-to-speech, real-time voice conversation, and speech-to-text.
+Settings for speaking replies aloud (text-to-speech) and real-time voice conversations.
 
 ### Text-to-Speech (TTS)
 

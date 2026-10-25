@@ -21,11 +21,17 @@ All scripts live at `skills/ha-smb/scripts/` relative to the workspace root. Run
 
 ### List files
 
+_(Command omitted: it runs on the Octo host.)_
+
 ### Read a file
+
+_(Command omitted: it runs on the Octo host.)_
 
 Outputs the local destination path on success.
 
 ### Write a file back
+
+_(Command omitted: it runs on the Octo host.)_
 
 ## Typical Workflow
 
@@ -33,6 +39,8 @@ Outputs the local destination path on success.
 2. Edit the local copy
 3. Write it back with `ha-smb-write.sh`
 4. Reload HA via the REST API if needed:
+
+   _(Command omitted: it runs on the Octo host.)_
 
 `HASS_TOKEN` and `HASS_SERVER` are already set as environment variables on this host.
 

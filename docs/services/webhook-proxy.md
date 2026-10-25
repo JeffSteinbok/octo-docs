@@ -9,7 +9,7 @@ nav_order: 3
 
 > **Source:** [openclaw-hub/services/webhook-proxy](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/webhook-proxy)
 
-Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. Each route checks the sender's own credential (an HMAC-SHA256 signature or a per-sender token in the `Authorization` header), optionally filters out events that shouldn't wake an agent, and forwards what's left to OpenClaw with the hooks token added, so no external sender ever holds the real hooks token. The service source lives in [`openclaw-hub/services/webhook-proxy`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/webhook-proxy); this folder holds Octo's setup notes and the Linux systemd unit. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.webhook-proxy`, backed up in this repo at `config/macos/launchd/`.
+Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. Each route checks the sender's own credential (an HMAC-SHA256 signature or a per-sender token), optionally drops events that shouldn't wake an agent, and forwards the rest to the Gateway with the hooks token added, so no external sender ever holds the real hooks token. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.webhook-proxy` (backed up in `config/macos/launchd/`).
 
 ## Features
 
@@ -21,7 +21,7 @@ Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. E
 
 ## Routes
 
-Funnel mounts `/hooksproxy` on the proxy and strips the prefix, so the public URL `https://<funnel-host>/hooksproxy/<route>` arrives as `/<route>`.
+Each route forwards to one of the [hooks](../hooks) on the Gateway. Funnel mounts `/hooksproxy` on the proxy and strips the prefix (see [Funnel routes](../external-integrations#funnel-routes)), so the public URL `https://<funnel-host>/hooksproxy/<route>` arrives as `/<route>`.
 
 | Route | Sender | Auth | Filter | Forwards to |
 |---|---|---|---|---|
@@ -43,7 +43,7 @@ All three live in `~/.openclaw/secrets/webhook-proxy.env` (mode 600). The route 
 | File | Purpose |
 |---|---|
 | `config/macos/launchd/com.octo.openclaw.webhook-proxy.plist` | LaunchAgent (macOS), installed at `~/Library/LaunchAgents/` |
-| `webhook-proxy.service` | systemd user unit (Linux) |
+| `services/webhook-proxy/webhook-proxy.service` | systemd user unit, for running on a Linux host instead (not used on the Mac mini) |
 | `~/.openclaw/services/webhook-proxy-config.json` | Route config |
 | `~/.openclaw/secrets/webhook-proxy.env` | Secrets (see above) |
 

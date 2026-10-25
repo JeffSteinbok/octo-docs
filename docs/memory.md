@@ -6,111 +6,87 @@ nav_order: 3
 
 # 🧠 Memory
 
-Octo maintains two complementary memory systems that work together to give
-every agent a durable, searchable history of past work and decisions.
+An agent starts every session without any recollection of earlier conversations. What carries over is what
+is written down: each agent keeps Markdown memory files in its workspace, reads them when it needs context,
+and searches them with the `memory_search` tool. A nightly **dreaming** sweep, run by OpenClaw's `memory-core`
+plugin, reviews recent notes and conversations and promotes what proved important into long-term memory.
 
-## Overview
+## Memory Files
 
-| System | Mechanism | Durability |
-|--------|-----------|------------|
-| **Manual** | MEMORY.md + daily `memory/YYYY-MM-DD.md` files | Committed to git |
-| **Autonomous** | Dreaming — background synthesis from session transcripts | Runtime only (`.dreams/`) |
+| File | What it holds | Who writes it |
+|------|---------------|---------------|
+| `MEMORY.md` | Curated long-term facts: preferences, decisions and context that should always be at hand | The agent, and the nightly dreaming sweep |
+| `memory/YYYY-MM-DD.md` | Daily notes: what happened, what's in flight, context worth keeping | The agent, during the day |
+| `DREAMS.md` | The Dream Diary: a short, readable entry for each dreaming sweep | The dreaming sweep |
+| `HEARTBEAT.md` | A checklist the agent works through on each heartbeat (see below) | The owner or the agent |
 
-The two systems complement each other: manual memory captures high-signal decisions
-written by the agent; dreaming surfaces patterns and context that might otherwise be
-lost between sessions.
+Agents write these files themselves when something is worth remembering. Standing rules ("always do X")
+go in the agent's instructions instead, so they apply from the first turn of every session.
 
-## Manual Memory
+### Searching memory
 
-Each agent has two types of persistent memory files, both committed to git:
-
-### MEMORY.md — Long-term store
-
-A single `MEMORY.md` file per agent holds curated long-term facts: user preferences,
-recurring decisions, stable context that should always be accessible.
-The agent writes to this file when something is worth remembering permanently.
-
-### Daily files — `memory/YYYY-MM-DD.md`
-
-At the end of each session (or whenever the agent judges it useful) a daily note is
-written to `memory/YYYY-MM-DD.md` capturing what happened that day: tasks completed,
-things in flight, context worth preserving across sessions.
-
-### `memory_search` tool
-
-The `memory_search` tool provides semantic search across all memory files and session
-transcripts. It is the primary way agents recall prior work without having to read
-every file manually.
+The `memory_search` tool finds relevant passages in an agent's memory files even when the wording differs
+from the original, using a mix of keyword and semantic (embedding) search. It is how agents recall earlier
+work without reading every file. See OpenClaw's [memory search docs](https://docs.openclaw.ai/concepts/memory-search).
 
 ## Dreaming
 
-The `memory-core` plugin runs a background **dreaming** process during idle time.
-When no active session is running, the plugin replays recent session transcripts and
-synthesises insights — filling gaps the agent did not have time to write down manually.
+Dreaming is the `memory-core` plugin's background memory consolidation. It runs as a scheduled job (by default
+daily at 3:00 AM; it appears as `Memory Dreaming Promotion` on [Scheduled Tasks](scheduled-tasks)). Each sweep:
 
-### How it works
+1. Reads recent daily notes and, for interactive sessions, conversation transcripts.
+2. Picks out themes and facts that keep coming up.
+3. Scores the candidates and promotes the strongest into `MEMORY.md`, keeping a reference to where each came from.
+4. Writes a short Dream Diary entry in `DREAMS.md` describing what it did.
 
-1. On idle, `memory-core` reads the session event log.
-2. It identifies sessions not yet processed.
-3. It runs an LLM synthesis pass and writes structured records to `.dreams/events.jsonl`.
-4. On next session start the agent can query this backfill for context.
+Only `MEMORY.md` is changed for long-term memory, and the previous version is saved first, so each change can
+be reviewed. Dreaming's working state is kept in OpenClaw's own database, not in the memory files.
+See OpenClaw's [dreaming docs](https://docs.openclaw.ai/concepts/dreaming) for the details.
 
-### `.dreams/events.jsonl`
+## Heartbeat
 
-Each line is a JSON record representing one synthesised memory event.
-This file lives under the agent directory at runtime but is **gitignored** — it is
-ephemeral runtime state, not a committed artifact.
-
-### Backfill
-
-If the dreaming process is started after a period of inactivity, it will backfill
-all unprocessed sessions automatically before resuming normal idle-time synthesis.
-
-## HEARTBEAT.md
-
-Each agent's `HEARTBEAT.md` defines a daily discipline: on session start the agent
-reads today's and yesterday's memory files, checks for outstanding tasks, and
-surfaces anything that needs attention.
-
-This **heartbeat discipline** complements dreaming: dreaming synthesises autonomously
-in the background, while the heartbeat enforces a conscious recall step at the start
-of each human-facing session. Together they ensure context is never silently lost.
+A heartbeat is a regular scheduled turn in which an agent wakes up without being messaged and works through
+its `HEARTBEAT.md` checklist: following up on pending tasks and surfacing anything that needs attention.
+For `main` this is the `heartbeat-main` job on [Scheduled Tasks](scheduled-tasks). An agent whose
+`HEARTBEAT.md` is empty (or only comments) skips its heartbeat, so it costs nothing.
 
 ## Configuration
 
-Memory-core is configured under `plugins.entries.memory-core.config` in
-`config/openclaw.json`. The following knobs are available:
+Dreaming is configured under `plugins.entries.memory-core.config.dreaming` in OpenClaw's config:
 
-| Key | Description |
-|-----|-------------|
-| `model` | Override the default LLM used for dreaming synthesis |
-| `schedule` | Cron-like schedule string controlling when dreaming runs |
-| `scope` | Which agents participate in dreaming (default: all) |
+| Key | Default | Description |
+|-----|---------|-------------|
+| `enabled` | `true` | Turns dreaming on or off |
+| `frequency` | `0 3 * * *` | Cron schedule for the sweep |
+| `model` | The agent's default model | Model used to write the diary and decide promotions |
 
 ### Current configuration
 
-No overrides are set — memory-core is running with all defaults.
+Octo sets no overrides, so dreaming runs with the defaults above.
 
-## What Stays in Git
+## What Is Kept in Git
 
-| Path | Committed? | Notes |
-|------|------------|-------|
-| `agents/*/MEMORY.md` | ✅ Yes | Long-term curated facts |
-| `agents/*/memory/YYYY-MM-DD.md` | ✅ Yes | Daily session notes |
-| `agents/*/.dreams/` | ❌ No | Runtime state; gitignored |
+The agent workspaces live in this repo, and the daily [Config Backup](plugins/config-backup) job commits
+changes to them, so memory files are versioned along with everything else:
 
-## Per-Agent Memory Summary
+| Path | Committed? |
+|------|------------|
+| `agents/*/MEMORY.md` | Yes |
+| `agents/*/memory/YYYY-MM-DD.md` | Yes |
+| `agents/*/DREAMS.md` | Yes |
 
-| Agent | Memory Files | Earliest | Latest | Dreams Active |
-|-------|-------------|----------|--------|---------------|
-| `coding` | 6 | 2026-05-04 | 2026-08-06 | — |
+## Memory by Agent
+
+| Agent | Daily notes | Earliest | Latest | Dream Diary |
+|-------|-------------|----------|--------|-------------|
+| `coding` | 6 | 2026-05-04 | 2026-08-06 | Yes |
 | `external` | 0 | — | — | — |
-| `family` | 0 | — | — | — |
-| `finance` | 169 | 2026-05-06 | 2026-10-24 | — |
-| `group` | 0 | — | — | — |
+| `family` | 0 | — | — | Yes |
+| `finance` | 169 | 2026-05-06 | 2026-10-24 | Yes |
+| `group` | 0 | — | — | Yes |
 | `hass-hooks` | 0 | — | — | — |
-| `hassonic` | 0 | — | — | — |
+| `hassonic` | 0 | — | — | Yes |
 | `mail` | 0 | — | — | — |
-| `main` | 162 | 2026-03-01 | 2026-10-22 | — |
+| `main` | 162 | 2026-03-01 | 2026-10-22 | Yes |
 | `notify` | 0 | — | — | — |
-| `root` | 25 | 2026-03-13 | 2026-08-26 | — |
+| `root` | 25 | 2026-03-13 | 2026-08-26 | Yes |

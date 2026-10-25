@@ -6,22 +6,21 @@ nav_order: 7
 
 # Services
 
-OpenClaw services are background processes that keep long-running automations available between conversations.
-
+Services are long-running background programs that run alongside the Gateway and keep work going between conversations, such as watching mail, receiving webhooks or indexing notes. On the Mac mini, the services Octo runs itself start from LaunchAgents kept in this repo under `config/macos/launchd/`, and write their logs to `~/Library/Logs/`. Third-party services link to their own docs.
 
 ## Service Summary
 
 |    | Service | Description | Docs |
 | -- | ------- | ----------- | ---- |
-| 🐕 | Config Watchdog | Watches openclaw.json and auto-recovers the gateway if a bad config is detected — rotating backups, recovery ladder, and GitHub incident filing. | [Read more →](services/config-watchdog) |
-| 📡 | FastMail SSE Service | Real-time email notification daemon using JMAP EventSource | [Read more →](services/fastmail-sse) |
-| ⚙️ | Glances | Third-party system-monitoring server run outside OpenClaw on each monitored host; the Glances plugin reads CPU, memory, disk, and summary metrics from it | [GitHub ↗](https://github.com/nicolargo/glances) |
-| ⚙️ | Microsoft 365 Webhook | Receives Microsoft Graph inbox change notifications, runs new mail through the carapace mail rule pipeline, and brokers Microsoft OAuth tokens for the m365 plugin | [GitHub ↗](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) |
-| 🌉 | MCP Bridge | OAuth-protected MCP server (WorkOS AuthKit) that lets other agents, such as OctoDot in ChatGPT, use Octo through a few config-defined tools: direct, condensed reads, guarded house changes and messages to named destinations | [Read more →](services/mcp-bridge) |
+| 🐕 | Config Watchdog | Watches openclaw.json and brings the Gateway back after a bad config change, using rotating backups and, if those fail, a GitHub issue. Not yet running on the Mac mini. | [Read more →](services/config-watchdog) |
+| 📡 | FastMail SSE Service | Watches FastMail in real time (JMAP event stream) and runs each new message through the mail rules: notify, track packages, or hand a command to an agent | [Read more →](services/fastmail-sse) |
+| ⚙️ | Glances | Third-party system monitor that runs on each monitored machine, outside OpenClaw; the Glances plugin reads CPU, memory and disk metrics from it | [GitHub ↗](https://github.com/nicolargo/glances) |
+| ⚙️ | Microsoft 365 Webhook | Receives Microsoft Graph notifications for new inbox mail, runs it through the Carapace mail rules, and holds the Microsoft sign-in tokens the Microsoft 365 plugin uses | [GitHub ↗](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) |
+| 🌉 | MCP Bridge | OAuth-protected MCP server (WorkOS AuthKit) that lets other assistants, such as OctoDot in ChatGPT, use Octo through a few tools: house and calendar reads, guarded house changes, and messages to named destinations | [Read more →](services/mcp-bridge) |
 | 📝 | Obsidian Vault Indexer | Long-running indexer that maintains a SQLite FTS5 index of the Obsidian vault for full-text search | [Read more →](services/obsidian-indexer) |
-| ⚙️ | Octo Satellite | Local secrets broker providing credentialed access to Amazon and Monarch Money without exposing passwords or session cookies to the gateway | [GitHub ↗](https://github.com/JeffSteinbok/octo-satellite) |
-| 🗂️ | OneDrive Sync | Keeps the Obsidian vault and other files synced to Microsoft OneDrive via the abraunegg/onedrive Linux client | [Read more →](services/onedrive-sync) |
-| 🪝 | Webhook Proxy | Auth-validating webhook proxy between the outside world and OpenClaw hooks. Each route checks its sender's own credential (GitHub HMAC signature or a per-sender <redacted-bearer-token>), filters events, and forwards to the Gateway with the hooks token, which no external sender holds | [Read more →](services/webhook-proxy) |
+| ⚙️ | Octo Satellite | Local service that holds the Amazon and Monarch Money logins and makes requests for the Octo Satellite plugin, so passwords and session cookies never reach the Gateway | [GitHub ↗](https://github.com/JeffSteinbok/octo-satellite) |
+| 🗂️ | OneDrive Sync | Keeps the Obsidian vault and other files in ~/OneDrive synced with Microsoft OneDrive. On the Mac mini the Microsoft OneDrive app does the syncing; the abraunegg/onedrive client is only for a Linux host | [Read more →](services/onedrive-sync) |
+| 🪝 | Webhook Proxy | Sits in front of OpenClaw's hooks. Each route checks its sender's own credential (a GitHub signature or a per-sender token), drops events that shouldn't wake an agent, and forwards the rest to the Gateway with the hooks token, so no outside sender ever holds that token | [Read more →](services/webhook-proxy) |
 
 ## 🐕 Config Watchdog
 
@@ -49,11 +48,11 @@ Watches OpenClaw's config file, `openclaw.json`, and brings the Gateway back if 
 
 ## 📡 FastMail SSE Service
 
-Watches Octo's FastMail mailboxes in real time and runs each new message through the [Carapace Mail Runtime](https://github.com/JeffSteinbok/carapace-mail-runtime) rules: notify, pick up package tracking numbers, or hand a self-sent command to an agent. Rules are plain matching on account, sender and subject, so no AI looks at a message unless a rule's action asks for it. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.fastmail-sse`, backed up in this repo at `config/macos/launchd/`.
+Watches Octo's FastMail mailboxes in real time and runs each new message through [Carapace Mail Runtime](https://github.com/JeffSteinbok/carapace-mail-runtime) rules: send a notification, pick up package tracking numbers, or hand a self-sent command to an agent. Rules match plainly on account, sender and subject, so no AI looks at a message unless a rule's action asks for it. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.fastmail-sse` (backed up in `config/macos/launchd/`).
 
 ### Key Features
 
-- Real-time: listens on FastMail's JMAP event stream instead of polling
+- Real-time: listens on FastMail's JMAP event stream (server-sent events, hence "SSE") instead of polling
 - Watches two accounts: Octo's own mailbox and the owner's personal inbox
 - Rules hot-reload when the config file changes; adding or removing an account needs a restart
 - Package tracking: finds UPS, FedEx, USPS and Amazon tracking numbers in shipping emails from known senders, adds them to package tracking, and removes them when the delivery email arrives
@@ -73,7 +72,7 @@ Watches Octo's FastMail mailboxes in real time and runs each new message through
 
 ## 🌉 MCP Bridge
 
-The OAuth-protected MCP server behind the [Octo MCP](../mcp): how other agents, such as OctoDot in ChatGPT, use Octo. Every request needs a WorkOS AuthKit access token, checked before the request body is read, and only the owner's WorkOS account is allowed. Its tools are defined in `config/mcp-bridge/tools.json` in this repo: house and calendar reads call OpenClaw tools directly under the deliberately limited `external` agent and come back condensed; house changes go to that agent through Hass Guard; messages go straight out through the Gateway to a short list of named destinations. The service source is generic and lives in [`openclaw-hub/services/mcp-bridge`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge); on the Mac mini it runs from the LaunchAgent `com.octo.openclaw.mcp-bridge`, backed up in this repo at `config/macos/launchd/`.
+The OAuth-protected MCP server behind the [Octo MCP](../mcp) (that page explains the tool design and trust model), which lets other agents, such as OctoDot in ChatGPT, use Octo through a few tools defined in `config/mcp-bridge/tools.json`. Every request needs a WorkOS AuthKit access token for the owner's account, checked before the request body is read. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.mcp-bridge` (backed up in `config/macos/launchd/`).
 
 ### Key Features
 
@@ -88,38 +87,46 @@ The OAuth-protected MCP server behind the [Octo MCP](../mcp): how other agents, 
 
 ### Environment Variables
 
-_No environment variables required._
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MCP_BRIDGE_TOOLS` | Yes | Tool definitions file (`~/git/octo/config/mcp-bridge/tools.json`) |
+| `MCP_BRIDGE_RESOURCE` | Yes | Public MCP URL (`https://<funnel-host>/mcp`); must equal the WorkOS resource indicator |
+| `MCP_BRIDGE_ISSUER` | Yes | AuthKit domain, exactly as in tokens' `iss |
+| `MCP_BRIDGE_ALLOWED_SUBJECTS` | No | WorkOS user IDs allowed in; empty means nobody gets in |
 
 [Read more →](services/mcp-bridge)
 
 ## 📝 Obsidian Vault Indexer
 
-Long-running systemd service that watches the Obsidian vault directory and maintains a SQLite FTS5 full-text search index. Part of the [`carapace-obsidian`](https://github.com/JeffSteinbok/carapace-obsidian) plugin.
+Long-running service that watches the Obsidian vault and keeps a SQLite full-text search index (FTS5) of it up to date, so the [`carapace-obsidian`](https://github.com/JeffSteinbok/carapace-obsidian) plugin can search notes without reading every file. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.obsidian-indexer` (backed up in `config/macos/launchd/`).
 
 ### Key Features
 
-- Watches the vault via `chokidar` for real-time file change detection
-- Parses markdown frontmatter, tags, and `[[wikilinks]]`
-- Maintains a SQLite FTS5 database in WAL mode for concurrent access
-- Plugin opens the DB with `readonly: true` — never conflicts with the indexer
-- Supports prefix matching (`wash` → `washer`, `washing`) and OR queries
+- Watches the vault with `chokidar` and re-indexes files as they change
+- Parses Markdown front matter, tags and `[[wikilinks]]`
+- Keeps the index in a SQLite FTS5 database in WAL mode, so reads and writes can happen at the same time
+- The plugin opens the database read-only, so it never conflicts with the indexer
+- Supports prefix matching (`wash` finds `washer` and `washing`) and OR queries
 
 ### Environment Variables
 
-_No environment variables required._
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OBSIDIAN_VAULT_ROOT` | Yes | Vault folder to watch (on the Mac mini, the `JeffBrain` folder in OneDrive) |
+| `OBSIDIAN_INDEX_LOCATION` | No | Where the index database is written (default `~/.openclaw/obsidian-index.db`) |
 
 [Read more →](services/obsidian-indexer)
 
 ## 🗂️ OneDrive Sync
 
-Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive using the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) Linux client.
+Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive, so notes written on the owner's other devices reach Octo and the [Obsidian Vault Indexer](obsidian-indexer). On the Mac mini this is the Microsoft OneDrive app; nothing from this repo runs there. On a Linux host it is the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) client, set up as described below.
 
 ### Key Features
 
-- Runs as a user systemd service in `--monitor` mode
-- Uses inotify to react to local file changes in near real-time
-- Full rescan every 5 minutes as a safety net
-- WebSocket support for Microsoft Graph API change notifications
+- macOS: the Microsoft OneDrive app syncs to `~/Library/CloudStorage/OneDrive-Personal`, and `~/OneDrive` is a symlink to that folder, so paths under `~/OneDrive/` are the same on either platform
+- Linux: runs as a user systemd service in `--monitor` mode
+- Linux: uses inotify to pick up local file changes in near real time, with a full rescan every 5 minutes as a safety net
+- Linux: uses Microsoft Graph change notifications over WebSocket to pick up remote changes
 
 ### Environment Variables
 
@@ -129,7 +136,7 @@ _No environment variables required._
 
 ## 🪝 Webhook Proxy
 
-Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. Each route checks the sender's own credential (an HMAC-SHA256 signature or a per-sender token in the `Authorization` header), optionally filters out events that shouldn't wake an agent, and forwards what's left to OpenClaw with the hooks token added, so no external sender ever holds the real hooks token. The service source lives in [`openclaw-hub/services/webhook-proxy`](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/webhook-proxy); this folder holds Octo's setup notes and the Linux systemd unit. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.webhook-proxy`, backed up in this repo at `config/macos/launchd/`.
+Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. Each route checks the sender's own credential (an HMAC-SHA256 signature or a per-sender token), optionally drops events that shouldn't wake an agent, and forwards the rest to the Gateway with the hooks token added, so no external sender ever holds the real hooks token. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.webhook-proxy` (backed up in `config/macos/launchd/`).
 
 ### Key Features
 

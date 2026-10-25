@@ -6,55 +6,66 @@ nav_order: 12
 
 # How Octo's Docs System Works
 
-This guide explains how [octo.steinbok.net](https://octo.steinbok.net) is generated end-to-end — from source code to published site — and how to build something equivalent for your own OpenClaw instance.
+This page explains how [octo.steinbok.net](https://octo.steinbok.net) is built, from the source in the `octo` repo to the published site, and how to build something similar for your own OpenClaw instance.
 
 ---
 
 ## Overview
 
-Octo's public documentation is generated entirely from structured data, not from hand-authored HTML or markdown pages. The pipeline runs on every push to `main`:
+Most of Octo's public documentation is generated from the repo itself (plugin manifests, agent files, config, skills, cron jobs, service READMEs) rather than written by hand. A few pages, including this one, are hand-written Markdown files in the `octo` repo's `docs/` folder that the same pipeline publishes.
 
-1. **Extract** — Python scripts read plugins, agents, config, skills, cron jobs, and services from the repo and produce structured JSON
-2. **Redact** — sensitive fields (hostnames, tokens, private paths) are stripped
-3. **Render** — the JSON is fed through deterministic renderers that write final Jekyll Markdown pages
-4. **Validate** — the rendered output is checked to make sure nothing private leaked
-5. **Publish** — the artifact is dispatched to a separate `octo-docs` repo that hosts the Jekyll site
+The pipeline runs on every push to `main` (changes that only touch `posts/` are skipped) and can also be started by hand:
 
-There is **no LLM in the rendering step**. Everything is deterministic, version-controlled, and testable.
+1. **Extract** — Python scripts read the repo and write structured JSON (the *bundle*)
+2. **Redact** — secrets and private addresses are stripped from the bundle
+3. **Render** — deterministic renderers turn the bundle into Jekyll Markdown pages
+4. **Validate** — the rendered pages are scanned to make sure nothing private leaked
+5. **Publish** — the rendered site is handed to the separate `octo-docs` repo, which commits it and deploys it with GitHub Pages
+
+There is **no LLM in the pipeline**. Every step is deterministic, version-controlled and tested.
 
 ---
 
-## Two-Repo Architecture
+## Two repos
 
-The system is split across two repos deliberately:
+The system is split across two repos on purpose:
 
 | Repo | Purpose |
 |------|---------|
-| [`JeffSteinbok/octo`](https://github.com/JeffSteinbok/octo) | Source of truth: plugins, config, agents, pipeline code |
+| [`JeffSteinbok/octo`](https://github.com/JeffSteinbok/octo) | Source of truth: plugins, config, agents, and the pipeline code |
 | [`JeffSteinbok/octo-docs`](https://github.com/JeffSteinbok/octo-docs) | Hosts the published Jekyll site at octo.steinbok.net |
 
 `octo` generates the docs; `octo-docs` publishes them. This means:
-- `octo` can be private while `octo-docs` is public
-- The rendered output is always auditable before it goes live
+
+- `octo` can stay private while `octo-docs` is public
+- The rendered output can be audited before it goes live
 - The docs repo never contains raw source code
 
-The handoff happens via a GitHub Actions `repository_dispatch` event: `octo` uploads a `docs-site` artifact and triggers a `docs-site-ready` event in `octo-docs`, which downloads and commits the artifact.
+The handoff uses a GitHub Actions `repository_dispatch` event. `octo` uploads the rendered site as a `docs-site` artifact and sends a `docs-site-ready` event to `octo-docs`, which downloads the artifact, commits the pages and deploys the site.
 
 ---
 
 ## Visibility: `config/doc-manifest.json`
 
-[`config/doc-manifest.json`](../config/doc-manifest.json) is the single source of truth for what appears in the public docs.
+`config/doc-manifest.json` is the single source of truth for what appears in the public docs. It has a section per kind of thing: `plugins`, `services`, `skills`, `jobs`, `clis`, `hooks` and `pages`.
 
 ```json
 {
   "plugins": {
+    "config-backup": {
+      "public": true,
+      "origin": "octo",
+      "docsMode": "local",
+      "name": "Config Backup",
+      "summary": "Backs up OpenClaw config to Git with SHA-256 change detection"
+    },
     "fastmail": {
       "public": true,
       "origin": "openclaw-hub",
-      "docsMode": "local",
-      "name": "Fastmail",
+      "docsMode": "external",
+      "name": "FastMail tools",
       "summary": "Send email and manage calendar events in Fastmail",
+      "docsUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail",
       "sourceUrl": "https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail"
     },
     "my-private-plugin": {
@@ -65,26 +76,37 @@ The handoff happens via a GitHub Actions `repository_dispatch` event: `octo` upl
   "skills":   { ... },
   "jobs":     { ... },
   "clis":     { ... },
-  "hooks":    { ... }
+  "hooks":    { ... },
+  "pages":    { ... }
 }
 ```
 
 **Rules:**
-- Anything not listed here is private by default — even if it's in the repo
-- `"public": true` is required for the entity to appear in the bundle
-- The manifest also stores display metadata: `name`, `summary`, `emoji`, `sourceUrl`, `docsUrl`, `docsMode`
 
-### Plugin types
+- Anything not listed is private by default, even if it is in the repo
+- An entry needs `"public": true` to appear in the docs
+- The manifest also holds display metadata: `name`, `summary`, `emoji`, `sourceUrl`, `docsUrl`, `docsMode`, `author`
+- A public plugin entry must have `origin`, `name`, `summary` and `docsMode`. An unknown key fails the build, so typos are caught instead of silently ignored
 
-| Type | Where it lives | How docs are generated |
-|------|---------------|----------------------|
-| **First-party** | `octo/plugins/<id>/` | Full local page with all tools documented |
-| **External** | Outside `octo/` (e.g. `~/git/restaurant-cli`) | Listed in inventory; links to external docs |
-| **Built-in** | OpenClaw itself (e.g. Browser, GitHub Copilot, Google) | Listed in inventory; links to official external docs |
+### Where plugins come from
+
+`origin` says where a plugin's code lives, and the Plugins page groups plugins by it:
+
+| `origin` | Where the code lives |
+|----------|---------------------|
+| `octo` | This repo, under `plugins/<id>/` |
+| `openclaw-hub`, `carapace-*` | Jeff's public open-source repos, such as [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub) |
+| `builtin` | OpenClaw itself (for example Browser or Google) |
+| `external` | Someone else's repo |
+
+`docsMode` says where the plugin's documentation lives:
+
+- `local` — the pipeline renders a full page for the plugin, with every tool documented
+- `external` — the plugin is listed with a link to `docsUrl` (or `sourceUrl`); `docsMode: external` requires one of them
 
 ### External plugins
 
-When a plugin is installed from outside this repo, add its entry to `doc-manifest.json` — not to the plugin's own `openclaw.plugin.json`. The pipeline reads `author` and `sourceUrl` from the manifest:
+For a plugin installed from outside Jeff's repos, put the author and links in `doc-manifest.json`, not in the plugin's own `openclaw.plugin.json`. The pipeline reads `author` and `sourceUrl` from the manifest:
 
 ```json
 "restaurant-cli": {
@@ -102,51 +124,51 @@ When a plugin is installed from outside this repo, add its entry to `doc-manifes
 
 ---
 
-## Pipeline Stages
+## Pipeline stages
+
+`tools/docs/publish/emit_bundle.py` runs all five stages in order. The bundle is written to `out/docs-bundle/` and the rendered site to `out/docs-site/`.
 
 ### 1. Extract (`tools/docs/extract/`)
 
-Each extractor is a standalone Python script that reads from the repo and writes one or more JSON files to `out/docs-bundle/`.
+Each extractor is a standalone, read-only Python script that writes JSON into `out/docs-bundle/`. The orchestrator also copies `config/doc-manifest.json` into the bundle and writes a `manifest.json` listing every file.
 
-| Extractor | Input | Output |
+| Extractor | Reads | Writes |
 |-----------|-------|--------|
-| `plugin_summary.py` | `plugins/*/openclaw.plugin.json` + plugin tools | `plugins/<id>.json` |
-| `agent_summary.py` | `agents/*/` identity files | `agents.json` |
-| `config_summary.py` | `config/openclaw.json` | `config-summary.json` |
-| `job_summary.py` | Cron job configs | `jobs/*.json` |
-| `service_summary.py` | `services/*/README.md` | `services/*.json` |
-| `skill_summary.py` | `agents/*/skills/` | `skills/*.json` |
-| `changelog_summary.py` | `CHANGELOG.md` | `changelog.json` |
-| `visibility_registry.py` | `config/doc-manifest.json` | (used by other extractors) |
-
-The extractors are all read-only and safe to run at any time:
-
-```bash
-cd octo
-python tools/docs/extract/plugin_summary.py
-```
+| `api_inventory.py` | Each plugin's `openclaw.plugin.json` and tool schemas | `api-index.json` |
+| `agent_summary.py` | `agents/*/` identity files | `agents.json`, `agents/<id>.json` |
+| `plugin_summary.py` | `plugins/*/openclaw.plugin.json` and plugin tools | `plugins/<id>.json` |
+| `changelog_summary.py` | `CHANGELOG.md` | `release/changes.json` |
+| `config_summary.py` | `config/openclaw.json` | `config.json` |
+| `skill_summary.py` | `agents/*/skills/*/SKILL.md` | `skills.json`, `skills/<name>.json` |
+| `job_summary.py` | `config/cron_jobs_export.json` | `jobs.json` |
+| `service_summary.py` | `services/*/README.md` | `services.json`, `services/<id>.json` |
+| `libs_summary.py` | Shared libraries under `libs/ts/` | `libs.json`, `libs/<id>.json` |
+| `usps_runtime_summary.py` | The shared USPS action-module README | `libs/mail_action_usps-action.json` |
+| `note_summary.py` | Setup notes in the repo root's Markdown files | `notes.json` |
+| `cli_summary.py` | The `clis` manifest section and CLI READMEs in openclaw-hub | `clis.json` |
+| `memory_summary.py` | Agent memory folders and memory config | `memory.json` |
+| `visibility_registry.py` | `config/doc-manifest.json` | (a helper the other extractors use) |
 
 ### 2. Redact (`tools/docs/sanitize/redact.py`)
 
-After extraction, sensitive fields are stripped from the bundle. The redactor removes:
-- Private hostnames and IP addresses
-- Token values and API key shapes
-- Internal paths that reveal the filesystem layout
-- Any field tagged as `_private` by an extractor
+After extraction, the redactor rewrites every JSON file in the bundle and replaces:
 
-The bundle in `out/docs-bundle/` after redaction is what's fed to the renderer.
+- GitHub, Slack and `sk-` style API tokens, and bearer tokens
+- Credential-looking hex strings next to words like `token` or `secret`
+- URLs on internal domains (`.local`, `.internal`, `.corp`, `.intranet`, `.private`)
+- Private IP addresses and URLs that use them
+- Links to private GitHub repos
 
 ### 3. Render (`tools/docs/render/render_site.py`)
 
-The renderer reads page spec YAML files from `tools/docs/page_specs/` and produces final Jekyll Markdown pages in `out/docs-site/`.
-
-Each page spec declares:
+The renderer reads the page specs in `tools/docs/page_specs/` and writes Jekyll Markdown pages to `out/docs-site/`. A page spec looks like this:
 
 ```yaml
 id: plugins-overview
-output_path: docs/plugins.md     # maps to out/docs-site/plugins.md
-strategy: bundle-plugins         # which renderer to use
+output_path: docs/plugins.md       # written to out/docs-site/plugins.md
+strategy: bundle-plugins           # which renderer to use
 sources:
+  - path: doc-manifest.json
   - path: plugins/*.json
 front_matter:
   layout: default
@@ -154,88 +176,103 @@ front_matter:
   nav_order: 4
 ```
 
-The `strategy` field selects a rendering function. All strategies are deterministic — no templating engine, no LLM:
+`strategy` picks a rendering function. Every strategy is plain Python, with no templating engine and no LLM:
 
 | Strategy | What it generates |
-|----------|-----------------|
-| `bundle-plugins` | Plugin inventory page + per-plugin detail pages |
-| `bundle-services` | Service overview + per-service pages |
-| `bundle-skills` | Skills overview |
-| `bundle-jobs` | Scheduled tasks page |
-| `bundle-agents` | Agent/channel reference |
-| `bundle-clis` | CLI tools reference |
-| `bundle-hooks` | Hooks reference |
-| `bundle-release` | Latest release notes |
+|----------|-------------------|
+| `bundle-plugins` | Plugin inventory page and per-plugin pages |
+| `bundle-services` | Services overview |
+| `bundle-service-detail` | One service's page |
+| `bundle-skills` | Skills overview and per-skill pages |
+| `bundle-scheduled-tasks` | Scheduled Tasks page |
+| `bundle-agents-channels` | Agents & Channels page |
+| `bundle-models` | Models page |
+| `bundle-memory` | Memory page |
+| `bundle-clis` | CLI Tools page |
+| `bundle-hooks` | Hooks overview and per-hook pages |
+| `bundle-release` | Release notes |
+| `static-markdown` | A hand-written page, published from the Markdown file named in the spec's `source:` |
+
+Hand-written pages live in the `octo` repo's `docs/` folder (this page is `docs/DOCS-PIPELINE.md`). When the renderer publishes one, it rewrites links to other hand-written pages so they work on the site, and turns links to repo files that aren't published into plain text.
 
 ### 4. Validate (`tools/docs/sanitize/validate_public.py`)
 
-After rendering, every output `.md` and `.json` file is checked against a blocklist of patterns (internal hostnames, token shapes, private paths). If anything matches, the build fails before the artifact is uploaded.
+After rendering, every `.md` and `.json` file in the site is scanned for token shapes, internal hostnames (including Tailscale `.ts.net` names), private IP addresses and private repo links. Known JSON files are also checked for their required keys. Any match fails the build before anything is uploaded.
 
 ### 5. Publish
 
-The CI workflow (`docs-bundle.yml`) orchestrates everything:
+In the `octo` repo, the `docs-bundle.yml` workflow (**Build Docs Bundle**) runs:
 
 ```
 push to main
     │
     ▼
-npm ci && npm run build         # build TypeScript plugins
+npm ci && npm run build --workspaces --if-present   # build the TypeScript plugins
     │
     ▼
-emit_bundle.py                  # extract → redact → render → validate
+emit_bundle.py                                      # extract → redact → render → validate
+    │
+    ▼
+validate_public.py out/docs-site                    # validate again, as a separate CI step
     │
     ▼
 upload-artifact (docs-site)
     │
     ▼
-repository_dispatch → octo-docs # trigger publish in the docs repo
+repository_dispatch → octo-docs (docs-site-ready)
 ```
 
-The `octo-docs` repo listens for `docs-site-ready`, downloads the artifact, and commits the pages.
+In `octo-docs`, the **Docs Main Pipeline** workflow (`docs-main-pipeline.yml`) receives the event and:
+
+1. Runs a secret scan
+2. Runs `generate-docs.yml` (**Receive Rendered Docs**), which downloads the artifact from the `octo` run and copies it into `docs/`. Each generated subfolder (such as `plugins/` or `services/`) is replaced in full, so retired pages are deleted. Top-level pages are copied over without deleting anything, and a short list of pages maintained by hand in `octo-docs`, such as the home page, is never overwritten. It then commits the result to `main`
+3. Deploys the site with GitHub Pages (`jekyll-gh-pages.yml`)
 
 ---
 
-## Running the Pipeline Locally
+## Running the pipeline locally
 
 ```bash
 
 ## Install Python dependencies
 pip install -r tools/docs/requirements.txt
 
-## Build TypeScript plugins first (needed for tool extraction)
-npm ci && npm run build
+## Build the TypeScript plugins first (needed for tool extraction)
+npm ci && npm run build --workspaces --if-present
 
-## Run the full pipeline: extract + redact + render + validate
+## Run the full pipeline: extract, redact, render, validate
 python tools/docs/publish/emit_bundle.py
 
-## Output is at out/docs-site/
+## The site is in out/docs-site/
 ```
 
-You can also run individual stages:
+You can also run single stages:
 
 ```bash
 
-## Extract only
+## Run one extractor
 python tools/docs/extract/plugin_summary.py
 
 ## Render from an existing bundle
 python tools/docs/render/render_site.py --bundle out/docs-bundle --out out/docs-site
 
-## Validate rendered output
+## Validate the rendered site
 python tools/docs/sanitize/validate_public.py out/docs-site
 ```
 
+To check the manifest against the live config as well, run `tools/docs/scripts/validate_docs.py` (see [Docs validation](harness#docs-validation) in the Engineering Harness, which runs it weekly).
+
 ---
 
-## Adding Content
+## Adding content
 
-### Adding a first-party plugin to the docs
+### A plugin from this repo
 
-1. Build the plugin (`plugins/<id>/`) with an `openclaw.plugin.json`
-2. Add it to `config/doc-manifest.json` under `plugins` with `"public": true`
-3. Push to `main` — the CI pipeline picks it up automatically
+1. Build the plugin in `plugins/<id>/` with an `openclaw.plugin.json`
+2. Add it to `config/doc-manifest.json` under `plugins` with `"public": true`, `"origin": "octo"` and `"docsMode": "local"`
+3. Push to `main`; the pipeline picks it up
 
-### Adding an external plugin
+### An external plugin
 
 1. Install the plugin as usual (`openclaw plugins install ...`)
 2. Add an entry to `config/doc-manifest.json`:
@@ -254,38 +291,41 @@ python tools/docs/sanitize/validate_public.py out/docs-site
 }
 ```
 
-3. Do **not** add `author`/`repository` to the third-party plugin's `openclaw.plugin.json`
+3. Don't add `author` or `repository` to the third-party plugin's `openclaw.plugin.json`
 
-### Adding a new page type
+### A hand-written page
 
-1. Create a page spec in `tools/docs/page_specs/<id>.yml`
+1. Write the page as Markdown in `docs/`
+2. Add a page spec in `tools/docs/page_specs/<id>.yml` with `strategy: static-markdown`, `source:` pointing at the file, and the page's `front_matter`
+
+### A new kind of generated page
+
+1. Add a page spec in `tools/docs/page_specs/<id>.yml`
 2. Add a rendering strategy in `tools/docs/render/render_site.py`
-3. Add extractor(s) in `tools/docs/extract/` if needed
-4. Add the corresponding entries to `config/doc-manifest.json`
+3. Add extractors in `tools/docs/extract/` if the bundle doesn't have the data yet
+4. Add the matching entries to `config/doc-manifest.json`
 
 ---
 
-## Building Your Own
+## Building your own
 
-If you want to replicate this system for your own OpenClaw instance:
+To build something similar for your own OpenClaw instance:
 
-1. **Fork or copy `tools/docs/`** — all the pipeline code is self-contained there
-2. **Create `config/doc-manifest.json`** — list your plugins, services, skills, and jobs with `"public": true/false`
-3. **Set up the GitHub Actions workflow** — copy `.github/workflows/docs-bundle.yml`
-4. **Create a separate docs repo** — set up a Jekyll site (GitHub Pages works), add a workflow that listens for `repository_dispatch` and deploys the artifact
-5. **Add the `OCTO_DOCS_TOKEN` secret** — a PAT with `repo` scope on the docs repo so the dispatch can trigger it
+1. **Copy `tools/docs/`.** All the pipeline code lives there. The extractors assume Octo's repo layout (`agents/`, `plugins/`, `services/`, `config/`), so expect to adapt them to yours.
+2. **Create `config/doc-manifest.json`** listing your plugins, services, skills and jobs, each with `"public": true` or `false`.
+3. **Set up the build workflow** by copying `.github/workflows/docs-bundle.yml`.
+4. **Create a separate docs repo** with a Jekyll site (GitHub Pages works) and a workflow that listens for `repository_dispatch`, downloads the artifact and deploys it.
+5. **Add the secrets.** The source repo needs `OCTO_DOCS_TOKEN`, a token that can send the dispatch event to the docs repo. The docs repo needs `OCTO_DOCS_BUNDLE_READ_TOKEN`, a token that can download artifacts from the source repo.
 
-The only external dependency is PyYAML (`pip install pyyaml`). Everything else is stdlib Python.
+The only Python dependency outside the standard library is PyYAML.
 
 ---
 
 ## Tests
 
-The pipeline has a full test suite:
-
 ```bash
-cd octo
+cd ~/git/octo
 python -m pytest tools/docs/tests/ -q
 ```
 
-Tests cover the extractors, renderer, bundle loader, selectors, and the visibility registry. Run them before pushing any pipeline changes.
+The tests cover the extractors, the renderer, the bundle orchestrator, page writing, the bundle selectors, the visibility registry and `validate_docs.py`. Run them before pushing any pipeline change.

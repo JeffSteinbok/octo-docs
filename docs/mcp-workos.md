@@ -8,9 +8,12 @@ nav_order: 1
 
 # WorkOS setup
 
-[WorkOS AuthKit](https://workos.com/docs/authkit/mcp) is the OAuth authorization server for the Octo MCP ([mcp-bridge](services/mcp-bridge)). It hosts the
-sign-in page, stores the account, and signs the access tokens ChatGPT presents. AuthKit is free up to 1 million monthly
-active users; nothing here needs a paid feature (enterprise SSO and custom domains are the paid parts).
+[WorkOS AuthKit](https://workos.com/docs/authkit/mcp) is the OAuth authorization server for the [Octo MCP](mcp). It
+hosts the sign-in page, stores the account, and signs the access tokens ChatGPT presents; the
+[mcp-bridge](services/mcp-bridge) service only checks those tokens. AuthKit is free up to 1 million monthly active
+users, and nothing here needs a paid feature (enterprise SSO and custom domains are the paid parts).
+
+Once these settings are in place, add the server in ChatGPT: see [ChatGPT connector](mcp-chatgpt).
 
 ## Settings
 
@@ -24,8 +27,8 @@ Use the **Production** environment.
 | Authentication | Enable **Email + Password** or **Magic Auth** |
 | Users | Invite the one allowed user, then turn public sign-up off |
 
-The AuthKit domain (`<name>.authkit.app`) is the issuer. The bridge is configured with it (`MCP_BRIDGE_ISSUER`, in its private env file), and its public metadata shows
-whether the settings took:
+The AuthKit domain (`<name>.authkit.app`) is the issuer. The bridge is configured with it (`MCP_BRIDGE_ISSUER`, in its
+private env file), and the domain's public metadata shows whether the settings took:
 
 ```bash
 curl -s https://<name>.authkit.app/.well-known/oauth-authorization-server
@@ -49,6 +52,11 @@ Look for `client_id_metadata_document_supported: true`, a `registration_endpoint
 
 ## Allowing a user
 
-The bridge only accepts WorkOS user IDs on its allowlist (`MCP_BRIDGE_ALLOWED_SUBJECTS` in its private env file). To find an
-ID, sign in from ChatGPT once: the attempt is refused with `403` and the log records the user ID
-(`sub=user_…`). Add it, restart the service, and sign in again.
+The bridge only accepts WorkOS user IDs on its allowlist (`MCP_BRIDGE_ALLOWED_SUBJECTS` in its private env file). To
+find an ID, sign in from ChatGPT once: the attempt is refused with `403` and the bridge log
+(`~/Library/Logs/openclaw-mcp-bridge.log`) records the user ID (`sub=user_…`). Add it, restart the bridge, then
+reinstall the connector in ChatGPT and sign in again:
+
+```bash
+launchctl kickstart -k gui/$(id -u)/com.octo.openclaw.mcp-bridge
+```

@@ -7,7 +7,7 @@ nav_exclude: true
 
 # 🗄️ Config Backup
 
-Backs up OpenClaw config to Git with SHA-256 change detection
+Commits OpenClaw's config and the agent workspaces to Git, only when something has changed.
 
 ## Configuration Schema
 
@@ -25,27 +25,18 @@ Back up OpenClaw config and agent workspace to Git. Copies ~/.openclaw config fi
 | `force` | boolean | Optional | Force backup even if no changes detected. Default: `False`. |
 | `verbose` | boolean | Optional | Include verbose diagnostic output. Default: `False`. |
 
-## CLI Usage
+## Command-Line Use
 
-This plugin can also run as a standalone command-line tool via `@openclaw/cli-shared`.
-
-### Setup
+Building the plugin also produces a standalone command-line version, with one command per tool. Add `--json` to any command for JSON output.
 
 ```bash
 cd plugins/config-backup
 npm install && npm run build
+node dist/bin/config-backup.js --help
 ```
 
-### Commands
+Commands:
 
 ```bash
-
-## Show help
-node dist/bin/config-backup.js --help
-
-## Back up OpenClaw config and agent workspace to Git. Copies ~/.openclaw config files into the Git repo, commits, and pushes only when content has changed (SHA-256 detection).
 node dist/bin/config-backup.js config-backup-run <check_only> <force> <verbose>
-
-## JSON output
-node dist/bin/config-backup.js <command> [args...] --json
 ```

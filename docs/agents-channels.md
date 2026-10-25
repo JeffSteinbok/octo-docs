@@ -6,53 +6,58 @@ nav_order: 2
 
 # Agents & Channels
 
-This page explains each published agent's permission profile and why it is isolated that way.
+Octo is made up of several agents. Each agent is a separate OpenClaw assistant with its own instructions, workspace and permissions, so a conversation or event only gets the tools its job needs. Channels are the messaging apps people use to reach those agents.
 
-The public bundle includes agent identity and a simplified permission/config posture. Exact peer bindings, raw filesystem paths, and detailed private allowlists are still omitted.
+This page shows what each agent is for, a simplified view of its permissions, and why it is set up that way. Exact routing rules, file paths and detailed allowlists are left out.
 
-For AI model and voice configuration, see the [Models](models) page. Apps that connect to the gateway as paired devices, such as Hassonic and OctoDot, are covered under [Connected Apps](connected-apps).
+For the AI models each agent uses, see [Models](models). Apps that connect to the Gateway as paired devices, such as Hassonic and OctoDot, are covered under [Connected Apps](connected-apps).
 
-## Agent Architecture
+## The Agents
 
-Each published agent has its own permission boundary. Interactive helpers stay separated from delegated workers and webhook-driven automations.
+In the Permissions column, *allowed* and *denied* are set explicitly for that agent; anything not listed follows its tool profile.
 
 | Agent | Used for | Permissions | Why it is set up this way |
 |-------|----------|-------------|---------------------------|
-| `main` | Jeff's primary direct chats and proactive assistant flows | `customized` tools; exec `allowed`; browser `default`; writes `default`; sub-agents `root`, `family`, `finance`. | Keeps the everyday assistant capable with exec restricted to safebin CLIs only — no arbitrary shell access. |
-| `mail` | Internal delegated mail-processing workflows | `profile:minimal` tools; read `allowed`; writes `denied`; browser `denied`; exec `denied`. | Treats mail as untrusted input and isolates mail processing from broader tools. |
-| `root` | Explicit owner escalations for admin/debugging work | `customized` tools; broad inherited access posture; exec `default`. | Concentrates privileged admin/debug access in a separate escalation path. |
-| `family` | Family members' iMessage DMs and the family group chat | `profile:messaging` tools; writes `denied`; browser `denied`; exec `allowed`; sub-agents none. | Limits family-facing conversations to a narrow, safer tool surface. Calendar plugins enforce per-person read/write rules from the sender's handle. |
-| `finance` | Household finance and retirement planning | `profile:minimal` tools. | Keeps account data and planning notes away from everyday chat, with read-only finance tools. |
-| `hass-hooks` | Home Assistant webhook events | `custom-allowlist` tools; tightly scoped allowlist for camera, image, and message handling only. | Ensures webhook automation can inspect camera events and notify, but not wander outside that workflow. |
-| `coding` | Coding specialist in #coding on Discord | `inherited-default` tools. | Dedicated coding agent for code review, architecture, ACP agent delegation, and infra/DevOps work. Kept separate from main to allow elevated shell access without exposing it to everyday chat. |
-| `notify` | Relays LAN notification hooks to Jeff as Discord DMs | `custom-allowlist` tools; can only send messages. | Hook payloads are untrusted, so the agent that receives them can do nothing but forward them. |
-| `claude` | One-shot Claude Code runs delegated over ACP | `inherited-default` tools. | Runs Claude Code as an external ACP agent so coding work happens outside the gateway's own tool policy. |
-| `hassonic` | Home control from the [Hassonic](hassonic) iPhone app | `custom-allowlist` tools; Home Assistant state and an allowlisted set of actions, plus web search. | The app talks only to this agent, so a phone request can reach Home Assistant but nothing else. Every action is checked by the hass-guard plugin. |
-| `group` | Other iMessage group chats (replies only when mentioned) | `profile:messaging` tools. | Group chats can include people outside the family, so this agent gets only messaging, web search and read access to the family calendar — no exec, files or browser. |
-| `external` | Published agent surface | `custom-allowlist` tools. | Separates this agent from the rest of the system. |
+| `main` | The owner's everyday assistant: direct chats and proactive check-ins | Custom tool set. Allowed: shell (`exec`). Can hand work to `root`, `family`, `finance`. | Keeps the everyday assistant capable while limiting its shell to approved commands only, with no arbitrary shell access. |
+| `mail` | Mail processing handed off by other agents (currently unused) | Minimal tool profile. Allowed: file reads. Denied: shell (`exec`), browser, file writes. | Treats mail as untrusted input and keeps mail processing away from broader tools. |
+| `root` | Admin and debugging work the owner explicitly escalates | Custom tool set. Allowed: file reads. Broad access, inherited from OpenClaw's defaults. | Keeps privileged admin and debugging access on a separate path that is used only on request. |
+| `family` | Family members' iMessage DMs and the family group chat | Messaging tool profile. Allowed: shell (`exec`). Denied: browser, file reads, file writes. | Gives family conversations a narrow, safer tool set. Calendar plugins apply per-person read and write rules based on who sent the message. |
+| `finance` | Household finance and retirement planning | Minimal tool profile. Allowed: file reads, file writes. Denied: shell (`exec`), browser. | Keeps account data and planning notes away from everyday chat, with read-only finance tools. |
+| `hass-hooks` | Home Assistant camera and doorbell events (see [Hooks](hooks)) | Named tools only. Denied: shell (`exec`). Only camera, image and messaging tools. | Lets webhook automation inspect camera events and send a notification, and nothing else. |
+| `coding` | Coding specialist in `#coding` on Discord, and GitHub issue work (see [Hooks](hooks)) | OpenClaw's default tools. Can hand work to `claude`. | Gets the shell access coding work needs, kept away from everyday chat. |
+| `notify` | Relays notifications from home-network services to the owner as Discord DMs | Named tools only. Denied: shell (`exec`). Can only send messages. | Notification text is untrusted, so the agent that receives it can do nothing but forward it. |
+| `claude` | One-off Claude Code runs handed off over ACP | OpenClaw's default tools. Runs outside the Gateway's tool policy, as an external ACP agent. | Coding work happens in Claude Code, outside OpenClaw's own tools. |
+| `hassonic` | Home control from the [Hassonic](hassonic) iPhone app | Named tools only. Denied: shell (`exec`). Home Assistant state, an allowlisted set of actions, and web search. | The app talks only to this agent, so a phone request can reach Home Assistant but nothing else. Every action is checked by the [Hass Guard](plugins/hass-guard) plugin. |
+| `group` | Other iMessage group chats (replies only when mentioned) | Messaging tool profile. Denied: shell (`exec`), browser, file reads, file writes. | Group chats can include people outside the family, so this agent gets only messaging, web search and read access to the family calendar: no shell, files or browser. |
+| `external` | Other assistants that use Octo through the [Octo MCP](mcp) server, such as OctoDot in ChatGPT | Named tools only. Denied: shell (`exec`). | Outside assistants get a deliberately small set of tools, and house changes still go through Hass Guard. |
 
-### Exec & Safebin
+### Shell Access
 
-Exec permissions are configured **per agent** using `agents.entries.<id>.tools.exec`:
+Shell access (the `exec` tool) is set per agent under `agents.entries.<id>.tools.exec` in OpenClaw's config:
 
-- **`main`** — `security: allowlist` — can only run binaries listed in `safeBins` (vetted CLI scripts in `~/safebin/`)
-- **`root`** — `security: full` — unrestricted shell access for admin/debug escalation
-- **Other agents** — exec denied entirely
-
-See [CLI Tools](clis) for the available safebin inventory.
+- **`main`** uses `mode: allowlist`: it can run only the approved commands named in its `safeBins` list. Those commands live in `~/safebin/`; see [CLI Tools](clis).
+- **`root`** uses `mode: full`: unrestricted shell access, for admin and debugging work the owner asks for.
+- Agents with shell marked *denied* above can't run commands at all.
 
 ## Channels
+
+Each channel has its own rules for who may message Octo:
+
+- **DM policy** `pairing`: someone new gets a short code, and their messages are ignored until the owner approves it. `allowlist`: only listed senders get through.
+- **Group policy** `allowlist`: Octo takes part only in listed group chats.
+- **Streaming** `partial`: a reply appears as it is written. `off`: the reply is sent once it is complete.
 
 | Channel | Enabled | DM Policy | Group Policy | Streaming |
 |---------|---------|-----------|--------------|-----------|
 | `discord` | Yes | pairing | allowlist | partial |
-| `imessage` | Yes | allowlist | allowlist |  |
+| `imessage` | Yes | allowlist | allowlist | — |
 | `telegram` | Yes | pairing | allowlist | off |
 
 ## Session Settings
 
-| Setting | Value |
-|---------|-------|
-| Scope | `per-channel-peer` |
-| Reset mode | `idle` |
-| Reset hour | `4` |
+A session is one ongoing conversation with an agent, with its own history.
+
+| Setting | Value | Meaning |
+|---------|-------|---------|
+| Scope | `per-channel-peer` | Each person gets a separate conversation on each channel. |
+| Reset | `idle` | A new conversation starts after a period without messages. |

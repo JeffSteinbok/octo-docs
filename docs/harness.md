@@ -7,89 +7,102 @@ has_children: true
 
 # 🔧 Engineering Harness
 
-The Engineering Harness is the self-improvement loop built into Octo. Detection skills run on a schedule, find problems, and file GitHub issues. A fix workflow then drives each issue from triage through planning, automated fix, and PR review — with GitHub Issues as the single source of truth throughout.
+The Engineering Harness is how Octo finds and fixes its own problems. Scheduled checks look for drift and quality issues and file them as GitHub issues in `JeffSteinbok/octo`. A label-driven workflow then takes each approved issue through a written plan, an automated fix, and a pull request that Jeff (the owner) reviews and merges. GitHub Issues is the single record of what was found and what happened to it.
+
+The harness has three parts:
+
+- **Detection** — weekly jobs that file issues ([below](#detection))
+- **Fix workflow** — the [Issue Lifecycle](harness/issue-lifecycle) state machine that turns an approved issue into a PR
+- **[Health Check](healthcheck)** — a before-and-after regression check for changes to the running system
 
 ```mermaid
 flowchart TD
-    subgraph Detection ["🔍 Detection (automated, weekly)"]
-        DV["docs-validate\nChecks manifest vs config"]
+    subgraph Detection ["🔍 Detection (weekly)"]
+        DV["docs-validate\nChecks the docs manifest against config"]
         AR["agent-review\nScans session trajectories"]
     end
 
     subgraph Store ["📋 GitHub Issues (JeffSteinbok/octo)"]
-        GH["Open Issue\n+ label: source skill"]
+        GH["Open issue\nlabeled with the detecting check"]
     end
 
-    subgraph Lifecycle ["⚙️ Fix Workflow"]
-        PP["plan-pending\nOcto reads + writes plan"]
-        PR["plan-ready\nAwaiting Jeff approval"]
-        PA["plan-approved\nJeff signs off"]
-        CA["copilot-assigned\nCopilot opens PR"]
-        RV["pr-review\nOcto reviews diff"]
+    subgraph Lifecycle ["⚙️ Fix workflow"]
+        AP["ilc:approved\nJeff approves the issue"]
+        PW["ilc:plan-working → ilc:plan-complete\nCoding agent writes a plan"]
+        PA["ilc:plan-approved\nJeff approves the plan"]
+        IW["ilc:impl-working\nClaude Code implements and pushes"]
+        RV["ilc:pr-draft → ilc:pr-review\nCoding agent opens the PR"]
         MG["Merged ✓"]
     end
 
     DV -->|files issue| GH
     AR -->|files issue| GH
-    GH --> PP
-    PP --> PR
-    PR -->|Jeff adds label| PA
-    PA --> CA
-    CA --> RV
+    GH -->|Jeff adds label| AP
+    AP --> PW
+    PW -->|Jeff adds label| PA
+    PA --> IW
+    IW --> RV
     RV -->|Jeff merges| MG
-    RV -->|needs rework| CA
+    RV -->|Jeff adds ilc:pr-needs-work| IW
 ```
 
 > ⚠️ **Nothing merges without Jeff's approval.**
-> Octo writes plans and reviews PRs, but two manual gates are always required:
-> 1. Jeff adds the `plan-approved` label before any code is written
-> 2. Jeff clicks **Merge** on the PR — no auto-merge is configured
->
-> Code goes in only when Jeff says so.
+> Octo writes plans and code, but three manual gates are always required:
+> 1. Jeff adds `ilc:approved` before any planning starts
+> 2. Jeff adds `ilc:plan-approved` before any code is written
+> 3. Jeff clicks **Merge** on the PR — no auto-merge is configured
 
 ---
 
-## Detection Skills
+## Detection
 
-These run on a weekly cron and file GitHub issues for anything they find. Deduplication is built in — each script checks for existing open issues with its label before filing.
+Two checks run as weekly scheduled jobs under the `root` agent and file GitHub issues for what they find. Each one skips findings that already have an open issue with its label, so the same problem is not filed twice.
 
-### Docs Validation
+### Docs validation
 
-**Script:** `tools/docs/scripts/validate_docs.py`
-**Cron:** Mondays 6 AM PT
-**Label:** `docs-validate`
+| | |
+|---|---|
+| **Script** | `tools/docs/scripts/validate_docs.py` |
+| **Schedule** | Mondays, 6 AM Pacific |
+| **Issue label** | `docs-validate` |
 
-Validates `config/doc-manifest.json` against the live `openclaw.json` config:
+Checks that `config/doc-manifest.json` (the list of what the public docs cover; see [About These Docs](about-docs)) agrees with the live `openclaw.json` config, the exported cron jobs, the `services/` directory and, optionally, the rendered site:
 
 | Severity | Check |
 |----------|-------|
 | ERROR | Schema — unknown keys, missing required fields, invalid `docsMode` |
-| ERROR | Manifest ↔ Config — every manifest plugin must exist in `openclaw.json` |
-| WARN | Public but disabled — `public: true` plugin is `enabled: false` in config |
-| WARN | Enabled but undocumented — enabled non-provider plugin missing from manifest |
+| ERROR | Manifest ↔ config — every plugin in the manifest must exist in `openclaw.json` |
+| WARN | Public but disabled — a `public: true` plugin is `enabled: false` in config |
+| WARN | Enabled but undocumented — an enabled plugin (other than a model provider) is missing from the manifest |
+| WARN / INFO | Retired jobs — a manifest job is not in `config/cron_jobs_export.json` (WARN if the job is public) |
+| WARN / INFO | Undocumented jobs — an enabled job is missing from the manifest (WARN for `root` or system jobs, and for jobs whose names look like infrastructure) |
+| WARN | Services — no local README and not `docsMode: external`; README directory missing from the manifest; local service with no page spec |
+| WARN | Rendered site — empty tables, `Unknown` schedule cells, relative links that don't resolve to a rendered page |
+
+ERROR and WARN findings are filed as issues. INFO findings are printed but never filed.
 
 ```bash
 cd ~/git/octo
-python3 tools/docs/scripts/validate_docs.py           # run + file issues
-python3 tools/docs/scripts/validate_docs.py --dry-run  # preview only
-python3 tools/docs/scripts/validate_docs.py --no-issues  # check only
+python3 tools/docs/scripts/validate_docs.py --render     # build the docs, audit the site, file issues (the weekly job)
+python3 tools/docs/scripts/validate_docs.py --dry-run    # preview only
+python3 tools/docs/scripts/validate_docs.py --no-issues --rendered out/docs-site  # check an existing build, file nothing
 ```
 
-### Agent Review
+### Agent review
 
-**Skill:** `agents/root/skills/agent-review/`
-**Script:** `agents/root/scripts/agent_review.py`
-**Cron:** Mondays 6 AM PT
-**Label:** `agent-review`
+| | |
+|---|---|
+| **Skill** | `agents/root/skills/agent-review/` (a wrapper; the shared implementation is in [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/agent-review)) |
+| **Script** | `openclaw-hub/skills/agent-review/scripts/agent_review.py` |
+| **Schedule** | Sundays, 9 PM Pacific |
+| **Issue label** | `agent-review` |
 
-Scans session trajectories and memory files for recurring tool failures, missing context patterns, and quality issues. Files issues for actionable findings and delivers a summary to `#root`.
-
-> ⚠️ Known bug: trajectory field names are mismatched ([#210](https://github.com/JeffSteinbok/octo/issues/210)) — cron stats are currently always 0. Fix in progress.
+Scans the past week of session trajectories (the recorded tool calls and results of each agent run) and memory files for recurring tool failures, cron errors, user corrections and capability gaps. It files an issue for each significant finding and sends Jeff a short Discord summary.
 
 ---
 
-## Fix Workflow
+## Fix workflow
 
-Every issue filed in `JeffSteinbok/octo` flows through a label-driven state machine. Octo drives each transition automatically; the only manual step is Jeff adding `plan-approved`.
+Issues in `JeffSteinbok/octo` move through a label-driven state machine run by Octo's `coding` agent. A GitHub webhook wakes the agent when Jeff adds one of the three trigger labels to an issue, and the label says what to do next. Jeff starts each issue by adding `ilc:approved`, approves the plan with `ilc:plan-approved`, and merges the PR; the coding agent and Claude Code do the rest.
 
-See **[Issue Lifecycle](./harness/issue-lifecycle)** for the full state machine with Mermaid diagram and per-state details.
+See **[Issue Lifecycle](harness/issue-lifecycle)** for the full state machine, every label, and what happens at each step.

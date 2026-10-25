@@ -39,7 +39,11 @@ These stay Octo-specific:
 
 1. Refresh usage CSVs:
 
+   _(Command omitted: it runs on the Octo host.)_
+
 2. Generate the Markdown report:
+
+   _(Command omitted: it runs on the Octo host.)_
 
 3. Render to HTML with `md_to_html`
 4. Render to PDF with `html_to_pdf`

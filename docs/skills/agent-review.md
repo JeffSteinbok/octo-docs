@@ -53,6 +53,8 @@ root agent **must** follow them when composing the weekly delivery message.
 
 1. **Run the extraction script:**
 
+   _(Command omitted: it runs on the Octo host.)_
+
 2. **Read recent memory files** — scan files newer than 7 days from:
    - `~/git/octo/agents/main/memory/`
    - `~/git/octo/agents/root/memory/`
