@@ -35,5 +35,5 @@ It can't send messages, read files, run commands or change automations. See [Age
 Every Home Assistant action goes through the [Hass Guard](plugins/hass-guard) plugin before it runs:
 
 1. **Allowlist.** Only listed domains and services can be called: lights, switches, fans, media players, remotes, scenes, climate, covers, input helpers and three named TV scripts. Calls without an `entity_id`, aimed at `all`, or targeting an entity from another domain are blocked.
-2. **Safety rating.** Each allowed call is rated by the agent's decision model (Jev, from [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe)) on one question: "routine and safe to do without asking?". At 85% or higher, the call runs.
+2. **Safety rating.** Plain light and switch on/off runs without one. Every other allowed call is rated by the agent's decision model (Jev, from [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe); see [Decision Models](decision-models)) on one question: "routine and safe to do without asking?". At 85% or higher, the call runs.
 3. **Blocked with a reason.** Below 85%, or when the check is unavailable, the call is not run. The agent is told why and passes the explanation back to the app.
