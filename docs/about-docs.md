@@ -14,7 +14,7 @@ This page explains how [octo.steinbok.net](https://octo.steinbok.net) is built, 
 
 Most of Octo's public documentation is generated from the repo itself (plugin manifests, agent files, config, skills, cron jobs, service READMEs) rather than written by hand. A few pages, including this one, are hand-written Markdown files in the `octo` repo's `docs/` folder that the same pipeline publishes.
 
-The pipeline runs on every push to `main` (changes that only touch `posts/` are skipped) and can also be started by hand:
+The pipeline runs when a push to `main` changes something the site is built from (the docs, the docs tools, plugin, service and lib folders, agent instructions and skills, top-level notes, the doc manifest), every Monday morning, and by hand. The weekly run picks up config and cron changes and memory counts, which change daily and don't start a build by themselves. Each run:
 
 1. **Extract** — Python scripts read the repo and write structured JSON (the *bundle*)
 2. **Redact** — secrets and private addresses are stripped from the bundle
