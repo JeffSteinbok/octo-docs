@@ -29,7 +29,7 @@ Plugins the owner maintains in public repos ([JeffSteinbok](https://github.com/J
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
 | 📧 | [FastMail](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) | Send email and manage calendar events in FastMail | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
-| 📁 | [Filesystem Utilities](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) | Core filesystem utility tools for reading, writing, copying, and moving files | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) |
+| 📁 | [Filesystem Utilities](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) | List, copy, and move files inside the calling agent's workspace | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) |
 | 📊 | [Glances](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) | Read CPU, memory, disk, and summary metrics from a Glances server | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) |
 | 📚 | [Goodreads](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/goodreads) | Read and manage Goodreads shelves through a headless browser (Goodreads has no public API) | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/goodreads) |
 | 🏠 | [Home Assistant](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) | Control devices, query state, and inspect activity in Home Assistant | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/homeassistant) |
