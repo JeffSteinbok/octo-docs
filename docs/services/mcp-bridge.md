@@ -9,7 +9,7 @@ nav_order: 4
 
 > **Source:** [openclaw-hub/services/mcp-bridge](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge)
 
-The OAuth-protected MCP server behind the [Octo MCP](../mcp) (that page explains the tool design and trust model), which lets other agents, such as OctoDot in ChatGPT, use Octo through a few tools defined in `config/mcp-bridge/tools.json`. Every request needs a WorkOS AuthKit access token for the owner's account, checked before the request body is read. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.mcp-bridge` (backed up in `config/macos/launchd/`).
+The OAuth-protected MCP server behind the Octo MCP, which lets other agents, such as OctoDot in ChatGPT, use Octo through a few tools defined in `config/mcp-bridge/tools.json`. Every request needs a WorkOS AuthKit access token for the owner's account, checked before the request body is read. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.mcp-bridge` (backed up in `config/macos/launchd/`).
 
 ## Features
 

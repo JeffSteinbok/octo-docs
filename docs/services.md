@@ -73,7 +73,7 @@ Watches Octo's FastMail mailboxes in real time and runs each new message through
 
 ## 🌉 MCP Bridge
 
-The OAuth-protected MCP server behind the [Octo MCP](../mcp) (that page explains the tool design and trust model), which lets other agents, such as OctoDot in ChatGPT, use Octo through a few tools defined in `config/mcp-bridge/tools.json`. Every request needs a WorkOS AuthKit access token for the owner's account, checked before the request body is read. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.mcp-bridge` (backed up in `config/macos/launchd/`).
+The OAuth-protected MCP server behind the Octo MCP, which lets other agents, such as OctoDot in ChatGPT, use Octo through a few tools defined in `config/mcp-bridge/tools.json`. Every request needs a WorkOS AuthKit access token for the owner's account, checked before the request body is read. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.mcp-bridge` (backed up in `config/macos/launchd/`).
 
 ### Key Features
 
@@ -120,7 +120,7 @@ Long-running service that watches the Obsidian vault and keeps a SQLite full-tex
 
 ## 🗂️ OneDrive Sync
 
-Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive, so notes written on the owner's other devices reach Octo and the [Obsidian Vault Indexer](obsidian-indexer). On the Mac mini this is the Microsoft OneDrive app; nothing from this repo runs there. On a Linux host it is the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) client, set up as described below.
+Keeps the Obsidian vault and other files under `~/OneDrive/` in sync with Microsoft OneDrive, so notes written on the owner's other devices reach Octo and the Obsidian Vault Indexer. On the Mac mini this is the Microsoft OneDrive app; nothing from this repo runs there. On a Linux host it is the open-source [`abraunegg/onedrive`](https://github.com/abraunegg/onedrive) client, set up as described below.
 
 ### Key Features
 
