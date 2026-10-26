@@ -17,7 +17,7 @@ nav_order: 13
 - **hass_notify** (openclaw-hub #169) — Home Assistant notifications limited to configured targets
 - **Backups of the Mac setup** — Orca LaunchAgents, macrdp config, webhook-proxy config and a rebuild checklist in
 - **CLAUDE.md** — health check around every live-system change (#498)
-- **No test or secret-scan CI** — `test.yml` and `secret-scan.yml` removed to save Actions minutes on the private repo;
+- **Cheaper CI** — `test.yml` and `secret-scan.yml` (every push, full-history scan) removed; tests run locally
 - **Readiness alert** — `scripts/readiness_check.py`, every 5 minutes: posts to #octo-status when `/readyz` fails,
 - **Backup and migration doc** — `docs/BACKUP-AND-MIGRATION.md`: what's in git, what's only in the weekly full
 
