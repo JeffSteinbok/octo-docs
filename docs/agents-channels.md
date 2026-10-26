@@ -21,7 +21,7 @@ In the Permissions column, *allowed* and *denied* are set explicitly for that ag
 | `main` | The owner's everyday assistant: direct chats and proactive check-ins | Custom tool set. Allowed: shell (`exec`). Can hand work to `root`, `family`, `finance`. | Keeps the everyday assistant capable while limiting its shell to approved commands only, with no arbitrary shell access. |
 | `mail` | Mail processing handed off by other agents (currently unused) | Minimal tool profile. Allowed: file reads. Denied: shell (`exec`), browser, file writes. | Treats mail as untrusted input and keeps mail processing away from broader tools. |
 | `root` | Admin and debugging work the owner explicitly escalates | Custom tool set. Allowed: file reads. Broad access, inherited from OpenClaw's defaults. | Keeps privileged admin and debugging access on a separate path that is used only on request. |
-| `family` | Family members' iMessage DMs and the family group chat | Messaging tool profile. Allowed: shell (`exec`). Denied: browser, file reads, file writes. | Gives family conversations a narrow, safer tool set. Calendar plugins apply per-person read and write rules based on who sent the message. |
+| `family` | Family members' iMessage DMs and the family group chat | Messaging tool profile. Denied: shell (`exec`), browser, file reads, file writes. | Gives family conversations a narrow, safer tool set. Calendar plugins apply per-person read and write rules based on who sent the message. |
 | `finance` | Household finance and retirement planning | Minimal tool profile. Allowed: file reads, file writes. Denied: shell (`exec`), browser. | Keeps account data and planning notes away from everyday chat, with read-only finance tools. |
 | `hass-hooks` | Home Assistant camera and doorbell events (see [Hooks](hooks)) | Named tools only. Denied: shell (`exec`). Only camera, image and messaging tools. | Lets webhook automation inspect camera events and send a notification, and nothing else. |
 | `coding` | Coding specialist in `#coding` on Discord, and GitHub issue work (see [Hooks](hooks)) | OpenClaw's default tools. Can hand work to `claude`. | Gets the shell access coding work needs, kept away from everyday chat. |
@@ -52,6 +52,7 @@ Each channel has its own rules for who may message Octo:
 | `discord` | Yes | pairing | allowlist | partial |
 | `imessage` | Yes | allowlist | allowlist | — |
 | `telegram` | Yes | pairing | allowlist | off |
+| `whatsapp` | Yes | allowlist | allowlist | — |
 
 ## Session Settings
 

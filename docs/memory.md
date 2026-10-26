@@ -87,6 +87,6 @@ changes to them, so memory files are versioned along with everything else:
 | `hass-hooks` | 0 | — | — | — |
 | `hassonic` | 0 | — | — | Yes |
 | `mail` | 0 | — | — | — |
-| `main` | 162 | 2026-03-01 | 2026-10-22 | Yes |
+| `main` | 163 | 2026-03-01 | 2026-10-25 | Yes |
 | `notify` | 0 | — | — | — |
 | `root` | 25 | 2026-03-13 | 2026-08-26 | Yes |
