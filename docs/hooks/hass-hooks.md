@@ -7,7 +7,7 @@ nav_exclude: true
 
 # 🪝 Home Assistant Events
 
-When a Home Assistant automation spots something at the house (motion, a person, vehicle or animal picked up by LLM Vision, or a doorbell press), it posts the event to OpenClaw. The `hass-hooks` agent decides whether it matters and, if it does, sends the owner a short, casual summary on Discord with the camera snapshot attached.
+When a Home Assistant automation spots something at the house (motion, a person, vehicle or animal picked up by LLM Vision, or a doorbell press), it posts the event to OpenClaw. The `hass-hooks` agent decides whether it matters and, if it does, sends the owner a short, casual summary over iMessage with the camera snapshot attached.
 
 ## How an event gets here
 
@@ -21,7 +21,7 @@ When a Home Assistant automation spots something at the house (motion, a person,
 2. **Checks who's home.** A stranger in the driveway matters more when nobody is home.
 3. **Gets the pictures.** It fetches the key frame LLM Vision saved at the moment of the event (or takes a fresh snapshot from the triggering camera), plus a collage of all the outdoor cameras as they look now.
 4. **Summarizes.** An image model looks at both pictures and writes one or two casual sentences, such as "Just a delivery driver dropping off a package."
-5. **Sends one message.** A single Discord DM to the owner, with the key frame attached.
+5. **Sends one message.** A single iMessage to the owner, with the key frame attached.
 
 ## Safety
 
