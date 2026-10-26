@@ -63,5 +63,9 @@ root agent **must** follow them when composing the weekly delivery message.
 
 4. **Do not auto-commit from cron** — leave report files on disk for manual review.
 
+## Decision-model check (log-only)
+
+An hour after this job, `agent-review-labels` (`scripts/agent_review_gate.py`) asks the decision model which kind each newly filed `[Agent Review]` issue is, and whether it duplicates the most similar-titled issues. It only logs, for the Monday decision-model check (docs: Decision Models); labels and issues are left as you filed them.
+
 
 > **Source:** [openclaw-hub](https://github.com/JeffSteinbok/openclaw-hub/tree/main/skills/agent-review)
