@@ -72,4 +72,5 @@ The current behavior isn't treated as ground truth: before the alert gate, `hass
 
 - **Data.** Selecting a decision model sends each question's facts to TypeSafe's hosted endpoint. For the alert gate that's the camera name, the vision model's title and summary, the time and who is home, not the images. A local [Kev](https://github.com/jaredpalmer/kev) server is the alternative.
 - **Rubric versions.** Each gate passes a `rubricVersion`. Change it when a rubric's meaning changes, so old and new results can be told apart.
+- **Pass a signal.** `decisions.evaluate` rejects a call without an `AbortSignal` in its options ("Invalid decision contract"). Hooks that don't supply one (like `before_agent_reply`) and Gateway methods use `AbortSignal.timeout(...)`.
 - **Scores stay internal.** Agents are told whether a check ran and what it decided, never the probability.
