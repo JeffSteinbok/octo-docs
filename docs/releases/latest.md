@@ -6,6 +6,14 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-10-26
+
+
+### Changed
+
+- **Web search uses Codex Hosted Search** — `tools.web.search.provider` moved from `gemini`, whose key was hitting
+- **Docs:** `OPENCLAW_CONFIG.md` *Models* is now a table of which model does what: chat per agent, the Home Assistant
+
 ## 2026-10-25
 
 
