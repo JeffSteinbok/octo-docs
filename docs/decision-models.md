@@ -34,6 +34,27 @@ The remaining candidates are tracked in [issue #436](https://github.com/JeffStei
 
 ---
 
+## From a script
+
+Plugins call the decision model with `api.runtime.decisions.evaluate`. Most of the remaining gates are scripts (cost-report labels, calendar events, review labels), and scripts can't. Two pieces close that gap:
+
+- **[Decisions Bridge](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/decisions-bridge)** (openclaw-hub) registers the `decisions-bridge.evaluate` Gateway method, so anything that can run `openclaw gateway call` can ask an agent's decision model a typed question. Only agents listed in its config can be named, and when the model is unavailable it returns `status: "unavailable"` rather than failing.
+- **`scripts/decide.py`** (octo) wraps that call for Python and writes the log line the weekly check reads:
+
+```python
+from decide import decide, choice, log_verdict
+
+answers = decide("root", "octo.session-labels", {"firstMessage": text},
+                 {"label": {"type": "choice", "instructions": "What kind of session is this?",
+                            "criteria": {"coding": "Writing or fixing code", "chat": "Conversation"}}})
+label, p = choice(answers, "label")      # (None, None) when unavailable: keep today's answer
+log_verdict("session-labels", what=title, decision=label or "unavailable", actual=heuristic_label, p=p)
+```
+
+A log line with `actual` (what the script would do today) is compared directly in the weekly check; the review asks Jeff whether the model's answer is right.
+
+---
+
 ## Rolling a gate out
 
 A new gate never starts by acting on its answers.
