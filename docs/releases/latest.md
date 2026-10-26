@@ -9,10 +9,37 @@ nav_order: 13
 ## 2026-10-26
 
 
+### Added
+
+- **Decision models (Jev) rollout** (#436) — five gates in log-only mode, reviewed every Monday by iMessage
+- **decisions-bridge** (openclaw-hub #165, #168) — `decisions-bridge.evaluate` Gateway method so scripts can call an
+- **WhatsApp** — owner-only on a separate number, plus family access mirroring iMessage (#472, #473)
+- **hass_notify** (openclaw-hub #169) — Home Assistant notifications limited to configured targets
+- **Backups of the Mac setup** — Orca LaunchAgents, macrdp config, webhook-proxy config and a rebuild checklist in
+- **CLAUDE.md** — health check around every live-system change (#498)
+
 ### Changed
 
-- **Web search uses Codex Hosted Search** — `tools.web.search.provider` moved from `gemini`, whose key was hitting
-- **Docs:** `OPENCLAW_CONFIG.md` *Models* is now a table of which model does what: chat per agent, the Home Assistant
+- **Message routing by kind** — conversation and alerts to iMessage, status to #octo-status, upgrades to #upgrades,
+- **Hass Guard** — plain light/switch on/off skips the safety model; blocks say whether the check ran and post to
+- **Cron cleanup** — weekly backup, browser recycle, docs validation and the retirement countdown are scripts now; the
+- **Web search** uses Codex Hosted Search instead of Gemini (quota errors); `OPENCLAW_CONFIG.md` has a
+- **USPS mail** — recipient routing per household member from config and the vision rubric restored
+- **fastmail-sse** logs why each mail rule matched (openclaw-hub #166, carapace-mail-runtime #4)
+- **fs-utils** on carapace-plugin-sdk 3.3, which passes `workspaceDir` to tools (openclaw-hub #163, sdk #15)
+- **Home Assistant plugin** — no built-in server address, entity lookup by domain, and service calls re-check state
+- **Health check** alerts on Gateway `/ready`, the iMessage bridge and a missing ffmpeg; FastMail check works on macOS
+- **Docs** — a page for every service, an editorial pass across the site, and stale bundle JSON removed
+- **Posts** — the "Dot meets Claw" LinkedIn article with diagram; a draft on adopting decision models (#466–#468, #490)
+
+### Fixed
+
+- **exec failures from fs-utils** — `fs_list`/`fs_copy`/`fs_move` returned the wrong result shape, breaking code-mode
+- **Camera collages** — ffmpeg wasn't installed (now the homebrew-ffmpeg build with text labels); errors are reported
+- **USPS digests** arrived without their scans: inline attachments were skipped (carapace-m365 #27)
+- **fastmail_meeting** ignored an explicit `end` time (openclaw-hub #159; #364)
+- **Full backup** works with macOS rsync, skips `~/.openclaw/tmp`, and fails if the copy is empty (#460, #462, #479)
+- **Small fixes** — hassonic docs promised approvals that never came (#420), cost reports labeled iMessage sessions
 
 ## 2026-10-25
 
