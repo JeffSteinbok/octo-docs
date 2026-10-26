@@ -15,7 +15,7 @@ covers the one public entry point to it and how each kind of traffic is authenti
 |---|---|
 | [Octo MCP: Octo for other agents](mcp) | Other agents (today OctoDot, an OpenAI Dot in ChatGPT) using Octo through its MCP server, behind WorkOS sign-in |
 | [Connected Apps](connected-apps) | Apps that talk to Octo directly: Hassonic and OctoDot |
-| [Hooks](hooks) | Webhooks from GitHub, Home Assistant and Microsoft 365 that start agents |
+| [Hooks](hooks) | Webhooks from GitHub and Home Assistant that start agents. Microsoft 365 notifications go to the separate m365-webhook service instead. |
 
 The rest of this page covers the front door they all share. Not every client can join the tailnet (the private
 Tailscale network): OpenClaw's macOS, Windows and iPhone apps, Hassonic, and the cloud services all connect from the
@@ -72,7 +72,7 @@ Only port 443 is used. ChatGPT never connects to Funnel's other ports (8443, 100
 
 | Credential | Held by | Used for |
 |---|---|---|
-| OpenClaw hooks token | Gateway (`~/.openclaw/.env`) and webhook-proxy (its own env file) | The proxy authenticating to the Gateway's `/hooks` |
+| OpenClaw hooks token | Gateway (`~/.openclaw/.env` and `~/.openclaw/service-env/ai.openclaw.gateway.env`) and webhook-proxy (its own env file) | The proxy authenticating to the Gateway's `/hooks` |
 | GitHub webhook secret | GitHub and webhook-proxy | HMAC-SHA256 signature on every delivery |
 | Home Assistant proxy token | Home Assistant `secrets.yaml` and webhook-proxy | Token on the `/hass` route |
 | Microsoft Graph `clientState` | Graph subscription and m365-webhook | Validating change notifications |

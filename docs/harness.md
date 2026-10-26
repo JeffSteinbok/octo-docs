@@ -97,7 +97,7 @@ python3 tools/docs/scripts/validate_docs.py --no-issues --rendered out/docs-site
 | **Schedule** | Sundays, 9 PM Pacific |
 | **Issue label** | `agent-review` |
 
-Scans the past week of session trajectories (the recorded tool calls and results of each agent run) and memory files for recurring tool failures, cron errors, user corrections and capability gaps. It files an issue for each significant finding and sends Jeff a short Discord summary.
+Scans the past week of session trajectories (the recorded tool calls and results of each agent run) and memory files for recurring tool failures, cron errors, user corrections and capability gaps. It files an issue for each significant finding and posts a short summary to #octo-status. An hour later, `agent-review-labels` (`scripts/agent_review_gate.py`) asks the decision model what kind each new issue is and whether it duplicates an existing one; that check is log-only (see [Decision Models](decision-models)).
 
 ---
 

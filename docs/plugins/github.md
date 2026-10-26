@@ -24,8 +24,6 @@ Create, read, update, comment on, close and list GitHub issues.
 
 ## Example config
 
-Set credentials in `plugins.entries["github"].config`:
-
 ```json
 {
   "plugins": {
@@ -33,7 +31,8 @@ Set credentials in `plugins.entries["github"].config`:
       "github": {
         "enabled": true,
         "config": {
-          "token": "ghp_your_personal_access_token"
+          "token": "${GITHUB_TOKEN}",
+          "upstreamToken": "${GITHUB_UPSTREAM_TOKEN}"
         }
       }
     }

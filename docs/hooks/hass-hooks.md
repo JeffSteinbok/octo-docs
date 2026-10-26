@@ -30,5 +30,5 @@ When a Home Assistant automation spots something at the house (motion, a person,
 
 ## At a glance
 
-- **Endpoint:** `/hooks/hass`
+- **Endpoint:** `/hooksproxy/hass`
 - **Agent:** `hass-hooks` (see [Agents & Channels](../agents-channels))

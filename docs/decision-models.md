@@ -28,11 +28,11 @@ A decision model doesn't write text. It gets a typed question and some structure
 | Gate | Question | Status |
 |---|---|---|
 | [Hass Guard](plugins/hass-guard) | Is this Home Assistant action routine and safe to do without asking? (Hassonic and the Octo MCP's `external` agent) | Enforcing at 85%. Plain light and switch on/off skips the model |
-| [Hass Alert Gate](plugins/hass-alert-gate) | Is this camera event worth a text to Jeff right now? (`hass-hooks`) | Log-only since 2026-10-26 |
+| [Hass Alert Gate](https://github.com/JeffSteinbok/octo/tree/main/plugins/hass-alert-gate) | Is this camera event worth a text to Jeff right now? (`hass-hooks`) | Log-only since 2026-10-26 |
 | Cost-report labels (`agents/root/scripts/enrich_sessions.py`) | Which of 17 topics is this session about? Asked only for sessions the keyword rules can't place, which today all become "chat" | Log-only since 2026-10-26 |
 | Weekly agent review (`scripts/agent_review_gate.py`) | For each issue it filed: which kind (bug, enhancement, infrastructure)? And for the most similar-titled issues: same problem? | Log-only since 2026-10-26, Sundays after the review |
 | Evening-briefing events (`agents/main/scripts/briefing_events_gate.py`) | Is this personal or family event Jeff's own, or FYI about another household member? Checked against the name rule ("names a family member → FYI"), which misfires on "Dinner with …" | Log-only since 2026-10-26, 21:55 Sun–Thu |
-| [Heartbeat Gate](plugins/heartbeat-gate) | Is anything urgent enough to message Jeff now? Facts: failing scheduled jobs, the time, quiet hours. Nothing failing → no model call | Log-only since 2026-10-26, every 2-hour heartbeat |
+| [Heartbeat Gate](https://github.com/JeffSteinbok/octo/tree/main/plugins/heartbeat-gate) | Is anything urgent enough to message Jeff now? Facts: failing scheduled jobs, the time, quiet hours. Nothing failing → no model call | Log-only since 2026-10-26, every 2-hour heartbeat |
 
 The remaining candidates are tracked in [issue #436](https://github.com/JeffSteinbok/octo/issues/436): GitHub and inbox notify gates, USPS mail importance, family request handling and changelog scoring.
 
@@ -40,7 +40,7 @@ The remaining candidates are tracked in [issue #436](https://github.com/JeffStei
 
 ## From a script
 
-Plugins call the decision model with `api.runtime.decisions.evaluate`. Most of the remaining gates are scripts (cost-report labels, calendar events, review labels), and scripts can't. Two pieces close that gap:
+Plugins call the decision model with `api.runtime.decisions.evaluate`. Many gates are scripts instead (the cost-report labels, review labels and briefing events above, and most of the candidates in #436), and scripts can't. Two pieces close that gap:
 
 - **[Decisions Bridge](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/decisions-bridge)** (openclaw-hub) registers the `decisions-bridge.evaluate` Gateway method, so anything that can run `openclaw gateway call` can ask an agent's decision model a typed question. Only agents listed in its config can be named, and when the model is unavailable it returns `status: "unavailable"` rather than failing.
 - **`scripts/decide.py`** (octo) wraps that call for Python and writes the log line the weekly check reads:

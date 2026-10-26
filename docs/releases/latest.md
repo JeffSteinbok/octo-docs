@@ -17,6 +17,7 @@ nav_order: 13
 - **hass_notify** (openclaw-hub #169) — Home Assistant notifications limited to configured targets
 - **Backups of the Mac setup** — Orca LaunchAgents, macrdp config, webhook-proxy config and a rebuild checklist in
 - **CLAUDE.md** — health check around every live-system change (#498)
+- **Backup and migration doc** — `docs/BACKUP-AND-MIGRATION.md`: what's in git, what's only in the weekly full
 
 ### Changed
 
@@ -30,6 +31,7 @@ nav_order: 13
 - **Home Assistant plugin** — no built-in server address, entity lookup by domain, and service calls re-check state
 - **Health check** alerts on Gateway `/ready`, the iMessage bridge and a missing ffmpeg; FastMail check works on macOS
 - **Docs** — a page for every service, an editorial pass across the site, and stale bundle JSON removed
+- **Docs accuracy pass** — `README.md`, `STRUCTURE.md`, `OPENCLAW_CONFIG.md`, the plugin, lib and service READMEs
 - **Posts** — the "Dot meets Claw" LinkedIn article with diagram; a draft on adopting decision models (#466–#468, #490)
 
 ### Fixed
@@ -127,7 +129,7 @@ nav_order: 13
 
 - **[carapace-m365](https://github.com/JeffSteinbok/carapace-m365)** (new; replaces the Outlook plugins)
 - **[carapace-plugin-sdk](https://github.com/JeffSteinbok/carapace-plugin-sdk) 3.0** — breaking: tool results carry their structured data in `details`; 3.0.1 bundles typebox into plugin builds as an optional peer; reusable CI workflow defaults to Node 24
-- **Managed installs** — the running m365, obsidian, package-tracking and stock-quotes plugins are built on SDK 3.0.1 and installed as managed packages; the matching repo changes (`npm run deploy`) are open PRs
+- **Managed installs** — the running m365, obsidian, package-tracking and stock-quotes plugins are built on SDK 3.0.1 and installed as managed packages; the matching repo changes (`npm run deploy`) merged 2026-10-19 (#371)
 
 ### Changed
 

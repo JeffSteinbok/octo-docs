@@ -27,6 +27,7 @@ The agent has a deliberately small tool surface:
 | `hass_state_get`, `hass_state_list` | Read Home Assistant state |
 | `hass_service_call` | Call an allowlisted Home Assistant action |
 | `web_search`, `web_fetch` | Look things up, e.g. which channel a game is on |
+| `skill_workshop` | Propose changes to its own skills for review |
 
 It can't send messages, read files, run commands or change automations. See [Agents & Channels](agents-channels) for how it compares to the other agents. The [Octo MCP](mcp)'s `external` agent uses the same Home Assistant tools under the same guard.
 
@@ -34,6 +35,6 @@ It can't send messages, read files, run commands or change automations. See [Age
 
 Every Home Assistant action goes through the [Hass Guard](plugins/hass-guard) plugin before it runs:
 
-1. **Allowlist.** Only listed domains and services can be called: lights, switches, fans, media players, remotes, scenes, climate, covers, input helpers and three named TV scripts. Calls without an `entity_id`, aimed at `all`, or targeting an entity from another domain are blocked.
+1. **Allowlist.** Only listed domains and services can be called: lights, switches, fans, media players, remotes (including the Xfinity remote's `tune` and `send_text`), scenes, climate, covers, input helpers and three named TV scripts. Calls without an `entity_id`, aimed at `all`, targeting an entity from another domain, or widening the target with `area_id`, `device_id`, `floor_id`, `label_id` or `target` are blocked.
 2. **Safety rating.** Plain light and switch on/off runs without one. Every other allowed call is rated by the agent's decision model (Jev, from [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe); see [Decision Models](decision-models)) on one question: "routine and safe to do without asking?". At 85% or higher, the call runs.
 3. **Blocked with a reason.** Below 85%, or when the check is unavailable, the call is not run. The agent is told why and passes the explanation back to the app.

@@ -16,8 +16,8 @@ Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. E
 - Per-route inbound auth, so each sender has its own secret and OpenClaw's hooks token never leaves the machine
 - Per-route filters that drop events before they reach the Gateway (GitHub: allowed senders and actionable labels only)
 - Exact path matching, POST only, 1 MiB body limit, and a lockout after 10 failed auth attempts in a minute
-- Listens on port 18792 on all interfaces: Tailscale Funnel reaches it on loopback through the `/hooksproxy` mount, and Home Assistant reaches it on the LAN
-- Loads only its own env file, `~/.openclaw/secrets/webhook-proxy.env`, not the shared OpenClaw `.env`
+- Listens on port 18792 on all interfaces (`bind_host: 0.0.0.0` in the config; the code's default is `127.0.0.1`): Tailscale Funnel reaches it on loopback through the `/hooksproxy` mount, and Home Assistant reaches it on the LAN
+- The LaunchAgent loads only its own env file, `~/.openclaw/secrets/webhook-proxy.env`, not the shared OpenClaw `.env`. (The Linux `webhook-proxy.service` unit in this folder is from the retired host and still loads `~/.openclaw/.env`.)
 
 ## Routes
 

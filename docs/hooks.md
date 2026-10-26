@@ -16,10 +16,9 @@ Every call to OpenClaw's hooks endpoint (`/hooks/...`) must carry OpenClaw's hoo
 
 Apps that hold a conversation with Octo, rather than sending it events, are covered under [Connected Apps](connected-apps).
 
-Octo publishes **3 hooks**:
+Octo publishes **2 hooks**:
 
 | | Hook | Endpoint | Description |
 |---|------|----------|-------------|
 | 🪝 | [GitHub Issues](hooks/coding) | `/hooksproxy/github-issues` | GitHub issue label changes, signed with HMAC-SHA256 and checked by the Webhook Proxy, start the coding agent on the next step of the [issue lifecycle](harness/issue-lifecycle). |
-| 🪝 | [Home Assistant Events](hooks/hass-hooks) | `/hooks/hass` | Home Assistant reports motion, LLM Vision detections and doorbell presses; the hass-hooks agent sends a one-line summary with the camera snapshot on Discord. |
-| 🪝 | [LAN Notify Relay](hooks/notify) | `/hooks/notify` | Forwards notifications from services on the home network to the owner as Discord DMs, word for word. |
+| 🪝 | [Home Assistant Events](hooks/hass-hooks) | `/hooksproxy/hass` | Home Assistant reports motion, LLM Vision detections and doorbell presses through the Webhook Proxy; the hass-hooks agent texts the owner a one-line summary with a camera collage over iMessage. |

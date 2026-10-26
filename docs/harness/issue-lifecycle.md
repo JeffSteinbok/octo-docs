@@ -17,9 +17,9 @@ The issue lifecycle is the fix workflow of the [Engineering Harness](../harness)
 
 ## How it is triggered
 
-A GitHub webhook sends issue events to Octo's Gateway. The `github-issues` hook forwards an event to the `coding` agent only when an allowlisted GitHub account (Jeff's, or one other) adds one of three trigger labels to an issue: `ilc:approved`, `ilc:plan-approved` or `ilc:pr-needs-work`. Every other event is dropped, so opening an issue does nothing on its own.
+A GitHub webhook sends issue events to Octo's Gateway. The `github-issues` hook forwards an event to the `coding` agent only when an allowlisted GitHub account (Jeff's, or one other) adds one of three trigger labels to an issue: `ilc:approved`, `ilc:plan-approved` or `ilc:pr-needs-work`. (The older `ilc:plan-pending` label is still accepted.) Every other event is dropped, so opening an issue does nothing on its own.
 
-The coding agent does not do the work in its own session. For each event it starts a **lifecycle subagent**, which handles that issue from then on and reports progress in a Discord thread for the issue (`#N — <short title>`) in the `#coding` channel.
+The coding agent does not do the work in its own session. For each event it starts a **lifecycle subagent**, which handles that issue from then on and reports progress in a Discord thread for the issue (`#N — <short title>`) in the `#coding` channel. The hook's final reply goes to Jeff over iMessage.
 
 ## State machine
 

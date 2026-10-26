@@ -27,4 +27,4 @@ Limits the agents behind Hassonic and the Octo MCP (`hassonic` and `external`) t
 "plugins": { "entries": { "hass-guard": { "enabled": true, "config": { "agents": ["hassonic", "external"], "alertTarget": "discord:channel:<id>" } } } }
 ```
 
-`agents` lists the agent IDs to guard. `alertTarget` is `<channel>:<target>` as `openclaw message send` takes them; leave it out for no alerts. If `agents` is missing or empty, only `hassonic` is guarded. The safety check uses each guarded agent's own `decisionModel`.
+The safety check uses each guarded agent's own `decisionModel`.

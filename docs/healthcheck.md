@@ -54,7 +54,7 @@ Each step declares what it is supposed to change in `config/healthcheck/steps/<s
 
 ## After a restart
 
-`wait-ready` polls `/healthz`, then `/startupz`, then `/readyz`, for up to 8 minutes by default (`--timeout` changes this), because an agent database can take minutes to be admitted after a restart. If an agent database is refused, it prints the recovery procedure (`openclaw doctor --fix`) instead of waiting. Once the Gateway is ready, it runs the Gateway, channel, agent and cron checks.
+`wait-ready` polls `/healthz`, then `/startupz`, then `/readyz`, for up to 8 minutes by default (`--timeout` changes this), because an agent database can take minutes to be admitted after a restart. If an agent database is refused, it stops waiting and prints the recovery steps: stop the Gateway (`openclaw gateway stop --force`), back up `~/.openclaw/agents/<id>/agent`, run `openclaw doctor --fix --yes`, then `wait-ready` again. Once the Gateway is ready, it runs the Gateway, channel, agent, cron, LaunchAgent and log checks.
 
 ## Reports and secrets
 
