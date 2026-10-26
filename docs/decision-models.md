@@ -39,7 +39,7 @@ The remaining candidates are tracked in [issue #436](https://github.com/JeffStei
 A new gate never starts by acting on its answers.
 
 1. **Log-only.** The gate records its verdict for every event (one JSON line in `~/.openclaw/logs/<gate>.jsonl`) and steps aside. Behavior doesn't change.
-2. **Weekly check.** Every Monday, `scripts/decision_review.py report` matches each verdict with what the agent actually did and texts Jeff the events where they disagree, numbered. He replies "1 yes, 2 no", and the main agent records it with `decision-review label`.
+2. **Weekly check.** When a gate goes log-only, `decision_review.py start <date>` holds the first review about a week out. After that, every Monday, `scripts/decision_review.py report` matches each verdict with what the agent actually did and texts Jeff the events where they disagree, numbered. He replies "1 yes, 2 no", and the main agent records it with `decision-review label`.
 3. **Tune.** The labels show two kinds of mistake. A **missed alert** (the gate would drop something Jeff wanted) is the costly one. **Noise** (it would alert on something he didn't care about) is cheaper. `decision-review status` suggests the highest threshold that keeps every alert he wanted.
 4. **Enforce.** Once a week of labels shows no missed alerts, the gate's `mode` switches to `enforce`. It keeps logging, so the weekly check keeps catching drift.
 
