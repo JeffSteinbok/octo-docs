@@ -17,10 +17,12 @@ nav_order: 13
 - **hass_notify** (openclaw-hub #169) — Home Assistant notifications limited to configured targets
 - **Backups of the Mac setup** — Orca LaunchAgents, macrdp config, webhook-proxy config and a rebuild checklist in
 - **CLAUDE.md** — health check around every live-system change (#498)
+- **Readiness alert** — `scripts/readiness_check.py`, every 5 minutes: posts to #octo-status when `/readyz` fails,
 - **Backup and migration doc** — `docs/BACKUP-AND-MIGRATION.md`: what's in git, what's only in the weekly full
 
 ### Changed
 
+- **main heartbeat** — Gateway system events (`[SECRETS_RELOADER_DEGRADED]` and the like) go to #octo-status, not
 - **Message routing by kind** — conversation and alerts to iMessage, status to #octo-status, upgrades to #upgrades,
 - **Hass Guard** — plain light/switch on/off skips the safety model; blocks say whether the check ran and post to
 - **Cron cleanup** — weekly backup, browser recycle, docs validation and the retirement countdown are scripts now; the
