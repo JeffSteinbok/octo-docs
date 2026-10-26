@@ -7,7 +7,7 @@ nav_exclude: true
 
 # 🪝 LAN Notify Relay
 
-Services on the home network post short notifications to the Gateway's `/hooks/notify` endpoint, and the `notify` agent forwards each one to the owner as a Discord DM, word for word. It's a way for scripts and machines on the network to reach the owner without each one needing its own Discord bot.
+Services on the home network post short notifications to the Gateway's `/hooks/notify` endpoint, and the `notify` agent forwards each one to the owner over iMessage, word for word. It's a way for scripts and machines on the network to reach the owner without each one needing its own messaging setup.
 
 ## What arrives
 

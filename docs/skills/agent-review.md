@@ -12,7 +12,7 @@ Octo's thin wrapper around the shared `agent-review` skill in `openclaw-hub`.
 - Shared implementation: `~/git/openclaw-hub/skills/agent-review`
 - Octo-specific report output: `~/git/octo/agents/root/reports/agent-review`
 - Issue repo: `JeffSteinbok/octo`
-- Delivery target: Jeff's Discord DM (`user:<redacted>`)
+- Delivery target: `#octo-status` (the cron job's final reply)
 
 ## What lives where
 

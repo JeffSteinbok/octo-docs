@@ -11,7 +11,7 @@ This is Octo's thin wrapper around the shared `usage-report` skill in `openclaw-
 
 - Shared implementation: `~/git/openclaw-hub/skills/usage-report`
 - Octo-specific output dir: `~/git/octo/agents/root/reports/api-cost`
-- Delivery target: `#root`
+- Delivery target: `#octo-status`
 - Daily label enrichment cron: `usage-enrich-sessions`
 - Weekly report cron: `usage-weekly-report`
 
@@ -32,7 +32,7 @@ These stay Octo-specific:
 
 - report output under `agents/root/reports/api-cost/`
 - the `usage-enrich-sessions` and `usage-weekly-report` cron jobs
-- the Discord destination (`#root`)
+- the Discord destination (`#octo-status`)
 - any local env-var overrides
 
 ## How Octo runs it
@@ -47,7 +47,7 @@ These stay Octo-specific:
 
 3. Render to HTML with `md_to_html`
 4. Render to PDF with `html_to_pdf`
-5. Post the PDF to `#root`
+5. Post the PDF to `#octo-status`
 6. Commit and push `agents/root/reports/api-cost/`
 
 ## Report contents
