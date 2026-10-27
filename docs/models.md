@@ -19,7 +19,7 @@ The tables are generated from Octo's OpenClaw config each time the docs are buil
 | Fallback | `openai/gpt-6-astra` | Tried in order when the primary model is unavailable |
 | Image (vision) | `anthropic/claude-sonnet-4-6` | Used for image analysis |
 | Image fallback | `anthropic/claude-haiku-4-5` | |
-| Web search | `gemini` | Provider behind the web search tool |
+| Web search | `codex` | Provider behind the web search tool |
 
 ### Per-Agent Overrides
 
@@ -28,6 +28,9 @@ Agents listed here use their own model instead of the default. Decision models a
 
 | Agent | Model | Decision model |
 |-------|-------|----------------|
+| `main` | default | `typesafe/jev-latest` |
+| `root` | default | `typesafe/jev-latest` |
+| `hass-hooks` | default | `typesafe/jev-latest` |
 | `claude` | `anthropic/claude-opus-5-5` | — |
 | `hassonic` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
 | `external` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
@@ -52,6 +55,9 @@ Octo's decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plug
 
 | Agent | Decision model |
 |-------|----------------|
+| `main` | `typesafe/jev-latest` |
+| `root` | `typesafe/jev-latest` |
+| `hass-hooks` | `typesafe/jev-latest` |
 | `hassonic` | `typesafe/jev-latest` |
 | `external` | `typesafe/jev-latest` |
 
