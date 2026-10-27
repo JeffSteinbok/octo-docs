@@ -19,6 +19,7 @@ nav_order: 13
 - **Off-machine full backup** — the weekly full backup is also encrypted (AES-256, passphrase in the Keychain
 - **`npm run check`** — runs every test suite locally before a push, since there's no test CI
 - **Backup and migration doc** — what's backed up where, and how to move to a new machine
+- **Mac mini firewall script** — `scripts/setup-firewall.sh` sets up pf with default-deny incoming: the LAN, Tailscale
 
 ### Changed
 
