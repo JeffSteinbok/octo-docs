@@ -123,9 +123,3 @@ Every Funnel change is checked two ways:
 | Cloudflare Tunnel + Access | Real edge SSO, but the Windows app can't send Access headers yet, and the domain would have to move to Cloudflare |
 | `openclaw mcp serve` for OctoDot | stdio only, conversation tools only |
 | Building our own OAuth server | Easy to get subtly wrong; WorkOS AuthKit is free at this scale |
-
-## Still to do
-
-- Bind the Gateway to loopback. It still listens on the LAN (`gateway.bind: lan`). The native clients are re-paired
-  with setup codes and the shared Gateway token was rotated (2026-10-26), so nothing on the LAN should need the
-  shared token any more.
