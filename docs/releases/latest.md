@@ -11,78 +11,30 @@ nav_order: 13
 
 ### Added
 
-- **Decision models (Jev) rollout** (#436) — five gates in log-only mode, reviewed every Monday by iMessage
-- **decisions-bridge** (openclaw-hub #165, #168) — `decisions-bridge.evaluate` Gateway method so scripts can call an
-- **WhatsApp** — owner-only on a separate number, plus family access mirroring iMessage (#472, #473)
-- **hass_notify** (openclaw-hub #169) — Home Assistant notifications limited to configured targets
-- **Backups of the Mac setup** — Orca LaunchAgents, macrdp config, webhook-proxy config and a rebuild checklist in
-- **CLAUDE.md** — health check around every live-system change (#498)
-- **Cheaper CI** — `test.yml` and `secret-scan.yml` (every push, full-history scan) removed; tests run locally
-- **Readiness alert** — `scripts/readiness_check.py`, every 5 minutes: posts to #octo-status when `/readyz` fails,
-- **Backup and migration doc** — `docs/BACKUP-AND-MIGRATION.md`: what's in git, what's only in the weekly full
+- **Octo for other agents** — ChatGPT can reach Octo over MCP, signed in with WorkOS OAuth. House status and
+- **Decision models** — five gates (camera alerts, heartbeat urgency, cost-report and agent-review labels,
+- **WhatsApp** — owner-only on its own number, plus family access like iMessage
+- **Health check** — `scripts/healthcheck.py` snapshots the system before a change and flags anything that changed
+- **Readiness alert** — posts to #octo-status when the Gateway's `/readyz` fails, and again when it recovers
+- **Backup and migration doc** — what's backed up where, and how to move to a new machine
 
 ### Changed
 
-- **main heartbeat** — Gateway system events (`[SECRETS_RELOADER_DEGRADED]` and the like) go to #octo-status, not
+- **Webhooks** — everything enters through webhook-proxy (exact routes, POST only, body limit, lockout). The
 - **Message routing by kind** — conversation and alerts to iMessage, status to #octo-status, upgrades to #upgrades,
-- **Hass Guard** — plain light/switch on/off skips the safety model; blocks say whether the check ran and post to
-- **Cron cleanup** — weekly backup, browser recycle, docs validation and the retirement countdown are scripts now; the
-- **Web search** uses Codex Hosted Search instead of Gemini (quota errors); `OPENCLAW_CONFIG.md` has a
-- **USPS mail** — recipient routing per household member from config and the vision rubric restored
-- **fastmail-sse** logs why each mail rule matched (openclaw-hub #166, carapace-mail-runtime #4)
-- **fs-utils** on carapace-plugin-sdk 3.3, which passes `workspaceDir` to tools (openclaw-hub #163, sdk #15)
-- **Home Assistant plugin** — no built-in server address, entity lookup by domain, and service calls re-check state
-- **Health check** alerts on Gateway `/ready`, the iMessage bridge and a missing ffmpeg; FastMail check works on macOS
-- **Docs** — a page for every service, an editorial pass across the site, and stale bundle JSON removed
-- **Docs accuracy pass** — `README.md`, `STRUCTURE.md`, `OPENCLAW_CONFIG.md`, the plugin, lib and service READMEs
-- **Posts** — the "Dot meets Claw" LinkedIn article with diagram; a draft on adopting decision models (#466–#468, #490)
+- **Smaller tool results** — Home Assistant and calendar tools show agents one line per entity or event (media
+- **Hass Guard** — plain light and switch on/off skip the safety model
+- **Web search** uses Codex Hosted Search instead of Gemini
+- **Agent scratch folders** stay out of git and are pruned after 30 days
+- **Docs** — new External Integrations section, a page for every service, and an accuracy pass against the live system
 
 ### Fixed
 
-- **exec failures from fs-utils** — `fs_list`/`fs_copy`/`fs_move` returned the wrong result shape, breaking code-mode
-- **Camera collages** — ffmpeg wasn't installed (now the homebrew-ffmpeg build with text labels); errors are reported
-- **USPS digests** arrived without their scans: inline attachments were skipped (carapace-m365 #27)
-- **fastmail_meeting** ignored an explicit `end` time (openclaw-hub #159; #364)
-- **Full backup** works with macOS rsync, skips `~/.openclaw/tmp`, and fails if the copy is empty (#460, #462, #479)
-- **Small fixes** — hassonic docs promised approvals that never came (#420), cost reports labeled iMessage sessions
-
-## 2026-10-25
-
-
-### Changed
-
-- **The Octo MCP runs on mcp-bridge** — octo-mcp became a generic, config-driven MCP server in openclaw-hub
-- **OctoDot's reads skip the model** — `house_status` and `calendar` call the Home Assistant and calendar tools
-- **Docs:** *MCP & OctoDot* is now **Octo MCP: Octo for other agents**, with the trust model and a *Build your own*
-- **Compact tool results for Octo's own agents** — with carapace-plugin-sdk 3.2's `view`, `hass_state_list` and the
-
-### Fixed
-
-- **ics-calendar 1.2.0** (openclaw-hub #154) — a request for one day returned the whole week (the tool only took
-
-## 2026-10-24
-
-
-### Added
-
-- **MCP server for OctoDot** — new `octo-mcp` service: ChatGPT's custom MCP connector reaches Octo at `/mcp` on the
-- **OctoDot can use Octo** — octo-mcp offers tools split by risk: `house_status` and `calendar` (read-only, no
-- **Health check** — `scripts/healthcheck.py` snapshots the system before each change and reports anything that changed
-- **Remote-access smoke test** — `scripts/smoke-remote-access.sh` checks every public route with requests designed to be
-- **Owner-run Funnel scripts** — `config/tailscale/apply-step-*.sh` apply each Funnel change through the Tailscale
-- **Docs:** new **External Integrations** section, near the top of the site: how everything outside reaches Octo
-
-### Changed
-
-- **webhook-proxy** — one Funnel mount (`/hooksproxy`) with exact per-route matching, POST only, a 1 MiB body limit and
-- **Home Assistant hooks** go to webhook-proxy on the LAN with their own token instead of posting to the Gateway with
-- **Gateway `/hooks` is no longer public** — Funnel answers `not found`; every webhook enters through webhook-proxy or
-- **Hooks token rotated**, and webhook-proxy loads its own env file instead of the shared `.env`; no external sender
-
-### Fixed
-
-- **iMessage stopped replying** (typing indicators, no answer for about 80 minutes) after a Gateway restart left the
-- **Smoke-test isolation check** could never fail (`plutil` escapes slashes in paths)
+- **iMessage stopped replying** after a Gateway restart left the main agent's database refused; the health check and
+- **Calendar** — a one-day request returned the whole week, and UTC times showed as local
+- **Camera collages** (ffmpeg was missing) and **USPS digests** (scans were dropped)
+- **Code-mode runs**, including the finance snapshot, broke on a wrong result shape from the fs-utils tools
+- **Full backup** works with macOS rsync and fails if the copy is empty
 
 ## 2026-10-22
 
