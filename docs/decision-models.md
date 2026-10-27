@@ -33,8 +33,9 @@ A decision model doesn't write text. It gets a typed question and some structure
 | Weekly agent review (`scripts/agent_review_gate.py`) | For each issue it filed: which kind (bug, enhancement, infrastructure)? And for the most similar-titled issues: same problem? | Log-only since 2026-10-26, Sundays after the review |
 | Evening-briefing events (`agents/main/scripts/briefing_events_gate.py`) | Is this personal or family event Jeff's own, or FYI about another household member? Checked against the name rule ("names a family member → FYI"), which misfires on "Dinner with …" | Log-only since 2026-10-26, 21:55 Sun–Thu |
 | [Heartbeat Gate](https://github.com/JeffSteinbok/octo/tree/main/plugins/heartbeat-gate) | Is anything urgent enough to message Jeff now? Facts: failing scheduled jobs, the time, quiet hours. Nothing failing → no model call | Log-only since 2026-10-26, every 2-hour heartbeat |
+| [Mail Notify Gate](https://github.com/JeffSteinbok/octo/tree/main/plugins/mail-notify-gate) | Is this email worth a text to Jeff now? Asked for each email a mail rule hands to `main`, with the rule's own instruction as context | Log-only since 2026-10-26 |
 
-The remaining candidates are tracked in [issue #436](https://github.com/JeffSteinbok/octo/issues/436): GitHub and inbox notify gates, USPS mail importance, family request handling and changelog scoring.
+The remaining candidates are tracked in [issue #436](https://github.com/JeffSteinbok/octo/issues/436): the GitHub notify gate, USPS mail importance, family request handling and changelog scoring.
 
 ---
 
