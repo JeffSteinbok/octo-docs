@@ -88,5 +88,4 @@ changes to them, so memory files are versioned along with everything else:
 | `hassonic` | 0 | — | — | Yes |
 | `mail` | 0 | — | — | Yes |
 | `main` | 164 | 2026-03-01 | 2026-10-26 | Yes |
-| `notify` | 0 | — | — | — |
 | `root` | 25 | 2026-03-13 | 2026-08-26 | Yes |

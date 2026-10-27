@@ -21,6 +21,7 @@ nav_order: 13
 - **`npm run check`** — runs every test suite locally before a push, since there's no test CI
 - **Backup and migration doc** — what's backed up where, and how to move to a new machine
 - **Private addresses allowed in octo** — the repo is private, so the backup no longer aborts on LAN or tailnet
+- **Removed the `notify` agent** — unused since the notify hook was dropped (#438): its config entry, workspace
 - **Node at a stable path** — `~/.local/node` is a real folder now, so Node upgrades no longer bring back the
 - **Mac mini firewall script** — `scripts/setup-firewall.sh` sets up pf with default-deny incoming: the LAN, Tailscale
 
