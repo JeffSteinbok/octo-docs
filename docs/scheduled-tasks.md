@@ -31,4 +31,4 @@ Times are Pacific (PT). A job with no time zone of its own runs on the Mac mini'
 | `plugin-health-check` | Daily at 9:00 AM PT (`0 9 * * *`) | Calls one tool from every configured plugin and reports which passed and failed to Discord. |
 | `usage-enrich-sessions` | Daily at 4:00 AM PT (`0 4 * * *`) | Labels the day's sessions with a category and subcategory so the weekly usage report can break costs down accurately. |
 | `usage-weekly-report` | Mondays at 5:00 AM PT (`0 5 * * 1`) | Runs the Usage Report skill: builds the weekly model API usage and cost report, renders it to PDF, posts it to Discord and commits it. |
-| `weekly-full-backup` | Sundays at 2:00 AM PT (`0 2 * * 0`) | Copies the whole OpenClaw state directory, secrets included, into a timestamped local backup and compresses older backups. |
+| `weekly-full-backup` | Sundays at 2:00 AM PT (`0 2 * * 0`) | Copies the whole OpenClaw state directory, secrets included, into a timestamped local backup, compresses older backups, and puts an encrypted copy in OneDrive (newest four kept). |
