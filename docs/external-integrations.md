@@ -126,5 +126,6 @@ Every Funnel change is checked two ways:
 
 ## Still to do
 
-- Re-pair the native clients with setup codes (no admin scope), prune old pairings, then rotate the shared Gateway
-  token and bind the Gateway to loopback.
+- Bind the Gateway to loopback. It still listens on the LAN (`gateway.bind: lan`). The native clients are re-paired
+  with setup codes and the shared Gateway token was rotated (2026-10-26), so nothing on the LAN should need the
+  shared token any more.
