@@ -16,6 +16,7 @@ nav_order: 13
 - **WhatsApp** — owner-only on its own number, plus family access like iMessage
 - **Health check** — `scripts/healthcheck.py` snapshots the system before a change and flags anything that changed
 - **Readiness alert** — posts to #octo-status when the Gateway's `/readyz` fails, and again when it recovers
+- **`npm run check`** — runs every test suite locally before a push, since there's no test CI
 - **Backup and migration doc** — what's backed up where, and how to move to a new machine
 
 ### Changed
