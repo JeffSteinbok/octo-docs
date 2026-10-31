@@ -6,6 +6,14 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-10-30
+
+
+### Changed
+
+- **Camera alerts gate enforcing** — `hass-alert-gate` now decides which camera events reach `hass-hooks`, after a week
+- **Heartbeat** — removed the stale `heartbeat-state.json` that made heartbeats report "no heartbeat in two weeks"
+
 ## 2026-10-26
 
 
