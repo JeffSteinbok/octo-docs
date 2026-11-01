@@ -21,6 +21,10 @@ nav_order: 13
 
 - **Family emails arrived cut off and as two texts** — the Outlook mail service was still running code from before
 
+### Added
+
+- **Mail Notify Gate** — now installed, log-only: for each email a mail rule hands to `main`, the decision model
+
 ## 2026-10-26
 
 
