@@ -14,6 +14,13 @@ nav_order: 13
 - **Camera alerts gate enforcing** — `hass-alert-gate` now decides which camera events reach `hass-hooks`, after a week
 - **Heartbeat** — removed the stale `heartbeat-state.json` that made heartbeats report "no heartbeat in two weeks"
 
+## 2026-10-31
+
+
+### Fixed
+
+- **Family emails arrived cut off and as two texts** — the Outlook mail service was still running code from before
+
 ## 2026-10-26
 
 
