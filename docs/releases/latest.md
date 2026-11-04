@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-04
+
+
+### Added
+
+- **`scripts/m365-relogin.sh`** — signs in to Microsoft again when the refresh token expires (`invalid_grant`,
+
 ## 2026-10-30
 
 
