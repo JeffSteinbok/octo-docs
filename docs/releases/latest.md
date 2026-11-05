@@ -13,6 +13,10 @@ nav_order: 13
 
 - **`scripts/m365-relogin.sh`** — signs in to Microsoft again when the refresh token expires (`invalid_grant`,
 
+### Changed
+
+- **Heartbeat Gate 0.2.0** — besides failing cron jobs, the gate now sees failing plugin health checks and Jeff's own
+
 ### Fixed
 
 - **Evening briefing and finance snapshot stopped running** — OpenClaw 2026.10.10 refuses scheduled agent jobs created
