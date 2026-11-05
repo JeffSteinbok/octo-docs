@@ -20,6 +20,7 @@ nav_order: 13
 
 ### Fixed
 
+- **Calendar fetch kept error replies as the calendar** — the Outlook CLI exits 0 with
 - **Evening briefing and finance snapshot stopped running** — OpenClaw 2026.10.10 refuses scheduled agent jobs created
 - **Health check false alarm on plugin reloads** — the Gateway log scan no longer treats an event-loop stall profile
 
