@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Added
 
+- **Unhandled-mail gate (log-only)** — Outlook mail that matches no other rule now gets two decision-model questions,
 - **`scripts/m365-relogin.sh`** — signs in to Microsoft again when the refresh token expires (`invalid_grant`,
 
 ### Changed
