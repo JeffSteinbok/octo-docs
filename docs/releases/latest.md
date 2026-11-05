@@ -13,6 +13,10 @@ nav_order: 13
 
 - **`scripts/m365-relogin.sh`** — signs in to Microsoft again when the refresh token expires (`invalid_grant`,
 
+### Fixed
+
+- **Evening briefing and finance snapshot stopped running** — OpenClaw 2026.10.10 refuses scheduled agent jobs created
+
 ## 2026-10-30
 
 
