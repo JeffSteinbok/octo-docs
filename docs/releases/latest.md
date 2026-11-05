@@ -11,7 +11,7 @@ nav_order: 13
 
 ### Added
 
-- **Unhandled-mail gate (log-only)** — Outlook mail that matches no other rule now gets two decision-model questions,
+- **Unhandled-mail gate (log-only)** — Outlook mail, and Fastmail mail to jeff@, that matches no other rule now gets two decision-model questions,
 - **`scripts/m365-relogin.sh`** — signs in to Microsoft again when the refresh token expires (`invalid_grant`,
 
 ### Changed
@@ -22,6 +22,7 @@ nav_order: 13
 
 ### Fixed
 
+- **fastmail-sse was running code from before 2026-10-26** — like m365-webhook, it started 27 minutes before its mail
 - **Calendar fetch kept error replies as the calendar** — the Outlook CLI exits 0 with
 - **Evening briefing and finance snapshot stopped running** — OpenClaw 2026.10.10 refuses scheduled agent jobs created
 - **Health check false alarm on plugin reloads** — the Gateway log scan no longer treats an event-loop stall profile
