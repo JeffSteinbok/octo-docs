@@ -16,6 +16,7 @@ nav_order: 13
 ### Changed
 
 - **Heartbeat Gate 0.2.0** — besides failing cron jobs, the gate now sees failing plugin health checks and Jeff's own
+- **Plugin health check fails when a check fails** — `plugin-health-check-deterministic.sh` exited 0 even with every
 
 ### Fixed
 
