@@ -16,6 +16,7 @@ nav_order: 13
 ### Fixed
 
 - **Evening briefing and finance snapshot stopped running** — OpenClaw 2026.10.10 refuses scheduled agent jobs created
+- **Health check false alarm on plugin reloads** — the Gateway log scan no longer treats an event-loop stall profile
 
 ## 2026-10-30
 
