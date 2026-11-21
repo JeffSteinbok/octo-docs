@@ -82,10 +82,10 @@ changes to them, so memory files are versioned along with everything else:
 | `coding` | 6 | 2026-05-04 | 2026-08-06 | Yes |
 | `external` | 0 | — | — | Yes |
 | `family` | 0 | — | — | Yes |
-| `finance` | 190 | 2026-05-06 | 2026-11-15 | Yes |
+| `finance` | 195 | 2026-05-06 | 2026-11-20 | Yes |
 | `group` | 0 | — | — | Yes |
 | `hass-hooks` | 0 | — | — | — |
 | `hassonic` | 0 | — | — | Yes |
 | `mail` | 0 | — | — | Yes |
-| `main` | 174 | 2026-03-01 | 2026-11-12 | Yes |
+| `main` | 175 | 2026-03-01 | 2026-11-16 | Yes |
 | `root` | 25 | 2026-03-13 | 2026-08-26 | Yes |

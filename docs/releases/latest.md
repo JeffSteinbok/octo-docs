@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-21
+
+
+### Changed
+
+- **hass-guard build tooling** — tsup 8 → 9 and esbuild 0.27 → 0.28 (Dependabot #522). Build and tests pass; the
+
 ## 2026-11-04
 
 
