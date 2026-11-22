@@ -9,9 +9,15 @@ nav_order: 13
 ## 2026-11-21
 
 
+### Fixed
+
+- **Hass Alert Gate 0.2.0: the camera gate was silent from 2026-11-03** — since OpenClaw 2026.10.10, webhook runs
+
 ### Changed
 
 - **hass-guard build tooling** — tsup 8 → 9 and esbuild 0.27 → 0.28 (Dependabot #522). Build and tests pass; the
+- **Decision review: 6 questions, closest-to-enforce first, and silent gates flagged** — three weekly reviews of 12
+- **fastmail-sse watches only Octo's mailbox** — Jeff's Fastmail address is just a forwarder to Outlook, which
 
 ## 2026-11-04
 

@@ -48,12 +48,12 @@ Watches OpenClaw's config file, `openclaw.json`, and brings the Gateway back if 
 
 ## 📡 FastMail SSE Service
 
-Watches Octo's FastMail mailboxes in real time and runs each new message through [Carapace Mail Runtime](https://github.com/JeffSteinbok/carapace-mail-runtime) rules: send a notification, pick up package tracking numbers, or hand a self-sent command to an agent. Rules match plainly on account, sender and subject, so no AI looks at a message unless a rule's action asks for it. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.fastmail-sse` (backed up in `config/macos/launchd/`).
+Watches Octo's FastMail mailbox (`openclaw@`) in real time and runs each new message through [Carapace Mail Runtime](https://github.com/JeffSteinbok/carapace-mail-runtime) rules: send a notification, pick up package tracking numbers, or hand a self-sent command to an agent. Rules match plainly on account, sender and subject, so no AI looks at a message unless a rule's action asks for it. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.fastmail-sse` (backed up in `config/macos/launchd/`).
 
 ### Key Features
 
 - Real-time: listens on FastMail's JMAP event stream (server-sent events, hence "SSE") instead of polling
-- Watches two accounts: Octo's own mailbox and the owner's personal inbox
+- Watches one account: Octo's own mailbox. The owner's personal Fastmail address only forwards to Outlook, so `m365-webhook` handles the owner's mail; watching it here too logged every forwarded email twice
 - Rules hot-reload when the config file changes; adding or removing an account needs a restart
 - Package tracking: finds UPS, FedEx, USPS and Amazon tracking numbers in shipping emails from known senders, adds them to package tracking, and removes them when the delivery email arrives
 - Skips spam and no-reply senders

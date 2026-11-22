@@ -48,4 +48,4 @@ Decides whether a Home Assistant camera event is worth telling Jeff about before
 }
 ```
 
-`hooks.allowConversationAccess` is required: `before_agent_reply` reads the run's input. Each gated agent needs a `decisionModel` (`agents.entries.hass-hooks.decisionModel`).
+`hooks.allowConversationAccess` is required: `before_agent_run` reads the run's input. Each gated agent needs a `decisionModel` (`agents.entries.hass-hooks.decisionModel`).
