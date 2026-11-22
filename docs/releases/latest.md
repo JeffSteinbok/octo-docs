@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Added
 
+- **Decision review reminder** — `scripts/decision_review_reminder.py` and a one-shot cron job (1pm, 2026-11-23) text Jeff
 - **`mail-reader` agent** — writes the text Jeff gets for an email the unhandled-mail gate passes. Its tools are
 
 ### Changed
