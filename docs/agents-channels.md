@@ -29,6 +29,7 @@ In the Permissions column, *allowed* and *denied* are set explicitly for that ag
 | `hassonic` | Home control from the [Hassonic](hassonic) iPhone app | Named tools only. Denied: shell (`exec`). Home Assistant state, an allowlisted set of actions, and web search. | The app talks only to this agent, so a phone request can reach Home Assistant but nothing else. Every action is checked by the [Hass Guard](plugins/hass-guard) plugin. |
 | `group` | Other iMessage group chats (replies only when mentioned) | Messaging tool profile. Denied: shell (`exec`), browser, file reads, file writes. | Group chats can include people outside the family, so this agent gets only messaging, web search and read access to the family calendar: no shell, files or browser. |
 | `external` | Other assistants that use Octo through the [Octo MCP](mcp) server, such as OctoDot in ChatGPT | Named tools only. Denied: shell (`exec`). | Outside assistants get a deliberately small set of tools, and house changes still go through Hass Guard. |
+| `mail-reader` | Published agent | Named tools only. Denied: browser. | Keeps this agent separate from the rest of the system. |
 
 ### Shell Access
 

@@ -6,6 +6,17 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-22
+
+
+### Added
+
+- **`mail-reader` agent** — writes the text Jeff gets for an email the unhandled-mail gate passes. Its tools are
+
+### Changed
+
+- **Unhandled-mail gate enforcing** — Outlook mail no other rule handles now texts Jeff a summary when the decision
+
 ## 2026-11-21
 
 
