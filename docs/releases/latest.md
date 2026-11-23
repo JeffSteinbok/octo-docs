@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Added
 
+- **`retirement-countdown` safebin** — the retirement countdown cron now runs the script through an allowlisted
 - **Health-check step `goobers-claude-token`** — wraps the Goobers restart that gives its claude-code harness a
 - **Decision review reminder** — `scripts/decision_review_reminder.py` and a one-shot cron job (1pm, 2026-11-23) text Jeff
 - **`mail-reader` agent** — writes the text Jeff gets for an email the unhandled-mail gate passes. Its tools are
