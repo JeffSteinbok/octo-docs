@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Added
 
+- **`scripts/goobers-claude-token.sh`** — gives Goobers' claude-code harness a long-lived `claude setup-token` token
 - **Decision review reminder** — `scripts/decision_review_reminder.py` and a one-shot cron job (1pm, 2026-11-23) text Jeff
 - **`mail-reader` agent** — writes the text Jeff gets for an email the unhandled-mail gate passes. Its tools are
 
