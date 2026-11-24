@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Hass Guard
-nav_order: 5
+nav_order: 6
 nav_exclude: true
 ---
 

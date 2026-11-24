@@ -8,7 +8,7 @@ nav_order: 4
 
 Plugins add tools and other capabilities to OpenClaw agents, such as reading mail, controlling the house or tracking a package. This page lists the plugins Octo runs and links to each one's documentation. For instruction files that tell agents how to use these tools, see [Skills](skills).
 
-Octo publishes **32 plugins**, grouped by where they come from.
+Octo publishes **33 plugins**, grouped by where they come from.
 
 
 ## 🌐 Built-in
@@ -62,6 +62,7 @@ Plugins whose source is private to the `octo` repo, often because they are still
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
+|  | [Approval Gate](plugins/approval-gate) | Logs a decision-model approve, deny or unrelated check when root, main or coding upgrades OpenClaw or adds ilc:plan-approved. Log-only: never blocks or approves anything. | [Read docs](plugins/approval-gate) |
 | 🗄️ | [Config Backup](plugins/config-backup) | Commits OpenClaw's config and the agent workspaces to Git, only when something has changed. | [Read docs](plugins/config-backup) |
 |  | [Family Request Gate](plugins/family-request-gate) | Logs a decision-model handle, ask-Jeff or refuse verdict for each request a person sends the family or group agent, next to what the agent did. Log-only. | [Read docs](plugins/family-request-gate) |
 | 🐙 | [GitHub](plugins/github) | Create, read, update, comment on, close and list GitHub issues. | [Read docs](plugins/github) |

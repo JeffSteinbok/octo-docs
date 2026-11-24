@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Hass Alert Gate
-nav_order: 4
+nav_order: 5
 nav_exclude: true
 ---
 
