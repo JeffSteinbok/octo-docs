@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Added
 
+- **`family-request-gate`** (not installed yet): a log-only decision on how the `family` and `group` agents should handle
 - **`approval-gate`** (not installed yet): a log-only second check on explicit approvals
 - **Octo inbox gate** (not deployed yet) — log-only decision gate `octo-inbox` on `octo-notify-all` in
 - **`usps-mail-gate`** (not installed yet) — log-only decision model for USPS mail
