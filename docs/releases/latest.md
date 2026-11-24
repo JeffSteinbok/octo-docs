@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Changed
 
+- **`main`** (not deployed yet): can now look at a past camera event
 - **`hass-hooks`** (not deployed yet): camera alerts now say what LLM Vision saw at the moment of detection
 
 ## 2026-11-23
