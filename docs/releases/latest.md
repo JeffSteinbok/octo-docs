@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Added
 
+- **`orca-send`** (not installed yet): gives `main` `orca_send`, so it can message Orca bots on this Mac without `exec`ing
 - **`family-request-gate`** (not installed yet): a log-only decision on how the `family` and `group` agents should handle
 - **Lobster changelog gate** (not scheduled yet) — `scripts/lobster_changelog_gate.py`, a log-only "worth adopting?"
 - **`approval-gate`** (not installed yet): a log-only second check on explicit approvals
