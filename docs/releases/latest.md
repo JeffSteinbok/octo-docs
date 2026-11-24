@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Added
 
+- **Octo inbox gate** (not deployed yet) — log-only decision gate `octo-inbox` on `octo-notify-all` in
 - **`usps-mail-gate`** (not installed yet) — log-only decision model for USPS mail
 
 ## 2026-11-22

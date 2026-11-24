@@ -48,7 +48,7 @@ Watches OpenClaw's config file, `openclaw.json`, and brings the Gateway back if 
 
 ## 📡 FastMail SSE Service
 
-Watches Octo's FastMail mailbox (`openclaw@`) in real time and runs each new message through [Carapace Mail Runtime](https://github.com/JeffSteinbok/carapace-mail-runtime) rules: send a notification, pick up package tracking numbers, or hand a self-sent command to an agent. Rules match plainly on account, sender and subject, so no AI looks at a message unless a rule's action asks for it. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.fastmail-sse` (backed up in `config/macos/launchd/`).
+Watches Octo's FastMail mailbox (`openclaw@`) in real time and runs each new message through [Carapace Mail Runtime](https://github.com/JeffSteinbok/carapace-mail-runtime) rules: send a notification, pick up package tracking numbers, or hand a self-sent command to an agent. Rules match plainly on account, sender and subject, so no AI looks at a message unless a rule's gate or action asks for it. On the Mac mini it runs from the LaunchAgent `com.octo.openclaw.fastmail-sse` (backed up in `config/macos/launchd/`).
 
 ### Key Features
 
