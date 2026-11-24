@@ -8,7 +8,7 @@ nav_order: 4
 
 Plugins add tools and other capabilities to OpenClaw agents, such as reading mail, controlling the house or tracking a package. This page lists the plugins Octo runs and links to each one's documentation. For instruction files that tell agents how to use these tools, see [Skills](skills).
 
-Octo publishes **33 plugins**, grouped by where they come from.
+Octo publishes **34 plugins**, grouped by where they come from.
 
 
 ## 🌐 Built-in
@@ -70,4 +70,5 @@ Plugins whose source is private to the `octo` repo, often because they are still
 | 🛡️ | [Hass Guard](plugins/hass-guard) | Limits the agents behind Hassonic and the Octo MCP (`hassonic` and `external`) to an allowlist of Home Assistant actions, and blocks any action their decision model doesn't rate safe. | [Read docs](plugins/hass-guard) |
 |  | [Heartbeat Gate](plugins/heartbeat-gate) | Decides whether a heartbeat has anything urgent enough to message Jeff about, from hard facts rather than a full LLM turn. | [Read docs](plugins/heartbeat-gate) |
 |  | [Mail Notify Gate](plugins/mail-notify-gate) | Decides whether an email handed off by a mail rule is worth texting Jeff about, before the main agent runs. | [Read docs](plugins/mail-notify-gate) |
+|  | [Orca Send](plugins/orca-send) | Lets the main agent send status messages to an allowlisted Orca bot through a structured tool. | [Read docs](plugins/orca-send) |
 |  | [USPS Mail Gate](plugins/usps-mail-gate) | Logs a decision-model importance and recipient for each mailpiece in the USPS Informed Delivery digest, next to what usps-mail's rules decided. Log-only. | [Read docs](plugins/usps-mail-gate) |
