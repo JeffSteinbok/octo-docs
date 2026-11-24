@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-23
+
+
+### Added
+
+- **`usps-mail-gate`** (not installed yet) — log-only decision model for USPS mail
+
 ## 2026-11-22
 
 
