@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Mail Notify Gate
-nav_order: 6
+nav_order: 7
 nav_exclude: true
 ---
 

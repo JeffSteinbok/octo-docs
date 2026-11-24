@@ -8,7 +8,7 @@ nav_order: 4
 
 Plugins add tools and other capabilities to OpenClaw agents, such as reading mail, controlling the house or tracking a package. This page lists the plugins Octo runs and links to each one's documentation. For instruction files that tell agents how to use these tools, see [Skills](skills).
 
-Octo publishes **31 plugins**, grouped by where they come from.
+Octo publishes **32 plugins**, grouped by where they come from.
 
 
 ## 🌐 Built-in
@@ -63,6 +63,7 @@ Plugins whose source is private to the `octo` repo, often because they are still
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
 | 🗄️ | [Config Backup](plugins/config-backup) | Commits OpenClaw's config and the agent workspaces to Git, only when something has changed. | [Read docs](plugins/config-backup) |
+|  | [Family Request Gate](plugins/family-request-gate) | Logs a decision-model handle, ask-Jeff or refuse verdict for each request a person sends the family or group agent, next to what the agent did. Log-only. | [Read docs](plugins/family-request-gate) |
 | 🐙 | [GitHub](plugins/github) | Create, read, update, comment on, close and list GitHub issues. | [Read docs](plugins/github) |
 |  | [Hass Alert Gate](plugins/hass-alert-gate) | Decides whether a Home Assistant camera event is worth telling Jeff about before the hass-hooks agent runs. Skips the full agent turn for events that would end in NO_REPLY. | [Read docs](plugins/hass-alert-gate) |
 | 🛡️ | [Hass Guard](plugins/hass-guard) | Limits the agents behind Hassonic and the Octo MCP (`hassonic` and `external`) to an allowlist of Home Assistant actions, and blocks any action their decision model doesn't rate safe. | [Read docs](plugins/hass-guard) |
