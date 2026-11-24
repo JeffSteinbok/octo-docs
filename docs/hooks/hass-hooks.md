@@ -7,7 +7,7 @@ nav_exclude: true
 
 # 🪝 Home Assistant Events
 
-When a Home Assistant automation spots something at the house (motion, a person, vehicle or animal picked up by LLM Vision, or a doorbell press), it posts the event to OpenClaw. The `hass-hooks` agent decides whether it matters and, if it does, sends the owner a short, casual summary over iMessage with the camera snapshot attached.
+When a Home Assistant automation spots something at the house (motion, a person, vehicle or animal picked up by LLM Vision, or a doorbell press), it posts the event to OpenClaw. The `hass-hooks` agent decides whether it matters and, if it does, sends the owner a short, casual line over iMessage built from LLM Vision's own description, with the camera pictures attached.
 
 ## How an event gets here
 
@@ -19,14 +19,14 @@ When a Home Assistant automation spots something at the house (motion, a person,
 
 1. **Filters.** Events with nothing detected, such as "No Activity Observed" or routine blueprint triggers, end without a message.
 2. **Checks who's home.** A stranger in the driveway matters more when nobody is home.
-3. **Gets the pictures.** It fetches the key frame LLM Vision saved at the moment of the event (or takes a fresh snapshot from the triggering camera), plus a collage of all the outdoor cameras as they look now.
-4. **Summarizes.** An image model looks at both pictures and writes one or two casual sentences, such as "Just a delivery driver dropping off a package."
-5. **Sends one message.** A single iMessage to the owner, with the key frame attached.
+3. **Gets the pictures.** It fetches the key frame LLM Vision saved at the moment of the event (or takes a fresh snapshot from the triggering camera), and puts it on top of a collage of all the outdoor cameras as they look now.
+4. **Writes the alert from LLM Vision's description.** The event's title and summary describe the moment of detection, so the agent rewrites them as one or two casual sentences and adds nothing of its own. It doesn't re-describe the pictures: a later look at the cameras used to change the story (a parked car, a "delivery" that wasn't one). Only for a doorbell press with no title or summary does an image model describe the photo, and the alert says so; when there's no key frame, it says the photo is from just now.
+5. **Sends one message.** A single iMessage to the owner, with the collage attached.
 
 ## Safety
 
 - Event text is treated as untrusted input: the agent never follows instructions that appear inside it.
-- The agent's tools are limited to camera snapshots and collages, presence and state lookups, image analysis, LLM Vision images and sending messages. It has no file access, shell or browser.
+- The agent's tools are limited to camera snapshots and collages, presence and state lookups, image analysis (only for events without a description), LLM Vision images and sending messages. It has no file access, shell or browser.
 
 ## At a glance
 

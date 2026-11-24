@@ -21,4 +21,4 @@ Octo publishes **2 hooks**:
 | | Hook | Endpoint | Description |
 |---|------|----------|-------------|
 | 🪝 | [GitHub Issues](hooks/coding) | `/hooksproxy/github-issues` | GitHub issue label changes, signed with HMAC-SHA256 and checked by the Webhook Proxy, start the coding agent on the next step of the [issue lifecycle](harness/issue-lifecycle). |
-| 🪝 | [Home Assistant Events](hooks/hass-hooks) | `/hooksproxy/hass` | Home Assistant reports motion, LLM Vision detections and doorbell presses through the Webhook Proxy; the hass-hooks agent texts the owner a one-line summary with a camera collage over iMessage. |
+| 🪝 | [Home Assistant Events](hooks/hass-hooks) | `/hooksproxy/hass` | Home Assistant reports motion, LLM Vision detections and doorbell presses through the Webhook Proxy; the hass-hooks agent texts the owner LLM Vision's description of the event, with a camera collage, over iMessage. |

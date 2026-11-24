@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-24
+
+
+### Changed
+
+- **`hass-hooks`** (not deployed yet): camera alerts now say what LLM Vision saw at the moment of detection
+
 ## 2026-11-23
 
 
