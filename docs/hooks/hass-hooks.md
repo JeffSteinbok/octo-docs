@@ -13,7 +13,7 @@ When a Home Assistant automation spots something at the house (motion, a person,
 
 1. A Home Assistant automation posts the event as JSON to the [Webhook Proxy](../services/webhook-proxy)'s `/hass` route over the home network, with its own token in the `Authorization` header.
 2. The proxy checks that token and forwards the event to the Gateway's `/hooks/hass` endpoint with OpenClaw's hooks token added.
-3. OpenClaw's hook mapping turns the JSON into a plain-text message (source, camera, title, summary, key frame, and yes/no flags for motion, person, vehicle, animal and doorbell) and starts a turn for the `hass-hooks` agent.
+3. OpenClaw's hook mapping turns the JSON into a plain-text message (source, camera, title, summary, key frame, and yes/no flags for motion, person, vehicle, animal and doorbell) and starts a turn for the `hass-hooks` agent. Home Assistant derives the flags from camera sensors. The agent bases its decision on the title and summary, with a separate rule to alert on a doorbell ring.
 
 ## What the agent does
 
