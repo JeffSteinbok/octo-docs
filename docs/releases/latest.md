@@ -9,6 +9,10 @@ nav_order: 13
 ## 2026-11-24
 
 
+### Fixed
+
+- **Plugin docs** ([#533](https://github.com/JeffSteinbok/octo/issues/533)): the Decisions Bridge listing links to its README in openclaw-hub.
+
 ### Changed
 
 - **Mac mini firewall**: the pf rules now also let in the VPN ranges listed in `OCTO_FW_VPN` (`~/.openclaw/.env`,
