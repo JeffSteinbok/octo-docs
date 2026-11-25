@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Changed
 
+- **Family mail**: Mail Notify Gate now enforces its verdicts for family mail handed to `main`. A `skip` verdict suppresses the notification.
 - **Orca-Octo's home** ([#561](https://github.com/JeffSteinbok/octo/issues/561)): backed up to `robots/orca/` in this repo instead of the private automation repo.
 
 ### Fixed

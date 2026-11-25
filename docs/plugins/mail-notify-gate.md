@@ -26,7 +26,7 @@ Decides whether an email handed off by a mail rule is worth texting Jeff about, 
 ## Example config
 
 ```json
-"mail-notify-gate": { "enabled": true, "hooks": { "allowConversationAccess": true }, "config": { "mode": "log" } }
+"mail-notify-gate": { "enabled": true, "hooks": { "allowConversationAccess": true }, "config": { "mode": "enforce" } }
 ```
 
 `hooks.allowConversationAccess` is required for `before_agent_reply` and `agent_end`. The gated agent needs a `decisionModel` (`main` has `typesafe/jev-latest`).
