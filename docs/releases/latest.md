@@ -20,6 +20,7 @@ nav_order: 13
 
 ### Changed
 
+- **Chat channel outages** ([#538](https://github.com/JeffSteinbok/octo/issues/538)): the readiness cron now alerts Jeff
 - **Mac mini firewall**: the pf rules now also let in the VPN ranges listed in `OCTO_FW_VPN` (`~/.openclaw/.env`,
 - **Camera alert guidance** ([#523](https://github.com/JeffSteinbok/octo/issues/523)): documented the live
 - **`main`** (not deployed yet): can now look at a past camera event

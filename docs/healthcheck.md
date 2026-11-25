@@ -63,3 +63,30 @@ Reports go to `~/.openclaw/healthcheck/steps/<step>/`, readable only by the owne
 ## Why it exists
 
 On 2026-10-24 a routine Gateway restart left the main agent's database refused. For about 80 minutes iMessage showed typing indicators but Octo never replied. `/readyz`, the Gateway log and the cron state all showed the failure, but nothing was reading them. Replaying that day's log against a baseline makes `verify` fail on exactly those signals.
+
+
+## Channel outage alerts
+
+The five-minute `readiness-check` cron reads `/readyz` and the Gateway’s default
+account status for WhatsApp, iMessage, Telegram, and Discord. It keeps reporting
+other readiness failures through the cron’s Discord delivery. For a channel
+that stays down for 20 minutes, the script sends Jeff one alert via the first
+working route in this order, iMessage, Discord DM, Telegram, WhatsApp. It also
+posts to #octo-status when Discord is healthy. A logout alert includes the
+relink command. A timestamped logout can qualify on the first run.
+
+The cron batches alerts by recipient, sends a reminder after 24 hours, and
+sends a recovery note after 30 minutes of consecutive healthy observations.
+A failed or missing observation resets that recovery timer. New down notices
+for the same channel and audience are at least six hours apart. Healthy
+observations before the initial alert reset the 20-minute outage timer.
+
+The cron keeps delivery state and the latest send errors in
+`~/.openclaw/state/readiness-check.json`. It retries failed sends after an
+hour and counts timed-out sends as delivered because the transport may have
+accepted them. Losing the state file can cause a duplicate alert per audience.
+The heartbeat gate reads the same file for channel-health context. The readiness
+cron owns alert delivery.
+
+Use `python3 scripts/readiness_check.py --dry-run` to read live status and see
+which sends are due without sending messages or updating state.
