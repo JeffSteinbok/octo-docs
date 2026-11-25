@@ -16,6 +16,7 @@ nav_order: 13
 
 ### Fixed
 
+- Corrected the [decision-model status table](docs/DECISION-MODELS.md). The USPS, approval, family-request and Octo-inbox gates are live in log-only, and the Lobster changelog gate runs log-only on Mondays.
 - Personal and family conflict checks use explicit Pacific date ranges in Microsoft Graph, with pagination. The work calendar reports its 28-day future window and distinguishes upstream HTTP and response errors from calendar results. Replaced the obsolete work calendar email instructions. Plugin rollout uses the `calendar-query-windows` healthcheck step.
 
 ## 2026-11-24
