@@ -11,6 +11,7 @@ nav_order: 13
 
 ### Changed
 
+- **Mac mini firewall**: the pf rules now also let in the VPN ranges listed in `OCTO_FW_VPN` (`~/.openclaw/.env`,
 - **`main`** (not deployed yet): can now look at a past camera event
 - **`hass-hooks`** (not deployed yet): camera alerts now say what LLM Vision saw at the moment of detection
 
