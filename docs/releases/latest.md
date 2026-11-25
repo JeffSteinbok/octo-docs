@@ -6,13 +6,6 @@ nav_order: 13
 
 # Release Notes
 
-## 2026-11-25
-
-
-### Fixed
-
-- Personal and family conflict checks use explicit Pacific date ranges in Microsoft Graph, with pagination. The work calendar reports its 28-day future window and distinguishes upstream HTTP and response errors from calendar results. Replaced the obsolete work calendar email instructions. Plugin rollout uses the `calendar-query-windows` healthcheck step.
-
 ## 2026-11-24
 
 

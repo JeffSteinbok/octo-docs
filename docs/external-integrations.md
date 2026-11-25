@@ -123,12 +123,3 @@ Every Funnel change is checked two ways:
 | Cloudflare Tunnel + Access | Real edge SSO, but the Windows app can't send Access headers yet, and the domain would have to move to Cloudflare |
 | `openclaw mcp serve` for OctoDot | stdio only, conversation tools only |
 | Building our own OAuth server | Easy to get subtly wrong; WorkOS AuthKit is free at this scale |
-
-## Calendars
-
-Main and Family use the `m365` plugin's `outlook_query_events` for date-specific
-availability on the personal and family calendars. It uses inclusive Pacific
-dates and pages through Microsoft Graph results. The `outlook-work-calendar`
-plugin reads the published work calendar with future coverage through 27 days
-after today. Nicole and TripIt use their published ICS feeds. Each plugin's
-sender access rules apply to live tool calls.
