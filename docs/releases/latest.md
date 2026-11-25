@@ -9,6 +9,10 @@ nav_order: 13
 ## 2026-11-24
 
 
+### Added
+
+- **Image Annotation** ([#534](https://github.com/JeffSteinbok/octo/issues/534)): a plugin for `main` to draw boxes, circles, arrows and labels on saved camera keyframes and fresh Home Assistant captures and attach the marked JPEG to a reply. Install and allowlist it with the `image-annotation` healthcheck step.
+
 ### Fixed
 
 - **Plugin docs** ([#533](https://github.com/JeffSteinbok/octo/issues/533)): the Decisions Bridge listing links to its README in openclaw-hub.
