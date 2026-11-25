@@ -16,6 +16,7 @@ nav_order: 13
 ### Fixed
 
 - **Plugin docs** ([#533](https://github.com/JeffSteinbok/octo/issues/533)): the Decisions Bridge listing links to its README in openclaw-hub.
+- **Plugin health check** ([#548](https://github.com/JeffSteinbok/octo/issues/548)): the runner prompt warns against shadowing
 
 ### Changed
 
