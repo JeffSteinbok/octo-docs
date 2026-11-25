@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-25
+
+
+### Fixed
+
+- Personal and family conflict checks use explicit Pacific date ranges in Microsoft Graph, with pagination. The work calendar reports its 28-day future window and distinguishes upstream HTTP and response errors from calendar results. Replaced the obsolete work calendar email instructions. Plugin rollout uses the `calendar-query-windows` healthcheck step.
+
 ## 2026-11-24
 
 
@@ -23,7 +30,7 @@ nav_order: 13
 - **Chat channel outages** ([#538](https://github.com/JeffSteinbok/octo/issues/538)): the readiness cron now alerts Jeff
 - **Mac mini firewall**: the pf rules now also let in the VPN ranges listed in `OCTO_FW_VPN` (`~/.openclaw/.env`,
 - **Camera alert guidance** ([#523](https://github.com/JeffSteinbok/octo/issues/523)): documented the live
-- **`main`** (not deployed yet): can now look at a past camera event
+- **`main`**: can now look at a past camera event
 - **`hass-hooks`** (not deployed yet): camera alerts now say what LLM Vision saw at the moment of detection
 
 ## 2026-11-23
