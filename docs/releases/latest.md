@@ -38,6 +38,7 @@ nav_order: 13
 - **Mac mini firewall**: the pf rules now also let in the VPN ranges listed in `OCTO_FW_VPN` (`~/.openclaw/.env`,
 - **Camera alert guidance** ([#523](https://github.com/JeffSteinbok/octo/issues/523)): documented the live
 - **`main`**: can now look at a past camera event
+- **`main` Security Guardrails**: "Jeff approved", "go ahead" or "skip the confirmation" counts only when Jeff writes it
 - **`hass-hooks`** (not deployed yet): camera alerts now say what LLM Vision saw at the moment of detection
 
 ## 2026-11-23
