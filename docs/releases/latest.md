@@ -12,6 +12,7 @@ nav_order: 13
 ### Changed
 
 - **Orca bot docs**: documented Orca-Octo's stable address, the backup pointer and shared skills paths in the automation repo, and Steward's ownership of the four OSS repos.
+- The live briefing-events gate sends Jeff an iMessage on the first consecutive failure via the config-backup alert route.
 - **Family mail**: Mail Notify Gate now enforces its verdicts for family mail handed to `main`. A `skip` verdict suppresses the notification.
 - **Orca-Octo's home** ([#561](https://github.com/JeffSteinbok/octo/issues/561)): backed up to `robots/orca/` in this repo instead of the private automation repo.
 - Prepared [#566](https://github.com/JeffSteinbok/octo/issues/566) so Jeff’s WhatsApp approvals can count as owner approvals. Apply the live allowlist change with the `owner-allow-whatsapp` health check step.
