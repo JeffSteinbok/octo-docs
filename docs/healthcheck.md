@@ -65,6 +65,10 @@ configuration projection change is `commands.ownerAllowFrom`. OpenClaw applies
 command changes through Gateway hot reload. After verification, confirm that an
 approval from Jeff’s WhatsApp sender (DM or an allowlisted group) is recognized as an owner approval.
 
+## Main file reads
+
+Use the `main-fs-guard` step to deploy the [Main Filesystem Guard](plugins/main-fs-guard). Take a baseline before installation. Plugin installation triggers a Gateway hot reload, so use `scripts/healthcheck.py wait-ready --step main-fs-guard --timeout 180 --no-verify` before running full verification. Check the declared workspace, outside and denied reads. Use `~/.openclaw/logs/main-fs-guard.jsonl` to identify which read-only roots `main` still uses before moving to `tools.fs.workspaceOnly`.
+
 ## After a restart
 
 `wait-ready` polls `/healthz`, then `/startupz`, then `/readyz`, for up to 8 minutes by default (`--timeout` changes this), because an agent database can take minutes to be admitted after a restart. If an agent database is refused, it stops waiting and prints the recovery steps: stop the Gateway (`openclaw gateway stop --force`), back up `~/.openclaw/agents/<id>/agent`, run `openclaw doctor --fix --yes`, then `wait-ready` again. Once the Gateway is ready, it runs the Gateway, channel, agent, cron, LaunchAgent and log checks.

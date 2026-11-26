@@ -16,6 +16,10 @@ nav_order: 13
 ## 2026-11-25
 
 
+### Added
+
+- **Main Filesystem Guard** ([#575](https://github.com/JeffSteinbok/octo/issues/575)) limits `main` reads to the workspace and read-only roots, blocks protected paths everywhere, and logs outside and denied reads. Deployment uses the `main-fs-guard` health check step.
+
 ### Changed
 
 - **Orca bot docs**: documented Orca-Octo's stable address, the backup pointer and shared skills paths in the automation repo, and Steward's ownership of the four OSS repos.
