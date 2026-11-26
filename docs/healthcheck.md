@@ -52,6 +52,19 @@ scripts/healthcheck.py probes                     # list the probes
 
 Each step declares what it is supposed to change in `config/healthcheck/steps/<step>.json`, including whether a Gateway or service restart is expected. Known findings that predate the step live in `config/healthcheck/accepted.json`.
 
+## WhatsApp owner approvals
+
+Use the `owner-allow-whatsapp` step when adding Jeff’s channel-scoped WhatsApp
+sender to `commands.ownerAllowFrom`. Match the sender in the direct WhatsApp
+binding to `main` against `channels.whatsapp.allowFrom` and preserve existing
+owner entries. The channel allowlist controls who can send messages.
+`commands.ownerAllowFrom` grants owner authority for approvals.
+
+Run `baseline` before editing and `verify` afterward. The only expected
+configuration projection change is `commands.ownerAllowFrom`. OpenClaw applies
+command changes through Gateway hot reload. After verification, confirm that an
+approval from Jeff’s WhatsApp sender (DM or an allowlisted group) is recognized as an owner approval.
+
 ## After a restart
 
 `wait-ready` polls `/healthz`, then `/startupz`, then `/readyz`, for up to 8 minutes by default (`--timeout` changes this), because an agent database can take minutes to be admitted after a restart. If an agent database is refused, it stops waiting and prints the recovery steps: stop the Gateway (`openclaw gateway stop --force`), back up `~/.openclaw/agents/<id>/agent`, run `openclaw doctor --fix --yes`, then `wait-ready` again. Once the Gateway is ready, it runs the Gateway, channel, agent, cron, LaunchAgent and log checks.
