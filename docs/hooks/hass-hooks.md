@@ -26,7 +26,7 @@ When a Home Assistant automation spots something at the house (motion, a person,
 ## Safety
 
 - Event text is treated as untrusted input: the agent never follows instructions that appear inside it.
-- The agent's tools are limited to camera snapshots and collages, presence and state lookups, image analysis (only for events without a description), LLM Vision images and sending messages. It has no file access, shell or browser.
+- The agent can use camera snapshots and collages, presence and state lookups, image analysis for events without a description, LLM Vision images, messaging, and skill tools. The `read` tool is workspace-only. Granting it also lets `message` attach files from OpenClaw’s temporary directory, anywhere in its media cache, and its delivery-queue media directory. Attachments must be verified image, audio, video, PDF, or office files. Attachment checks block `.env` files, secrets, and files in other agents’ workspaces.
 
 ## At a glance
 
