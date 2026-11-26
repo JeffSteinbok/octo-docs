@@ -34,7 +34,7 @@ Lets the main agent send status messages to an allowlisted Orca bot through a st
       "orca-send": {
         "enabled": true,
         "config": {
-          "allowedRecipients": ["bot:Example-Bot"],
+          "allowedRecipients": ["bot:<bot-id>"],
           "allowedTypes": ["status"]
         }
       }
