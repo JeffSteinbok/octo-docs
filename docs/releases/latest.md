@@ -6,6 +6,12 @@ nav_order: 13
 
 # Release Notes
 
+*November 26, 2026*
+
+## Personal assistants that coordinate
+
+Octo is adding separate personal assistants with their own mail and memory, plus a shared planning assistant for the couple’s chat. Pinned messages let the assistants coordinate schedules. They share only busy times for private events and ask the calendar owner before making changes. [Agents & Channels](https://octo.steinbok.net/agents-channels.html)
+
 *November 25, 2026*
 
 ## Orca-Octo takes GitHub issues from triage to deploy

@@ -80,6 +80,7 @@ changes to them, so memory files are versioned along with everything else:
 | Agent | Daily notes | Earliest | Latest | Dream Diary |
 |-------|-------------|----------|--------|-------------|
 | `coding` | 6 | 2026-05-04 | 2026-08-06 | Yes |
+| `couple` | 0 | — | — | — |
 | `external` | 0 | — | — | Yes |
 | `family` | 0 | — | — | Yes |
 | `finance` | 200 | 2026-05-06 | 2026-11-25 | Yes |

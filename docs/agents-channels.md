@@ -30,6 +30,29 @@ In the Permissions column, *allowed* and *denied* are set explicitly for that ag
 | `external` | Other assistants that use Octo through the [Octo MCP](mcp) server, such as OctoDot in ChatGPT | Named tools only. Denied: shell (`exec`). | Outside assistants get a deliberately small set of tools, and house changes still go through Hass Guard. |
 | `mail-reader` | Published agent | Named tools only. Denied: browser. | Keeps this agent separate from the rest of the system. |
 
+## How household assistants work together
+
+The owner uses the main agent and the owner's partner uses the partner agent.
+Each personal agent has its own mailbox, conversation history and memory.
+The couple agent serves their two-person planning group. The family agent
+handles family conversations, and the group agent handles other shared chats.
+
+The two personal agents exchange messages through their pinned direct chats.
+The couple agent can ask either personal agent through those same direct
+chats. Replies to the couple agent go to its pinned group. These sends
+leave personal transcripts private. Dedicated read-only tools give the
+personal agents a view of the couple and family conversations, while
+native session visibility stays scoped to each agent's own tree.
+
+The personal agents can share normal calendar details, including times,
+titles, locations and attendees. A private event appears only as a busy
+interval. An ICS event without CLASS is public by default. Microsoft
+calendar sharing uses the provider's own sensitivity field. For Microsoft
+events with missing or unrecognized sensitivity, share only the busy
+interval. If there is no workable time or a schedule is unclear, the relevant
+personal assistant asks its owner directly before replying. A relayed
+message from any agent never counts as approval to change a calendar.
+
 ### Shell Access
 
 Shell access (the `exec` tool) is set per agent under `agents.entries.<id>.tools.exec` in OpenClaw's config:

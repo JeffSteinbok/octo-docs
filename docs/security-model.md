@@ -11,19 +11,39 @@ nav_order: 3
 
 | Sending agent | Allowed peer agents |
 |---|---|
+| family | main | family, group, partner and couple |
+| partner | main and couple |
+| couple | main and partner |
 | family | main |
 | group | main |
-| main | family, group |
 | root | coding |
 | All other agents | None |
 
-OpenClaw enforces each outgoing list using `agents.entries.<id>.tools.agentToAgent.send`. An explicit empty list denies ordinary peer sends. Both agents must also be in `tools.agentToAgent.allow`, which contains main, family, group, root and coding.
+OpenClaw enforces each outgoing list using `agents.entries.<id>.tools.agentToAgent.send`. An explicit empty list denies ordinary peer sends. Both agents must also be in `tools.agentToAgent.allow`, which contains main, family, group, root and coding. The household cutovers add partner and couple to that policy.
 
 With `tools.sessions.visibility: tree`, the caller can see its own session and its owned children. An agent's primary session can also see its other same-agent sessions. Ordinary peer history, listing, search and status are restricted. A send grant gives no access to the recipient's transcript. Owned subagent access follows OpenClaw's tree rules, and spawning has its own `subagents.allowAgents` policy.
 
 The Agent Relay Target Pin checks family and group `sessions_send` calls before execution. Both agents must use the exact key `agent:main:imessage:direct:jeff` and start approvals with `[APPROVAL REQUEST]`. Family may also use `Message from ` for relays. Both agents may omit `mode` or use `followup`, with watching disabled. Jeff's subsequent approval is a separate owner action.
 
 Main's heartbeat checks its own sessions and uses Gateway-provided Ops facts for system status. Root handles deeper operational checks.
+
+Main and partner relays use pinned direct iMessage sessions. Both agents keep tree
+visibility, which prevents the relay from granting transcript history or listing
+access. Relayed messages do not authorize owner actions. Calendar sharing follows
+agent instructions. Private events contribute only a busy interval. An ICS event
+without `CLASS` defaults to `PUBLIC`. An unrecognized ICS class is treated as
+private. Microsoft calendar events use their own sensitivity field. Missing or
+unrecognized Microsoft sensitivity yields only a busy interval when shared.
+Calendar changes require direct consent from the calendar owner.
+[RFC 5545 access classification](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.8.1.3)
+
+The couple agent is scoped to the two-person group. An inbound gate checks the
+current participants and sender before dispatch. It has its own workspace
+and memory. Its sends target only the personal assistants’ pinned direct chats.
+Their replies to the couple agent target only the pinned group. Dedicated
+read-only tools let the two personal agents list and read family and couple
+conversations. The tools exclude private agent stores and incognito sessions.
+Native tree visibility continues to protect personal conversations.
 
 ## Agent tool defaults
 
@@ -42,7 +62,10 @@ Existing agents declare their own exec mode and filesystem setting. Their tool a
 The partner agent uses workspace-only file tools and a separate mailbox account.
 It can use shared household Home Assistant tools. Its instructions ask for chat
 confirmation before lock, garage or alarm actions. Hass Guard logs and alerts
-on service calls in observation mode. The tool policy denies changes to HA
+on service calls in observation mode. Its ICS access is limited to its own feed, its Microsoft token is account-scoped,
+and the work calendar is excluded. Private events on the shared Microsoft
+calendar return a busy interval through the partner account. The tool policy
+denies changes to HA
 automation, script and dashboard definitions. Mail rules and verdict logs stay
 account scoped.
 The weekly diagnostic review and session labeling skip both partner agents.
