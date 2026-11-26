@@ -58,7 +58,7 @@ Watches Octo's FastMail mailbox (`openclaw@`) in real time and runs each new mes
 - Package tracking: finds UPS, FedEx, USPS and Amazon tracking numbers in shipping emails from known senders, adds them to package tracking, and removes them when the delivery email arrives
 - Skips spam and no-reply senders
 - Notifications go out through `openclaw message send`
-- Loads extra actions from `action_plugins`: today [`libs/ts/mail_actions`](https://github.com/JeffSteinbok/octo/tree/main/libs/ts/mail_actions) for `process_self_email`
+- Loads extra actions from `action_plugins`: today `libs/ts/mail_actions` for `process_self_email`
 
 ### Environment Variables
 

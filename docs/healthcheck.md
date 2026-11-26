@@ -67,7 +67,7 @@ approval from Jeff’s WhatsApp sender (DM or an allowlisted group) is recognize
 
 ## Main file reads
 
-Use the `main-fs-guard` step to deploy the [Main Filesystem Guard](plugins/main-fs-guard). Take a baseline before installation. Plugin installation triggers a Gateway hot reload, so use `scripts/healthcheck.py wait-ready --step main-fs-guard --timeout 180 --no-verify` before running full verification. Check the declared workspace, outside and denied reads. Use `~/.openclaw/logs/main-fs-guard.jsonl` to identify which read-only roots `main` still uses before moving to `tools.fs.workspaceOnly`.
+Use the `main-fs-guard` step to deploy the Main Filesystem Guard. Take a baseline before installation. Plugin installation triggers a Gateway hot reload, so use `scripts/healthcheck.py wait-ready --step main-fs-guard --timeout 180 --no-verify` before running full verification. Check the declared workspace, outside and denied reads. Use `~/.openclaw/logs/main-fs-guard.jsonl` to identify which read-only roots `main` still uses before moving to `tools.fs.workspaceOnly`.
 
 ## After a restart
 

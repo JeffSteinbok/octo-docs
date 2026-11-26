@@ -32,7 +32,7 @@ The system is split across two repos on purpose:
 
 | Repo | Purpose |
 |------|---------|
-| [`JeffSteinbok/octo`](https://github.com/JeffSteinbok/octo) | Source of truth: plugins, config, agents, and the pipeline code |
+| `JeffSteinbok/octo` | Source of truth: plugins, config, agents, and the pipeline code |
 | [`JeffSteinbok/octo-docs`](https://github.com/JeffSteinbok/octo-docs) | Hosts the published Jekyll site at octo.steinbok.net |
 
 `octo` generates the docs; `octo-docs` publishes them. This means:
@@ -137,7 +137,7 @@ Each extractor is a standalone, read-only Python script that writes JSON into `o
 | `api_inventory.py` | Each plugin's `openclaw.plugin.json` and tool schemas | `api-index.json` |
 | `agent_summary.py` | `agents/*/` identity files | `agents.json`, `agents/<id>.json` |
 | `plugin_summary.py` | `plugins/*/openclaw.plugin.json` and plugin tools | `plugins/<id>.json` |
-| `changelog_summary.py` | `CHANGELOG.md` | `release/changes.json` |
+| `changelog_summary.py` | `tools/docs/PUBLIC-RELEASE-NOTES.md` | `release/changes.json` |
 | `config_summary.py` | `config/openclaw.json` | `config.json` |
 | `skill_summary.py` | `agents/*/skills/*/SKILL.md` | `skills.json`, `skills/<name>.json` |
 | `job_summary.py` | `config/cron_jobs_export.json` | `jobs.json` |
