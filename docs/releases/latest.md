@@ -12,6 +12,8 @@ nav_order: 13
 ### Changed
 
 - **MCP Bridge** ([#573](https://github.com/JeffSteinbok/octo/issues/573)) logs the verified OAuth client ID on request lines and omits the user ID from refusals. The deployment uses the `mcp-bridge-log-client-id` health-check step.
+- Added a live allowlist for enabled OpenClaw plugins ([#577](https://github.com/JeffSteinbok/octo/issues/577)).
+- Retired the Claude ACP agent and disabled its ACPX backend. Coding handoffs now go through Orca-Octo ([#579](https://github.com/JeffSteinbok/octo/issues/579)).
 
 ## 2026-11-25
 

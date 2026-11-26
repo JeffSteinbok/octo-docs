@@ -7,7 +7,7 @@ nav_order: 1
 
 # Issue Lifecycle
 
-The issue lifecycle is the fix workflow of the [Engineering Harness](../harness). It takes an issue in `JeffSteinbok/octo` from Jeff's approval through a written plan, an implementation, and a pull request, using GitHub labels to record where each issue is. Octo's `coding` agent runs the workflow; Claude Code writes the code; Jeff approves each stage and merges.
+The issue lifecycle is the fix workflow of the [Engineering Harness](../harness). It takes an issue in `JeffSteinbok/octo` from Jeff's approval through a written plan, an implementation, and a pull request, using GitHub labels to record where each issue is. Octo's `coding` agent runs the workflow; Orca-Octo writes the code; Jeff approves each stage and merges.
 
 > ⚠️ **Nothing merges without Jeff's approval.**
 > Three manual gates are always required:
@@ -37,9 +37,9 @@ stateDiagram-v2
 
     PlanComplete --> Implementing : Jeff adds ilc:plan-approved\n(ilc:impl-working)
 
-    Implementing --> NeedsInput : Claude Code fails or can't finish
+    Implementing --> NeedsInput : Orca-Octo fails or can't finish
 
-    Implementing --> ImplComplete : Claude Code commits and pushes\n(ilc:impl-complete)
+    Implementing --> ImplComplete : Orca-Octo commits and pushes\n(ilc:impl-complete)
 
     ImplComplete --> PRDraft : lifecycle subagent opens the PR\n(ilc:pr-draft)
 
@@ -71,7 +71,7 @@ Every lifecycle label starts with `ilc:` (**i**ssue **l**ife**c**ycle), so the l
 
 | Label | Set by | Meaning |
 |---|---|---|
-| `ilc:impl-working` | Octo | Claude Code is writing, testing and committing the code |
+| `ilc:impl-working` | Octo | Orca-Octo is writing, testing and committing the code |
 | `ilc:impl-complete` | Octo | Code pushed to the branch, PR not open yet |
 
 **PR phase**
@@ -87,11 +87,11 @@ Every lifecycle label starts with `ilc:` (**i**ssue **l**ife**c**ycle), so the l
 The work is split in two:
 
 - **Lifecycle subagent (the orchestrator)** owns everything around the code: label changes, posts to the issue's Discord thread, issue comments, and opening and updating the PR. It never writes code itself.
-- **Claude Code** runs through ACP (the Agent Client Protocol, which lets OpenClaw start an external coding agent) with `sessions_spawn({ runtime: "acp", agentId: "claude" })`. It works in a separate git worktree on a `fix/N-short-description` branch, writes the code, runs the tests, commits, and pushes. It doesn't touch labels, the Discord thread or the PR.
+- **Orca-Octo** implements changes in a separate git worktree on a `fix/N-short-description` branch, runs the checks, commits, and pushes. The lifecycle subagent posts the brief in Discord for Jeff to relay in Orca, then resumes when Jeff relays the result.
 
-If Claude Code can't be started, fails, or reports that it couldn't finish, the subagent does not fall back to writing the code. It sets `ilc:needs-input` and posts the error to the thread.
+If the handoff fails or Orca-Octo cannot finish, the subagent sets `ilc:needs-input` and posts the blocker to the thread.
 
-The exact handoff is in `agents/coding/skills/issue-lifecycle/SKILL.md`, under "Code Work — Claude Code via ACP".
+See Code Work via Orca-Octo for the brief and result format.
 
 ## What happens at each step
 
@@ -107,7 +107,7 @@ The exact handoff is in `agents/coding/skills/issue-lifecycle/SKILL.md`, under "
 
 1. Removes `ilc:plan-approved` and `ilc:plan-complete` and adds `ilc:impl-working` (first, so the same event can't start the work twice)
 2. Posts to the thread that implementation has started
-3. Starts Claude Code for each affected repo; it branches from the latest `main`, implements the plan, tests, commits and pushes
+3. Posts an Orca-Octo brief per repo for Jeff to relay and waits for the branch, commit, and check results
 4. Replaces `ilc:impl-working` with `ilc:impl-complete`
 5. Opens a PR from the pushed branch (the PR body includes `Closes JeffSteinbok/octo#N`) and replaces `ilc:impl-complete` with `ilc:pr-draft`
 6. When the PR is ready for review, replaces `ilc:pr-draft` with `ilc:pr-review` and posts the PR link to the thread
@@ -116,5 +116,5 @@ The exact handoff is in `agents/coding/skills/issue-lifecycle/SKILL.md`, under "
 
 1. Replaces `ilc:pr-needs-work` with `ilc:impl-working`
 2. Reads the PR review comments
-3. Starts Claude Code with those comments; it fixes, tests, commits and pushes to the existing PR branch
+3. Posts an Orca-Octo brief with those comments and the existing PR branch, then waits for Jeff to relay the result
 4. Moves the issue through `ilc:impl-complete` back to `ilc:pr-review` and tells Jeff in the thread that the PR is ready for another review

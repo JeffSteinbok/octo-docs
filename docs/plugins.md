@@ -17,7 +17,7 @@ Plugins that ship with OpenClaw.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
-| 🔗 | [ACPX Runtime](https://docs.openclaw.ai/tools/acp-agents) | Runs external coding agents over the Agent Client Protocol (ACP); Octo uses it to run Claude Code as the `claude` agent. | [External docs](https://docs.openclaw.ai/tools/acp-agents) |
+| 🔗 | [ACPX Runtime](https://docs.openclaw.ai/tools/acp-agents) | Runs external coding agents over the Agent Client Protocol (ACP). | [External docs](https://docs.openclaw.ai/tools/acp-agents) |
 | 🌐 | [Browser](https://playwright.dev/docs/intro) | Browser automation capability used when the assistant needs to inspect or act on live web pages. | [External docs](https://playwright.dev/docs/intro) |
 | 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | [External docs](https://ai.google.dev/gemini-api/docs) |
 | 🧮 | [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe) | Decision-model provider (TypeSafe's Jev models). Rates whether a Home Assistant action requested through Hassonic is safe to run without asking. | [External docs](https://docs.openclaw.ai/plugins/typesafe) |
