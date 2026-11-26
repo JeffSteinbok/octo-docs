@@ -17,6 +17,7 @@ nav_order: 13
 
 ### Fixed
 
+- The weekly Lobster changelog scan no longer calls the unsupported cron wake action and drops `cron` from its tool allowlist ([#525](https://github.com/JeffSteinbok/octo/issues/525)). Deployment uses the `lobster-weekly-drop-wake` health check step.
 - Corrected the [decision-model status table](docs/DECISION-MODELS.md). The USPS, approval, family-request and Octo-inbox gates are live in log-only, and the Lobster changelog gate runs log-only on Mondays.
 - The unhandled-mail gate treats routine sign-in notices as informational and texts about sign-ins from outside the home area on a new or unrecognized device, suspected compromise, or actionable account changes. Deployment uses the `unhandled-mail-tighten-self-alerts` health check step.
 - Personal and family conflict checks use explicit Pacific date ranges in Microsoft Graph, with pagination. The work calendar reports its 28-day future window and distinguishes upstream HTTP and response errors from calendar results. Replaced the obsolete work calendar email instructions. Plugin rollout uses the `calendar-query-windows` healthcheck step.
