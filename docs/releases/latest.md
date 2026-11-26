@@ -19,6 +19,7 @@ nav_order: 13
 ### Added
 
 - **Main Filesystem Guard** ([#575](https://github.com/JeffSteinbok/octo/issues/575)) limits `main` reads to the workspace and read-only roots, blocks protected paths everywhere, and logs outside and denied reads. Deployment uses the `main-fs-guard` health check step.
+- **Handoff Guard** ([#558](https://github.com/JeffSteinbok/octo/issues/558)): enforces the Orca-Octo handoff tool allowlist, limits reads to eligible Git-tracked files in the octo repo and blocks outbound session sends from handoff routes. Inbound session sends to handoff routes are blocked by key or resolved destination, with a conservative fallback for ambiguous references. Git intent-to-add entries are denied. Veto records include timestamps. Verify it with the `handoff-guard` healthcheck step before enabling the two-way protocol in #560.
 
 ### Changed
 
