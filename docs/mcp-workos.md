@@ -52,10 +52,10 @@ Look for `client_id_metadata_document_supported: true`, a `registration_endpoint
 
 ## Allowing a user
 
-The bridge only accepts WorkOS user IDs on its allowlist (`MCP_BRIDGE_ALLOWED_SUBJECTS` in its private env file). To
-find an ID, sign in from ChatGPT once: the attempt is refused with `403` and the bridge log
-(`~/Library/Logs/openclaw-mcp-bridge.log`) records the user ID (`sub=user_…`). Add it, restart the bridge, then
-reinstall the connector in ChatGPT and sign in again:
+The bridge only accepts WorkOS user IDs on its allowlist (`MCP_BRIDGE_ALLOWED_SUBJECTS` in its private env file).
+Find the user in the WorkOS dashboard for the AuthKit environment and copy their ID (`user_…`). Add it to the
+allowlist, restart the bridge, then reinstall the connector in ChatGPT and sign in again. A valid token for a user
+outside the allowlist gets `403`.
 
 ```bash
 launchctl kickstart -k gui/$(id -u)/com.octo.openclaw.mcp-bridge

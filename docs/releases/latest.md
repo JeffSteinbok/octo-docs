@@ -6,6 +6,13 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-26
+
+
+### Changed
+
+- **MCP Bridge** ([#573](https://github.com/JeffSteinbok/octo/issues/573)) logs the verified OAuth client ID on request lines and omits the user ID from refusals. The deployment uses the `mcp-bridge-log-client-id` health-check step.
+
 ## 2026-11-25
 
 

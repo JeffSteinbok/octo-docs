@@ -89,4 +89,6 @@ launchctl kickstart -k gui/$(id -u)/com.octo.openclaw.mcp-bridge
 tail -f ~/Library/Logs/openclaw-mcp-bridge.log
 ```
 
-At startup the log lists the tools and destination names it loaded. Every request is logged with its path and user agent; refusals include the reason, a `403` includes the WorkOS user ID so a new user can be allowlisted, and each `send_message` logs the destination name (never the message).
+At startup the log lists the tools and destination names it loaded. Each request line includes the path, user agent,
+and the verified OAuth `client_id`, with `client=-` when the ID is unavailable. Refusals log the reason. Find user IDs
+for the allowlist in the WorkOS dashboard. Each `send_message` logs only the destination name.
