@@ -31,7 +31,6 @@ Agents listed here use their own model instead of the default. Decision models a
 | `main` | default | `typesafe/jev-latest` |
 | `root` | default | `typesafe/jev-latest` |
 | `hass-hooks` | default | `typesafe/jev-latest` |
-| `claude` | `anthropic/claude-opus-5-5` | — |
 | `hassonic` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
 | `external` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
 
