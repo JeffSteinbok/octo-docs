@@ -21,7 +21,7 @@ When a Home Assistant automation spots something at the house (motion, a person,
 2. **Checks who's home.** A stranger in the driveway matters more when nobody is home.
 3. **Gets the pictures.** It fetches the key frame LLM Vision saved at the moment of the event (or takes a fresh snapshot from the triggering camera), and puts it on top of a collage of all the outdoor cameras as they look now.
 4. **Writes the alert from LLM Vision's description.** The event's title and summary describe the moment of detection, so the agent rewrites them as one or two casual sentences and adds nothing of its own. It doesn't re-describe the pictures: a later look at the cameras used to change the story (a parked car, a "delivery" that wasn't one). Only for a doorbell press with no title or summary does an image model describe the photo, and the alert says so; when there's no key frame, it says the photo is from just now.
-5. **Sends one message.** A single iMessage to the owner, with the collage attached.
+5. **Sends one message.** A single iMessage to the owner, with the collage attached from `~/.openclaw/media/camera_captures`.
 
 ## Safety
 
