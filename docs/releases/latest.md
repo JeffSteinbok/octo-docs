@@ -8,6 +8,10 @@ nav_order: 13
 
 *November 26, 2026*
 
+## Carapace Microsoft 365 on ClawHub
+
+Carapace Microsoft 365 brings multiple Microsoft 365 accounts to OpenClaw with push mail and per-account rules. Assign agents to the mailboxes they need and run the accounts from one webhook service. [ClawHub listing](https://clawhub.ai/jeffsteinbok/plugins/carapace-m365) · [Setup guide](https://github.com/JeffSteinbok/carapace-m365#quick-start)
+
 ## Personal assistants that coordinate
 
 Octo is adding separate personal assistants with their own mail and memory, plus a shared planning assistant for the couple’s chat. Pinned messages let the assistants coordinate schedules. They share only busy times for private events and ask the calendar owner before making changes. [Agents & Channels](https://octo.steinbok.net/agents-channels.html)
