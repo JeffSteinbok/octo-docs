@@ -94,6 +94,13 @@ same-user process from reading a file.
 - `hooks.allowedAgentIds` lists only the agents hooks may run; `main` can never be started by a hook.
 - Home Assistant posts to the proxy on the LAN with its own token, not to the Gateway.
 
+## Microsoft 365 mail webhooks
+
+One Microsoft Graph webhook service can route several mailbox subscriptions.
+The subscription ID and matching client state select each account. Each account
+has a unique broker secret, state file, rules, delivery target and logs. The
+existing account keeps its subscription and legacy broker endpoint during migration.
+
 ## Changing Funnel
 
 Funnel changes need the Tailscale operator account, so the owner runs them by hand, as scripts with built-in checks

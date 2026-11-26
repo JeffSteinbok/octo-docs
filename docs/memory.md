@@ -89,4 +89,6 @@ changes to them, so memory files are versioned along with everything else:
 | `mail` | 0 | — | — | Yes |
 | `mail-reader` | 0 | — | — | Yes |
 | `main` | 178 | 2026-03-01 | 2026-11-24 | Yes |
+| `partner` | 0 | — | — | Yes |
+| `partner-mail` | 0 | — | — | — |
 | `root` | 25 | 2026-03-13 | 2026-08-26 | Yes |
