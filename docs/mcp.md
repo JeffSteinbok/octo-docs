@@ -135,6 +135,14 @@ OpenClaw command.
 
 ## What the server checks
 
+Starting with mcp-bridge 0.3.2, the bridge uses the verified token's `client_id` to select grants from `clientTools`
+in `config/mcp-bridge/tools.json`. OctoDot has access to the five tools above.
+Authenticated clients with an unlisted or missing client ID can list and call
+only `ping`. Calls to other tools are refused and logged with the client ID.
+Replace the config file atomically and send the running bridge `SIGHUP` to reload the grants.
+Check the bridge log for confirmation. Invalid grants leave the last valid grants active.
+Tool definition changes take effect on restart.
+
 Every `POST /mcp` must carry an AuthKit access token. Before the request body is even read, the bridge checks:
 
 - the JWT signature against AuthKit's published keys (JWKS),

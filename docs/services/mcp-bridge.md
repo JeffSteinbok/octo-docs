@@ -92,3 +92,8 @@ tail -f ~/Library/Logs/openclaw-mcp-bridge.log
 At startup the log lists the tools and destination names it loaded. Each request line includes the path, user agent,
 and the verified OAuth `client_id`, with `client=-` when the ID is unavailable. Refusals log the reason. Find user IDs
 for the allowlist in the WorkOS dashboard. Each `send_message` logs only the destination name.
+
+Tool grants are set per OAuth client in `config/mcp-bridge/tools.json`. See the
+Octo MCP page for defaults and reload instructions.
+Deploy bridge 0.3.2 or later with this config and restart it before relying on
+the grants. The health check step is `mcp-bridge-client-tools`.
