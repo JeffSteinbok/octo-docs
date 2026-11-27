@@ -47,7 +47,7 @@ Octo has no global default decision model.
 |-------|----------------|------------------------------|
 | [Hass Guard](plugins/hass-guard), before each Home Assistant action by a guarded agent ([Hassonic](hassonic) or the [Octo MCP](mcp)'s `external` agent) | Is this action routine and safe to do immediately without asking? (yes/no) | Runs at 85% or higher; otherwise the action is blocked and the agent explains why |
 
-The `decision_evaluate` tool, which lets an agent ask a decision model directly, is not given to any agent.
+The `decision_evaluate` tool, which lets an agent ask a decision model directly, is available to `partner`.
 OpenClaw's experimental *decision assistance*, which uses a decision model to drop unneeded tools before each turn, is off.
 
 ## Per-Agent Overrides

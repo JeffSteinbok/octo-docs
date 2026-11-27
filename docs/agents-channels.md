@@ -29,7 +29,7 @@ In the Permissions column, *allowed* and *denied* are set explicitly for that ag
 | `group` | Other iMessage group chats (replies only when mentioned) | Messaging tool profile. Denied: shell (`exec`), browser, file reads, file writes. | Group chats can include people outside the family, so this agent gets only messaging, web search and read access to the family calendar: no shell, files or browser. |
 | `external` | Other assistants that use Octo through the [Octo MCP](mcp) server, such as OctoDot in ChatGPT | Named tools only. Denied: shell (`exec`). | Outside assistants get a deliberately small set of tools, and house changes still go through Hass Guard. |
 | `mail-reader` | Published agent | Named tools only. Denied: browser. | Keeps this agent separate from the rest of the system. |
-| `partner` | The owner's partner's personal assistant | Named tools only. Allowed: file reads, file writes. | Keeps this agent separate from the rest of the system. |
+| `partner` | The owner's partner's personal assistant | Named tools only. Allowed: shell (`exec`), file reads, file writes. Can hand work to `finance`. | Keeps this agent separate from the rest of the system. |
 | `partner-mail` | Summarizes incoming mail for the partner agent's mailbox | Named tools only. Denied: browser. | Keeps this agent separate from the rest of the system. |
 | `couple` | Shared planning for the two-person group | Named tools only. Allowed: file reads, file writes. | Keeps this agent separate from the rest of the system. |
 
@@ -61,6 +61,13 @@ events with missing or unrecognized sensitivity, share only the busy
 interval. If there is no workable time or a schedule is unclear, the relevant
 personal assistant asks its owner directly before replying. A relayed
 message from any agent never counts as approval to change a calendar.
+
+The partner agent can create and manage its own automations. Jobs run as
+that agent with a per-job tool list. It can send approved reminders directly
+to the owner and delegate finance questions with the owner’s permission.
+It can inspect images or PDFs in its workspace and manage its session goals. Shell
+access is limited to public waitlist status checks. Administrative approval
+stays with the owner.
 
 ### Shell Access
 
