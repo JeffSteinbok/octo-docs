@@ -11,7 +11,7 @@ nav_order: 3
 
 | Sending agent | Allowed peer agents |
 |---|---|
-| family | main | family, group, partner and couple |
+| main | family, group, partner and couple |
 | partner | main and couple |
 | couple | main and partner |
 | family | main |
@@ -19,7 +19,7 @@ nav_order: 3
 | root | coding |
 | All other agents | None |
 
-OpenClaw enforces each outgoing list using `agents.entries.<id>.tools.agentToAgent.send`. An explicit empty list denies ordinary peer sends. Both agents must also be in `tools.agentToAgent.allow`, which contains main, family, group, root and coding. The household cutovers add partner and couple to that policy.
+OpenClaw enforces each outgoing list using `agents.entries.<id>.tools.agentToAgent.send`. An explicit empty list denies ordinary peer sends. Both agents must also be in `tools.agentToAgent.allow`, which includes main, family, group, root, coding, partner and couple.
 
 With `tools.sessions.visibility: tree`, the caller can see its own session and its owned children. An agent's primary session can also see its other same-agent sessions. Ordinary peer history, listing, search and status are restricted. A send grant gives no access to the recipient's transcript. Owned subagent access follows OpenClaw's tree rules, and spawning has its own `subagents.allowAgents` policy.
 
@@ -45,6 +45,15 @@ read-only tools let the two personal agents list and read family and couple
 conversations. The tools exclude private agent stores and incognito sessions.
 Native tree visibility continues to protect personal conversations.
 
+## Orca-Octo handoffs
+
+Dedicated Orca-Octo handoff sessions apply the handoff policy before ordinary
+workspace workflows. The guard allows issue and automation lookups, current
+session status, and reads of eligible tracked repository files. It blocks
+commands, writes, ordinary messages and peer session sends. Replies back to
+Orca use the pinned recipient and are limited to status updates and questions.
+The owner approves changes through the usual owner channel.
+
 ## Agent tool defaults
 
 New agents inherit `tools.exec.mode: deny` and `tools.fs.workspaceOnly: true`. The exec mode prevents command execution. Tool lists and profiles control which tools are exposed, including `process`. OpenClaw 2026.11.10’s multi-user audit heuristic lists tool exposure by profile and allow/deny policy, so it still lists the `exec` tool when exec mode denies commands. Give each new agent its own workspace and an explicit tool profile or allowlist.
@@ -55,7 +64,7 @@ Existing agents declare their own exec mode and filesystem setting. Their tool a
 |---|---|
 | main | `allowlist` |
 | root, coding | `full` |
-| external, family, finance, group, hass-hooks, hassonic, mail, mail-reader | `deny` |
+| external, family, finance, group, hass-hooks, hassonic, mail, mail-reader, partner, partner-mail, couple | `deny` |
 
 ## Partner agent
 
@@ -72,7 +81,9 @@ The weekly diagnostic review and session labeling skip both partner agents.
 
 ## File access
 
-The workspace policy uses `tools.fs.workspaceOnly: true`. It is active for `hass-hooks` and is rolling out to `main` under #575. OpenClaw confines file tools to each agent's configured workspace. Read operations can also reach loaded skill directories and attachments staged for a subagent run. Use workspace-relative paths such as `memory/heartbeat-state.json`. The allowed paths exclude the Gateway’s `.env`, configuration, logs, state, and other agents’ workspaces. Use the canonical workspace path when an absolute path is needed.
+The workspace policy uses `tools.fs.workspaceOnly: true`. It is active for `hass-hooks`, `partner`, `partner-mail` and `couple`. Main is still in an observation trial under #575. The interim guard blocks sensitive paths, permits outside reads from configured roots such as the Gateway log directory, and records outside access for review.
+
+For agents with native workspace-only access, OpenClaw confines file tools to the agent's workspace. Reads can also reach loaded skill directories and attachments staged for a subagent run. Gateway configuration, logs and state, and other agents' workspaces are outside that scope. Use workspace-relative paths such as `memory/heartbeat-state.json`. Use the canonical workspace path when an absolute path is needed.
 
 The policy covers heartbeats, crons, channel turns and subagent runs. Jeff can select **Full access** in the Control UI as an emergency override for that session. Exec is governed separately by main's safe-bin policy. Session tools have their own visibility controls.
 

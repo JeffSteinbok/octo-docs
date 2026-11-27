@@ -25,7 +25,7 @@ Watches OpenClaw's config file, `openclaw.json`, and brings the Gateway back if 
 |---|---|---|
 | `OPENCLAW_CONFIG_FILE` | no | Config file to watch (default `~/.openclaw/openclaw.json`) |
 | `WATCHDOG_BACKUP_VERSIONS` | no | Number of numbered backups to keep (default 10) |
-| `OPENCLAW_GATEWAY_URL` | no | Gateway address for health checks (default `http://127.0.0.1:18789`) |
+| `OPENCLAW_GATEWAY_URL` | no | Gateway address for health checks (defaults to HTTP on IPv4 loopback, port 18789) |
 | `OPENCLAW_LAUNCHD_LABEL` | no | LaunchAgent to restart on macOS (default `ai.openclaw.gateway`) |
 | `GITHUB_TOKEN` | for incidents | Token used to file the GitHub issue |
 

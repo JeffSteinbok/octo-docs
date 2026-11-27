@@ -40,7 +40,7 @@ require a restart and may also require a change to the `external` agent's tool l
 
 ## Funnel routes
 
-ChatGPT doesn't connect to non-443 ports, so these paths on the shared 443 hostname go to `127.0.0.1:18793` unchanged:
+ChatGPT doesn't connect to non-443 ports, so these paths on the shared 443 hostname go to IPv4 loopback on port 18793 unchanged:
 
 | Path | Purpose |
 |---|---|
@@ -59,7 +59,7 @@ The LaunchAgent sets `MCP_BRIDGE_TOOLS`; the service reads the rest from a priva
 | `MCP_BRIDGE_ISSUER` | yes | AuthKit domain, exactly as in tokens' `iss` |
 | `MCP_BRIDGE_ALLOWED_SUBJECTS` | no | WorkOS user IDs allowed in; empty means nobody gets in |
 
-Defaults cover the rest (device directory `~/.openclaw/secrets/mcp-bridge`, Gateway `ws://127.0.0.1:18789`, port 18793); the [mcp-bridge README](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge) lists every setting. The device directory (mode 700/600, never in a repo) holds the device identity and token and `destinations.json`, the message destinations' handles and channel IDs.
+Defaults cover the rest (device directory `~/.openclaw/secrets/mcp-bridge`, Gateway WebSocket on IPv4 loopback, port 18789, port 18793); the [mcp-bridge README](https://github.com/JeffSteinbok/openclaw-hub/tree/main/services/mcp-bridge) lists every setting. The device directory (mode 700/600, never in a repo) holds the device identity and token and `destinations.json`, the message destinations' handles and channel IDs.
 
 ## Install
 

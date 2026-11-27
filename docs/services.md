@@ -40,7 +40,7 @@ Watches OpenClaw's config file, `openclaw.json`, and brings the Gateway back if 
 |----------|----------|-------------|
 | `OPENCLAW_CONFIG_FILE` | No | Config file to watch (default `~/.openclaw/openclaw.json`) |
 | `WATCHDOG_BACKUP_VERSIONS` | No | Number of numbered backups to keep (default 10) |
-| `OPENCLAW_GATEWAY_URL` | No | Gateway address for health checks (default `http://127.0.0.1:18789`) |
+| `OPENCLAW_GATEWAY_URL` | No | Gateway address for health checks (defaults to HTTP on IPv4 loopback, port 18789) |
 | `OPENCLAW_LAUNCHD_LABEL` | No | LaunchAgent to restart on macOS (default `ai.openclaw.gateway`) |
 | `GITHUB_TOKEN` | No | Token used to file the GitHub issue |
 
@@ -144,7 +144,7 @@ Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. E
 - Per-route inbound auth, so each sender has its own secret and OpenClaw's hooks token never leaves the machine
 - Per-route filters that drop events before they reach the Gateway (GitHub: allowed senders and actionable labels only)
 - Exact path matching, POST only, 1 MiB body limit, and a lockout after 10 failed auth attempts in a minute
-- Listens on port 18792 on all interfaces (`bind_host: 0.0.0.0` in the config; the code's default is `127.0.0.1`): Tailscale Funnel reaches it on loopback through the `/hooksproxy` mount, and Home Assistant reaches it on the LAN
+- Listens on port 18792 on all interfaces (the code defaults to loopback): Tailscale Funnel reaches it on loopback through the `/hooksproxy` mount, and Home Assistant reaches it on the LAN
 - The LaunchAgent loads only its own env file, `~/.openclaw/secrets/webhook-proxy.env`, not the shared OpenClaw `.env`. (The Linux `webhook-proxy.service` unit in this folder is from the retired host and still loads `~/.openclaw/.env`.)
 
 ### Environment Variables

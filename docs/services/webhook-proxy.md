@@ -16,7 +16,7 @@ Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. E
 - Per-route inbound auth, so each sender has its own secret and OpenClaw's hooks token never leaves the machine
 - Per-route filters that drop events before they reach the Gateway (GitHub: allowed senders and actionable labels only)
 - Exact path matching, POST only, 1 MiB body limit, and a lockout after 10 failed auth attempts in a minute
-- Listens on port 18792 on all interfaces (`bind_host: 0.0.0.0` in the config; the code's default is `127.0.0.1`): Tailscale Funnel reaches it on loopback through the `/hooksproxy` mount, and Home Assistant reaches it on the LAN
+- Listens on port 18792 on all interfaces (the code defaults to loopback): Tailscale Funnel reaches it on loopback through the `/hooksproxy` mount, and Home Assistant reaches it on the LAN
 - The LaunchAgent loads only its own env file, `~/.openclaw/secrets/webhook-proxy.env`, not the shared OpenClaw `.env`. (The Linux `webhook-proxy.service` unit in this folder is from the retired host and still loads `~/.openclaw/.env`.)
 
 ## Routes
@@ -61,7 +61,7 @@ launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.octo.openclaw.webhoo
 launchctl print gui/$(id -u)/com.octo.openclaw.webhook-proxy
 ```
 
-Funnel: one mount, `tailscale funnel --bg --set-path=/hooksproxy http://127.0.0.1:18792`. Funnel changes need the Tailscale operator; see `config/tailscale/restore-funnel.sh` and the `apply-step-*.sh` scripts.
+Funnel mounts `/hooksproxy` and forwards to the proxy over HTTP on IPv4 loopback, port 18792. Funnel changes need the Tailscale operator; see `config/tailscale/restore-funnel.sh` and the `apply-step-*.sh` scripts.
 
 ## GitHub webhook setup
 

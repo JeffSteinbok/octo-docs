@@ -40,6 +40,12 @@ Each personal agent has its own mailbox, conversation history and memory.
 The couple agent serves their two-person planning group. The family agent
 handles family conversations, and the group agent handles other shared chats.
 
+The owner's Microsoft 365 tools use the default account. The partner agent
+and its background mail agent use the partner account through the plugin's
+agent mapping. The partner's personal and shared family Outlook snapshots
+are cached in its workspace. See [External Integrations](external-integrations#microsoft-365-accounts)
+for account routing, scheduled refreshes and the pending plugin upgrade.
+
 The two personal agents exchange messages through their pinned direct chats.
 The couple agent can ask either personal agent through those same direct
 chats. Replies to the couple agent go to its pinned group. These sends

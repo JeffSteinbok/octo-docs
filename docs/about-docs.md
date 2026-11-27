@@ -22,6 +22,10 @@ The pipeline runs when a push to `main` changes something the site is built from
 4. **Validate** — the rendered pages are scanned to make sure nothing private leaked
 5. **Publish** — the rendered site is handed to the separate `octo-docs` repo, which commits it and deploys it with GitHub Pages
 
+The separate Orca-Octo changelog automation runs Mondays at 8 a.m. Pacific
+and prepares curated public release notes. The same push-triggered pipeline
+publishes those notes when their source changes land on `main`.
+
 There is **no LLM in the pipeline**. Every step is deterministic, version-controlled and tested.
 
 ---
