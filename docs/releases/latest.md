@@ -8,6 +8,7 @@ nav_order: 13
 
 ## 2026-11-26
 
+- **Guarded handoffs between Orca and OpenClaw.** Orca-Octo can send read-only handoffs to OpenClaw, which can send status updates and questions back. Approval stays with the owner. [Robots](https://octo.steinbok.net/harness/robots.html#guarded-handoff)
 - **Carapace Microsoft 365 on ClawHub.** Carapace Microsoft 365 brings multiple Microsoft 365 accounts to OpenClaw with push mail and per-account rules. Assign agents to the mailboxes they need and run the accounts from one webhook service. [ClawHub listing](https://clawhub.ai/jeffsteinbok/plugins/carapace-m365) · [Setup guide](https://github.com/JeffSteinbok/carapace-m365#quick-start)
 - **Personal assistants that coordinate.** Octo is preparing separate personal assistants with their own mail and memory, plus a shared planning assistant. The planned scheduling workflow uses pinned messages, shares only busy times for private events, and sends uncertain requests to the calendar owner for confirmation. [Agents & Channels](https://octo.steinbok.net/agents-channels.html)
 

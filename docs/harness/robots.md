@@ -23,7 +23,7 @@ Orca-Octo takes Octo issues from triage through deployment. It dispatches implem
 
 ## Guarded handoff
 
-The Orca–Claw handoff rollout is still in progress.
+The guarded handoff between Orca and OpenClaw is live.
 
 - **Orca to Claw.** A dedicated session accepts read-only handoffs.
 - **Claw to Orca.** The `orca-send` channel carries status updates and questions only.

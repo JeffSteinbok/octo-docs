@@ -47,10 +47,10 @@ Native tree visibility continues to protect personal conversations.
 
 ## Orca-Octo handoffs
 
-See [Robots](harness/robots#guarded-handoff) for the channel directions and rollout status.
+See [Robots](harness/robots#guarded-handoff) for how the live handoff works in each direction.
 
-The guarded handoff design applies the handoff policy to dedicated Orca-Octo
-sessions before ordinary workspace workflows. The guard allows issue and automation lookups, current
+Dedicated Orca-Octo handoff sessions apply the handoff policy before ordinary
+workspace workflows. The guard allows issue and automation lookups, current
 session status, and reads of eligible tracked repository files. It blocks
 commands, writes, ordinary messages and peer session sends. Replies back to
 Orca use the pinned recipient and are limited to status updates and questions.
