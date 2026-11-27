@@ -5,7 +5,7 @@ nav_order: 8
 nav_exclude: true
 ---
 
-# Mail Notify Gate
+# 📨 Mail Notify Gate
 
 Decides whether an email handed off by a mail rule is worth texting Jeff about, before the main agent runs.
 

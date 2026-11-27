@@ -5,7 +5,7 @@ nav_order: 9
 nav_exclude: true
 ---
 
-# Orca Send
+# 🐋 Orca Send
 
 Lets the main agent send status and questions to an allowlisted Orca bot through a structured tool.
 

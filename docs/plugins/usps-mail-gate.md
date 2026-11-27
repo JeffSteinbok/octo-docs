@@ -5,7 +5,7 @@ nav_order: 10
 nav_exclude: true
 ---
 
-# USPS Mail Gate
+# 📮 USPS Mail Gate
 
 Logs a decision-model importance and recipient for each mailpiece in the USPS Informed Delivery digest, next to what usps-mail's rules decided. Log-only.
 

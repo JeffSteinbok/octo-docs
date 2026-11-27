@@ -5,7 +5,7 @@ nav_order: 3
 nav_exclude: true
 ---
 
-# Family Request Gate
+# 👪 Family Request Gate
 
 Logs a decision-model handle, ask-Jeff or refuse verdict for each request a person sends the family or group agent, next to what the agent did. Log-only.
 

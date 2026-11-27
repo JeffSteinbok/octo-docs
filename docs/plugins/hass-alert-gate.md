@@ -5,7 +5,7 @@ nav_order: 5
 nav_exclude: true
 ---
 
-# Hass Alert Gate
+# 🚨 Hass Alert Gate
 
 Decides whether a Home Assistant camera event is worth telling Jeff about before the hass-hooks agent runs. Skips the full agent turn for events that would end in NO_REPLY.
 

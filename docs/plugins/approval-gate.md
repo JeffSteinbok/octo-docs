@@ -5,7 +5,7 @@ nav_order: 1
 nav_exclude: true
 ---
 
-# Approval Gate
+# ✅ Approval Gate
 
 Logs a decision-model approve, deny or unrelated check when root, main or coding upgrades OpenClaw or adds ilc:plan-approved. Log-only: never blocks or approves anything.
 

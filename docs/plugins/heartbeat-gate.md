@@ -5,7 +5,7 @@ nav_order: 7
 nav_exclude: true
 ---
 
-# Heartbeat Gate
+# 💓 Heartbeat Gate
 
 Decides whether a heartbeat has anything urgent enough to message Jeff about, from hard facts rather than a full LLM turn.
 

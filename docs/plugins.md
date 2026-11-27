@@ -28,7 +28,7 @@ Plugins the owner maintains in public repos ([JeffSteinbok](https://github.com/J
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
-|  | [Decisions Bridge](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/decisions-bridge) | Lets scripts ask an agent's decision model a typed question through the decisions-bridge.evaluate Gateway method. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/decisions-bridge) |
+| 🧭 | [Decisions Bridge](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/decisions-bridge) | Lets scripts ask an agent's decision model a typed question through the decisions-bridge.evaluate Gateway method. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/decisions-bridge) |
 | 📧 | [FastMail](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) | Send email and manage calendar events in FastMail | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fastmail) |
 | 📁 | [Filesystem Utilities](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) | List, copy, and move files inside the calling agent's workspace | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/fs-utils) |
 | 📊 | [Glances](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) | Read CPU, memory, disk, and summary metrics from a Glances server | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/glances) |
@@ -41,7 +41,7 @@ Plugins the owner maintains in public repos ([JeffSteinbok](https://github.com/J
 | 🛰️ | [Octo Satellite](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) | Amazon order and Monarch Money finance tools, served through the Octo Satellite service so the Gateway never holds those passwords. | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/octo-satellite) |
 | 📅 | [Outlook Work Calendar](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) | Fetch upcoming events from a published Outlook work calendar | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/outlook-work-calendar) |
 | 📦 | [Package Tracking](https://github.com/JeffSteinbok/carapace-package-tracking) | Track packages from UPS, FedEx, USPS, and Amazon | [GitHub ↗](https://github.com/JeffSteinbok/carapace-package-tracking) |
-|  | [Reporting](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/reporting) | Turn Markdown into HTML and PDF reports, from a single file or several sections | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/reporting) |
+| 📝 | [Reporting](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/reporting) | Turn Markdown into HTML and PDF reports, from a single file or several sections | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/reporting) |
 | 📸 | [Screenshot Capture](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/screenshot-capture) | Capture screenshots from paired devices and save them to the Gateway's media store | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/screenshot-capture) |
 | 🎵 | [Spotify](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) | Control Spotify playback, search music, and manage playlists | [GitHub ↗](https://github.com/JeffSteinbok/openclaw-hub/tree/main/plugins/spotify) |
 | 📈 | [Stock Quotes](https://github.com/JeffSteinbok/carapace-stock-quotes) | Fetch current stock, ETF, and mutual fund quotes | [GitHub ↗](https://github.com/JeffSteinbok/carapace-stock-quotes) |
@@ -62,13 +62,13 @@ Plugins whose source is private to the `octo` repo, often because they are still
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
-|  | [Approval Gate](plugins/approval-gate) | Logs a decision-model approve, deny or unrelated check when root, main or coding upgrades OpenClaw or adds ilc:plan-approved. Log-only: never blocks or approves anything. | [Read docs](plugins/approval-gate) |
+| ✅ | [Approval Gate](plugins/approval-gate) | Logs a decision-model approve, deny or unrelated check when root, main or coding upgrades OpenClaw or adds ilc:plan-approved. Log-only: never blocks or approves anything. | [Read docs](plugins/approval-gate) |
 | 🗄️ | [Config Backup](plugins/config-backup) | Commits OpenClaw's config and the agent workspaces to Git, only when something has changed. | [Read docs](plugins/config-backup) |
-|  | [Family Request Gate](plugins/family-request-gate) | Logs a decision-model handle, ask-Jeff or refuse verdict for each request a person sends the family or group agent, next to what the agent did. Log-only. | [Read docs](plugins/family-request-gate) |
+| 👪 | [Family Request Gate](plugins/family-request-gate) | Logs a decision-model handle, ask-Jeff or refuse verdict for each request a person sends the family or group agent, next to what the agent did. Log-only. | [Read docs](plugins/family-request-gate) |
 | 🐙 | [GitHub](plugins/github) | Create, read, update, comment on, close and list GitHub issues. | [Read docs](plugins/github) |
-|  | [Hass Alert Gate](plugins/hass-alert-gate) | Decides whether a Home Assistant camera event is worth telling Jeff about before the hass-hooks agent runs. Skips the full agent turn for events that would end in NO_REPLY. | [Read docs](plugins/hass-alert-gate) |
+| 🚨 | [Hass Alert Gate](plugins/hass-alert-gate) | Decides whether a Home Assistant camera event is worth telling Jeff about before the hass-hooks agent runs. Skips the full agent turn for events that would end in NO_REPLY. | [Read docs](plugins/hass-alert-gate) |
 | 🛡️ | [Hass Guard](plugins/hass-guard) | Limits the agents behind Hassonic and the Octo MCP (`hassonic` and `external`) to an allowlist of Home Assistant actions, and blocks any action their decision model doesn't rate safe. | [Read docs](plugins/hass-guard) |
-|  | [Heartbeat Gate](plugins/heartbeat-gate) | Decides whether a heartbeat has anything urgent enough to message Jeff about, from hard facts rather than a full LLM turn. | [Read docs](plugins/heartbeat-gate) |
-|  | [Mail Notify Gate](plugins/mail-notify-gate) | Decides whether an email handed off by a mail rule is worth texting Jeff about, before the main agent runs. | [Read docs](plugins/mail-notify-gate) |
-|  | [Orca Send](plugins/orca-send) | Lets the main agent send status and questions to an allowlisted Orca bot through a structured tool. | [Read docs](plugins/orca-send) |
-|  | [USPS Mail Gate](plugins/usps-mail-gate) | Logs a decision-model importance and recipient for each mailpiece in the USPS Informed Delivery digest, next to what usps-mail's rules decided. Log-only. | [Read docs](plugins/usps-mail-gate) |
+| 💓 | [Heartbeat Gate](plugins/heartbeat-gate) | Decides whether a heartbeat has anything urgent enough to message Jeff about, from hard facts rather than a full LLM turn. | [Read docs](plugins/heartbeat-gate) |
+| 📨 | [Mail Notify Gate](plugins/mail-notify-gate) | Decides whether an email handed off by a mail rule is worth texting Jeff about, before the main agent runs. | [Read docs](plugins/mail-notify-gate) |
+| 🐋 | [Orca Send](plugins/orca-send) | Lets the main agent send status and questions to an allowlisted Orca bot through a structured tool. | [Read docs](plugins/orca-send) |
+| 📮 | [USPS Mail Gate](plugins/usps-mail-gate) | Logs a decision-model importance and recipient for each mailpiece in the USPS Informed Delivery digest, next to what usps-mail's rules decided. Log-only. | [Read docs](plugins/usps-mail-gate) |
