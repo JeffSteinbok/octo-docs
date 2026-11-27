@@ -8,6 +8,10 @@ nav_order: 13
 
 *November 26, 2026*
 
+## Guarded handoffs between Orca and OpenClaw
+
+Orca-Octo can ask OpenClaw for read-only context. OpenClaw can send back status updates and questions, while approvals stay with the owner. [Orca](https://github.com/stablyai/orca) · [Octo’s agents](https://octo.steinbok.net/agents-channels.html)
+
 ## Carapace Microsoft 365 on ClawHub
 
 Carapace Microsoft 365 brings multiple Microsoft 365 accounts to OpenClaw with push mail and per-account rules. Assign agents to the mailboxes they need and run the accounts from one webhook service. [ClawHub listing](https://clawhub.ai/jeffsteinbok/plugins/carapace-m365) · [Setup guide](https://github.com/JeffSteinbok/carapace-m365#quick-start)

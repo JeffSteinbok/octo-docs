@@ -7,7 +7,7 @@ nav_exclude: true
 
 # Orca Send
 
-Lets the main agent send status messages to an allowlisted Orca bot through a structured tool.
+Lets the main agent send status and questions to an allowlisted Orca bot through a structured tool.
 
 ## Configuration Schema
 
@@ -17,8 +17,8 @@ Lets the main agent send status messages to an allowlisted Orca bot through a st
   </thead>
   <tbody>
     <tr><td><code>agents</code></td><td>string[]</td><td>Optional</td><td>Agents that get the tools. Defaults to [&quot;main&quot;].</td></tr>
-    <tr><td><code>allowedRecipients</code></td><td>string[]</td><td>Optional</td><td>Recipients orca_send may message: bot:&lt;name&gt; or run:run_&lt;id&gt;. Defaults to [&quot;bot:Auto-Octo&quot;].</td></tr>
-    <tr><td><code>allowedTypes</code></td><td>string[]</td><td>Optional</td><td>Message types orca_send may use. Default [&quot;status&quot;]. question and handoff are opt-in: Orca can&#x27;t deliver a bot&#x27;s answer back to OpenClaw yet, and handoff gives the bot a job.</td></tr>
+    <tr><td><code>allowedRecipients</code></td><td>string[]</td><td>Optional</td><td>Recipients orca_send may message: bot:&lt;name&gt;, bot:&lt;id&gt; or run:run_&lt;id&gt;. Defaults to [&quot;bot:8c1c1760-ccc9-417a-9e09-3e1774a8f5b0&quot;].</td></tr>
+    <tr><td><code>allowedTypes</code></td><td>string[]</td><td>Optional</td><td>Message types orca_send may use. Default [&quot;status&quot;]. question and handoff are opt-in. Orca-Octo answers questions in a dedicated OpenClaw session.</td></tr>
     <tr><td><code>fromHandle</code></td><td>string</td><td>Optional</td><td>Sender label Orca records as from_handle. Defaults to openclaw:main. Must not name a Run, Dispatch, terminal or bot.</td></tr>
     <tr><td><code>orcaBin</code></td><td>string</td><td>Optional</td><td>Absolute path to the orca CLI. Defaults to /Users/octo/Applications/Orca.app/Contents/Resources/bin/orca.</td></tr>
     <tr><td><code>timeoutMs</code></td><td>number</td><td>Optional</td><td>Timeout for each CLI call. Default 30000.</td></tr>
@@ -34,8 +34,8 @@ Lets the main agent send status messages to an allowlisted Orca bot through a st
       "orca-send": {
         "enabled": true,
         "config": {
-          "allowedRecipients": ["bot:<bot-id>"],
-          "allowedTypes": ["status"]
+          "allowedRecipients": ["bot:8c1c1760-ccc9-417a-9e09-3e1774a8f5b0"],
+          "allowedTypes": ["status", "question"]
         }
       }
     }
@@ -65,8 +65,8 @@ On the command line, each config field is read from an environment variable inst
 | Variable | Description |
 |----------|-------------|
 | `ORCA_SEND_AGENTS` | Agents that get the tools. Defaults to ["main"]. |
-| `ORCA_SEND_ALLOWED_RECIPIENTS` | Recipients orca_send may message: bot:<name> or run:run_<id>. Defaults to ["bot:Auto-Octo"]. |
-| `ORCA_SEND_ALLOWED_TYPES` | Message types orca_send may use. Default ["status"]. question and handoff are opt-in: Orca can't deliver a bot's answer back to OpenClaw yet, and handoff gives the bot a job. |
+| `ORCA_SEND_ALLOWED_RECIPIENTS` | Recipients orca_send may message: bot:<name>, bot:<id> or run:run_<id>. Defaults to ["bot:8c1c1760-ccc9-417a-9e09-3e1774a8f5b0"]. |
+| `ORCA_SEND_ALLOWED_TYPES` | Message types orca_send may use. Default ["status"]. question and handoff are opt-in. Orca-Octo answers questions in a dedicated OpenClaw session. |
 | `ORCA_SEND_FROM_HANDLE` | Sender label Orca records as from_handle. Defaults to openclaw:main. Must not name a Run, Dispatch, terminal or bot. |
 | `ORCA_SEND_ORCA_BIN` | Absolute path to the orca CLI. Defaults to /Users/octo/Applications/Orca.app/Contents/Resources/bin/orca. |
 | `ORCA_SEND_TIMEOUT_MS` | Timeout for each CLI call. Default 30000. |
