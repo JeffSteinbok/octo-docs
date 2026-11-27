@@ -21,29 +21,6 @@ The tables are generated from Octo's OpenClaw config each time the docs are buil
 | Image fallback | `anthropic/claude-haiku-4-5` | |
 | Web search | `codex` | Provider behind the web search tool |
 
-### Per-Agent Overrides
-
-Agents listed here use their own model instead of the default. Decision models are covered in
-[Decision Models](#decision-models) below.
-
-| Agent | Model | Decision model |
-|-------|-------|----------------|
-| `main` | default | `typesafe/jev-latest` |
-| `root` | default | `typesafe/jev-latest` |
-| `hass-hooks` | default | `typesafe/jev-latest` |
-| `hassonic` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
-| `external` | `openai/gpt-5.6-luna` | `typesafe/jev-latest` |
-| `partner` | default | `typesafe/jev-latest` |
-
-### Registered Aliases
-
-| Alias | Model |
-|-------|-------|
-| `haiku` | `anthropic/claude-haiku-4-5` |
-| `sonnet` | `anthropic/claude-sonnet-4-6` |
-| `gpt-mini` | `openai/gpt-5.6-luna` |
-| `gpt` | `openai/gpt-5.6-terra` |
-
 ## Decision Models
 
 A [decision model](https://docs.openclaw.ai/concepts/decision-models) is a separate model role from the chat model.
@@ -53,14 +30,16 @@ probability — instead of free text. That makes it fast, cheap and predictable 
 
 Octo's decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe)'s hosted Jev models.
 
-| Agent | Decision model |
-|-------|----------------|
-| `main` | `typesafe/jev-latest` |
-| `root` | `typesafe/jev-latest` |
-| `hass-hooks` | `typesafe/jev-latest` |
-| `hassonic` | `typesafe/jev-latest` |
-| `external` | `typesafe/jev-latest` |
-| `partner` | `typesafe/jev-latest` |
+Octo has no global default decision model.
+
+### Decision Model Overrides
+
+- `main` uses `typesafe/jev-latest`.
+- `root` uses `typesafe/jev-latest`.
+- `hass-hooks` uses `typesafe/jev-latest`.
+- `hassonic` uses `typesafe/jev-latest`.
+- `external` uses `typesafe/jev-latest`.
+- `partner` uses `typesafe/jev-latest`.
 
 ### Where they're used
 
@@ -70,6 +49,15 @@ Octo's decision models are served by [TypeSafe AI](https://docs.openclaw.ai/plug
 
 The `decision_evaluate` tool, which lets an agent ask a decision model directly, is not given to any agent.
 OpenClaw's experimental *decision assistance*, which uses a decision model to drop unneeded tools before each turn, is off.
+
+## Per-Agent Overrides
+
+Agents listed here use their own chat model.
+
+| Agent | Model |
+|-------|-------|
+| `hassonic` | `openai/gpt-5.6-luna` |
+| `external` | `openai/gpt-5.6-luna` |
 
 ## Voice
 
