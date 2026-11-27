@@ -62,7 +62,7 @@ names a path (the MCP routes do, so they arrive unchanged).
 | `/` | OpenClaw Gateway (Control UI, WebSocket) | OpenClaw shared token or paired-device token |
 | `/hooks` | Nothing: Funnel answers `not found` | The Gateway's hooks endpoint is never public |
 | `/hooksproxy/<route>` | [webhook-proxy](services/webhook-proxy) | Per route: GitHub HMAC signature, or a per-sender token in the `Authorization` header |
-| `/m365/webhook` | [m365-webhook](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) (Microsoft Graph change notifications) | Graph `clientState` |
+| `/m365/webhook` | Direct to [m365-webhook](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) (Microsoft Graph change notifications) | Graph `clientState` on change notifications |
 | `/mcp`, `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server` | [mcp-bridge](services/mcp-bridge) | WorkOS AuthKit OAuth (see [Octo MCP](mcp)) |
 
 Only port 443 is used. ChatGPT never connects to Funnel's other ports (8443, 10000), which is why the MCP server shares
@@ -99,14 +99,15 @@ same-user process from reading a file.
 Octo runs one [m365-webhook service](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook)
 for Microsoft Graph notifications and token brokering. Each account has separate
 OAuth and subscription state, mail rules, logs, a broker credential, and its own
-Graph `clientState`. The service routes notifications by `subscriptionId` and
-checks the matching account's `clientState` before handing off any mail.
+Graph `clientState`. The service answers Graph's subscription validation
+handshake, routes notifications by `subscriptionId`, and checks the matching
+account's `clientState` before handing off any mail.
 The webhook service uses each account's `allowedAgents` list to limit where
 it can dispatch mail handoffs.
 
 OpenClaw's Microsoft 365 plugin selects account settings through the account
-map's `accounts.<account>.agents` list. Octo maps `partner` and `partner-mail`
-to the partner account and uses the default account for the owner's tools.
+map's `accounts.<account>.agents` list, with a default account for tools
+without an explicit mapping.
 The service and plugin policies apply separately. The default account retains
 its legacy broker endpoint for existing callers.
 

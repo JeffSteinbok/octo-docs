@@ -28,24 +28,9 @@ Each route forwards to one of the [hooks](../hooks) on the Gateway. Funnel mount
 | `/github-issues` | GitHub (`JeffSteinbok/octo` webhook) | HMAC-SHA256 (`X-Hub-Signature-256`) | Drops pings, senders other than the owner and Octo's bot, and labels other than the actionable `ilc:` ones | `/hooks/github-issues` |
 | `/hass` | Home Assistant (LAN, `http://<mac-lan-ip>:18792/hass`) | Per-sender token (`Authorization` header) | None | `/hooks/hass` |
 
-## Environment Variables
+## What doesn't go through the proxy
 
-| Variable | Required | Description |
-|---|---|---|
-| `OPENCLAW_HOOKS_TOKEN` | yes | OpenClaw hooks token, added to forwarded requests. Rotate it together with `~/.openclaw/.env` |
-| `GITHUB_ISSUES_HOOK_SECRET` | yes | Secret configured on the GitHub webhook |
-| `HOOKSPROXY_HASS_TOKEN` | yes | Token Home Assistant sends in the `Authorization` header on `/hass` |
-
-All three live in `~/.openclaw/secrets/webhook-proxy.env` (mode 600). The route list is `~/.openclaw/services/webhook-proxy-config.json` (route paths, auth types and env var names only, no secret values).
-
-## Files
-
-| File | Purpose |
-|---|---|
-| `config/macos/launchd/com.octo.openclaw.webhook-proxy.plist` | LaunchAgent (macOS), installed at `~/Library/LaunchAgents/` |
-| `services/webhook-proxy/webhook-proxy.service` | systemd user unit, for running on a Linux host instead (not used on the Mac mini) |
-| `~/.openclaw/services/webhook-proxy-config.json` | Route config |
-| `~/.openclaw/secrets/webhook-proxy.env` | Secrets (see above) |
+Tailscale Funnel sends Microsoft Graph change notifications on `/m365/webhook` directly to the dedicated `m365-webhook` service. That service answers Graph's subscription validation handshake and checks each notification's `clientState` against the account selected by its subscription ID. Since Carapace Microsoft 365 1.5, the same service handles multiple accounts, applies each account's mail routing rules to dispatch to the appropriate agents, and acts as the Microsoft 365 token broker. See [External Integrations](https://octo.steinbok.net/external-integrations.html#microsoft-365-accounts) and the [carapace-m365 repository](https://github.com/JeffSteinbok/carapace-m365).
 
 ## Install
 

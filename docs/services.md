@@ -15,7 +15,7 @@ Services are long-running background programs that run alongside the Gateway and
 | 🐕 | Config Watchdog | Watches openclaw.json and brings the Gateway back after a bad config change, using rotating backups and, if those fail, a GitHub issue. Not yet running on the Mac mini. | [Read more →](services/config-watchdog) |
 | 📡 | FastMail SSE Service | Watches FastMail in real time (JMAP event stream) and runs each new message through the mail rules: notify, track packages, or hand a command to an agent | [Read more →](services/fastmail-sse) |
 | ⚙️ | Glances | Third-party system monitor that runs on each monitored machine, outside OpenClaw; the Glances plugin reads CPU, memory and disk metrics from it | [GitHub ↗](https://github.com/nicolargo/glances) |
-| ⚙️ | Microsoft 365 Webhook | Receives Microsoft Graph notifications for new inbox mail, runs it through the Carapace mail rules, and holds the Microsoft sign-in tokens the Microsoft 365 plugin uses | [GitHub ↗](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) |
+| ⚙️ | Microsoft 365 Webhook | Receives Microsoft Graph notifications directly at /m365/webhook, routes mail by subscription to the matching account's mail rules, and brokers Microsoft 365 tokens | [GitHub ↗](https://github.com/JeffSteinbok/carapace-m365/tree/main/services/m365-webhook) |
 | 🌉 | MCP Bridge | OAuth-protected MCP server (WorkOS AuthKit) that lets other assistants, such as OctoDot in ChatGPT, use Octo through a few tools: house and calendar reads, guarded house changes, and messages to named destinations | [Read more →](services/mcp-bridge) |
 | 📝 | Obsidian Vault Indexer | Long-running indexer that maintains a SQLite FTS5 index of the Obsidian vault for full-text search | [Read more →](services/obsidian-indexer) |
 | ⚙️ | Octo Satellite | Local service that holds the Amazon and Monarch Money logins and makes requests for the Octo Satellite plugin, so passwords and session cookies never reach the Gateway | [GitHub ↗](https://github.com/JeffSteinbok/octo-satellite) |
@@ -146,13 +146,5 @@ Auth-validating proxy between the outside world and OpenClaw's hooks endpoint. E
 - Exact path matching, POST only, 1 MiB body limit, and a lockout after 10 failed auth attempts in a minute
 - Listens on port 18792 on all interfaces (the code defaults to loopback): Tailscale Funnel reaches it on loopback through the `/hooksproxy` mount, and Home Assistant reaches it on the LAN
 - The LaunchAgent loads only its own env file, `~/.openclaw/secrets/webhook-proxy.env`, not the shared OpenClaw `.env`. (The Linux `webhook-proxy.service` unit in this folder is from the retired host and still loads `~/.openclaw/.env`.)
-
-### Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OPENCLAW_HOOKS_TOKEN` | Yes | OpenClaw hooks token, added to forwarded requests. Rotate it together with `~/.openclaw/.env |
-| `GITHUB_ISSUES_HOOK_SECRET` | Yes | Secret configured on the GitHub webhook |
-| `HOOKSPROXY_HASS_TOKEN` | Yes | Token Home Assistant sends in the `Authorization` header on `/hass |
 
 [Read more →](services/webhook-proxy)
