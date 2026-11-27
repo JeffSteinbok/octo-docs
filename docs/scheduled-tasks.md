@@ -10,7 +10,7 @@ Scheduled tasks are jobs that OpenClaw's scheduler (cron) runs on a timer, witho
 
 This page lists the infrastructure jobs that keep Octo healthy and maintained. Personal jobs, such as reminders, briefings and nudges, aren't published.
 
-Octo publishes **18 infrastructure tasks**.
+Octo publishes **17 infrastructure tasks**.
 
 ## Infrastructure Tasks
 
@@ -28,7 +28,6 @@ Times are Pacific (PT). A job with no time zone of its own runs on the Mac mini'
 | `Log rotation - openclaw.log` | Daily at 3:00 AM PT (`0 3 * * *`) | Script that copy-truncates the gateway log past 50 MB and keeps 7 archives (newest uncompressed, older gzipped). No model call. |
 | `macos-update-check` | Daily at 10:05 AM PT (`5 10 * * *`) | Script that checks `softwareupdate -l` on the Mac mini and announces each pending macOS update once on Discord. No model call. |
 | `Memory Dreaming Promotion` | Daily at 3:00 AM (`0 3 * * *`) | Nightly memory "dreaming" sweep that promotes lasting facts from recent notes and sessions into each agent's MEMORY.md. See [Memory](memory). |
-| `Nightly browser recycle` | Daily at 4:00 AM PT (`0 4 * * *`) | Restarts the headless Camoufox browser overnight to free memory and clear stale sessions. |
 | `openclaw-upgrade-readiness-check` | Daily at 10:00 AM PT (`0 10 * * *`) | Script that checks npm for a new stable OpenClaw release and announces each new release once with an upgrade-readiness checklist. No model call. |
 | `plugin-health-check` | Daily at 9:00 AM PT (`0 9 * * *`) | Calls one tool from every configured plugin and reports which passed and failed to Discord. |
 | `readiness-check` | Repeating interval | Script that checks the Gateway's /readyz every 5 minutes and posts to the status channel when a check is failing (such as a refused agent database) and when it recovers. No model call. |
