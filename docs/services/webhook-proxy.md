@@ -78,4 +78,4 @@ Each request logs its route, auth result, filter decision and the Gateway's resp
 Health checks send intentional authentication rejections directly over loopback. The proxy annotates a
 marked rejection with its route and direct-loopback source only when the connection comes from loopback
 without Tailscale forwarding headers. The connection watcher verifies that annotation against a one-time
-local registration. The limiter still counts these requests.
+local registration. The limiter still counts these requests. Rejection logs include the origin category, a validated address when available, and a bounded user-agent family for watcher summaries. Funnel attribution on the webhook TCP listener is reported by the forwarder.

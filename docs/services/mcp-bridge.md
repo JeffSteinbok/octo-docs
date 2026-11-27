@@ -109,5 +109,5 @@ tail -f ~/Library/Logs/openclaw-mcp-bridge.log
 
 At startup the log lists the tools and destination names it loaded. Request lines include the path and the verified OAuth `client_id`, with `client=-` when the ID is unavailable.
 Successful OAuth authentication on the private Unix listeners records a validated Tailscale-forwarded client IP and labels it Funnel or tailnet. TCP calls and calls without validated forwarding metadata have an unknown origin. The socket boundary trusts the bridge account and the privileged local Tailscale daemon. The log omits <redacted-bearer-token>,
-Tailscale user identities, and ordinary user-agent strings. Keep these logs private. Refusals log the reason.
+Tailscale user identities, and raw user-agent strings. Signed-in calls and authentication or tool rejections use a bounded user-agent family for watcher summaries. Keep these logs private. Refusals log the reason.
 Find user IDs for the allowlist in the WorkOS dashboard. Each `send_message` logs only the destination name.

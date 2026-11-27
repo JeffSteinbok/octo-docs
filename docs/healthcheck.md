@@ -75,7 +75,7 @@ Use the `main-fs-guard` step to deploy the Main Filesystem Guard. Take a baselin
 
 ## Reports and secrets
 
-Reports go to `~/.openclaw/healthcheck/steps/<step>/`, readable only by the owner (mode 600). They never contain secret values: env files are recorded as key names and value lengths, config secrets are redacted, and log samples pass through a redactor.
+Reports go to `~/.openclaw/healthcheck/steps/<step>/`, readable only by the owner (mode 600). The connection watcher uses the timing and lock information in these reports and private active-run markers to identify alerts that overlap a deployment. They never contain secret values: env files are recorded as key names and value lengths, config secrets are redacted, and log samples pass through a redactor.
 
 ## Why it exists
 

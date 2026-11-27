@@ -12,6 +12,8 @@ The watcher checks for more than 20 MCP 401 responses or webhook auth rejections
 
 The remote-access smoke script registers each intentional webhook and MCP rejection with a fresh one-time marker in `~/.openclaw/state/connection-watch-smoke/`. Each registration is bound to the service, exact route, and direct loopback. The service adds those details to the rejection log only for a marked request received directly on loopback. The watcher requires a matching recent registration and accepts it once. Public probes check routing, discovery, and signed webhook behavior. Ordinary rejections, forwarded markers, and replays count toward alerts. Keep the registration directory private to the OpenClaw account.
 
+Alerts give the count and Pacific time range, up to three caller origins and user-agent families, relevant health-check or live-change steps, and an inspection command or other next step. A burst counts the busiest rolling hour observed in that scan. The bridge and webhook proxy provide origin categories and validated addresses where available. Alerts use a short allowlisted user-agent family, from the fixed set `curl`, `browser`, `node`, `openai-mcp`, and `other`. Older log records can have unknown origins or user agents. The watcher reads local health-check run markers and reports, and can only attribute a lock to steps recorded while it was held. A local burst during a deployment can be test traffic, but the alert preserves mixed and public origins for investigation.
+
 ## Initialize and update
 
 Run the commands as the OpenClaw user. Set `WATCHER` to the installed script or the path in your checkout.
