@@ -34,7 +34,9 @@ From `config/mcp-bridge/tools.json`. Reads call OpenClaw tools directly under th
 | `send_message` | sends things | `send` | Direct Gateway `send` to a named destination from the private destinations file; no AI involved |
 | `ping` | read-only | built in | Reachability |
 
-Changing what OctoDot can do is a change to `tools.json` (and, for new OpenClaw tools, to the `external` agent's tool list), then a restart of the LaunchAgent (see [Install](#install)).
+Grant changes in `tools.json` can be reloaded on bridge 0.3.2 and later. See the
+Octo MCP page for reload instructions. Tool definition changes
+require a restart and may also require a change to the `external` agent's tool list.
 
 ## Funnel routes
 
@@ -77,7 +79,9 @@ openclaw devices list    # role operator, scopes operator.read + operator.write
 
 The Funnel routes are added by `config/tailscale/apply-step-441.sh`, which the owner runs by hand because it needs the Tailscale operator account (see [Changing Funnel](../external-integrations#changing-funnel)).
 
-To pick up a change to `tools.json`, restart the service:
+Deploy bridge 0.3.2 or later alongside the client grants under the
+`mcp-bridge-client-tools` health check step. To pick up a tool definition or
+bridge version change, restart the service.
 
 ```bash
 launchctl kickstart -k gui/$(id -u)/com.octo.openclaw.mcp-bridge
@@ -92,8 +96,3 @@ tail -f ~/Library/Logs/openclaw-mcp-bridge.log
 At startup the log lists the tools and destination names it loaded. Each request line includes the path, user agent,
 and the verified OAuth `client_id`, with `client=-` when the ID is unavailable. Refusals log the reason. Find user IDs
 for the allowlist in the WorkOS dashboard. Each `send_message` logs only the destination name.
-
-Tool grants are set per OAuth client in `config/mcp-bridge/tools.json`. See the
-Octo MCP page for defaults and reload instructions.
-Deploy bridge 0.3.2 or later with this config and restart it before relying on
-the grants. The health check step is `mcp-bridge-client-tools`.
