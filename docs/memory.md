@@ -83,7 +83,7 @@ changes to them, so memory files are versioned along with everything else:
 | `couple` | 0 | — | — | — |
 | `external` | 0 | — | — | Yes |
 | `family` | 0 | — | — | Yes |
-| `finance` | 200 | 2026-05-06 | 2026-11-25 | Yes |
+| `finance` | 201 | 2026-05-06 | 2026-11-26 | Yes |
 | `group` | 0 | — | — | Yes |
 | `hass-hooks` | 0 | — | — | — |
 | `hassonic` | 0 | — | — | Yes |
