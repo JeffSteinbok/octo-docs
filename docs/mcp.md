@@ -13,7 +13,7 @@ Octo is useful to more than the people who message it. Other agents can use it t
 else that speaks remote MCP ([Model Context Protocol](https://modelcontextprotocol.io/)) with OAuth.
 
 They reach Octo through the **Octo MCP**: a small, OAuth-protected MCP server published on Tailscale Funnel at
-`https://<funnel-host>/mcp`. It offers five curated tools, not OpenClaw's whole tool list, and anything that needs
+`https://<funnel-host>/mcp`. It offers six curated tools, not OpenClaw's whole tool list, and anything that needs
 judgment goes to a deliberately limited OpenClaw agent, `external`.
 
 The server is [mcp-bridge](services/mcp-bridge), a generic service in
@@ -60,6 +60,7 @@ confirmed.
 | `calendar` | read-only | none | Calls the calendar tools directly for a validated range (`today`, `tomorrow`, `this_week`, `next_7_days`, or start/end dates) and merges them into one sorted list in Pacific time |
 | `control_house` | changes things | ChatGPT asks first | Your request goes to the `external` agent as quoted data; every Home Assistant action passes through [Hass Guard](plugins/hass-guard), which blocks anything off its allowlist or not rated routine |
 | `send_message` | sends things | ChatGPT asks first | The bridge sends directly through the Gateway to a **named destination** (iMessage or Discord); no AI picks the recipient |
+| `set_reminder` | schedules a message | ChatGPT asks first | The bridge schedules a one-time reminder for Jeff using `text`, offset-aware `time`, and optional `channel`. iMessage is the default and Discord goes to Jeff's DM |
 | `ping` | read-only | none | Reachability check |
 
 The server also sends MCP **instructions** when ChatGPT connects, saying what Octo is for and what it can't do (email,
@@ -80,7 +81,7 @@ Octo.
   `send_message` only accepts destination names (Jeff, a few family members, a Discord channel); the handles and
   channel IDs live in a private file on the Mac mini (mode 600, never in a repo), and the bridge calls the Gateway's `send`
   itself. One tool covers both iMessage and Discord, so adding a destination doesn't add a tool.
-- **One honest annotation per tool.** `control_house` and `send_message` are marked as changing things even though
+- **One honest annotation per tool.** `control_house`, `send_message`, and `set_reminder` are marked as changing things even though
   that costs a confirmation every time. Marking them read-only would remove the prompt and your check on them.
 
 ## A separate agent, on purpose
@@ -110,7 +111,7 @@ Three layers, each with one job:
 | Layer | Trusts | Decides |
 |---|---|---|
 | **WorkOS AuthKit + the bridge's token check** | Jeff's WorkOS sign-in | *Who* gets in: one allowlisted user, with a token minted for this exact MCP URL |
-| **The bridge's tool definitions** | Its own config | *What* can be asked: five tools, validated parameters, named destinations |
+| **The bridge's tool definitions** | Its own config | *What* can be asked: six tools, validated parameters, named destinations |
 | **OpenClaw: the `external` agent and Hass Guard** | Its own policy | *What actually happens*: which tools run, which house actions are allowed to run |
 
 The bridge is **trusted local software**, in the same class as a Control UI session on the Mac mini. It's paired with
@@ -136,9 +137,11 @@ OpenClaw command.
 ## What the server checks
 
 Starting with mcp-bridge 0.3.2, the bridge uses the verified token's `client_id` to select grants from `clientTools`
-in `config/mcp-bridge/tools.json`. OctoDot has access to the five tools above.
+in `config/mcp-bridge/tools.json`. OctoDot has access to all six tools above.
 Authenticated clients with an unlisted or missing client ID can list and call
 only `ping`. Calls to other tools are refused and logged with the client ID.
+Grants follow the OAuth client registration across devices. The WorkOS user
+allowlist controls which signed-in accounts can use the bridge.
 Replace the config file atomically and send the running bridge `SIGHUP` to reload the grants.
 Check the bridge log for confirmation. Invalid grants leave the last valid grants active.
 Tool definition changes take effect on restart.

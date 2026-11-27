@@ -17,7 +17,7 @@ The OAuth-protected MCP server behind the Octo MCP, which lets other agents, suc
 - OAuth 2.1 resource server: protected resource metadata (RFC 9728), and AuthKit's authorization server metadata proxied for clients that look for it on this origin
 - Access tokens checked for JWKS signature, issuer, audience (the MCP URL), expiry, and a one-person allowlist
 - Fails closed: refuses to start without an issuer, resource URL and valid tool definitions; never serves `/mcp` unauthenticated
-- Tools defined in config, split by risk: direct, condensed reads (`house_status`, `calendar`); `control_house` (changes the house, confirmed in ChatGPT); `send_message` (iMessage or Discord to named destinations, confirmed in ChatGPT); `ping`
+- Tools defined in config, split by risk: direct, condensed reads (`house_status`, `calendar`); `control_house` (changes the house, confirmed in ChatGPT); `send_message` (iMessage or Discord to named destinations, confirmed in ChatGPT); `set_reminder` (one-shot message to Jeff); `ping`
 - MCP server instructions tell the client what Octo can and can't do
 - Paired with the OpenClaw Gateway as its own device (`operator.read` + `operator.write`, no admin); the shared Gateway token is used once to pair and never stored
 - Host header allowlist, POST only, 1 MiB body limit
@@ -32,7 +32,14 @@ From `config/mcp-bridge/tools.json`. Reads call OpenClaw tools directly under th
 | `calendar` | read-only | `invoke` + `dateRange` | `ics_calendar_fetch` (Personal, Family, TripIt) and `outlook_work_calendar_fetch`, merged and sorted (`calendar-events`) in Pacific time |
 | `control_house` | changes things | `ask` | The request, quoted as data, to the `external` agent; Hass Guard checks every action |
 | `send_message` | sends things | `send` | Direct Gateway `send` to a named destination from the private destinations file; no AI involved |
+| `set_reminder` | schedules a message | `reminder` | One-time text to Jeff, defaulting to iMessage |
 | `ping` | read-only | built in | Reachability |
+
+Bridge 0.3.3 persists pending reminders in the private paired-device directory
+and resumes them after restart. It delivers through the existing Gateway device
+with its current scopes. An unconfirmed delivery is logged and the private
+`.sending` record is retained for inspection. The bridge skips automatic replay
+of an unconfirmed send to avoid duplicate reminders.
 
 Grant changes in `tools.json` can be reloaded on bridge 0.3.2 and later. See the
 Octo MCP page for reload instructions. Tool definition changes
@@ -79,9 +86,10 @@ openclaw devices list    # role operator, scopes operator.read + operator.write
 
 The Funnel routes are added by `config/tailscale/apply-step-441.sh`, which the owner runs by hand because it needs the Tailscale operator account (see [Changing Funnel](../external-integrations#changing-funnel)).
 
-Deploy bridge 0.3.2 or later alongside the client grants under the
-`mcp-bridge-client-tools` health check step. To pick up a tool definition or
-bridge version change, restart the service.
+The current tool definitions require bridge 0.3.3 or later. Install and verify
+the bridge against the previous config with the `mcp-bridge-reminder-build`
+health check step before pushing the reminder config to main. Then apply the
+config and restart under `mcp-bridge-reminders`.
 
 ```bash
 launchctl kickstart -k gui/$(id -u)/com.octo.openclaw.mcp-bridge

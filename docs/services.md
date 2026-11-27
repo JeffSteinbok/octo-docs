@@ -81,7 +81,7 @@ The OAuth-protected MCP server behind the Octo MCP, which lets other agents, suc
 - OAuth 2.1 resource server: protected resource metadata (RFC 9728), and AuthKit's authorization server metadata proxied for clients that look for it on this origin
 - Access tokens checked for JWKS signature, issuer, audience (the MCP URL), expiry, and a one-person allowlist
 - Fails closed: refuses to start without an issuer, resource URL and valid tool definitions; never serves `/mcp` unauthenticated
-- Tools defined in config, split by risk: direct, condensed reads (`house_status`, `calendar`); `control_house` (changes the house, confirmed in ChatGPT); `send_message` (iMessage or Discord to named destinations, confirmed in ChatGPT); `ping`
+- Tools defined in config, split by risk: direct, condensed reads (`house_status`, `calendar`); `control_house` (changes the house, confirmed in ChatGPT); `send_message` (iMessage or Discord to named destinations, confirmed in ChatGPT); `set_reminder` (one-shot message to Jeff); `ping`
 - MCP server instructions tell the client what Octo can and can't do
 - Paired with the OpenClaw Gateway as its own device (`operator.read` + `operator.write`, no admin); the shared Gateway token is used once to pair and never stored
 - Host header allowlist, POST only, 1 MiB body limit
