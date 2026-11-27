@@ -11,6 +11,8 @@ nav_order: 2
 How to add the [Octo MCP](mcp) to ChatGPT as a custom MCP server, so OctoDot (or any ChatGPT chat) can use Octo's
 tools. You need the WorkOS side set up first; see [WorkOS setup](mcp-workos).
 
+See [Robots](harness/robots) for Octo·Dot’s role and the shared approval rules.
+
 ## Adding the server
 
 1. ChatGPT → Plugins → **+** → **Add custom MCP server**.

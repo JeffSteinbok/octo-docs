@@ -10,6 +10,8 @@ has_children: true
 Everything outside the house that talks to Octo, and how it gets in. Octo runs on a Mac mini at home; this page
 covers the one public entry point to it and how each kind of traffic is authenticated.
 
+The [guarded Orca–Claw handoff](harness/robots#guarded-handoff) is rolling out with read-only handoffs to Claw and status updates or questions to Orca.
+
 
 | Integration | What it is |
 |---|---|

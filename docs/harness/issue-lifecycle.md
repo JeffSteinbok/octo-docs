@@ -7,6 +7,8 @@ nav_order: 1
 
 # Issue Lifecycle
 
+See [Robots](robots) for Orca-Octo’s role across triage, implementation, review and deployment.
+
 The issue lifecycle is the fix workflow of the [Engineering Harness](../harness). It takes an issue in `JeffSteinbok/octo` from Jeff's approval through a written plan, an implementation, and a pull request, using GitHub labels to record where each issue is. Octo's `coding` agent runs the workflow; Orca-Octo writes the code; Jeff approves each stage and merges.
 
 > ⚠️ **Nothing merges without Jeff's approval.**
