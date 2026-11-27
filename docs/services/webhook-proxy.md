@@ -73,3 +73,9 @@ Each request logs its route, auth result, filter decision and the Gateway's resp
 3. Restart: `launchctl kickstart -k gui/$(id -u)/com.octo.openclaw.webhook-proxy`.
 4. The existing `/hooksproxy` Funnel mount already covers new routes; no Funnel change is needed.
 5. Add a rejection check for the route to `scripts/smoke-remote-access.sh`.
+
+
+Health checks send intentional authentication rejections directly over loopback. The proxy annotates a
+marked rejection with its route and direct-loopback source only when the connection comes from loopback
+without Tailscale forwarding headers. The connection watcher verifies that annotation against a one-time
+local registration. The limiter still counts these requests.

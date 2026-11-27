@@ -47,13 +47,19 @@ require a restart and may also require a change to the `external` agent's tool l
 
 ## Funnel routes
 
-ChatGPT doesn't connect to non-443 ports, so these paths on the shared 443 hostname go to IPv4 loopback on port 18793 unchanged:
+ChatGPT doesn't connect to non-443 ports, so these paths on the shared 443 hostname go through separate Unix listeners under `~/.openclaw/mcp-proxy`. Tailscale strips each mount prefix, so each listener restores only its own prefix. The LaunchAgent configures the socket directory, which the bridge creates with owner-only permissions and rejects macOS ACLs on that directory. The local TCP listener on port 18793 serves local requests and never attributes forwarded addresses.
 
 | Path | Purpose |
 |---|---|
 | `/mcp` | MCP endpoint |
 | `/.well-known/oauth-protected-resource` (and `…/mcp`) | Protected resource metadata |
 | `/.well-known/oauth-authorization-server` | AuthKit metadata, proxied |
+
+A complete Funnel restore requires the bridge to be running with all three sockets ready. From the
+Octo checkout, run `sudo bash config/tailscale/restore-funnel.sh "$HOME/.openclaw/mcp-proxy"` under
+the live-change lock. The calling shell expands the bridge account’s path before `sudo`. The script
+checks the directory and sockets before resetting Funnel. Install or change individual Unix targets
+as root with `sudo tailscale funnel --bg --set-path <mount> unix:<absolute-socket-path>`.
 
 ## Environment Variables
 
@@ -101,6 +107,7 @@ launchctl kickstart -k gui/$(id -u)/com.octo.openclaw.mcp-bridge
 tail -f ~/Library/Logs/openclaw-mcp-bridge.log
 ```
 
-At startup the log lists the tools and destination names it loaded. Each request line includes the path, user agent,
-and the verified OAuth `client_id`, with `client=-` when the ID is unavailable. Refusals log the reason. Find user IDs
-for the allowlist in the WorkOS dashboard. Each `send_message` logs only the destination name.
+At startup the log lists the tools and destination names it loaded. Request lines include the path and the verified OAuth `client_id`, with `client=-` when the ID is unavailable.
+Successful OAuth authentication on the private Unix listeners records a validated Tailscale-forwarded client IP and labels it Funnel or tailnet. TCP calls and calls without validated forwarding metadata have an unknown origin. The socket boundary trusts the bridge account and the privileged local Tailscale daemon. The log omits <redacted-bearer-token>,
+Tailscale user identities, and ordinary user-agent strings. Keep these logs private. Refusals log the reason.
+Find user IDs for the allowlist in the WorkOS dashboard. Each `send_message` logs only the destination name.
