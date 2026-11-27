@@ -81,6 +81,20 @@ automation, script and dashboard definitions. Mail rules and verdict logs stay
 account scoped.
 The weekly diagnostic review and session labeling skip both partner agents.
 
+The target-pin hook allows proactive plain-text household iMessage sends from
+main and partner to direct handles in the Jeff, Nicole, Aaron, and Walter
+access groups. Call `message` with `action: "send"`, `channel: "imessage"`, a
+bare configured `target`, and the note as `message`. The hook adds the sending
+assistant's attribution. These notes carry information only.
+
+For an operator-triggered partner nudge, run
+`openclaw agent --agent partner --session-key "$PARTNER_SESSION_KEY" --message-file "$PROMPT_FILE" --json`
+with the pinned direct session key. In the prompt, provide the intended text
+and the four explicit tool arguments. Inspect the tool result for delivery.
+Omit `--deliver`, `--reply-channel`, and `--reply-to`. The CLI's
+`--deliver` option forwards the agent's final text, including any tool
+failure the agent reports in a normally completed turn.
+
 ## File access
 
 The workspace policy uses `tools.fs.workspaceOnly: true`. It is active for `hass-hooks`, `partner`, `partner-mail` and `couple`. Main is still in an observation trial under #575. The interim guard blocks sensitive paths, permits outside reads from configured roots such as the Gateway log directory, and records outside access for review.
