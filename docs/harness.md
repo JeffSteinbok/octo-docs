@@ -7,11 +7,11 @@ has_children: true
 
 # 🔧 Engineering Harness
 
-The Engineering Harness is how Octo finds and fixes its own problems. Scheduled checks look for drift and quality issues and file them as GitHub issues in `JeffSteinbok/octo`. A label-driven workflow then takes each approved issue through a written plan, an automated fix, and a pull request that Jeff (the owner) reviews and merges. GitHub Issues is the single record of what was found and what happened to it.
+The Engineering Harness is how Octo finds and fixes its own problems. Scheduled checks look for drift and quality issues. Docs validation reports its findings in the weekly job output, and agent review files findings in `JeffSteinbok/octo`. A label-driven workflow then takes each approved issue through a written plan, an automated fix, and a pull request that Jeff (the owner) reviews and merges. GitHub Issues tracks filed findings and their fixes.
 
 The harness has three parts:
 
-- **Detection** — weekly jobs that file issues ([below](#detection))
+- **Detection** — weekly jobs that report findings ([below](#detection))
 - **Fix workflow** — the [Issue Lifecycle](harness/issue-lifecycle) state machine that turns an approved issue into a PR
 - **[Health Check](healthcheck)** — a before-and-after regression check for changes to the running system
 
@@ -19,6 +19,7 @@ The harness has three parts:
 flowchart TD
     subgraph Detection ["🔍 Detection (weekly)"]
         DV["docs-validate\nChecks the docs manifest against config"]
+        DR["Weekly job output"]
         AR["agent-review\nScans session trajectories"]
     end
 
@@ -35,7 +36,9 @@ flowchart TD
         MG["Merged ✓"]
     end
 
-    DV -->|files issue| GH
+    CI["Docs validation in GitHub Actions"]
+    DV -->|reports findings| DR
+    CI -->|files with --file-issues| GH
     AR -->|files issue| GH
     GH -->|Jeff adds label| AP
     AP --> PW
@@ -56,7 +59,7 @@ flowchart TD
 
 ## Detection
 
-Two checks run as weekly scheduled jobs under the `root` agent and file GitHub issues for what they find. Each one skips findings that already have an open issue with its label, so the same problem is not filed twice.
+Two checks run as weekly scheduled jobs under the `root` agent. Docs validation reports findings in its job output. Agent review files GitHub issues and skips findings that already have a matching open issue.
 
 ### Docs validation
 
@@ -79,13 +82,13 @@ Checks that `config/doc-manifest.json` (the list of what the public docs cover; 
 | WARN | Services — no local README and not `docsMode: external`; README directory missing from the manifest; local service with no page spec |
 | WARN | Rendered site — empty tables, `Unknown` schedule cells, relative links that don't resolve to a rendered page |
 
-ERROR and WARN findings are filed as issues. INFO findings are printed but never filed.
+The weekly job reports findings in its output. In GitHub Actions, use `--file-issues` to file ERROR and WARN findings with deduplication. INFO findings only appear in the report.
 
 ```bash
 cd ~/git/octo
-python3 tools/docs/scripts/validate_docs.py --render     # build the docs, audit the site, file issues (the weekly job)
-python3 tools/docs/scripts/validate_docs.py --dry-run    # preview only
-python3 tools/docs/scripts/validate_docs.py --no-issues --rendered out/docs-site  # check an existing build, file nothing
+python3 tools/docs/scripts/validate_docs.py --render     # build the docs and audit the site
+python3 tools/docs/scripts/validate_docs.py --dry-run    # preview issue titles offline
+python3 tools/docs/scripts/validate_docs.py --rendered out/docs-site  # check an existing build
 ```
 
 ### Agent review

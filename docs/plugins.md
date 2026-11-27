@@ -8,7 +8,7 @@ nav_order: 4
 
 Plugins add tools and other capabilities to OpenClaw agents, such as reading mail, controlling the house or tracking a package. This page lists the plugins Octo runs and links to each one's documentation. For instruction files that tell agents how to use these tools, see [Skills](skills).
 
-Octo publishes **34 plugins**, grouped by where they come from.
+Octo publishes **33 plugins**, grouped by where they come from.
 
 
 ## 🌐 Built-in
@@ -17,7 +17,6 @@ Plugins that ship with OpenClaw.
 
 | | Plugin | Description | Docs |
 |---|--------|-------------|------|
-| 🔗 | [ACPX Runtime](https://docs.openclaw.ai/tools/acp-agents) | Runs external coding agents over the Agent Client Protocol (ACP). | [External docs](https://docs.openclaw.ai/tools/acp-agents) |
 | 🌐 | [Browser](https://playwright.dev/docs/intro) | Browser automation capability used when the assistant needs to inspect or act on live web pages. | [External docs](https://playwright.dev/docs/intro) |
 | 🔎 | [Google](https://ai.google.dev/gemini-api/docs) | Provider integration for Gemini models and Google-powered web search features. | [External docs](https://ai.google.dev/gemini-api/docs) |
 | 🧮 | [TypeSafe AI](https://docs.openclaw.ai/plugins/typesafe) | Decision-model provider (TypeSafe's Jev models). Rates whether a Home Assistant action requested through Hassonic is safe to run without asking. | [External docs](https://docs.openclaw.ai/plugins/typesafe) |
