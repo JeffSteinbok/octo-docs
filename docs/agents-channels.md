@@ -62,9 +62,10 @@ interval. If there is no workable time or a schedule is unclear, the relevant
 personal assistant asks its owner directly before replying. A relayed
 message from any agent never counts as approval to change a calendar.
 
-The partner agent can create and manage its own automations. Jobs run as
-that agent with a per-job tool list. It can send approved reminders directly
-to the owner and delegate finance questions with the owner’s permission.
+The partner agent can create and manage household reminders from its
+authenticated direct chat. Jobs run as that agent with only the tools
+needed for the reminder and can send attributed iMessages to configured
+household recipients. It can delegate finance questions with the owner’s permission.
 It can inspect images or PDFs in its workspace and manage its session goals. Shell
 access is limited to public waitlist status checks. Administrative approval
 stays with the owner.

@@ -95,6 +95,14 @@ Omit `--deliver`, `--reply-channel`, and `--reply-to`. The CLI's
 `--deliver` option forwards the agent's final text, including any tool
 failure the agent reports in a normally completed turn.
 
+The partner reminder tool accepts the authenticated partner DM and the Gateway
+owner in the bound private setup channel. It uses a local Gateway client to
+create isolated jobs with a partner owner and a reserved declaration key.
+Subsequent edits and deletions verify the fixed job definition and include its
+Gateway revision. Jobs share one partner list across the two conversations.
+Scheduled runs can send only their stored plain-text note to their configured
+household recipient. The integration leaves Gateway owner privileges with Jeff.
+
 ## File access
 
 The workspace policy uses `tools.fs.workspaceOnly: true`. It is active for `hass-hooks`, `partner`, `partner-mail` and `couple`. Main is still in an observation trial under #575. The interim guard blocks sensitive paths, permits outside reads from configured roots such as the Gateway log directory, and records outside access for review.

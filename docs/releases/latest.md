@@ -6,6 +6,10 @@ nav_order: 13
 
 # Release Notes
 
+## 2026-11-27
+
+- **Household reminders.** A household assistant can schedule and manage its own reminders without sharing the owner's admin rights.
+
 ## 2026-11-26
 
 - **Guarded handoffs between Orca and OpenClaw.** Orca-Octo can send read-only handoffs to OpenClaw, which can send status updates and questions back. Approval stays with the owner. [Robots](https://octo.steinbok.net/harness/robots.html#guarded-handoff)
