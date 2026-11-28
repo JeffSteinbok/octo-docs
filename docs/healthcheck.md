@@ -32,7 +32,7 @@ scripts/healthcheck.py probes                     # list the probes
 | Plugins | Enabled plugins loaded; degraded plugins or secret owners |
 | Agents | Agent list and models, database files present and sane, session counts (if an agent database is refused, its session count drops to zero) |
 | Cron | Scheduler on; job errors, especially agent-database admission failures; overdue jobs; failed runs since the baseline |
-| Services | LaunchAgents running, plist hashes, program arguments, env key names; the Glances API; the OneDrive app (vault sync); service log errors since the baseline |
+| Services | LaunchAgents running, plist hashes, program arguments, env key names; the Glances API; the Ardia control socket when the pilot is enabled; the OneDrive app (vault sync); service log errors since the baseline |
 | Config | `openclaw.json` hash and a redacted copy; env files as key names and value lengths only; service configs |
 | Tailscale Funnel | Tailnet up; Funnel routes, and drift from the committed `config/tailscale/funnel.json` |
 | Devices | Paired devices, admin count, pending requests, nodes |
