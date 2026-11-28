@@ -18,7 +18,7 @@ In the Permissions column, *allowed* and *denied* are set explicitly for that ag
 
 | Agent | Used for | Permissions | Why it is set up this way |
 |-------|----------|-------------|---------------------------|
-| `main` | The owner's everyday assistant: direct chats and proactive check-ins | Custom tool set. Allowed: shell (`exec`). Can hand work to `root`, `family`, `finance`. | Keeps the everyday assistant capable while limiting its shell to approved commands only, with no arbitrary shell access. |
+| `main` | The owner's everyday assistant: direct chats and proactive check-ins | Custom tool set. Allowed: shell (`exec`). Denied: browser. Can hand work to `root`, `family`, `finance`. | Keeps the everyday assistant capable while limiting its shell to approved commands only, with no arbitrary shell access. |
 | `mail` | Mail processing handed off by other agents (currently unused) | Minimal tool profile. Allowed: file reads. Denied: shell (`exec`), browser, file writes. | Treats mail as untrusted input and keeps mail processing away from broader tools. |
 | `root` | Admin and debugging work the owner explicitly escalates | Custom tool set. Allowed: file reads. Broad access, inherited from OpenClaw's defaults. | Keeps privileged admin and debugging access on a separate path that is used only on request. |
 | `family` | Family members' iMessage DMs and the family group chat | Messaging tool profile. Denied: shell (`exec`), browser, file reads, file writes. | Gives family conversations a narrow, safer tool set. Calendar plugins apply per-person read and write rules based on who sent the message. |
